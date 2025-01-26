@@ -1,8 +1,8 @@
 {
-  "name": "storegarden7",
+  "name": "storegardensju.se",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://monswiklund.github.io/storegardensju.se",
+  "homepage": "https://storegardensju.se",
   "type": "module",
   "scripts": {
     "dev": "vite",
