@@ -2,7 +2,7 @@
   "name": "storegarden7",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://monswiklund.github.io/storegardensju-react",
+  "homepage": "https://monswiklund.github.io/storegardensju.se",
   "type": "module",
   "scripts": {
     "dev": "vite",
