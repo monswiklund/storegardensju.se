@@ -1,31 +1,21 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 const FadeInSection = ({ children }) => {
-  const domRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setIsVisible(true);
-        observer.unobserve(domRef.current);
-      }
-    });
+    // Kort fördröjning för att säkerställa att fade-in animationen körs efter att komponenten har monterats
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
 
-    if (domRef.current) {
-      observer.observe(domRef.current);
-    }
-
-    return () => observer.disconnect();
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div
-      ref={domRef}
-      className={`fade-in-section ${isVisible ? "is-visible" : ""}`}
-    >
-      {children}
-    </div>
+      <div className={`fade-in-section ${isVisible ? "is-visible" : ""}`}>
+        {children}
+      </div>
   );
 };
 

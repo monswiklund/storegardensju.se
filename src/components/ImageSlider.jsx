@@ -10,25 +10,13 @@ import slide5 from "../assets/slide5.jpg";
 
 function ImageSlider() {
     return (
-        <FadeInSectionOnScroll>
             <div className="index-bilder">
-                <FadeInSection>
                     <img src={slide1} alt="Bild 1" />
-                </FadeInSection>
-                <FadeInSection>
                     <img src={slide2} alt="Bild 2" />
-                </FadeInSection>
-                <FadeInSection>
                     <img src={slide3} alt="Bild 3" />
-                </FadeInSection>
-                <FadeInSection>
                     <img src={slide4} alt="Bild 4" />
-                </FadeInSection>
-                <FadeInSection>
                     <img src={slide5} alt="Bild 5" />
-                </FadeInSection>
             </div>
-        </FadeInSectionOnScroll>
     );
 }
 

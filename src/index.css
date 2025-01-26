@@ -206,6 +206,7 @@
   /* ==========================================================================
      Contact Section
      ========================================================================== */
+
   .kontakt-container {
     margin: 0.625em auto; /* Ändrat till auto för horisontell centrering */
     padding: 1.875em;
@@ -246,8 +247,6 @@
   .kontakt-container p strong {
     font-weight: 400;
   }
-
-
 
   .kontakt-box {
     padding: 1rem 0.5rem 2rem;
@@ -430,102 +429,88 @@ body {
    Content Layout
    ========================================================================== */
 
-/* Uppdatera content-container */
 .content-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* Centrerar elementen horisontellt */
   width: 100%;
-  max-width: 75em;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 0.8em; /* Lägg till padding här istället */
+  padding: 0 1rem;
 }
 /* Welcome Text Styles */
 
+
 .välkomst-text {
   flex: 1;
-  font-size: 1.6rem;
-  max-width: 50em;
-  letter-spacing: 0.03rem;
+  max-width: 800px;
   font-weight: 300;
-  margin-top: 3.125em;
+  margin-top: 2rem;
   width: 100%;
-  padding: 0 0.8em;
+  text-align: left; /* Behåller vänsterjusterad text */
+  padding: 0;
 }
 
-.välkomst-text h2 {
+.välkomst-text h2,
+.välkomst-text h3,
+.välkomst-text h4,
+.tjänster h3,
+.tjänster h4 {
   font-weight: 300;
-  font-size: 3rem;
-  margin-left: -0.3em;
-  margin-bottom: -0.2em;
+  margin: 1.5rem 0 1rem 0;
+  padding: 0;
+  text-align: left; /* Behåller vänsterjusterad text */
 }
-.välkomst-text h3 {
-  font-weight: 320;
-  font-size: 3rem;
-  margin-left: -0.7em;
-  margin-bottom: -0.2em;
-}
-
-.välkomst-text h4 {
-  margin-left: -0.3em;
-  font-weight: 300;
-  font-size: 2.5rem;
-  margin-left: -0.4em;
-  margin-bottom: -0.2em;
+.välkomst-text h2,
+.välkomst-text h3,
+.tjänster h3 {
+  font-size: 1.75rem;
 }
 
-.välkomst-text p {
-    font-size: 1.6rem;
-    margin-top: 1.25em; /* 20px to em */
-    margin-bottom: 1.25em; /* 20px to em */
+.välkomst-text h4,
+.tjänster h4 {
+  font-size: 1.5rem;
 }
 
-.välkomst-text strong {
-  font-weight: 400;
+.välkomst-text p,
+.tjänster p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
+  padding: 0;
+  text-align: left; /* Behåller vänsterjusterad text */
 }
 /* Services Section */
 
+
 .tjänster {
   flex: 1;
-  font-size: 1.4rem;
-  letter-spacing: 0.03rem;
-  max-width: 50em; /* 800px to em */
-}
-
-.tjänster h3 {
-  font-weight: 320;
-  font-size: 2.8rem;
-  margin-left: -0.3em;
-}
-
-.tjänster h4 {
-  margin-left: -0.4em;
-  margin-bottom: -0.2em;
+  max-width: 800px;
   font-weight: 300;
-  font-size: 2.4rem;
-}s
-
-.tjänster strong {
-  font-weight: 400;
+  width: 100%;
+  padding: 0;
+  margin: 2rem auto; /* Centrerar elementet horisontellt */
 }
+
 
 .vilka-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   width: 100%;
-  max-width: 50em; /* 800px to em */
-  margin: 3.125em auto; /* 50px to em */
-  font-size: 1.6rem;
-  letter-spacing: 0.03rem;
+  max-width: 800px;
+  margin: 2rem auto; /* Centrerar elementet horisontellt */
+  font-size: 1rem;
   font-weight: 300;
+  padding: 0;
 }
 
 .vilka-container h2 {
   font-weight: 300;
-  font-size: 3rem;
-  margin: 0;
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  padding: 0;
+  width: 100%;
+  text-align: left; /* Behåller vänsterjusterad text */
 }
 
 /* ==========================================================================
@@ -533,7 +518,7 @@ body {
    ========================================================================== */
 .fade-in-section {
   opacity: 0;
-  transform: translateY(1.25em); /* 20px to em */
+  transform: translateY(1.25rem);
   visibility: hidden;
   transition: opacity 1s ease-out, transform 1s ease-out;
 }
@@ -543,290 +528,3 @@ body {
   transform: none;
   visibility: visible;
 }
-
-@media screen and (max-width: 1268px) {
-
-
-
-  .stor-logga img {
-    overflow: hidden;
-    max-width: 50em;
-    min-width: 1em;
-  }
-
-  .titel {
-    padding-top: 10em;
-  }
-}
-
-
-@media screen and (max-width: 768px) {
-  * {
-    padding-left: 0.4em;
-    padding-right: 0.4em;
-  }
-
-    .stor-logga img {
-      max-width: 100%;
-      min-width: 100%; /* Fullbredd på mindre skärmar */
-      margin-bottom: -10em;
-    }
-
-  .titel h2 {
-    font-size: 2em;
-    margin-top: -2em;
-  }
-
-  /* Centrera bilder i slider */
-  .index-bilder {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-    overflow-x: auto;
-    max-width: 100%;
-    gap: 0.625em;
-    padding: 0 0.8em;
-    margin: 0 auto;
-  }
-
-  .index-bilder img {
-    max-width: 95%;
-    margin-bottom: 1em;
-  }
-
-  .kontakt-box {
-    padding: 1em;
-    width: 100%; /* Ensure consistent width */
-    box-sizing: border-box; /* Include padding in width calculation */
-  }
-
-  .kontakt-container h2 {
-    margin-bottom: 2em;
-  }
-
-  .kontakt-box p {
-  margin-bottom: 3em;
-  }
-
-
-  .content-container {
-    padding: 0 0.4em;
-  }
-
-  .card-container {
-    padding: 1em;
-  }
-
-  .kontakt-container {
-    padding: 1rem;
-    width: 95%;
-  }
-
-  .välkomst-text {
-    padding: 0 0.4em;
-  }
-}
-
-  .social-links {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .contact-section a, span {
-    padding-left: 1em;
-  }
-
-  .välkomst-text {
-    flex: 1;
-    font-size: 1.4rem;
-    letter-spacing: 0.03rem;
-    max-width: 50em; /* 800px to em */
-  }
-
-  .välkomst-text h3 {
-    font-weight: 300;
-    font-size: 2.8rem;
-  }
-
-  .välkomst-text h4 {
-    font-weight: 300;
-    font-size: 2.4rem;
-  }s
-
-   .välkomst-text strong {
-     font-weight: 400;
-   }
-
-  .card {
-  font-size: 0.8em
-  }
-
-.vilka-container h2 {
-  font-size: 1.6em;
-}
-
-@media screen and (max-width: 600px) {
-  /* Base adjustments */
-  * {
-    padding-left: 0.3em;
-    padding-right: 0.3em;
-  }
-
-  body {
-    font-size: 14px; /* Reduce base font size */
-  }
-
-
-  /* Logo and title adjustments */
-  .stor-logga img {
-    max-width: 90%;
-    margin-bottom: -8em;
-  }
-
-  .titel h2 {
-    font-size: 1.6em;
-    margin-top: -1.5em;
-  }
-
-  /* Welcome text adjustments */
-  .välkomst-text {
-    font-size: 1.2rem;
-    margin-top: 2em;
-    padding: 0 0.3em;
-  }
-
-  .välkomst-text h2 {
-    font-size: 2rem;
-    margin-left: -0.2em;
-  }
-
-  .välkomst-text h3 {
-    font-size: 1.8rem;
-    margin-left: -0.2em;
-  }
-
-  .välkomst-text h4 {
-    font-size: 1.6rem;
-    margin-left: -0.2em;
-  }
-
-  /* Card adjustments */
-  .card {
-    margin: 0.4em;
-    padding: 1em;
-    min-height: 300px;
-    font-size: 0.9em;
-  }
-
-  .card-container {
-    padding: 0.5em;
-    gap: 1em;
-  }
-
-  .card-title {
-    font-size: 1.3em;
-    margin: 0.6em 0;
-  }
-
-  .card-about {
-    font-size: 1.1em;
-    margin: 0.6em 0;
-  }
-
-  /* Contact section adjustments */
-  .kontakt-container {
-    padding: 0.2em;
-    width: 70%;
-    min-height: 300px;
-    margin: 0.5em auto;
-  }
-
-  .kontakt-container h2 {
-    font-size: 1.3rem;
-    margin-bottom: 1.5em;
-  }
-
-  .kontakt-container p {
-    font-size: 0.7rem;
-  }
-
-  .kontakt-box {
-    padding: 0.8em;
-    width: 90%;
-    gap: 0.4em;
-  }
-
-  .kontakt-info {
-    gap: 0.5em;
-    padding: 0.5em;
-  }
-
-  .kontakt-box a {
-    font-size: 1rem;
-    padding: 0.4em 0.8em;
-  }
-
-  /* Services section adjustments */
-  .tjänster {
-    font-size: 1.2rem;
-  }
-
-  .tjänster h3 {
-    font-size: 2rem;
-    margin-left: -0.2em;
-  }
-
-  .tjänster h4 {
-    font-size: 1.8rem;
-    margin-left: -0.2em;
-  }
-
-  /* Image slider adjustments */
-  .index-bilder {
-    gap: 0.4em;
-    padding: 0 0.4em;
-  }
-
-  .index-bilder img {
-    max-width: 90%;
-    margin-bottom: 0.8em;
-  }
-
-  /* Vilka container adjustments */
-  .vilka-container {
-    margin: 2em auto;
-    font-size: 1.2rem;
-  }
-
-  .vilka-container h2 {
-    font-size: 1.4em;
-  }
-
-  /* Content container adjustments */
-  .content-container {
-    padding: 0 0.3em;
-  }
-
-  /* Contact section specifics */
-  .contact-section a,
-  .contact-section span {
-    font-size: 0.9em;
-    padding-left: 0.8em;
-  }
-
-  .contact-item {
-    margin: 0.2em 0;
-  }
-
-  /* Social links adjustments */
-  .social-links {
-    gap: 0.4rem;
-    margin-top: 1.5rem;
-  }
-
-  .social-links a {
-    padding: 0.6rem;
-  }
-
