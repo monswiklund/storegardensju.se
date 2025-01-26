@@ -1,0 +1,832 @@
+/* ==========================================================================
+   CSS Variables / Root
+   ========================================================================== */
+:root {
+
+  /* ==========================================================================
+     Image Slider
+     ========================================================================== */
+  .index-bilder {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+    max-width: 100%;
+    gap: 0.625em; /* 10px to em */
+  }
+
+  .index-bilder img {
+    max-width: 18.75em; /* 300px to em */
+    height: auto;
+    border-radius: 0.625em; /* 10px to em */
+    margin: 0;
+    flex: 0 0 auto;
+    transition: transform 0.3s ease;
+  }
+
+  .index-bilder img:hover {
+    transform: scale(1.1);
+    transition-duration: 0.35s; /* 350ms to s */
+  }
+
+  /* Add this CSS to your stylesheet */
+
+  .vilka-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 50em; /* 800px to em */
+    font-size: 1.6rem;
+    letter-spacing: 0.03rem;
+    font-weight: 300;
+  }
+
+  /* Uppdatera card för bättre centrering */
+  .card {
+    margin: 0.625em;
+    padding: 1.875em;
+    max-width: 30em;
+    background-color: #fff;
+    border-radius: 0.625em;
+    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    justify-content: space-between;
+  }
+
+  /* Ensure consistent hover effects */
+  .card:hover {
+    transform: translateY(-0.625em);
+    box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.2);
+  }
+
+  /* Fix card image sizing */
+  .card-image {
+    width: 100%;
+    height: auto;
+    border-bottom: 0.0625em solid #eee;
+    object-fit: cover;
+  }
+
+  /* Consistent title styling */
+  .card-title {
+    font-size: 1.5em;
+    margin: 0.9375em 0;
+    color: #333;
+    padding-left: 0;
+  }
+
+  /* Fix content spacing */
+  .card-about {
+    font-size: 1.2em;
+    margin: 0.9375em 0;
+    font-weight: 400;
+    color: #777;
+    padding-left: 0;
+  }
+
+  /* Consistent text styling */
+  .card-text1,
+  .card-text2,
+  .card-text3,
+  .card-text4 {
+    color: #555;
+    margin: 0.625em 0;
+    padding-left: 0;
+  }
+
+  /* Fix list styling */
+  .card-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.9375em 0;
+  }
+
+  .card-list li {
+    margin: 0.3125em 0;
+    padding: 0.3125em 0.625em;
+    background-color: var(--card-hover-bg-color);
+    border-radius: 0.3125em;
+    color: #555;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Fix contact section spacing */
+  .contact-section {
+    padding: 0.9375em 0;
+    border-top: 0.0625em solid #eee;
+    margin-top: auto;
+  }
+
+  .contact-title {
+    font-size: 1.2em;
+    margin-bottom: 0.625em;
+    color: #333;
+    padding-left: 0;
+  }
+
+  .contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    margin: 0.3125em 0;
+    color: #555;
+  }
+
+  .contact-item a,
+  .contact-item span {
+    margin-left: 0;
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  /* Centrera card container */
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+    justify-content: center;
+    padding: 2em;
+    width: 100%;
+    max-width: 75em;
+    margin: 0 auto;
+  }
+
+
+  .contact-section a, span
+  {
+    font-size: 0.8em;
+  }
+
+  .contact-title {
+    font-size: 1.2em;
+
+    margin-bottom: 0.625em; /* 10px to em */
+    color: #333;
+  }
+
+  .contact-list {
+    list-style: none;
+    margin-left: -20px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    margin: 0.3125em 0; /* 5px to em */
+    color: #555;
+  }
+
+  .contact-item a {
+    margin-left: -1em; /* 5px to em */
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .contact-item span {
+    margin-left: -1em; /* 5px to em */
+    text-decoration: none;
+  }
+
+  .contact-item a:hover {
+    text-decoration: underline;
+  }
+  /* ==========================================================================
+     Contact Section
+     ========================================================================== */
+  .kontakt-container {
+    margin: 0.625em auto; /* Ändrat till auto för horisontell centrering */
+    padding: 1.875em;
+    max-width: 30em;
+    background-color: #fff;
+    border-radius: 0.625em;
+    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    justify-content: space-between;
+    align-items: center; /* Centrerar innehåll horisontellt */
+    text-align: center; /* Centrerar text */
+  }
+
+
+  .kontakt-container:hover {
+    transform: translateY(-0.3125em); /* 5px to em */
+    box-shadow: var(--card-hover-shadow);
+  }
+
+  .kontakt-container h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+
+  .kontakt-container p {
+    font-size: 1.5rem;
+    line-height: 1; /* Använd en normal, läsbar radavstånd */
+    color: var(--text-color);
+    margin-bottom: 2rem;
+  }
+
+  .kontakt-container p strong {
+    font-weight: 400;
+  }
+
+
+
+  .kontakt-box {
+    padding: 1rem 0.5rem 2rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 0.0625em solid rgba(0, 0, 0, 0.05);
+    border-radius: 0.9375em;
+    box-shadow: 0 0.25em 0.375em rgba(0, 0, 0, 0.05);
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    /* Nya egenskaper för att hantera textflöde */
+    word-wrap: break-word; /* Bryter långa ord */
+    overflow-wrap: break-word; /* Alternativ syntax för vissa webbläsare */
+    hyphens: auto; /* Lägger till avstavning om möjligt */
+  }
+
+  .kontakt-box:hover {
+    background-color: white;
+    transform: translateY(-0.1875em); /* 3px to em */
+    box-shadow: 0 0.375em 0.75em rgba(0, 0, 0, 0.08); /* 6px 12px to em */
+  }
+
+  .kontakt-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  .kontakt-info i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+  }
+
+  .kontakt-box a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5em; /* 8px to em */
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .kontakt-box a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0.125em; /* 2px to em */
+    bottom: 0;
+    left: 50%;
+    background-color: var(--primary-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+
+  .kontakt-box a:hover {
+    text-decoration: none;
+    background-color: var(--hover-color);
+  }
+
+  .kontakt-box a:hover::after {
+    width: 80%;
+  }
+
+  /* Social Media Links (if needed) */
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .social-links a {
+    padding: 0.8rem;
+    border-radius: 50%;
+    background-color: var(--hover-color);
+    transition: all 0.3s ease;
+  }
+
+  .social-links a:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-0.1875em); /* 3px to em */
+  }
+  /* Vilka Vi Är Section */
+  /* Colors */
+  --primary-color: hsl(160, 29%, 66%); /* Changed to a lighter green */
+  --hover-color: hsl(0, 0%, 94%);
+
+  --text-color: hsl(0, 0%, 0%);
+  /* Card Colors */
+  --card-bg-color: #ffffff;
+  --card-hover-bg-color: #f9f9f9;
+
+  --card-border-color: rgba(0, 0, 0, 0.125);
+  /* Shadows */
+  --card-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1); /* 4px 8px to em */
+
+  --card-hover-shadow: 0 0.375em 0.75em rgba(0, 0, 0, 0.15); /* 6px 12px to em */
+  /* Z-index */
+  --navbar-z-index: 10;
+  --modal-z-index: 100;
+}
+
+  * {
+    font-family: "Jost", Helvetica, sans-serif;
+    max-width: 100%;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+
+  }
+
+/* ==========================================================================
+/* ==========================================================================
+/* ==========================================================================
+/* ==========================================================================
+   Base Styles
+   ==========================================================================
+==========================================================================
+==========================================================================
+========================================================================== */
+/* Grundläggande centrering för body */
+body {
+  background-color: hwb(161 27% 38% / 0.059);
+  font-weight: 300;
+  display: flex;
+  max-width: 100%;
+  overflow-x: hidden;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0; /* Ta bort padding här */
+}
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
+.kontakt-container p a {
+  font-size: 1.6rem;
+}
+
+/* ==========================================================================
+   Logo and Title Section
+   ========================================================================== */
+
+/* Centrera stor logga container */
+.stor-logga-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 75em;
+  margin: 0 auto;
+}
+
+.stor-logga img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+.titel h2 {
+  font-size: 3em;
+  font-weight: 300;
+  margin-top: -5em; /* 200px to em */
+}
+/* ==========================================================================
+   Content Layout
+   ========================================================================== */
+
+/* Uppdatera content-container */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 75em;
+  margin: 0 auto;
+  padding: 0 0.8em; /* Lägg till padding här istället */
+}
+/* Welcome Text Styles */
+
+.välkomst-text {
+  flex: 1;
+  font-size: 1.6rem;
+  max-width: 50em;
+  letter-spacing: 0.03rem;
+  font-weight: 300;
+  margin-top: 3.125em;
+  width: 100%;
+  padding: 0 0.8em;
+}
+
+.välkomst-text h2 {
+  font-weight: 300;
+  font-size: 3rem;
+  margin-left: -0.3em;
+  margin-bottom: -0.2em;
+}
+.välkomst-text h3 {
+  font-weight: 320;
+  font-size: 3rem;
+  margin-left: -0.7em;
+  margin-bottom: -0.2em;
+}
+
+.välkomst-text h4 {
+  margin-left: -0.3em;
+  font-weight: 300;
+  font-size: 2.5rem;
+  margin-left: -0.4em;
+  margin-bottom: -0.2em;
+}
+
+.välkomst-text p {
+    font-size: 1.6rem;
+    margin-top: 1.25em; /* 20px to em */
+    margin-bottom: 1.25em; /* 20px to em */
+}
+
+.välkomst-text strong {
+  font-weight: 400;
+}
+/* Services Section */
+
+.tjänster {
+  flex: 1;
+  font-size: 1.4rem;
+  letter-spacing: 0.03rem;
+  max-width: 50em; /* 800px to em */
+}
+
+.tjänster h3 {
+  font-weight: 320;
+  font-size: 2.8rem;
+  margin-left: -0.3em;
+}
+
+.tjänster h4 {
+  margin-left: -0.4em;
+  margin-bottom: -0.2em;
+  font-weight: 300;
+  font-size: 2.4rem;
+}s
+
+.tjänster strong {
+  font-weight: 400;
+}
+
+.vilka-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 50em; /* 800px to em */
+  margin: 3.125em auto; /* 50px to em */
+  font-size: 1.6rem;
+  letter-spacing: 0.03rem;
+  font-weight: 300;
+}
+
+.vilka-container h2 {
+  font-weight: 300;
+  font-size: 3rem;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Animation Classes
+   ========================================================================== */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(1.25em); /* 20px to em */
+  visibility: hidden;
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+}
+
+@media screen and (max-width: 1268px) {
+
+
+
+  .stor-logga img {
+    overflow: hidden;
+    max-width: 50em;
+    min-width: 1em;
+  }
+
+  .titel {
+    padding-top: 10em;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  * {
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+  }
+
+    .stor-logga img {
+      max-width: 100%;
+      min-width: 100%; /* Fullbredd på mindre skärmar */
+      margin-bottom: -10em;
+    }
+
+  .titel h2 {
+    font-size: 2em;
+    margin-top: -2em;
+  }
+
+  /* Centrera bilder i slider */
+  .index-bilder {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+    max-width: 100%;
+    gap: 0.625em;
+    padding: 0 0.8em;
+    margin: 0 auto;
+  }
+
+  .index-bilder img {
+    max-width: 95%;
+    margin-bottom: 1em;
+  }
+
+  .kontakt-box {
+    padding: 1em;
+    width: 100%; /* Ensure consistent width */
+    box-sizing: border-box; /* Include padding in width calculation */
+  }
+
+  .kontakt-container h2 {
+    margin-bottom: 2em;
+  }
+
+  .kontakt-box p {
+  margin-bottom: 3em;
+  }
+
+
+  .content-container {
+    padding: 0 0.4em;
+  }
+
+  .card-container {
+    padding: 1em;
+  }
+
+  .kontakt-container {
+    padding: 1rem;
+    width: 95%;
+  }
+
+  .välkomst-text {
+    padding: 0 0.4em;
+  }
+}
+
+  .social-links {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .contact-section a, span {
+    padding-left: 1em;
+  }
+
+  .välkomst-text {
+    flex: 1;
+    font-size: 1.4rem;
+    letter-spacing: 0.03rem;
+    max-width: 50em; /* 800px to em */
+  }
+
+  .välkomst-text h3 {
+    font-weight: 300;
+    font-size: 2.8rem;
+  }
+
+  .välkomst-text h4 {
+    font-weight: 300;
+    font-size: 2.4rem;
+  }s
+
+   .välkomst-text strong {
+     font-weight: 400;
+   }
+
+  .card {
+  font-size: 0.8em
+  }
+
+.vilka-container h2 {
+  font-size: 1.6em;
+}
+
+@media screen and (max-width: 600px) {
+  /* Base adjustments */
+  * {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+  }
+
+  body {
+    font-size: 14px; /* Reduce base font size */
+  }
+
+
+  /* Logo and title adjustments */
+  .stor-logga img {
+    max-width: 90%;
+    margin-bottom: -8em;
+  }
+
+  .titel h2 {
+    font-size: 1.6em;
+    margin-top: -1.5em;
+  }
+
+  /* Welcome text adjustments */
+  .välkomst-text {
+    font-size: 1.2rem;
+    margin-top: 2em;
+    padding: 0 0.3em;
+  }
+
+  .välkomst-text h2 {
+    font-size: 2rem;
+    margin-left: -0.2em;
+  }
+
+  .välkomst-text h3 {
+    font-size: 1.8rem;
+    margin-left: -0.2em;
+  }
+
+  .välkomst-text h4 {
+    font-size: 1.6rem;
+    margin-left: -0.2em;
+  }
+
+  /* Card adjustments */
+  .card {
+    margin: 0.4em;
+    padding: 1em;
+    min-height: 300px;
+    font-size: 0.9em;
+  }
+
+  .card-container {
+    padding: 0.5em;
+    gap: 1em;
+  }
+
+  .card-title {
+    font-size: 1.3em;
+    margin: 0.6em 0;
+  }
+
+  .card-about {
+    font-size: 1.1em;
+    margin: 0.6em 0;
+  }
+
+  /* Contact section adjustments */
+  .kontakt-container {
+    padding: 0.2em;
+    width: 70%;
+    min-height: 300px;
+    margin: 0.5em auto;
+  }
+
+  .kontakt-container h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5em;
+  }
+
+  .kontakt-container p {
+    font-size: 0.7rem;
+  }
+
+  .kontakt-box {
+    padding: 0.8em;
+    width: 90%;
+    gap: 0.4em;
+  }
+
+  .kontakt-info {
+    gap: 0.5em;
+    padding: 0.5em;
+  }
+
+  .kontakt-box a {
+    font-size: 1rem;
+    padding: 0.4em 0.8em;
+  }
+
+  /* Services section adjustments */
+  .tjänster {
+    font-size: 1.2rem;
+  }
+
+  .tjänster h3 {
+    font-size: 2rem;
+    margin-left: -0.2em;
+  }
+
+  .tjänster h4 {
+    font-size: 1.8rem;
+    margin-left: -0.2em;
+  }
+
+  /* Image slider adjustments */
+  .index-bilder {
+    gap: 0.4em;
+    padding: 0 0.4em;
+  }
+
+  .index-bilder img {
+    max-width: 90%;
+    margin-bottom: 0.8em;
+  }
+
+  /* Vilka container adjustments */
+  .vilka-container {
+    margin: 2em auto;
+    font-size: 1.2rem;
+  }
+
+  .vilka-container h2 {
+    font-size: 1.4em;
+  }
+
+  /* Content container adjustments */
+  .content-container {
+    padding: 0 0.3em;
+  }
+
+  /* Contact section specifics */
+  .contact-section a,
+  .contact-section span {
+    font-size: 0.9em;
+    padding-left: 0.8em;
+  }
+
+  .contact-item {
+    margin: 0.2em 0;
+  }
+
+  /* Social links adjustments */
+  .social-links {
+    gap: 0.4rem;
+    margin-top: 1.5rem;
+  }
+
+  .social-links a {
+    padding: 0.6rem;
+  }
+
