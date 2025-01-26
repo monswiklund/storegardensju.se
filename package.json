@@ -2,8 +2,8 @@
   "name": "storegardensju.se",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://storegardensju.se",
   "type": "module",
+  "homepage": "https://storegardensju.se",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
