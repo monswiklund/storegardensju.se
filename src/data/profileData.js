@@ -25,7 +25,6 @@ export const profiles = {
             "Konstprojekt"
         ],
         imageSrc: "/images/ann-profile.jpg",
-        imageAlt: "Ann Wiklund - Konstnär & Keramiker"
     },
 
     carl: {
@@ -51,7 +50,6 @@ export const profiles = {
             "Ljud och musik: Skapa spellistor anpassade för din atmosfär"
         ],
         imageSrc: "/images/carl-profile.jpg",
-        imageAlt: "Carl Wiklund - Restaurangkonsult"
     },
 
     lina: {
@@ -67,7 +65,6 @@ export const profiles = {
             "Digital Illustration",
         ],
         imageSrc: "/images/lina-profile.jpg",
-        imageAlt: "Lina Wiklund - Digital Designer"
     },
     mans: {
         title: "Måns Wiklund",
@@ -88,8 +85,16 @@ export const profiles = {
         ],
         listItems: [
             "C# och .NET Core",
+            "Azure-molntjänster",
+            "Serverless Functions",
+            "Containerteknologier (Docker)",
+            "CI/CD-pipelines",
+            "API-utveckling med ASP.NET",
+            "Databashantering (SQL och NoSQL)",
+            "DevOps-metodik",
+            "JavaScript och React",
+            "Versionskontroll med Git"
         ],
         imageSrc: "/images/mans-profile.jpg",
-        imageAlt: "Måns Wiklund - Cloud Developer Student"
     }
 };

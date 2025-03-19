@@ -6,29 +6,251 @@
   /* ==========================================================================
      Image Slider
      ========================================================================== */
-  .index-bilder {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-    overflow-x: auto;
-    max-width: 100%;
-    gap: 0.625em; /* 10px to em */
+  /* Galleri och lightbox styling med förbättrade pilar */
+  .gallery-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 15px;
   }
 
-  .index-bilder img {
-    max-width: 18.75em; /* 300px to em */
-    height: auto;
-    border-radius: 0.625em; /* 10px to em */
-    margin: 0;
-    flex: 0 0 auto;
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s ease-out;
+  }
+
+  .gallery-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .gallery-item:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(131, 183, 165, 0.2);
+  }
+
+  .gallery-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(131, 183, 165, 0.05), rgba(131, 183, 165, 0.2));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 1;
+    border-radius: 16px;
+  }
+
+  .gallery-item:hover .gallery-image-overlay {
+    opacity: 1;
+  }
+
+  .gallery-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.6s ease, filter 0.6s ease;
+    filter: brightness(1);
+  }
+
+  .gallery-item:hover .gallery-image {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(10, 10, 10, 0.85), rgba(0, 0, 0, 0.95));
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Ny container för innehåll och pilar */
+  .lightbox-content-container {
+    position: relative;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    max-width: 1200px;
+    animation: scaleIn 0.4s ease-out;
+  }
+
+  .lightbox-content {
+    position: relative;
+    max-width: 100%;
+    max-height: 85vh;
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .lightbox-image {
+    display: block;
+    max-width: 100%;
+    max-height: 85vh;
+    margin: 0 auto;
+    border-radius: 20px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
     transition: transform 0.3s ease;
   }
 
-  .index-bilder img:hover {
+  .image-counter {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    background: rgba(131, 183, 165, 0.7);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    backdrop-filter: blur(4px);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    font-size: 28px;
+    color: white;
+    background: rgba(131, 183, 165, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+  }
+
+  .lightbox-close:hover {
+    background: rgba(131, 183, 165, 0.4);
+    transform: rotate(90deg);
+  }
+
+  /* Uppdaterade pilar */
+  .lightbox-arrow {
+    position: relative; /* Ändrad från absolute för att placeras inuti flex-container */
+    z-index: 1002;
+    font-size: 30px; /* Större font-storlek */
+    font-weight: bold; /* Fetare text */
+    color: white;
+    background: rgba(131, 183, 165, 0.6); /* Mer opak bakgrund */
+    border: 2px solid rgba(255, 255, 255, 0.4); /* Tydligare border */
+    width: 60px; /* Större bredd */
+    height: 60px; /* Större höjd */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+    margin: 0 15px; /* Lägg till margin för att skapa avstånd från bilden */
+  }
+
+  .lightbox-arrow:hover {
+    background: rgba(131, 183, 165, 0.8);
     transform: scale(1.1);
-    transition-duration: 0.35s; /* 350ms to s */
+  }
+
+  .lightbox-prev {
+    margin-right: 10px;
+  }
+
+  .lightbox-next {
+    margin-left: 10px;
+  }
+
+  /* Responsiv anpassning */
+  @media (max-width: 768px) {
+    .gallery-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .gallery-image {
+      height: 150px;
+    }
+
+    .lightbox-arrow {
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+    }
+
+    .lightbox-content-container {
+      width: 95%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .gallery-grid {
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .gallery-image {
+      height: 130px;
+    }
+
+    .lightbox-arrow {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      margin: 0 5px;
+    }
+
+    .lightbox-close {
+      width: 35px;
+      height: 35px;
+      font-size: 24px;
+    }
   }
 
   /* Add this CSS to your stylesheet */
@@ -45,89 +267,85 @@
     font-weight: 300;
   }
 
-  /* Uppdatera card för bättre centrering */
   .card {
-    margin: 0.625em;
-    padding: 1.875em;
-    max-width: 30em;
+    margin: 16px;
+    padding: 24px;
+    max-width: 320px; /* Omvandlat från 20em */
     background-color: #fff;
-    border-radius: 0.625em;
-    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
-    min-height: 400px;
+    min-height: 400px; /* Normaliserad höjd */
     justify-content: space-between;
   }
 
-  /* Ensure consistent hover effects */
   .card:hover {
-    transform: translateY(-0.625em);
-    box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   }
 
-  /* Fix card image sizing */
   .card-image {
     width: 100%;
     height: auto;
-    border-bottom: 0.0625em solid #eee;
+    border-bottom: 1px solid #eee;
     object-fit: cover;
   }
 
-  /* Consistent title styling */
-  .card-title {
-    font-size: 1.5em;
-    margin: 0.9375em 0;
-    color: #333;
+  .card-name-title {
+    font-size: 19px; /* Konverterat från 1.2em */
+    margin: 12px 0;
+    color: #0;
     padding-left: 0;
+    text-align: left;
   }
 
-  /* Fix content spacing */
   .card-about {
-    font-size: 1.2em;
-    margin: 0.9375em 0;
+    font-size: 16px; /* Konverterat från 1em */
+    margin: 12px 0;
     font-weight: 400;
     color: #777;
     padding-left: 0;
   }
 
-  /* Consistent text styling */
-  .card-text1,
-  .card-text2,
-  .card-text3,
-  .card-text4 {
+  .card-text-1,
+  .card-text-2,
+  .card-text-3,
+  .card-text-4 ,
+  .card-text-5{
     color: #555;
-    margin: 0.625em 0;
+    margin: 8px 0;
     padding-left: 0;
+    font-size: 14px;
   }
 
-  /* Fix list styling */
   .card-list {
     list-style: none;
     padding: 0;
-    margin: 0.9375em 0;
+    margin: 12px 0;
   }
 
   .card-list li {
-    margin: 0.3125em 0;
-    padding: 0.3125em 0.625em;
+    margin: 4px 0;
+    padding: 4px 8px;
     background-color: var(--card-hover-bg-color);
-    border-radius: 0.3125em;
+    border-radius: 4px;
     color: #555;
     transition: background-color 0.3s ease;
+    font-size: 14px; /* Konverterat från 0.9em */
   }
 
-  /* Fix contact section spacing */
   .contact-section {
-    padding: 0.9375em 0;
-    border-top: 0.0625em solid #eee;
+    padding: 12px 0;
+    border-top: 1px solid #eee;
     margin-top: auto;
   }
 
   .contact-title {
-    font-size: 1.2em;
-    margin-bottom: 0.625em;
+    font-size: 18px; /* Konverterat från 1em */
+    margin-bottom: 8px;
     color: #333;
     padding-left: 0;
   }
@@ -141,8 +359,9 @@
   .contact-item {
     display: flex;
     align-items: center;
-    margin: 0.3125em 0;
+    margin: 4px 0;
     color: #555;
+    font-size: 16px; /* Konverterat från 0.85em */
   }
 
   .contact-item a,
@@ -152,15 +371,14 @@
     text-decoration: none;
   }
 
-  /* Centrera card container */
   .card-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 2em;
+    gap: 24px;
     justify-content: center;
-    padding: 2em;
+    padding: 24px;
     width: 100%;
-    max-width: 75em;
+    max-width: 960px; /* Konverterat från 60em */
     margin: 0 auto;
   }
 
@@ -170,12 +388,6 @@
     font-size: 0.8em;
   }
 
-  .contact-title {
-    font-size: 1.2em;
-
-    margin-bottom: 0.625em; /* 10px to em */
-    color: #333;
-  }
 
   .contact-list {
     list-style: none;
@@ -208,91 +420,84 @@
      ========================================================================== */
 
   .kontakt-container {
-    margin: 0.625em auto; /* Ändrat till auto för horisontell centrering */
-    padding: 1.875em;
-    max-width: 30em;
-    background-color: #fff;
-    border-radius: 0.625em;
-    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+    margin: 10px auto;
+    padding: 20px; /* Konsekvent padding på alla sidor */
+    max-width: 400px;
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
-    min-height: 400px;
+    min-height: 280px;
     justify-content: space-between;
-    align-items: center; /* Centrerar innehåll horisontellt */
-    text-align: center; /* Centrerar text */
+    align-items: center;
+    text-align: center;
   }
 
-
-  .kontakt-container:hover {
-    transform: translateY(-0.3125em); /* 5px to em */
-    box-shadow: var(--card-hover-shadow);
-  }
 
   .kontakt-container h2 {
-    font-size: 2.5rem;
+    font-size: 24px;
     font-weight: 300;
-    margin-bottom: 1rem;
-    color: var(--text-color);
+    margin: 10px 0; /* Symmetrisk margin top och bottom */
+    color: #000;
   }
 
   .kontakt-container p {
-    font-size: 1.5rem;
-    line-height: 1; /* Använd en normal, läsbar radavstånd */
-    color: var(--text-color);
-    margin-bottom: 2rem;
+    font-size: 14px;
+    line-height: 1.3;
+    color: #000;
+    margin: 10px 0; /* Symmetrisk margin top och bottom */
   }
 
   .kontakt-container p strong {
     font-weight: 400;
   }
 
+
   .kontakt-box {
-    padding: 1rem 0.5rem 2rem;
+    padding: 15px; /* Symmetrisk padding på alla sidor */
     background-color: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
-    border: 0.0625em solid rgba(0, 0, 0, 0.05);
-    border-radius: 0.9375em;
-    box-shadow: 0 0.25em 0.375em rgba(0, 0, 0, 0.05);
-    margin-top: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin: 15px 0; /* Symmetrisk margin top och bottom */
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 10px;
+    width: 90%;
 
-    /* Nya egenskaper för att hantera textflöde */
-    word-wrap: break-word; /* Bryter långa ord */
-    overflow-wrap: break-word; /* Alternativ syntax för vissa webbläsare */
-    hyphens: auto; /* Lägger till avstavning om möjligt */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .kontakt-box:hover {
     background-color: white;
-    transform: translateY(-0.1875em); /* 3px to em */
-    box-shadow: 0 0.375em 0.75em rgba(0, 0, 0, 0.08); /* 6px 12px to em */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
   }
 
   .kontakt-info {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 10px;
+    padding: 10px; /* Konsekvent padding */
     transition: all 0.2s ease;
   }
 
   .kontakt-info i {
-    font-size: 1.5rem;
-    color: var(--primary-color);
+    font-size: 14px;
+    color: hsl(160, 29%, 66%);
   }
 
   .kontakt-box a {
-    color: var(--primary-color);
+    color: hsl(160, 29%, 66%);
     text-decoration: none;
-    font-size: 1.2rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5em; /* 8px to em */
+    font-size: 12px;
+    padding: 8px; /* Symmetrisk padding på alla sidor */
+    border-radius: 6px;
     transition: all 0.2s ease;
     position: relative;
   }
@@ -301,17 +506,17 @@
     content: '';
     position: absolute;
     width: 0;
-    height: 0.125em; /* 2px to em */
+    height: 1px;
     bottom: 0;
     left: 50%;
-    background-color: var(--primary-color);
+    background-color: hsl(160, 29%, 66%);
     transition: all 0.3s ease;
     transform: translateX(-50%);
   }
 
   .kontakt-box a:hover {
     text-decoration: none;
-    background-color: var(--hover-color);
+    background-color: hsl(0, 0%, 94%);
   }
 
   .kontakt-box a:hover::after {
@@ -401,7 +606,6 @@ body {
    Logo and Title Section
    ========================================================================== */
 
-/* Centrera stor logga container */
 .stor-logga-container {
   display: flex;
   flex-direction: column;
@@ -410,6 +614,7 @@ body {
   width: 100%;
   max-width: 75em;
   margin: 0 auto;
+  position: relative; /* Lägg till */
 }
 
 .stor-logga img {
@@ -420,10 +625,16 @@ body {
   margin: 0 auto;
 }
 
+.titel {
+  width: 100%;
+  position: relative; /* Lägg till */
+  margin-top: 20px; /* Lägg till istället för negativ margin */
+}
+
 .titel h2 {
-  font-size: 3em;
+  font-size: 30px; /* Minskad från 3em för bättre responsivitet */
   font-weight: 300;
-  margin-top: -5em; /* 200px to em */
+  margin-top: 0; /* Ta bort negativ margin */
 }
 /* ==========================================================================
    Content Layout
@@ -496,9 +707,11 @@ body {
 .vilka-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;  /* Lägger till detta för att centrera barnelement horisontellt */
   width: 100%;
   max-width: 800px;
-  margin: 2rem auto; /* Centrerar elementet horisontellt */
+  margin: 2rem auto;
   font-size: 1rem;
   font-weight: 300;
   padding: 0;
@@ -510,7 +723,7 @@ body {
   margin: 0 0 1rem 0;
   padding: 0;
   width: 100%;
-  text-align: left; /* Behåller vänsterjusterad text */
+  text-align: center; /* Ändrar till centrerad text */
 }
 
 /* ==========================================================================
@@ -527,4 +740,15 @@ body {
   opacity: 1;
   transform: none;
   visibility: visible;
+}
+
+/* Lägg till en media query för större skärmar */
+@media (min-width: 768px) {
+  .titel {
+    margin-top: -150px; /* På större skärmar kan vi överlappa */
+  }
+
+  .titel h2 {
+    font-size: 3em; /* Återställ större font på större skärmar */
+  }
 }

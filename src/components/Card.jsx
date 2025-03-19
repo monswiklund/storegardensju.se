@@ -22,7 +22,7 @@ const Card = ({
                 />
             )}
 
-            {title && <h2 className="card-title">{title}</h2>}
+            {title && <h2 className="card-name-title">{title}</h2>}
             {about && <h3 className="card-about">{about}</h3>}
 
             {texts.map((text, index) => (
