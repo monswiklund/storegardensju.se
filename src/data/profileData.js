@@ -59,10 +59,14 @@ export const profiles = {
             email: "info@storegardensju.se",
         },
         texts: [
-            "Skapar digitala upplevelser som kombinerar form och funktion på ett innovativt sätt."
+            "Event planering, kundservice och kundkontakt, fotograf, styling och dekoration"
         ],
         listItems: [
             "Digital Illustration",
+            "Event planering",
+            "Kundservice och kundkontakt",
+            "Fotografi",
+            "Styling och dekoration"
         ],
         imageSrc: "/images/lina-profile.jpg",
     },

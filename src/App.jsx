@@ -10,17 +10,20 @@ import ImageSlider from "./components/ImageSlider.jsx";
 import Kontakt from "./components/kontakt.jsx";
 import { profiles } from './data/profileData.js';
 import FadeInSection from "./components/FadeInSection.jsx";
+import ExpandableImageGallery from "./components/ExpandableImageGallery.jsx";
+import ScrollToTopButton from "./components/ScrollToTopButton.jsx";
 
 function App() {
     return (
         <>
             <FadeInSection>
             <VälkomstBild/>
-            <ImageSlider/>
+                <ExpandableImageGallery/>
             <VälkomstText/>
             <Kontakt/>
             <Vilka/>
             </FadeInSection>
+            <ScrollToTopButton/>
         </>
     );
 }

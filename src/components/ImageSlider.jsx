@@ -1,88 +1,117 @@
-// Uppdaterad ImageSlider.jsx med tydligare pilar
-import React, { useState } from "react";
-import slide1 from "../assets/slide1.jpg";
-import slide2 from "../assets/slide2.jpg";
-import slide3 from "../assets/slide3.jpg";
-import slide4 from "../assets/slide4.jpg";
-import slide5 from "../assets/slide5.jpg";
+import React, { useState, useEffect } from 'react';
 
 function ImageSlider() {
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [activeImage, setActiveImage] = useState(0);
+    const [images, setImages] = useState([]);
 
-    const images = [
-        { src: slide1, alt: "Bild 1" },
-        { src: slide2, alt: "Bild 2" },
-        { src: slide3, alt: "Bild 3" },
-        { src: slide4, alt: "Bild 4" },
-        { src: slide5, alt: "Bild 5" }
-    ];
+    useEffect(() => {
+        // Dynamiskt importera alla bilder från slides-mappen
+        const importAllImages = async () => {
+            try {
+                // För Vite - importera alla bilder från slides-mappen
+                const imageContext = import.meta.glob('/src/assets/slides/*.jpg');
+
+                // För absolut sökväg till projektmappen, inte filsystemets sökväg
+                // Detta kommer att använda den relativa sökvägen i byggprocessen
+
+                const loadedImages = [];
+
+                // Ladda varje bild
+                const promises = Object.entries(imageContext).map(async ([path, importFunc]) => {
+                    const imported = await importFunc();
+                    // Extrahera filnamnet från sökvägen
+                    const filename = path.split('/').pop();
+                    // Extrahera numret om det finns, annars använd indexet
+                    const match = filename.match(/slide(\d+)\.jpg$/i);
+                    const index = match ? parseInt(match[1]) : path;
+
+                    return { path, index, module: imported };
+                });
+
+                // Vänta på att alla bilder laddas
+                const results = await Promise.all(promises);
+
+                // Sortera efter index och skapa bildarray
+                results.sort((a, b) => {
+                    // Sortera numeriskt om båda har nummer
+                    if (typeof a.index === 'number' && typeof b.index === 'number') {
+                        return a.index - b.index;
+                    }
+                    // Alfabetisk sortering som fallback
+                    return a.path.localeCompare(b.path);
+                });
+
+                const sortedImages = results.map((result, i) => ({
+                    src: result.module.default,
+                    alt: `Bild ${i + 1}`,
+                    // Lägg till filnamn för debugging
+                    filename: result.path.split('/').pop()
+                }));
+
+                setImages(sortedImages);
+                console.log('Laddade bilder:', sortedImages);
+            } catch (error) {
+                console.error('Fel vid laddning av bilder:', error);
+                console.error('Detaljerad information:', error.stack);
+            }
+        };
+
+        importAllImages();
+    }, []);
 
     const openLightbox = (index) => {
         setActiveImage(index);
         setLightboxOpen(true);
-        document.body.style.overflow = 'hidden'; // Hindra scrollning när lightbox är öppen
     };
 
     const closeLightbox = () => {
         setLightboxOpen(false);
-        document.body.style.overflow = 'auto'; // Återaktivera scrollning
     };
 
-    const goPrev = (e) => {
-        e.stopPropagation(); // Förhindra att klick på pilen stänger lightbox
-        setActiveImage((prev) =>
-            prev === 0 ? images.length - 1 : prev - 1
-        );
+    const navigateNext = () => {
+        setActiveImage((prev) => (prev + 1) % images.length);
     };
 
-    const goNext = (e) => {
-        e.stopPropagation(); // Förhindra att klick på pilen stänger lightbox
-        setActiveImage((prev) =>
-            prev === images.length - 1 ? 0 : prev + 1
-        );
+    const navigatePrev = () => {
+        setActiveImage((prev) => (prev - 1 + images.length) % images.length);
     };
+
+    // Om inga bilder har laddats än
+    if (images.length === 0) {
+        return <div>Laddar bilder...</div>;
+    }
 
     return (
-        <>
-            <div className="gallery-container">
-                <div className="gallery-grid">
-                    {images.map((image, index) => (
-                        <div
-                            key={index}
-                            className="gallery-item"
-                            onClick={() => openLightbox(index)}
-                        >
-                            <img
-                                src={image.src}
-                                alt={image.alt}
-                                className="gallery-image"
-                            />
-                            <div className="gallery-image-overlay"></div>
-                        </div>
-                    ))}
-                </div>
+        <div className="image-slider">
+            {/* Visa miniatyrbilder */}
+            <div className="thumbnails">
+                {images.map((image, index) => (
+                    <img
+                        key={index}
+                        src={image.src}
+                        alt={image.alt}
+                        onClick={() => openLightbox(index)}
+                        className="thumbnail"
+                    />
+                ))}
             </div>
 
+            {/* Lightbox */}
             {lightboxOpen && (
                 <div className="lightbox">
-                    <div className="lightbox-overlay" onClick={closeLightbox}></div>
-                    <button className="lightbox-close" onClick={closeLightbox}>&times;</button>
-                    <div className="lightbox-content-container">
-                        <button className="lightbox-arrow lightbox-prev" onClick={goPrev}>&lt;</button>
-                        <div className="lightbox-content">
-                            <img
-                                src={images[activeImage].src}
-                                alt={images[activeImage].alt}
-                                className="lightbox-image"
-                            />
-                            <div className="image-counter">{activeImage + 1} / {images.length}</div>
-                        </div>
-                        <button className="lightbox-arrow lightbox-next" onClick={goNext}>&gt;</button>
+                    <button className="close-button" onClick={closeLightbox}>×</button>
+                    <button className="nav-button prev" onClick={navigatePrev}>‹</button>
+                    <div className="lightbox-content">
+                        <img
+                            src={images[activeImage].src}
+                            alt={images[activeImage].alt}
+                        />
                     </div>
+                    <button className="nav-button next" onClick={navigateNext}>›</button>
                 </div>
             )}
-        </>
+        </div>
     );
 }
 
