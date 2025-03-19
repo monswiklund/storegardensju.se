@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/storegardensju.se/',
+  base: '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
