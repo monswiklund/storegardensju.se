@@ -3,32 +3,46 @@ import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 
 function ExpandableImageGallery() {
-    // State för att hålla reda på om galleriet är expanderat
+    // State for tracking if gallery is expanded
     const [isExpanded, setIsExpanded] = useState(false);
-    // State för lightbox
+    // State for lightbox
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [activeImage, setActiveImage] = useState(0);
-    // State för att visa laddningsstatus
+    // State for showing loading status
     const [initialImagesLoaded, setInitialImagesLoaded] = useState(false);
 
-    // Alla bildfilnamn (utan dynamisk import)
+    // All image filenames (without dynamic import)
     const imageFilenames = Array.from({ length: 24 }, (_, i) => `slide${i + 1}.jpg`);
 
-    // Generera bilddata för synliga och dolda bilder
-    const allImages = imageFilenames.map((filename, index) => ({
-        src: `/src/assets/slides/${filename}`,
-        alt: `Bild ${index + 1}`,
-        index: index + 1,
-        filename
-    }));
+    // Helper function to assign subtle size variations
+    const assignImageSize = (index) => {
+        // Simple pattern with just three size variations
+        if (index % 5 === 0) {
+            return "large";
+        } else if (index % 3 === 0) {
+            return "medium";
+        } else {
+            return "small";
+        }
+    };
 
-    // Separera synliga och dolda bilder
-    const visibleImages = allImages.slice(0, 3);
-    const expandedImages = allImages.slice(3);
+    // Generate image data with subtle size variations
+    const allImages = imageFilenames.map((filename, index) => {
+        return {
+            src: `/images/slides/${filename}`,
+            alt: `Bild ${index + 1}`,
+            index: index + 1,
+            filename,
+            sizeClass: assignImageSize(index)
+        };
+    });
 
-    // Funktion för att ladda de initiala bilderna
+    // Separate visible and hidden images
+    const visibleImages = allImages.slice(0, 6);
+    const expandedImages = allImages.slice(4);
+
+    // Function to load initial images
     useEffect(() => {
-        // Förladda de första synliga bilderna
         const preloadInitialImages = () => {
             const imagePromises = visibleImages.map(image => {
                 return new Promise((resolve, reject) => {
@@ -42,48 +56,47 @@ function ExpandableImageGallery() {
             Promise.all(imagePromises)
                 .then(() => setInitialImagesLoaded(true))
                 .catch(error => {
-                    console.error('Fel vid laddning av initiala bilder:', error);
-                    setInitialImagesLoaded(true); // Fortsätt ändå för att visa UI
+                    console.error('Error loading initial images:', error);
+                    setInitialImagesLoaded(true);
                 });
         };
 
         preloadInitialImages();
     }, []);
 
-    // Funktion för att växla expanderat läge
+    // Function to toggle expanded mode
     const toggleExpand = () => {
         setIsExpanded(!isExpanded);
     };
 
-    // Funktioner för lightbox
+    // Lightbox functions
     const openLightbox = (index, isFromExpanded = false) => {
-        // Om bilden kommer från den expanderade delen, justera index
-        const adjustedIndex = isFromExpanded ? index + visibleImages.length : index;
+        const adjustedIndex = isFromExpanded ? index + visibleImages.length - 2 : index;
         setActiveImage(adjustedIndex);
         setLightboxOpen(true);
-        document.body.style.overflow = 'hidden'; // Hindra scrollning när lightbox är öppen
+        document.body.style.overflow = 'hidden';
     };
 
     const closeLightbox = () => {
         setLightboxOpen(false);
-        document.body.style.overflow = 'auto'; // Återaktivera scrollning
+        document.body.style.overflow = 'auto';
     };
 
     const goPrev = (e) => {
-        e.stopPropagation(); // Förhindra att klick på pilen stänger lightbox
+        e.stopPropagation();
         setActiveImage((prev) =>
             prev === 0 ? allImages.length - 1 : prev - 1
         );
     };
 
     const goNext = (e) => {
-        e.stopPropagation(); // Förhindra att klick på pilen stänger lightbox
+        e.stopPropagation();
         setActiveImage((prev) =>
             prev === allImages.length - 1 ? 0 : prev + 1
         );
     };
 
-    // Visa en laddningsindikator medan de första bilderna laddas
+    // Show loading indicator while images are loading
     if (!initialImagesLoaded) {
         return (
             <div className="loading-container" style={{ textAlign: 'center', padding: '20px' }}>
@@ -94,27 +107,27 @@ function ExpandableImageGallery() {
     }
 
     return (
-        <div className="expandable-gallery-container">
-            {/* Första sektionen med synliga bilder */}
-            <div className="gallery-grid visible-gallery">
+        <div className="gallery-container">
+            {/* First section with visible images */}
+            <div className="gallery-grid">
                 {visibleImages.map((image, index) => (
                     <div
                         key={`visible-${index}`}
-                        className="gallery-item"
+                        className={`gallery-item ${image.sizeClass}`}
                         onClick={() => openLightbox(index)}
                     >
                         <img
                             src={image.src}
                             alt={image.alt}
                             className="gallery-image"
-                            loading="eager" // Ladda dessa bilder först
+                            loading="eager"
                         />
                         <div className="gallery-image-overlay"></div>
                     </div>
                 ))}
             </div>
 
-            {/* Visa knapp för att expandera endast om det finns fler bilder */}
+            {/* Show button to expand only if there are more images */}
             {expandedImages.length > 0 && (
                 <button
                     className="expand-button"
@@ -133,22 +146,22 @@ function ExpandableImageGallery() {
                 </button>
             )}
 
-            {/* Expanderad sektion med resterande bilder */}
+            {/* Expanded section with remaining images */}
             <div className={`expandable-section ${isExpanded ? 'expanded' : ''}`}>
                 {isExpanded && (
                     <>
-                        <div className="gallery-grid expanded-gallery">
+                        <div className="gallery-grid">
                             {expandedImages.map((image, index) => (
                                 <div
                                     key={`expanded-${index}`}
-                                    className="gallery-item"
+                                    className={`gallery-item ${image.sizeClass}`}
                                     onClick={() => openLightbox(index, true)}
                                 >
                                     <img
                                         src={image.src}
                                         alt={image.alt}
                                         className="gallery-image"
-                                        loading="lazy" // Använd lazy loading för bilder i expanderad sektion
+                                        loading="lazy"
                                     />
                                     <div className="gallery-image-overlay"></div>
                                 </div>
@@ -164,7 +177,7 @@ function ExpandableImageGallery() {
                 )}
             </div>
 
-            {/* Lightbox för att visa bilder i full storlek */}
+            {/* Lightbox for full-size images */}
             {lightboxOpen && (
                 <div className="lightbox">
                     <div className="lightbox-overlay" onClick={closeLightbox}></div>
@@ -186,31 +199,6 @@ function ExpandableImageGallery() {
             )}
         </div>
     );
-}
-
-// CSS för laddningsindikatorn
-const styles = `
-.loading-spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    border-top: 4px solid hsl(160, 29%, 66%);
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 10px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-`;
-
-// Lägg till styling
-if (typeof document !== 'undefined') {
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = styles;
-    document.head.appendChild(styleElement);
 }
 
 export default ExpandableImageGallery;

@@ -7,77 +7,102 @@
      Image Slider
      ========================================================================== */
   /* Galleri och lightbox styling med förbättrade pilar */
+  /* Masonry-layout med MINDRE BILDER */
+  /* Enkel galleri-layout med EXAKT LIKA mellanrum mellan alla bilder */
   .gallery-container {
     width: 100%;
     max-width: 800px;
     margin: 30px auto;
-    padding: 0 15px; /* Lägg till symmetrisk padding */
-    box-sizing: border-box; /* Säkerställer att padding inte påverkar total bredd */
-    display: flex; /* Använd flex för bättre centrering */
-    flex-direction: column;
-    align-items: center; /* Centrerar innehåll horisontellt */
+    padding: 15px;
+    box-sizing: border-box;
   }
 
+  /* Konsekvent grid med exakt lika stora gap överallt */
   .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1px;
-    width: 100%; /* Säkerställer full bredd */
+    grid-template-columns: repeat(2, 1fr); /* 2 kolumner som utgångsläge */
+    gap: 15px; /* Samma gap-värde både horisontellt och vertikalt */
+    width: 100%;
   }
+
+  /* Grundläggande styling av bilder */
 
   .gallery-item {
     position: relative;
     overflow: hidden;
-    cursor: pointer;
-    transition: all 0.4s ease-out;
-  }
-
-  .gallery-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 2;
+    border-radius: 8px;
+    aspect-ratio: 4/3; /* Modern approach för att bibehålla 4:3 format */
+    width: 100%;
+    transform: translateY(0); /* Garantera att bilderna startar utan förskjutning */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   .gallery-item:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(131, 183, 165, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
 
-  /* Om du har en overlay, se till att även den har border-radius */
-  .gallery-image-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
+  /* Bildjustering så alla fyller sin container */
+  .gallery-item img {
+    display: block; /* Eliminerar extra utrymme under bilden */
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(131, 183, 165, 0.05), rgba(131, 183, 165, 0.2));
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.4s ease, filter 0.4s ease;
+  }
+
+  .gallery-item img {
+    display: block; /* Eliminerar extra utrymme under bilden */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    transform: scale(1); /* Garantera att bilderna startar utan skalning */
+    filter: brightness(1); /* Standardljusstyrka */
+    transition: transform 0.4s ease, filter 0.4s ease;
+  }
+
+  .gallery-item:hover img {
+    transform: scale(1.03);
+    filter: brightness(1.05);
+  }
+
+  /* Overlay för hover-effekt */
+  .gallery-image-overlay {
+    position: absolute;
+    inset: 0; /* Ersätter top/left/right/bottom för mer symmetri */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.3s ease;
+    border-radius: 8px;
     z-index: 1;
-    border-radius: 10px; /* Se till att overlayens border-radius matchar */
   }
 
   .gallery-item:hover .gallery-image-overlay {
     opacity: 1;
   }
 
-  .gallery-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    transition: transform 0.6s ease, filter 0.6s ease;
-    filter: brightness(1);
-    border-radius: 8px; /* Lägg till samma border-radius här */
+  /* Responiv anpassning - behåller grid-layout genomgående */
+  @media (max-width: 900px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr); /* Konsekvent med huvudlayouten */
+      gap: 15px; /* Behåll samma gap */
+    }
   }
 
-  .gallery-item:hover .gallery-image {
-    transform: scale(1.05);
-    filter: brightness(1.1);
+  @media (max-width: 600px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr); /* Behåll 2 kolumner även på små skärmar */
+      gap: 15px; /* Något mindre gap på små skärmar för mer innehåll */
+    }
+  }
+
+  @media (max-width: 400px) {
+    .gallery-grid {
+      grid-template-columns: 1fr; /* En kolumn på mycket små skärmar */
+      gap: 15px; /* Behåll samma gap som vid 600px */
+    }
   }
 
   /* Lightbox */
@@ -216,7 +241,7 @@
   @media (max-width: 768px) {
     .gallery-grid {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
+      gap: 5px;
     }
 
     .gallery-image {
@@ -237,7 +262,7 @@
   @media (max-width: 480px) {
     .gallery-grid {
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 10px;
+      gap: 3px;
     }
 
     .gallery-image {
@@ -572,8 +597,6 @@
   * {
     font-family: "Jost", Helvetica, sans-serif;
     max-width: 100%;
-    padding-left: 0.2em;
-    padding-right: 0.2em;
 
   }
 
@@ -679,6 +702,9 @@ body {
   width: 100%;
   text-align: left; /* Behåller vänsterjusterad text */
   padding: 0;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+
 }
 
 .välkomst-text h2,
@@ -734,6 +760,9 @@ body {
   font-size: 1rem;
   font-weight: 300;
   padding: 0;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+
 }
 
 .vilka-container h2 {
@@ -783,6 +812,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height: 5000px; /* Ökad från standard 2000px */
+
 }
 
 /* Välj dina visningspreferenser */
@@ -791,11 +822,12 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 15px;
   width: 100%;
+
 }
 
 /* Knappstilar */
 .expand-button {
-  margin: 20px 0;
+  margin: 20px auto;
   padding: 10px 20px;
   background-color: hsl(160, 29%, 66%);
   color: white;
@@ -821,18 +853,20 @@ body {
   overflow: hidden;
   max-height: 0;
   width: 100%;
-  transition: max-height 0.5s ease, padding 0.5s ease;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
   opacity: 0;
   position: relative;
   padding: 0;
   border-radius: 15px;
+  display: grid;
+  grid-template-columns: 1fr; /* Säkerställer en kolumn i icke-expanderat läge */
 }
 
 .expandable-section.expanded {
-  max-height: 2000px; /* Tillräckligt stort värde för att rymma ditt innehåll */
+  max-height: 10000px; /* Enkeltvärde, ta bort dubbla max-height */
   opacity: 1;
-  padding: 20px;
   margin-bottom: 20px;
+  display: block; /* Alternativt: behåll display: grid men med samma kolumner som expanded-gallery */
 }
 
 /* Stäng-knapp i den expanderade sektionen */

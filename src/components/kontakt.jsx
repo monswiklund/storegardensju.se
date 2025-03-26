@@ -7,7 +7,7 @@ function Kontakt() {
             <div className="kontakt-box">
                 <p>Har du frågor? </p>
                 <p>Tveka inte att höra av dig till oss!</p>
-                <p><strong>E-post:</strong><a href="mailto:info@storegardensju.se" className="email-link">info@storegardensju.se</a></p>
+                <p><strong>E-post:</strong><a href="mailto:storegardensju@gmail.com" className="email-link">info@storegardensju.se</a></p>
                 <p>Eller skicka ett meddelande till våran Instagram:</p>
                 <p><a href="https://www.instagram.com/storegarden7/" target="_blank" rel="noopener noreferrer">@storegarden7</a></p>
             </div>
