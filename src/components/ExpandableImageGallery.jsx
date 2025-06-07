@@ -14,27 +14,32 @@ function ExpandableImageGallery() {
     // All image filenames (without dynamic import)
     const imageFilenames = Array.from({ length: 20 }, (_, i) => `slide${i + 1}.jpg`);
 
-    // Helper function for simple grid with small and medium (vertical) only
-    const assignImageSize = (index) => {
-        // Simple pattern with just small and medium (vertical)
-        const patterns = [
-            'small', 'medium', 'small', 'small', 'medium', 
-            'small', 'small', 'medium', 'small', 'medium',
-            'small', 'medium', 'small', 'small', 'small'
-        ];
-        return patterns[index % patterns.length] || 'small';
+    // Simple grid with small and medium only
+    const createGridLayout = (images) => {
+        return images.map((img, index) => {
+            // Simple algorithm: every 4th image is medium (2 columns wide)
+            const isMedium = (index + 1) % 4 === 0;
+            
+            return {
+                ...img,
+                gridSize: isMedium ? 'medium' : 'standard',
+                style: isMedium ? {
+                    gridColumn: 'span 2'
+                } : {}
+            };
+        });
     };
 
-    // Generate image data with subtle size variations
-    const allImages = imageFilenames.map((filename, index) => {
-        return {
-            src: `/images/slides/${filename}`,
-            alt: `Bild ${index + 1}`,
-            index: index + 1,
-            filename,
-            sizeClass: assignImageSize(index)
-        };
-    });
+    // Generate base image data
+    const baseImages = imageFilenames.map((filename, index) => ({
+        src: `/images/slides/${filename}`,
+        alt: `Bild ${index + 1}`,
+        index: index + 1,
+        filename
+    }));
+    
+    // Apply modern grid layout algorithm
+    const allImages = createGridLayout(baseImages);
 
     // Separate visible and hidden images
     const visibleImages = allImages.slice(0, 6);
@@ -112,7 +117,8 @@ function ExpandableImageGallery() {
                 {visibleImages.map((image, index) => (
                     <div
                         key={`visible-${index}`}
-                        className={`gallery-item ${image.sizeClass}`}
+                        className={`gallery-item gallery-item--${image.gridSize}`}
+                        style={image.style}
                         onClick={() => openLightbox(index)}
                     >
                         <img
@@ -153,7 +159,8 @@ function ExpandableImageGallery() {
                             {expandedImages.map((image, index) => (
                                 <div
                                     key={`expanded-${index}`}
-                                    className={`gallery-item ${image.sizeClass}`}
+                                    className={`gallery-item gallery-item--${image.gridSize}`}
+                                    style={image.style}
                                     onClick={() => openLightbox(index, true)}
                                 >
                                     <img

@@ -6,7 +6,7 @@ import VälkomstText from "./components/VälkomstText.jsx";
 import VälkomstBild from "./components/VälkomstBild.jsx";
 import Kontakt from "./components/Kontakt.jsx";
 import FadeInSection from "./components/FadeInSection.jsx";
-import ExpandableImageGallery from "./components/ExpandableImageGallery.jsx";
+import ImageGallery from "./components/ImageGallery.jsx";
 import ScrollToTopButton from "./components/ScrollToTopButton.jsx";
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
         <>
             <FadeInSection>
             <VälkomstBild/>
-                <ExpandableImageGallery/>
+                <ImageGallery/>
             <VälkomstText/>
             <Kontakt/>
             <Vilka/>
