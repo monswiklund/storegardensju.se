@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 function ImageSlider() {
     const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -14,8 +14,6 @@ function ImageSlider() {
 
                 // För absolut sökväg till projektmappen, inte filsystemets sökväg
                 // Detta kommer att använda den relativa sökvägen i byggprocessen
-
-                const loadedImages = [];
 
                 // Ladda varje bild
                 const promises = Object.entries(imageContext).map(async ([path, importFunc]) => {

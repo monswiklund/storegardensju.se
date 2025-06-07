@@ -1,7 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-import React from "react";
-
-
 function VälkomstText() {
   return (
     <div className="content-container">
@@ -16,30 +12,23 @@ function VälkomstText() {
             <p>
               Loppis har vi även emellanåt och det finns en gårdsbutik med konst, keramik och en atelje för inspiration.
             </p>
-          <br/>
-          <hr />
-            <h3>Varför välja oss?</h3>
-            <h4>Unik plats</h4>
-            <p>Vår ladugård är fylld med karaktär och charm, vilket ger dina evenemang en unik touch.</p>
-            <h4>Flexibilitet</h4>
-            <p>Vi är här för att hjälpa dig att skapa det perfekta evenemanget enligt dina önskemål och behov.</p>
-            <h4>Professionell service</h4>
-            <p>Vårt team av erfarna evenemangsplanerare och konstnärer finns här för att se till att din upplevelse är oförglömlig.</p>
-            <p>Kontakta oss idag för att boka din nästa speciella händelse eller kurs i vår fantastiska ladugård!</p>
-        </div>
-        <div className="tjänster">
-          <hr />
-          <h3>Vi Erbjuder</h3>
+          <div className="tjänster">
+            <hr />
+            <h3>Vi Erbjuder</h3>
             <h4>Evenemang</h4>
             <p>
-              Söker du den perfekta platsen för ditt bröllop eller
-              företagsevenemang? Vår ladugård erbjuder en rustik och romantisk
-              atmosfär som kommer att förtrolla dina gäster.
+              Möteslokal för kalas, mat och fest!
+            </p>
+            <p>
+              Gäster sittning: 4 - 140
+            </p>
+            <p>
+              Gäster mingel: 150+
+
             </p>
             <h4>Keramik- och Målarkurser</h4>
             <p>
-              För de kreativa själarna där ute är vår ladugård det ultimata
-              utrymmet att utforska konsten att skapa. Våra kurser leds av
+              Våra kurser leds av
               erfarna konstnärer och erbjuder en avslappnad och inspirerande
               miljö för att låta din kreativitet flöda.
             </p>
@@ -50,12 +39,24 @@ function VälkomstText() {
             </p>
             <h4>Utställningar</h4>
             <p>
-              Vi är stolta över att vara en plattform för lokala konstnärer och
-              hantverkare att visa upp sina verk. Kom och utforska våra
-              utställningar och låt dig inspireras av den lokala konstnärliga
-              talangen.
+              Vi erbjuder även utställningar i vår ladugård. Vill du ställa ut
+              din konst eller ha din egen loppis? Kontakta oss för mer information.
             </p>
+          </div>
+          <hr />
+            <h3>Varför välja oss till ditt evenemang?</h3>
+            <h4>Unik plats</h4>
+            <p>Där vi har tagit vara på det gamla, fina charmiga och enkelt rustat upp det.</p>
+            <h4>Flexibilitet</h4>
+            <p>Vi kan anpassa lokalen efter era behov och önskemål .</p>
+            <h4>Modern Teknik</h4>
+          <p>Ljud och ljus finns på plats som anpassas i storlek efter behov.</p>
+            <h4>Erfaren personal </h4>
+            <p>Vi hjälper dig med det ni önskar. Allt från planering, inköp, tillagning och slutförande. </p>
+            <h4>Praktiskt och Exklusivt läge</h4>
+            <p>Storegården 7 ligger bara 15 minuter utanför Lidkööpings centrum.</p>
         </div>
+
     </div>
   );
 }

@@ -17,12 +17,15 @@
     box-sizing: border-box;
   }
 
-  /* Konsekvent grid med exakt lika stora gap överallt */
+  /* Modern grid layout with consistent small gaps */
   .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 kolumner som utgångsläge */
-    gap: 15px; /* Samma gap-värde både horisontellt och vertikalt */
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(150px, auto);
+    gap: 8px;
     width: 100%;
+    align-items: stretch;
+    padding: 8px;
   }
 
   /* Grundläggande styling av bilder */
@@ -30,26 +33,40 @@
   .gallery-item {
     position: relative;
     overflow: hidden;
-    border-radius: 8px;
-    aspect-ratio: 4/3; /* Modern approach för att bibehålla 4:3 format */
+    border-radius: 3px;
     width: 100%;
-    transform: translateY(0); /* Garantera att bilderna startar utan förskjutning */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(0);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Simple size variations with proper heights */
+  .gallery-item.medium {
+    grid-column: span 1;
+    grid-row: span 2;
+    min-height: 300px;
+  }
+
+  .gallery-item.small {
+    grid-column: span 1;
+    grid-row: span 1;
+    min-height: 150px;
   }
 
   .gallery-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   }
 
   /* Bildjustering så alla fyller sin container */
   .gallery-item img {
-    display: block; /* Eliminerar extra utrymme under bilden */
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
-    transition: transform 0.4s ease, filter 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .gallery-item img {
@@ -64,17 +81,16 @@
   }
 
   .gallery-item:hover img {
-    transform: scale(1.03);
-    filter: brightness(1.05);
+    transform: scale(1.05);
   }
 
-  /* Overlay för hover-effekt */
+  /* Modern overlay effect */
   .gallery-image-overlay {
     position: absolute;
-    inset: 0; /* Ersätter top/left/right/bottom för mer symmetri */
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     border-radius: 8px;
     z-index: 1;
   }
@@ -83,25 +99,56 @@
     opacity: 1;
   }
 
-  /* Responiv anpassning - behåller grid-layout genomgående */
+  /* Responsive adaptations for uneven grid */
   @media (max-width: 900px) {
     .gallery-grid {
-      grid-template-columns: repeat(2, 1fr); /* Konsekvent med huvudlayouten */
-      gap: 15px; /* Behåll samma gap */
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: minmax(120px, auto);
+      gap: 8px;
+      padding: 8px;
+    }
+    
+    .gallery-item.medium {
+      min-height: 240px;
+    }
+    
+    .gallery-item.small {
+      min-height: 120px;
     }
   }
 
   @media (max-width: 600px) {
     .gallery-grid {
-      grid-template-columns: repeat(2, 1fr); /* Behåll 2 kolumner även på små skärmar */
-      gap: 15px; /* Något mindre gap på små skärmar för mer innehåll */
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: minmax(120px, auto);
+      gap: 8px;
+      padding: 8px;
+    }
+    
+    .gallery-item.medium {
+      grid-column: span 1;
+      grid-row: span 2;
+      min-height: 240px;
+    }
+    
+    .gallery-item.small {
+      min-height: 120px;
     }
   }
 
   @media (max-width: 400px) {
     .gallery-grid {
-      grid-template-columns: 1fr; /* En kolumn på mycket små skärmar */
-      gap: 15px; /* Behåll samma gap som vid 600px */
+      grid-template-columns: 1fr;
+      grid-auto-rows: minmax(180px, auto);
+      gap: 8px;
+      padding: 8px;
+    }
+    
+    .gallery-item.medium,
+    .gallery-item.small {
+      grid-column: span 1;
+      grid-row: span 1;
+      min-height: 180px;
     }
   }
 
@@ -746,6 +793,12 @@ body {
   width: 100%;
   padding: 0;
   margin: 2rem auto; /* Centrerar elementet horisontellt */
+}
+
+.tjänster h4:last-child
+{
+justify-content: center;
+text-align: center;
 }
 
 

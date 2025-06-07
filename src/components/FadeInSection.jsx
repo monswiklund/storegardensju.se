@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from 'prop-types';
 
 const FadeInSection = ({ children }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,6 +18,10 @@ const FadeInSection = ({ children }) => {
         {children}
       </div>
   );
+};
+
+FadeInSection.propTypes = {
+  children: PropTypes.node.isRequired
 };
 
 export default FadeInSection;

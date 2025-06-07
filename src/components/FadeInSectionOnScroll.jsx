@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
+import PropTypes from 'prop-types';
 
 const FadeInOnScrollSection = ({ children }) => {
   const domRef = useRef(null);
@@ -39,6 +40,10 @@ const FadeInOnScrollSection = ({ children }) => {
       {children}
     </div>
   );
+};
+
+FadeInOnScrollSection.propTypes = {
+  children: PropTypes.node.isRequired
 };
 
 export default FadeInOnScrollSection;

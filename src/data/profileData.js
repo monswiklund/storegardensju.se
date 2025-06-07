@@ -4,7 +4,7 @@ export const profiles = {
         title: "Ann Wiklund",
         about: "Konstnär & Keramiker",
         contact: {
-            email: "info@annwiklund.se",
+            email: "ann.wiklund.design@gmail.com ",
             instagram: "www.instagram.com/annwiklundstudio/",
             address: "Storegården 7, Rackeby, Lidköping"
         },
@@ -36,37 +36,41 @@ export const profiles = {
             webpage: "www.carlwiklund.com/"
         },
         texts: [
-            "Med lång erfarenhet och bred kunskap inom branschen erbjuder jag skräddarsydda konsulttjänster för att maximera din verksamhets potential.",
-            "Oavsett om du driver en etablerad restaurang eller står i begrepp att öppna en ny bar, så kan jag erbjuda skräddarsydda konsulttjänster som passar dina behov och mål.",
-            "Kontakta mig idag för att ta nästa steg mot en framgångsrik och lönsam verksamhet!"
+            "Jag driver bolaget CW Consulting & Event där jag bland annat hjälper till med event i olika storlekar, både för företag, privatpersoner samt restauranger och barer. Jag dj:ar även på klubbar, restauranger, event av olika slag och på privata tillställningar.",
+            "Jag har ljud/ljusanläggning för uthyrning.",
+            "Utanför företaget arbetar jag på Storegården 7. Det involverar mycket planering, 3D-ritning och byggnation."
         ],
         listItems: [
-            "Driftsoptimering: Effektivisera processer och minska kostnader",
-            "Menyutveckling: Skapa en lockande och lönsam meny",
-            "Marknadsföring och Varumärkesbyggnad: Stick ut på marknaden",
-            "Personalutbildning: Höj servicenivån med kompetent personal",
-            "Eventplanering: Skapa minnesvärda evenemang för dina gäster",
-            "Ekonomisk Planering och Budgetering: Skapa en sund ekonomisk grund",
-            "Ljud och musik: Skapa spellistor anpassade för din atmosfär"
+            "DJ",
+            "Ljud och ljus",
+            "Eventplanering",
+            "Byggnationer och snickeri",
+            "Kundservice och kundkontakt",
+            "Bartender och servering",
+            "Designer i Shapr3D",
         ],
         imageSrc: "/images/carl-profile.jpg",
     },
 
     lina: {
         title: "Lina Wiklund",
-        about: "Digital Designer",
+        about: "Planering, Event & Design",
         contact: {
-            email: "info@storegardensju.se",
+            email: "storegardensju@gmail.com",
         },
         texts: [
-            "Event planering, kundservice och kundkontakt, fotograf, styling och dekoration"
+            "Jag jobbar med att skapa unika och minnesvärda upplevelser genom bröllop, födelsedagsfester och event – både stora och små. Med 3 års erfarenhet som ansvarig för bröllop och fester i Stockholm och över 5 år inom restaurang och bar, har jag en stark känsla för både service, flöde och atmosfär.",
+            "Utöver event erbjuder jag även tjänster inom digital design och illustration – som till exempel personligt utformade namnskyltar, menyer och annat tryckt material som lyfter känslan på just din tillställning.",
+            "Jag hjälper till att bygga upp rätt miljö för rätt tillfälle – från idé till färdigt event.",
+            "Jag kan erbjuda:"
         ],
+
+
         listItems: [
-            "Digital Illustration",
-            "Event planering",
-            "Kundservice och kundkontakt",
-            "Fotografi",
-            "Styling och dekoration"
+            "Planering och genomförande av bröllop, fester & event",
+            "Bar & dryckeskoncept",
+            "Festdekoration & miljöskapande",
+            "Digital design & illustration",
         ],
         imageSrc: "/images/lina-profile.jpg",
     },
@@ -81,23 +85,20 @@ export const profiles = {
 
         },
         texts: [
-            "Söker LIA plats våren 2026 i Göteborg eller Lidköping",
             "Studerar Cloud Developer på YH Campus Mölndal",
-            "Lär mig grunderna inom molnteknologier och serverlösa arkitekturer",
-            "Intresserad av att förstå hur man bygger effektiva och stabila molnlösningar",
-            "Engagerad i att utvecklas genom studentprojekt och samarbeten"
+            "Söker LIA plats våren 2026 i Göteborg eller Lidköping",
+            "Arbetar främst med C# och .NET Core men har gjort sideprojects i React, Python & Kotlin",
+            "Lär mig att bygga och underhålla molnbaserade lösningar",
         ],
         listItems: [
             "C# och .NET Core",
             "Azure-molntjänster",
-            "Serverless Functions",
             "Containerteknologier (Docker)",
             "CI/CD-pipelines",
             "API-utveckling med ASP.NET",
             "Databashantering (SQL och NoSQL)",
             "DevOps-metodik",
-            "JavaScript och React",
-            "Versionskontroll med Git"
+            "Git"
         ],
         imageSrc: "/images/mans-profile.jpg",
     }

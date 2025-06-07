@@ -1,5 +1,5 @@
 // ScrollToTopButton.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronUp } from 'lucide-react';
 
 const ScrollToTopButton = () => {

@@ -1,5 +1,4 @@
 // components/Card.jsx
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Phone, Mail, MapPin, Linkedin, Github, Instagram, Globe } from 'lucide-react';
 

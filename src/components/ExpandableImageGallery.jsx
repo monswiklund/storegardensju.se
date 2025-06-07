@@ -1,5 +1,5 @@
 // ExpandableImageGallery.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 
 function ExpandableImageGallery() {
@@ -12,18 +12,17 @@ function ExpandableImageGallery() {
     const [initialImagesLoaded, setInitialImagesLoaded] = useState(false);
 
     // All image filenames (without dynamic import)
-    const imageFilenames = Array.from({ length: 24 }, (_, i) => `slide${i + 1}.jpg`);
+    const imageFilenames = Array.from({ length: 20 }, (_, i) => `slide${i + 1}.jpg`);
 
-    // Helper function to assign subtle size variations
+    // Helper function for simple grid with small and medium (vertical) only
     const assignImageSize = (index) => {
-        // Simple pattern with just three size variations
-        if (index % 5 === 0) {
-            return "large";
-        } else if (index % 3 === 0) {
-            return "medium";
-        } else {
-            return "small";
-        }
+        // Simple pattern with just small and medium (vertical)
+        const patterns = [
+            'small', 'medium', 'small', 'small', 'medium', 
+            'small', 'small', 'medium', 'small', 'medium',
+            'small', 'medium', 'small', 'small', 'small'
+        ];
+        return patterns[index % patterns.length] || 'small';
     };
 
     // Generate image data with subtle size variations
@@ -39,7 +38,7 @@ function ExpandableImageGallery() {
 
     // Separate visible and hidden images
     const visibleImages = allImages.slice(0, 6);
-    const expandedImages = allImages.slice(4);
+    const expandedImages = allImages.slice(6);
 
     // Function to load initial images
     useEffect(() => {
@@ -62,7 +61,7 @@ function ExpandableImageGallery() {
         };
 
         preloadInitialImages();
-    }, []);
+    }, [visibleImages]);
 
     // Function to toggle expanded mode
     const toggleExpand = () => {
