@@ -2,7 +2,7 @@
 function Kontakt() {
     return (
         <div className="kontakt-container">
-            <h2>Kontakta oss idag för att boka in ditt nästa evenemang eller kurs!</h2>
+            <h2 id="contact-heading">Kontakta oss idag för att boka in ditt nästa evenemang eller kurs!</h2>
             <div className="kontakt-box">
                 <p>Har du frågor? </p>
                 <p>Tveka inte att höra av dig till oss!</p>

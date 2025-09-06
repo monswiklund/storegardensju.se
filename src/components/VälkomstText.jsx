@@ -51,10 +51,10 @@ function VälkomstText() {
             <p>Vi kan anpassa lokalen efter era behov och önskemål .</p>
             <h4>Modern Teknik</h4>
           <p>Ljud och ljus finns på plats som anpassas i storlek efter behov.</p>
-            <h4>Erfaren personal </h4>
+            <h4>Erfaren Personal </h4>
             <p>Vi hjälper dig med det ni önskar. Allt från planering, inköp, tillagning och slutförande. </p>
             <h4>Praktiskt och Exklusivt läge</h4>
-            <p>Storegården 7 ligger bara 15 minuter utanför Lidkööpings centrum.</p>
+            <p>Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum.</p>
         </div>
 
     </div>

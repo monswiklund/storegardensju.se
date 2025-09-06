@@ -1,0 +1,197 @@
+/* React Image Gallery Custom Styles */
+
+/* Thumbnail grid for react-image-gallery */
+.storegarden-gallery {
+  width: 100%;
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.gallery-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  grid-auto-rows: minmax(200px, auto);
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+  align-items: start;
+}
+
+.expanded-grid {
+  margin-top: 20px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gallery-thumbnail {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+  width: 100%;
+  height: fit-content;
+}
+
+/* Even more vertical aspect ratio for all pictures */
+.gallery-thumbnail--small,
+.gallery-thumbnail--medium,
+.gallery-thumbnail--large {
+  height: auto;
+}
+
+.gallery-thumbnail:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.gallery-thumbnail img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: block;
+}
+
+/* Clean vertical display - let images be natural */
+.gallery-thumbnail--small img,
+.gallery-thumbnail--medium img,
+.gallery-thumbnail--large img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+}
+
+.gallery-thumbnail:hover img {
+  transform: scale(1.01);
+}
+
+/* Show more button - matching Tillbaka Upp green */
+.show-more-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: hsl(160, 29%, 66%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 300;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.show-more-button:hover {
+  background-color: hsl(160, 29%, 56%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Gallery modal */
+.gallery-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-modal-content {
+  position: relative;
+  width: 90%;
+  height: 90%;
+  max-width: 1200px;
+}
+
+.gallery-close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.gallery-close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+    padding: 6px;
+  }
+  
+  .gallery-thumbnail--small,
+  .gallery-thumbnail--medium,
+  .gallery-thumbnail--large {
+    height: auto;
+  }
+  
+  .gallery-modal-content {
+    width: 95%;
+    height: 95%;
+  }
+  
+  .gallery-close-button {
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 400px) {
+  .gallery-grid {
+    grid-template-columns: repeat(1, 1fr) !important;
+    gap: 10px;
+    padding: 4px;
+  }
+  
+  .gallery-thumbnail--small,
+  .gallery-thumbnail--medium,
+  .gallery-thumbnail--large {
+    height: auto;
+  }
+}
