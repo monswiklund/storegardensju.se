@@ -1,0 +1,91 @@
+.tidigare-evenemang-section {
+  width: 100%;
+  background-color: var(--background-alt);
+  padding: 100px 20px;
+}
+
+.tidigare-evenemang-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.tidigare-evenemang-container h2 {
+  text-align: center;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 400;
+  color: var(--text-color);
+  margin: 0 0 24px 0;
+  letter-spacing: -0.02em;
+}
+
+.tidigare-evenemang-intro {
+  text-align: center;
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin: 0 0 48px 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.past-events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.past-event-card {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 28px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.past-event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.past-event-title {
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--text-color);
+  margin: 0 0 16px 0;
+}
+
+.past-event-meta {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.past-event-date,
+.past-event-time {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.past-event-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .tidigare-evenemang-section {
+    padding: 60px 20px;
+  }
+
+  .past-events-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .past-event-card {
+    padding: 24px;
+  }
+}

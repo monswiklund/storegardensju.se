@@ -6,7 +6,8 @@
   "homepage": "https://storegardensju.se",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:version && vite build",
+    "build": "npm run build:gallery && npm run build:version && vite build",
+    "build:gallery": "node scripts/generate-gallery-categories.js",
     "build:version": "node -e \"const fs=require('fs');const pkg=JSON.parse(fs.readFileSync('package.json'));const build={version:pkg.version,buildTime:new Date().toISOString(),buildNumber:Date.now()};fs.writeFileSync('src/build.json',JSON.stringify(build,null,2));\"",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -20,7 +21,8 @@
     "playwright": "^1.55.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-image-gallery": "^1.4.0"
+    "react-image-gallery": "^1.4.0",
+    "react-masonry-css": "^1.0.16"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

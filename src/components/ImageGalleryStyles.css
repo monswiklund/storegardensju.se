@@ -1,5 +1,12 @@
 /* React Image Gallery Custom Styles */
 
+/* Force consistent font across all gallery elements */
+.storegarden-gallery *,
+.gallery-modal *,
+.image-gallery * {
+  font-family: "Jost", Helvetica, sans-serif !important;
+}
+
 /* Thumbnail grid for react-image-gallery */
 .storegarden-gallery {
   width: 100%;
@@ -9,16 +16,23 @@
   box-sizing: border-box;
 }
 
+/* Masonry grid container */
 .gallery-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  grid-auto-rows: minmax(200px, auto);
-  gap: 16px;
+  display: flex;
   width: 100%;
   max-width: 100%;
   padding: 8px;
   margin-bottom: 20px;
-  align-items: start;
+}
+
+/* Masonry columns */
+.gallery-column {
+  padding-left: 16px;
+  background-clip: padding-box;
+}
+
+.gallery-column:first-child {
+  padding-left: 0;
 }
 
 .expanded-grid {
@@ -48,13 +62,8 @@
   cursor: pointer;
   width: 100%;
   height: fit-content;
-}
-
-/* Even more vertical aspect ratio for all pictures */
-.gallery-thumbnail--small,
-.gallery-thumbnail--medium,
-.gallery-thumbnail--large {
-  height: auto;
+  margin-bottom: 16px;
+  break-inside: avoid;
 }
 
 .gallery-thumbnail:hover {
@@ -69,16 +78,6 @@
   border-radius: 0;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: block;
-}
-
-/* Clean vertical display - let images be natural */
-.gallery-thumbnail--small img,
-.gallery-thumbnail--medium img,
-.gallery-thumbnail--large img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  object-position: center;
 }
 
 .gallery-thumbnail:hover img {
@@ -108,6 +107,32 @@
   background-color: hsl(160, 29%, 56%);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Sticky hide button */
+.hide-images-button {
+  position: sticky;
+  bottom: 20px;
+  display: block;
+  margin: 40px auto 0;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1.125rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(64, 123, 94, 0.3);
+  z-index: 100;
+  width: fit-content;
+}
+
+.hide-images-button:hover {
+  background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(64, 123, 94, 0.4);
 }
 
 /* Gallery modal */
@@ -155,24 +180,22 @@
 }
 
 /* Responsive adjustments */
+@media (max-width: 768px) {
+  .gallery-column {
+    padding-left: 12px;
+  }
+
+  .gallery-thumbnail {
+    margin-bottom: 12px;
+  }
+}
+
 @media (max-width: 600px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px;
-    padding: 6px;
-  }
-  
-  .gallery-thumbnail--small,
-  .gallery-thumbnail--medium,
-  .gallery-thumbnail--large {
-    height: auto;
-  }
-  
   .gallery-modal-content {
     width: 95%;
     height: 95%;
   }
-  
+
   .gallery-close-button {
     top: 10px;
     right: 10px;
@@ -182,16 +205,82 @@
   }
 }
 
-@media (max-width: 400px) {
-  .gallery-grid {
-    grid-template-columns: repeat(1, 1fr) !important;
-    gap: 10px;
-    padding: 4px;
+@media (max-width: 480px) {
+  .gallery-column {
+    padding-left: 0;
   }
-  
-  .gallery-thumbnail--small,
-  .gallery-thumbnail--medium,
-  .gallery-thumbnail--large {
-    height: auto;
+
+  .gallery-thumbnail {
+    margin-bottom: 10px;
+  }
+}
+
+/* Image Overlay */
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+}
+
+.gallery-thumbnail:hover .image-overlay {
+  opacity: 1;
+}
+
+.image-category {
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+.image-number {
+  font-weight: var(--font-weight-normal);
+  opacity: 0.9;
+}
+
+/* Touch devices - always show overlay with reduced opacity */
+@media (hover: none) {
+  .image-overlay {
+    opacity: 0.85;
+  }
+}
+
+/* Stagger animations for gallery items */
+@media (prefers-reduced-motion: no-preference) {
+  .gallery-thumbnail {
+    animation: fadeInUp 0.6s ease-out backwards;
+  }
+
+  .gallery-thumbnail:nth-child(1) { animation-delay: 0s; }
+  .gallery-thumbnail:nth-child(2) { animation-delay: 0.05s; }
+  .gallery-thumbnail:nth-child(3) { animation-delay: 0.1s; }
+  .gallery-thumbnail:nth-child(4) { animation-delay: 0.15s; }
+  .gallery-thumbnail:nth-child(5) { animation-delay: 0.2s; }
+  .gallery-thumbnail:nth-child(6) { animation-delay: 0.25s; }
+  .gallery-thumbnail:nth-child(7) { animation-delay: 0.3s; }
+  .gallery-thumbnail:nth-child(8) { animation-delay: 0.35s; }
+  .gallery-thumbnail:nth-child(9) { animation-delay: 0.4s; }
+  .gallery-thumbnail:nth-child(10) { animation-delay: 0.45s; }
+  .gallery-thumbnail:nth-child(11) { animation-delay: 0.5s; }
+  .gallery-thumbnail:nth-child(12) { animation-delay: 0.55s; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

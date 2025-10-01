@@ -2,7 +2,7 @@ function VälkomstText() {
   return (
     <div className="content-container">
         <div className="välkomst-text">
-          <h2>Välkommen&nbsp;till Storegården 7</h2>
+          <h2 id="om-oss-heading">Välkommen&nbsp;till Storegården 7</h2>
             <p>
               En ständigt växande plats där tanken är att det ska finnas något
               för alla.

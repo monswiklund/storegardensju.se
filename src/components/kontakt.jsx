@@ -1,14 +1,46 @@
+import "./KontaktStyles.css";
 
 function Kontakt() {
     return (
         <div className="kontakt-container">
-            <h2 id="contact-heading">Kontakta oss idag för att boka in ditt nästa evenemang eller kurs!</h2>
-            <div className="kontakt-box">
-                <p>Har du frågor? </p>
-                <p>Tveka inte att höra av dig till oss!</p>
-                <p><strong>E-post:</strong><a href="mailto:storegardensju@gmail.com" className="email-link">storegardensju@gmail.com</a></p>
-                <p>Eller skicka ett meddelande till våran Instagram:</p>
-                <p><a href="https://www.instagram.com/storegarden7/" target="_blank" rel="noopener noreferrer">@storegarden7</a></p>
+            <h2 id="contact-heading">Kontakta oss</h2>
+            <p className="kontakt-subtitle">
+                Har du frågor eller vill boka in ditt nästa evenemang? Tveka inte att höra av dig!
+            </p>
+
+            <div className="kontakt-cards">
+                <a
+                    href="mailto:storegardensju@gmail.com"
+                    className="kontakt-card"
+                    aria-label="Skicka e-post till storegardensju@gmail.com"
+                >
+                    <div className="kontakt-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                            <path d="m2 7 10 7 10-7"/>
+                        </svg>
+                    </div>
+                    <h3>E-post</h3>
+                    <p className="kontakt-info">storegardensju@gmail.com</p>
+                </a>
+
+                <a
+                    href="https://www.instagram.com/storegarden7/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="kontakt-card"
+                    aria-label="Besök oss på Instagram @storegarden7"
+                >
+                    <div className="kontakt-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                        </svg>
+                    </div>
+                    <h3>Instagram</h3>
+                    <p className="kontakt-info">@storegarden7</p>
+                </a>
             </div>
         </div>
     );

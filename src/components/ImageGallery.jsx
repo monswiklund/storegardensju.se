@@ -1,13 +1,32 @@
 import { useState, useMemo, useCallback } from "react";
 import ImageGallery from "react-image-gallery";
+import Masonry from "react-masonry-css";
 import "react-image-gallery/styles/css/image-gallery.css";
 import "./ImageGalleryStyles.css";
+import CategoryToggle from "./CategoryToggle";
+import galleryData from "../data/galleryCategories.json";
 
 function StoregardensImageGallery() {
+    const [activeCategory, setActiveCategory] = useState('alla');
+    const [isLoading, setIsLoading] = useState(false);
+    
+    // Helper function to get image path based on category and image number
+    const getImagePath = (imageNumber, categoryId) => {
+        if (categoryId === 'alla') {
+            // För "alla", hitta i vilken kategori bilden finns
+            for (const category of galleryData.categories) {
+                if (category.id !== 'alla' && category.images.includes(imageNumber)) {
+                    return `/images/${category.id}/slide${imageNumber}.jpg`;
+                }
+            }
+            // Fallback till gamla strukturen om inte hittad
+            return `/images/slides/slide${imageNumber}.jpg`;
+        }
+        return `/images/${categoryId}/slide${imageNumber}.jpg`;
+    };
+
     // Memoize expensive image data generation
-    const images = useMemo(() => {
-        const imageFilenames = Array.from({ length: 20 }, (_, i) => `slide${i + 1}.jpg`);
-        
+    const allImages = useMemo(() => {
         // Function to assign subtle size variations
         const getRandomSize = (index) => {
             const sizePatterns = [
@@ -19,15 +38,57 @@ function StoregardensImageGallery() {
             return sizePatterns[index % sizePatterns.length];
         };
         
-        return imageFilenames.map((filename, index) => ({
-            original: `/images/slides/${filename}`,
-            thumbnail: `/images/slides/${filename}`,
-            description: `Bild ${index + 1} från Storegården 7`,
-            originalAlt: `Bild ${index + 1}`,
-            thumbnailAlt: `Miniatyr ${index + 1}`,
-            sizeClass: getRandomSize(index)
+        // Samla alla bildnummer från alla kategorier (exklusive "alla")
+        const allImageNumbers = new Set();
+        galleryData.categories.forEach(category => {
+            if (category.id !== 'alla') {
+                category.images.forEach(imgNum => allImageNumbers.add(imgNum));
+            }
+        });
+        
+        const sortedImageNumbers = Array.from(allImageNumbers).sort((a, b) => a - b);
+        
+        return sortedImageNumbers.map((imageNumber, index) => ({
+            original: getImagePath(imageNumber, 'alla'),
+            thumbnail: getImagePath(imageNumber, 'alla'),
+            description: `Bild ${imageNumber} från Storegården 7`,
+            originalAlt: `Bild ${imageNumber}`,
+            thumbnailAlt: `Miniatyr ${imageNumber}`,
+            sizeClass: getRandomSize(index),
+            imageNumber: imageNumber
         }));
     }, []);
+    
+    // Filter images based on active category
+    const images = useMemo(() => {
+        const activeCategeryData = galleryData.categories.find(cat => cat.id === activeCategory);
+        if (!activeCategeryData || activeCategory === 'alla') {
+            return allImages;
+        }
+        
+        // För specifika kategorier, skapa bilder med rätt paths
+        return activeCategeryData.images.map((imageNumber, index) => {
+            const getRandomSize = (idx) => {
+                const sizePatterns = [
+                    'small', 'medium', 'small', 'small', 'large', 'small',
+                    'medium', 'small', 'small', 'medium', 'small', 'large',
+                    'small', 'small', 'medium', 'small', 'small', 'large',
+                    'medium', 'small'
+                ];
+                return sizePatterns[idx % sizePatterns.length];
+            };
+
+            return {
+                original: getImagePath(imageNumber, activeCategory),
+                thumbnail: getImagePath(imageNumber, activeCategory),
+                description: `Bild ${imageNumber} från Storegården 7`,
+                originalAlt: `Bild ${imageNumber}`,
+                thumbnailAlt: `Miniatyr ${imageNumber}`,
+                sizeClass: getRandomSize(index),
+                imageNumber: imageNumber
+            };
+        });
+    }, [activeCategory]);
 
     const [showAllImages, setShowAllImages] = useState(false);
     const [showLightbox, setShowLightbox] = useState(false);
@@ -41,76 +102,145 @@ function StoregardensImageGallery() {
         setLightboxIndex(index);
         setShowLightbox(true);
     }, []);
+    
+    const handleCategoryChange = useCallback((categoryId) => {
+        setIsLoading(true);
+        setActiveCategory(categoryId);
+        setShowAllImages(false); // Reset expand state when category changes
+        setShowLightbox(false); // Close lightbox if open
+
+        // Simulate loading time (bilder är redan cached, men ger visuell feedback)
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 300);
+    }, []);
 
     const closeLightbox = useCallback(() => {
         setShowLightbox(false);
     }, []);
 
+    const breakpointColumns = {
+        default: 3,
+        768: 2,
+        480: 1
+    };
+
     return (
         <div className="storegarden-gallery">
+            <h2 id="gallery-heading">Bildgalleri</h2>
+            {/* Category Toggle */}
+            <CategoryToggle
+                categories={galleryData.categories}
+                activeCategory={activeCategory}
+                onCategoryChange={handleCategoryChange}
+            />
             {/* Initial thumbnail grid - first 6 images */}
-            <div className="gallery-grid">
-                {images.slice(0, 6).map((image, index) => (
-                    <div
-                        key={index}
-                        className={`gallery-thumbnail gallery-thumbnail--${image.sizeClass}`}
-                        onClick={() => openLightbox(index)}
-                        role="button"
-                        tabIndex={0}
-                        aria-label={`Öppna bild ${index + 1} av ${images.length} i lightbox`}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                openLightbox(index);
-                            }
-                        }}
-                    >
-                        <img
-                            src={image.thumbnail}
-                            alt={image.thumbnailAlt}
-                            loading="eager"
-                        />
-                    </div>
-                ))}
-            </div>
-
-            {/* Show more/less button */}
-            <button
-                className="show-more-button"
-                onClick={toggleAllImages}
-                aria-expanded={showAllImages}
-                aria-controls="expanded-gallery"
-                aria-label={showAllImages ? 'Dölj utökade galleri bilder' : `Visa alla ${images.length} bilder i galleriet`}
-            >
-                {showAllImages ? 'Dölj bilder' : `Visa alla bilder (${images.length})`}
-            </button>
-
-            {/* Expanded grid - remaining images */}
-            {showAllImages && (
-                <div className="gallery-grid expanded-grid" id="expanded-gallery">
-                    {images.slice(6).map((image, index) => (
+            {isLoading ? (
+                <Masonry
+                    breakpointCols={breakpointColumns}
+                    className="gallery-grid"
+                    columnClassName="gallery-column"
+                >
+                    {[...Array(6)].map((_, index) => (
+                        <div key={index} className="gallery-thumbnail skeleton-item">
+                            <div className="skeleton-image" style={{height: `${200 + (index % 3) * 50}px`}}></div>
+                        </div>
+                    ))}
+                </Masonry>
+            ) : (
+                <Masonry
+                    breakpointCols={breakpointColumns}
+                    className="gallery-grid"
+                    columnClassName="gallery-column"
+                >
+                    {images.slice(0, 6).map((image, index) => (
                         <div
-                            key={index + 6}
-                            className={`gallery-thumbnail gallery-thumbnail--${image.sizeClass}`}
-                            onClick={() => openLightbox(index + 6)}
+                            key={index}
+                            className="gallery-thumbnail"
+                            onClick={() => openLightbox(index)}
                             role="button"
                             tabIndex={0}
-                            aria-label={`Öppna bild ${index + 7} av ${images.length} i lightbox`}
+                            aria-label={`Öppna bild ${index + 1} av ${images.length} i lightbox`}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
                                     e.preventDefault();
-                                    openLightbox(index + 6);
+                                    openLightbox(index);
                                 }
                             }}
                         >
                             <img
                                 src={image.thumbnail}
                                 alt={image.thumbnailAlt}
-                                loading="lazy"
+                                loading="eager"
                             />
+                            <div className="image-overlay">
+                                <span className="image-category">{galleryData.categories.find(cat => cat.id === activeCategory)?.name || 'Alla'}</span>
+                                <span className="image-number">#{image.imageNumber}</span>
+                            </div>
                         </div>
                     ))}
-                </div>
+                </Masonry>
+            )}
+
+            {/* Show more button */}
+            {!showAllImages && (
+                <button
+                    className="show-more-button"
+                    onClick={toggleAllImages}
+                    aria-expanded={showAllImages}
+                    aria-controls="expanded-gallery"
+                    aria-label={`Visa alla ${images.length} bilder i galleriet`}
+                >
+                    Visa alla bilder ({images.length})
+                </button>
+            )}
+
+            {/* Expanded grid - remaining images */}
+            {showAllImages && (
+                <>
+                    <Masonry
+                        breakpointCols={breakpointColumns}
+                        className="gallery-grid expanded-grid"
+                        columnClassName="gallery-column"
+                        id="expanded-gallery"
+                    >
+                        {images.slice(6).map((image, index) => (
+                            <div
+                                key={index + 6}
+                                className="gallery-thumbnail"
+                                onClick={() => openLightbox(index + 6)}
+                                role="button"
+                                tabIndex={0}
+                                aria-label={`Öppna bild ${index + 7} av ${images.length} i lightbox`}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        openLightbox(index + 6);
+                                    }
+                                }}
+                            >
+                                <img
+                                    src={image.thumbnail}
+                                    alt={image.thumbnailAlt}
+                                    loading="lazy"
+                                />
+                                <div className="image-overlay">
+                                    <span className="image-category">{galleryData.categories.find(cat => cat.id === activeCategory)?.name || 'Alla'}</span>
+                                    <span className="image-number">#{image.imageNumber}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </Masonry>
+
+                    {/* Sticky hide button */}
+                    <button
+                        className="hide-images-button"
+                        onClick={toggleAllImages}
+                        aria-label="Dölj utökade galleri bilder"
+                    >
+                        Dölj bilder
+                    </button>
+                </>
             )}
 
             {/* Lightbox Modal - only when clicking on individual images */}

@@ -8,6 +8,22 @@ function VälkomstBild() {
       </div>
       <div className="titel">
         <h2>En plats för kreativt nöje!</h2>
+        <div className="hero-cta-group">
+          <button
+            className="hero-cta hero-cta-primary"
+            onClick={() => document.querySelector('.kontakt-container')?.scrollIntoView({behavior: 'smooth', block: 'center'})}
+            aria-label="Scrolla till kontakt-sektion"
+          >
+            Boka ditt evenemang
+          </button>
+          <button
+            className="hero-cta hero-cta-secondary"
+            onClick={() => document.querySelector('.storegarden-gallery')?.scrollIntoView({behavior: 'smooth', block: 'start'})}
+            aria-label="Scrolla till bildgalleri"
+          >
+            Se galleriet
+          </button>
+        </div>
       </div>
     </div>
   );

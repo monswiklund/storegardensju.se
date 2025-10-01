@@ -1,10 +1,18 @@
 // Komplett App-struktur med alla komponenter
 
 // App.jsx
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useRef } from 'react';
 import VälkomstText from "./components/VälkomstText.jsx";
 import VälkomstBild from "./components/VälkomstBild.jsx";
 import Kontakt from "./components/Kontakt.jsx";
+import ValueProposition from "./components/ValueProposition.jsx";
+import FeaturedGallery from "./components/FeaturedGallery.jsx";
+import Services from "./components/Services.jsx";
+import Skapande from "./components/Skapande.jsx";
+import KommandeEvenemang from "./components/KommandeEvenemang.jsx";
+import TidigareEvenemang from "./components/TidigareEvenemang.jsx";
+import EventFest from "./components/EventFest.jsx";
+import Navbar from "./components/Navbar.jsx";
 import FadeInSection from "./components/FadeInSection.jsx";
 import ScrollToTopButton from "./components/ScrollToTopButton.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
@@ -16,8 +24,15 @@ const ImageGallery = lazy(() => import('./components/ImageGallery.jsx'));
 const Vilka = lazy(() => import('./components/Vilka.jsx'));
 
 function App() {
+    const galleryRef = useRef(null);
+
+    const scrollToGallery = () => {
+        galleryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     return (
         <>
+            <Navbar />
             <a href="#main-content" className="skip-link">Hoppa till huvudinnehåll</a>
             <header role="banner">
                 <section aria-labelledby="hero-heading">
@@ -26,9 +41,52 @@ function App() {
                     </FadeInSection>
                 </section>
             </header>
-            
+
             <main role="main" id="main-content">
-                <section aria-labelledby="gallery-heading">
+                {/* Value Proposition - 3 pelare */}
+                <FadeInSection>
+                    <ValueProposition/>
+                </FadeInSection>
+
+                {/* Services - Klickbara kort */}
+                <FadeInSection>
+                    <Services/>
+                </FadeInSection>
+
+                {/* Event & Fest */}
+                <FadeInSection>
+                    <EventFest/>
+                </FadeInSection>
+
+                {/* Skapande sektion */}
+                <FadeInSection>
+                    <Skapande/>
+                </FadeInSection>
+
+                {/* Kommande evenemang */}
+                <FadeInSection>
+                    <KommandeEvenemang/>
+                </FadeInSection>
+
+                {/* Tidigare evenemang */}
+                <FadeInSection>
+                    <TidigareEvenemang/>
+                </FadeInSection>
+
+                {/* Featured Images Grid */}
+                <FadeInSection>
+                    <FeaturedGallery onViewAll={scrollToGallery} />
+                </FadeInSection>
+
+                {/* Om lokalen */}
+                <section aria-labelledby="welcome-heading" style={{background: 'var(--background-alt)', padding: '80px 20px'}}>
+                    <FadeInSection>
+                        <VälkomstText/>
+                    </FadeInSection>
+                </section>
+
+                {/* Full Gallery */}
+                <section aria-labelledby="gallery-heading" ref={galleryRef} style={{background: 'white', padding: '80px 20px'}}>
                     <ErrorBoundary>
                         <FadeInSection>
                             <Suspense fallback={<LoadingSpinner size="large" text="Laddar bildgalleri..." />}>
@@ -37,20 +95,9 @@ function App() {
                         </FadeInSection>
                     </ErrorBoundary>
                 </section>
-                
-                <section aria-labelledby="welcome-heading">
-                    <FadeInSection>
-                        <VälkomstText/>
-                    </FadeInSection>
-                </section>
-                
-                <section aria-labelledby="contact-heading">
-                    <FadeInSection>
-                        <Kontakt/>
-                    </FadeInSection>
-                </section>
-                
-                <section aria-labelledby="about-heading">
+
+                {/* Team */}
+                <section aria-labelledby="about-heading" style={{background: 'var(--background-alt)', padding: '80px 20px'}}>
                     <ErrorBoundary>
                         <FadeInSection>
                             <Suspense fallback={<LoadingSpinner size="medium" text="Laddar teamet..." />}>
@@ -59,12 +106,19 @@ function App() {
                         </FadeInSection>
                     </ErrorBoundary>
                 </section>
+
+                {/* Contact */}
+                <section aria-labelledby="contact-heading" style={{background: 'linear-gradient(135deg, var(--background-warm) 0%, var(--background-alt) 100%)', padding: '100px 20px'}}>
+                    <FadeInSection>
+                        <Kontakt/>
+                    </FadeInSection>
+                </section>
             </main>
-            
+
             <footer role="contentinfo" className="site-footer">
                 <BuildInfo />
             </footer>
-            
+
             <ScrollToTopButton/>
         </>
     );
