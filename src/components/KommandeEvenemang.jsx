@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import "./KommandeEvenemangStyles.css";
+import "./TidigareEvenemangStyles.css"; // reuse collapsible styles
 
 function KommandeEvenemang() {
   const events = [
@@ -13,6 +15,33 @@ function KommandeEvenemang() {
       location: "Storegården 7, Rackeby"
     }
   ];
+
+  // Past events moved here
+  const pastEvents = [
+    {
+      title: "Västra Kållands Kulturrunda",
+      date: "29 Maj 2024",
+      time: "10:00 - 17:00",
+      description: "Kom och häng på Storegården 7, ta en kaffe i solen, gå in i Ann's ateljé med konst över hela väggarna, fynda på loppisen och ta ett djupt andetag på denna drömmiga plats!",
+      location: "Storegården 7, Rackeby"
+    },
+    {
+      title: "Helgkurs Keramik",
+      date: "22-23 November 2024",
+      time: "17:00 - 21:00\n10:00 - 16:00",
+      description: "Både för nybörjare och dig som provat tidigare. Tillkommer ett glaseringstillfälle.",
+      location: "Skaparverkstaden, Rörstrand, Lidköping"
+    },
+    {
+      title: "Helgkurs Keramik",
+      date: "7-8 November 2024",
+      time: "17:00-21:00\n10:00-16:00",
+      description: "Både för nybörjare och dig som provat tidigare. Tillkommer ett glaseringstillfälle.",
+      location: "Skaparverkstaden, Rörstrand, Lidköping"
+    }
+  ];
+
+  const [showPast, setShowPast] = useState(false);
 
   return (
     <section id="evenemang-section" className="evenemang-section" aria-labelledby="evenemang-heading">
@@ -75,6 +104,45 @@ function KommandeEvenemang() {
             </button>
           </div>
         </div>
+
+        {/* Past events collapsible */}
+        <div className="past-events-collapsible" data-section="past-events">
+          <button
+            type="button"
+            className="collapsible-toggle"
+            aria-expanded={showPast}
+            aria-controls="past-events-content"
+            onClick={() => setShowPast(v => !v)}
+          >
+            <span className="collapsible-title">Tidigare evenemang</span>
+            <span className={`chevron ${showPast ? 'open' : ''}`} aria-hidden>▾</span>
+          </button>
+          <div
+            id="past-events-content"
+            className={`collapsible-content ${showPast ? 'open' : ''}`}
+            role="region"
+            aria-label="Tidigare evenemang"
+          >
+            {showPast && (
+              <div className="past-events-grid" style={{marginTop: '28px'}}>
+                {pastEvents.map((event, idx) => (
+                  <article key={idx} className="past-event-card" aria-labelledby={`past-event-title-${idx}`}>
+                    <h3 id={`past-event-title-${idx}`} className="past-event-title">{event.title}</h3>
+                    <div className="past-event-meta">
+                      <span className="past-event-date">{event.date}</span>
+                      <span className="past-event-time" style={{ whiteSpace: 'pre-line' }}>{event.time}</span>
+                    </div>
+                    <p className="past-event-description">{event.description}</p>
+                    {event.location && (
+                      <p className="past-event-location">{event.location}</p>
+                    )}
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
     </section>
   );

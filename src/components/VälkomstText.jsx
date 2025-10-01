@@ -2,18 +2,7 @@ function VälkomstText() {
   return (
     <div className="content-container">
         <div className="välkomst-text">
-          <h2 id="om-oss-heading">Välkommen&nbsp;till Storegården 7</h2>
-            <p>
-              En ständigt växande plats där tanken är att det ska finnas något
-              för alla.
-            </p>
-            <p>Konstnärliga kurser i att måla och att skapa med keramik.</p>
-            <p>Eller hyr vår fina lokal till att anordna kalas, bröllop, eller fest.</p>
-            <p>
-              Loppis har vi även emellanåt och det finns en gårdsbutik med konst, keramik och en atelje för inspiration.
-            </p>
           <div className="tjänster">
-            <hr />
             <h3>Vi Erbjuder</h3>
             <h4>Evenemang</h4>
             <p>
@@ -151,7 +140,7 @@ function VälkomstText() {
             </p>
         </div>
 
-    </div>
+        </div>
   );
 }
 

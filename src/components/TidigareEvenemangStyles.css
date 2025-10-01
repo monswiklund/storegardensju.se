@@ -1,8 +1,24 @@
 .tidigare-evenemang-section {
   width: 100%;
   background-color: var(--background-alt);
-  padding: 100px 20px;
+  padding: 100px 20px; /* default (open) */
   box-sizing: border-box;
+  transition: padding 0.35s ease;
+}
+
+/* Reduced vertical space when collapsed to remove big gap */
+.tidigare-evenemang-section.collapsed {
+  padding: 16px 20px 0; /* no bottom padding when collapsed */
+}
+
+/* Slightly tweaked when open (can adjust if needed) */
+.tidigare-evenemang-section.open {
+  padding: 90px 20px 100px;
+}
+
+/* Optional: tighter spacing below toggle when collapsed */
+.tidigare-evenemang-section.collapsed .collapsible-toggle {
+  margin-bottom: 0;
 }
 
 .tidigare-evenemang-container {
@@ -85,6 +101,109 @@
   font-style: italic;
 }
 
+.past-events-dropdown-container {
+  max-width: 480px;
+  margin: 0 auto 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.past-events-select-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.past-events-select {
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 1rem;
+  color: var(--text-color);
+  box-shadow: var(--shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.06));
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.past-events-select:focus {
+  outline: none;
+  border-color: var(--accent, #444);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.past-event-detail-card {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.collapsible-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: var(--background-alt);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 14px;
+  padding: 18px 22px;
+  cursor: pointer;
+  font: inherit;
+  color: var(--text-color);
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  letter-spacing: -0.02em;
+  box-shadow: var(--shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.06));
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.collapsible-toggle:hover {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+.collapsible-toggle:focus-visible {
+  outline: 3px solid rgba(0, 0, 0, 0.3);
+  outline-offset: 2px;
+}
+
+.collapsible-title {
+  font-weight: 400;
+  flex: 1;
+  text-align: left;
+}
+
+.chevron {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.collapsible-content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.55s cubic-bezier(.4, 0, .2, 1), opacity 0.4s ease;
+  will-change: max-height, opacity;
+}
+
+.collapsible-content.open {
+  max-height: 1600px; /* sufficiently large for content */
+  opacity: 1;
+}
+
+.collapsible-intro-wrapper[aria-hidden="true"] {
+  display: none;
+}
+
+/* Space adjustments when open */
+.collapsible-content.open .past-events-dropdown-container {
+  margin-top: 28px;
+}
+
 @media (max-width: 768px) {
   .tidigare-evenemang-section {
     padding: 60px 15px;
@@ -97,6 +216,17 @@
 
   .past-event-card {
     padding: 24px 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .past-event-detail-card {
+    padding: 24px 20px;
+  }
+
+  .collapsible-toggle {
+    padding: 14px 16px;
+    font-size: clamp(1.3rem, 5vw, 1.9rem);
   }
 }
 

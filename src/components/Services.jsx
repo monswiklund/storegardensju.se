@@ -4,9 +4,9 @@ function Services() {
   const services = [
       {
           id: "event-fest",
-          title: "Event & Fest",
-          subtitle: "Privata arrangemang",
-          description: "Boka lokalen för ditt nästa evenemang",
+          title: "Event, Bröllop & Fest",
+          subtitle: "Boka lokalen för ditt nästa evenemang",
+          description: "",
           icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/>
@@ -17,7 +17,7 @@ function Services() {
       },
       {
       id: "skapande",
-      title: "Skapande",
+      title: "Kurser & Skapande",
       subtitle: "Målning & Lera",
       description: "Kreativa workshops i en inspirerande miljö",
       icon: (
@@ -31,7 +31,7 @@ function Services() {
       id: "evenemang",
       title: "Kommande evenemang",
       subtitle: "Se vad som händer",
-      description: "Upptäck och boka våra kommande events",
+      description: "Upptäck och boka våra kommande event",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>

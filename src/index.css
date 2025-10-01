@@ -78,7 +78,6 @@ body {
   max-width: 90vw;
   margin: 40px auto;
   position: relative;
-  padding: 20px 15px;
 }
 
 .stor-logga {
@@ -142,7 +141,6 @@ body {
   flex: 1;
   max-width: 800px;
   font-weight: 300;
-  margin-top: 2rem;
   width: 100%;
   text-align: left;
   padding: 0 15px;
@@ -213,7 +211,6 @@ body {
   font-weight: 300;
   width: 100%;
   padding: 0;
-  margin: 2rem auto;
 }
 
 .tjänster h4:last-child {

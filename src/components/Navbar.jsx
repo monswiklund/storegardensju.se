@@ -40,9 +40,7 @@ function Navbar() {
 
         // Special handling for sections with custom targets
         if (section === "om-oss-heading") {
-          element = document.querySelector('.featured-gallery-section');
-        } else if (section === "gallery-heading") {
-          element = document.querySelector('.storegarden-gallery');
+          element = document.querySelector('.välkomst-text');
         } else {
           element = document.getElementById(section);
         }
@@ -67,7 +65,7 @@ function Navbar() {
       if (target === "gallery-heading") {
         element = document.querySelector('.storegarden-gallery');
       } else if (target === "om-oss-heading") {
-        element = document.querySelector('.featured-gallery-section');
+        element = document.querySelector('.välkomst-text');
       } else {
         element = document.getElementById(target);
       }

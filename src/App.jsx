@@ -1,7 +1,7 @@
 // Komplett App-struktur med alla komponenter
 
 // App.jsx
-import { Suspense, lazy, useEffect, useRef } from 'react';
+import { Suspense, lazy, useRef } from 'react';
 import VälkomstText from "./components/VälkomstText.jsx";
 import VälkomstBild from "./components/VälkomstBild.jsx";
 import Kontakt from "./components/Kontakt.jsx";
@@ -10,7 +10,6 @@ import FeaturedGallery from "./components/FeaturedGallery.jsx";
 import Services from "./components/Services.jsx";
 import Skapande from "./components/Skapande.jsx";
 import KommandeEvenemang from "./components/KommandeEvenemang.jsx";
-import TidigareEvenemang from "./components/TidigareEvenemang.jsx";
 import EventFest from "./components/EventFest.jsx";
 import Navbar from "./components/Navbar.jsx";
 import FadeInSection from "./components/FadeInSection.jsx";
@@ -43,6 +42,12 @@ function App() {
             </header>
 
             <main role="main" id="main-content">
+
+                {/* Featured Images Grid */}
+                <FadeInSection>
+                    <FeaturedGallery onViewAll={scrollToGallery} />
+                </FadeInSection>
+
                 {/* Value Proposition - 3 pelare */}
                 <FadeInSection>
                     <ValueProposition/>
@@ -68,18 +73,8 @@ function App() {
                     <KommandeEvenemang/>
                 </FadeInSection>
 
-                {/* Tidigare evenemang */}
-                <FadeInSection>
-                    <TidigareEvenemang/>
-                </FadeInSection>
-
-                {/* Featured Images Grid */}
-                <FadeInSection>
-                    <FeaturedGallery onViewAll={scrollToGallery} />
-                </FadeInSection>
-
                 {/* Om lokalen */}
-                <section aria-labelledby="welcome-heading" style={{background: 'var(--background-alt)', padding: '80px 20px'}}>
+                <section aria-labelledby="welcome-heading" style={{background: 'var(--background-alt)', padding: '32px 20px 80px'}}>
                     <FadeInSection>
                         <VälkomstText/>
                     </FadeInSection>
