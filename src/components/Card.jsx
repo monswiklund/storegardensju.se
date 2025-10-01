@@ -9,10 +9,11 @@ const Card = ({
                   listItems = [],
                   imageSrc,
                   imageAlt = "Profilbild",
-                  contact = {}  // Ny prop för kontaktinformation
+                  contact = {},  // Ny prop för kontaktinformation
+                  id  // ID för scroll navigation
               }) => {
     return (
-        <div className="card">
+        <div className="card" id={id}>
             {imageSrc && (
                 <img
                     className="card-image"
@@ -115,7 +116,8 @@ Card.propTypes = {
         github: PropTypes.string,
         instagram: PropTypes.string,
         webpage: PropTypes.string
-    })
+    }),
+    id: PropTypes.string
 };
 
 export default Card;

@@ -44,17 +44,111 @@ function VälkomstText() {
             </p>
           </div>
           <hr />
-            <h3>Varför välja oss till ditt evenemang?</h3>
-            <h4>Unik plats</h4>
-            <p>Där vi har tagit vara på det gamla, fina charmiga och enkelt rustat upp det.</p>
-            <h4>Flexibilitet</h4>
-            <p>Vi kan anpassa lokalen efter era behov och önskemål .</p>
-            <h4>Modern Teknik</h4>
-          <p>Ljud och ljus finns på plats som anpassas i storlek efter behov.</p>
-            <h4>Erfaren Personal </h4>
-            <p>Vi hjälper dig med det ni önskar. Allt från planering, inköp, tillagning och slutförande. </p>
-            <h4>Praktiskt och Exklusivt läge</h4>
-            <p>Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum.</p>
+            <h3>Vilka vi är</h3>
+            <p>
+              Vi är en familj som vuxit upp här sedan 1990-talet och har sedan dess drömt om att skapa en plats främst till oss själva som vi sedan kan dela med andra.
+              Vi kombinerar olika kompetenser och erfarenheter - både formell utbildning och självlärt kunnande.
+              Detta är en del av vår vardag och livsstil - att arrangera och skapa hemma hos oss själva.
+            </p>
+
+            <h4>Ann Wiklund - Konstnär & Keramiker</h4>
+            <p>
+              Driver Ann Wiklund Studio med atelje och keramikbutik på Storegården 7.
+              Håller kurser i teckning, måleri och keramik både i egen regi och för studieförbundet NBV.
+              Erbjuder workshops, skapande skola och andra kreativa uppdrag.
+              Medlem i Sjölundagruppen och konstnärskollektivet Alea.
+            </p>
+            <button
+              className="read-more-button"
+              onClick={() => {
+                const element = document.getElementById('ann-card');
+                if (element) {
+                  const navbarHeight = 70;
+                  const elementPosition = element.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.scrollY - navbarHeight - 20;
+                  window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                }
+              }}
+            >
+              Läs mer om Ann
+            </button>
+
+            <h4>Carl Wiklund - Event & Restaurang</h4>
+            <p>
+              Driver CW Consulting & Event med fokus på eventplanering för företag och privatpersoner.
+              DJ och uthyrning av ljud/ljusanläggning.
+              Ansvarar för byggnation, 3D-ritning och all teknisk utrustning på Storegården 7.
+            </p>
+            <button
+              className="read-more-button"
+              onClick={() => {
+                const element = document.getElementById('carl-card');
+                if (element) {
+                  const navbarHeight = 70;
+                  const elementPosition = element.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.scrollY - navbarHeight - 20;
+                  window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                }
+              }}
+            >
+              Läs mer om Carl
+            </button>
+
+            <h4>Lina Wiklund - Planering, Event & Design</h4>
+            <p>
+              3 års erfarenhet av bröllop och fester i Stockholm samt över 5 års erfarenhet från restaurang och bar.
+              Arbetar med digital design och illustration - namnskyltar, menyer och annat tryckt material.
+              Skapar minnesvärda upplevelser från idé till färdigt event.
+            </p>
+            <button
+              className="read-more-button"
+              onClick={() => {
+                const element = document.getElementById('lina-card');
+                if (element) {
+                  const navbarHeight = 70;
+                  const elementPosition = element.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.scrollY - navbarHeight - 20;
+                  window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                }
+              }}
+            >
+              Läs mer om Lina
+            </button>
+
+            <h4>Måns Wiklund - Programmerare</h4>
+            <p>
+              Cloud Developer-student på YH Campus Mölndal.
+              Utvecklar och underhåller hemsidan samt hjälper till med gårdens drift och underhåll.
+            </p>
+            <button
+              className="read-more-button"
+              onClick={() => {
+                const element = document.getElementById('mans-card');
+                if (element) {
+                  const navbarHeight = 70;
+                  const elementPosition = element.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.scrollY - navbarHeight - 20;
+                  window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                }
+              }}
+            >
+              Läs mer om Måns
+            </button>
+
+            <hr />
+            <h3>Om platsen</h3>
+            <p>
+              Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum i en lantlig omgivning,
+              långt från stadens brus. En plats där dina gäster kan koppla av och uppleva något unikt.
+              Vi har tagit vara på den gamla gårdens charm och kombinerat den med moderna bekvämligheter.
+            </p>
+
+            <hr />
+            <h3>Samarbeta med oss</h3>
+            <p>
+              Vi samarbetar gärna med andra som har idéer eller vill ställa ut konst, arrangera evenemang eller skapa något kreativt.
+              Hör av dig så diskuterar vi möjligheterna!
+            </p>
         </div>
 
     </div>

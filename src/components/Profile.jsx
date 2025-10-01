@@ -5,7 +5,7 @@ import Card from './Card';
 import { profiles } from '../data/profileData';
 
 const Profile = memo(({ profileId }) => {
-    return <Card {...profiles[profileId]} />;
+    return <Card {...profiles[profileId]} id={`${profileId}-card`} />;
 });
 
 Profile.displayName = 'Profile';

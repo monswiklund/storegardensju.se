@@ -176,6 +176,26 @@ body {
   text-align: left;
 }
 
+.read-more-button {
+  padding: 6px 16px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid rgba(64, 123, 94, 0.2);
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0 0 1rem 0;
+  display: inline-block;
+}
+
+.read-more-button:hover {
+  background: rgba(64, 123, 94, 0.05);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
 /* ==========================================================================
    Services Section
    ========================================================================== */
