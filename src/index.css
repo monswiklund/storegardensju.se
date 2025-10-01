@@ -43,7 +43,12 @@
    ========================================================================== */
 * {
   font-family: "Jost", Helvetica, sans-serif;
-  max-width: 100%;
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
 }
 body {
   background-color: var(--background-color);
@@ -89,12 +94,12 @@ body {
 }
 
 .stor-logga img {
-  max-width: 100%;
-  width: 100%;
+  width: 150vw;
+  max-width: 1200px;
   height: auto;
   object-fit: contain;
   display: block;
-  margin: 0 auto;
+  margin-bottom: 0 auto;
 }
 
 .titel {
@@ -102,17 +107,21 @@ body {
   width: 100%;
   position: relative;
   text-align: center;
+    margin-top: -100px;
+
 }
 
 .titel h1 {
   font-size: clamp(2rem, 5vw, 3rem);
+  padding-bottom: 10px;
   font-weight: 300;
-  margin: 0;
+  margin-top: -80px;
   line-height: 1.2;
   color: var(--text-color);
 }
 
 .titel h2 {
+
   font-size: clamp(1.2rem, 3vw, 1.8rem);
   font-weight: 300;
   margin: 0;
@@ -128,58 +137,10 @@ body {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0 15px;
   box-sizing: border-box;
-}
-
-/* ==========================================================================
-   Welcome Text Section
-   ========================================================================== */
-.välkomst-text {
-  flex: 1;
-  max-width: 800px;
-  font-weight: 300;
-  width: 100%;
-  text-align: left;
-  padding: 0 15px;
-  box-sizing: border-box;
-}
-
-.välkomst-text h2,
-.välkomst-text h3,
-.välkomst-text h4,
-.tjänster h3,
-.tjänster h4 {
-  font-weight: 300;
-  margin: 1.5rem 0 1rem 0;
-  padding: 0;
-  text-align: left;
-  color: var(--text-secondary);
-}
-
-.välkomst-text h2 {
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-}
-
-.välkomst-text h3,
-.tjänster h3 {
-  font-size: clamp(1.3rem, 3.5vw, 1.8rem);
-}
-
-.välkomst-text h4,
-.tjänster h4 {
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
-}
-
-.välkomst-text p,
-.tjänster p {
-  font-size: 1rem;
-  line-height: 1.5;
-  margin: 0 0 1rem 0;
-  padding: 0;
-  text-align: left;
 }
 
 .read-more-button {
@@ -202,21 +163,6 @@ body {
   border-color: var(--primary-color);
 }
 
-/* ==========================================================================
-   Services Section
-   ========================================================================== */
-.tjänster {
-  flex: 1;
-  max-width: 800px;
-  font-weight: 300;
-  width: 100%;
-  padding: 0;
-}
-
-.tjänster h4:last-child {
-  justify-content: center;
-  text-align: center;
-}
 
 /* ==========================================================================
    Team Section (Vilka Vi Är)
@@ -334,113 +280,6 @@ body {
   font-size: 1rem;
 }
 
-/* ==========================================================================
-   Contact Section
-   ========================================================================== */
-.kontakt-container {
-  margin: 10px auto;
-  padding: 20px;
-  max-width: 400px;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
-  min-height: 280px;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
-}
-
-.kontakt-container h2 {
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-  font-weight: 300;
-  margin: 10px 0;
-  color: var(--text-color);
-}
-
-.kontakt-container p {
-  font-size: 1rem;
-  line-height: 1.3;
-  color: var(--text-color);
-  margin: 5px 0;
-}
-
-.kontakt-container p a {
-  font-size: 1.6rem;
-}
-
-.kontakt-container p strong {
-  font-weight: 400;
-}
-
-.kontakt-box {
-  padding: 15px;
-  background-color: rgba(255, 255, 255, 1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-  box-shadow: var(--shadow-sm);
-  margin: 15px 0;
-  transition: var(--transition-smooth);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 90%;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
-}
-
-.kontakt-box:hover {
-  background-color: white;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.kontakt-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px;
-  transition: all 0.2s ease;
-}
-
-.kontakt-info i {
-  font-size: 14px;
-  color: var(--primary-color);
-}
-
-.kontakt-box a {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-size: 1rem;
-  padding: 8px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.kontakt-box a::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 1px;
-  bottom: 0;
-  left: 50%;
-  background-color: var(--primary-color);
-  transition: var(--transition-smooth);
-  transform: translateX(-50%);
-}
-
-.kontakt-box a:hover {
-  text-decoration: none;
-  background-color: var(--hover-color);
-}
-
-.kontakt-box a:hover::after {
-  width: 80%;
-}
 
 /* Contact section shared styles */
 .contact-section {
@@ -578,6 +417,8 @@ body {
     margin-bottom: 15px;
   }
 
+
+
   .titel h2 {
     font-size: clamp(1rem, 4vw, 1.4rem);
   }
@@ -629,7 +470,7 @@ body {
 @media (min-width: 1200px) {
   .stor-logga-container {
     margin: 80px auto;
-    max-width: 1200px;
+    max-width: 1000px;
   }
   
   .stor-logga {

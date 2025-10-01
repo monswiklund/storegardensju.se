@@ -42,6 +42,15 @@ function Kontakt() {
                     <p className="kontakt-info">@storegarden7</p>
                 </a>
             </div>
+
+            <div className="tjänster">
+
+            <h3>Samarbeta med oss</h3>
+            <p>
+                Vi samarbetar gärna med andra som har idéer eller vill ställa ut konst, arrangera evenemang eller skapa något kreativt.
+                Hör av dig så diskuterar vi möjligheterna!
+            </p>
+            </div>
         </div>
     );
 }

@@ -1,4 +1,5 @@
 import "./ServicesStyles.css";
+import { Link } from 'react-router-dom';
 
 function Services() {
   const services = [
@@ -7,6 +8,7 @@ function Services() {
           title: "Event, Bröllop & Fest",
           subtitle: "Boka lokalen för ditt nästa evenemang",
           description: "",
+          route: "/event",
           icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/>
@@ -20,6 +22,7 @@ function Services() {
       title: "Kurser & Skapande",
       subtitle: "Målning & Lera",
       description: "Kreativa workshops i en inspirerande miljö",
+      route: "/konst",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="m9.06 11.9 8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/>
@@ -32,6 +35,7 @@ function Services() {
       title: "Kommande evenemang",
       subtitle: "Se vad som händer",
       description: "Upptäck och boka våra kommande event",
+      scrollTo: "evenemang",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -53,30 +57,53 @@ function Services() {
       <div className="services-container">
         <h2 id="services-heading">Vad vi erbjuder</h2>
         <div className="services-grid">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className="service-card"
-              onClick={() => scrollToSection(service.id)}
-              role="button"
-              tabIndex={0}
-              aria-label={`Läs mer om ${service.title}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  scrollToSection(service.id);
-                }
-              }}
-            >
-              <div className="service-icon">
-                {service.icon}
-              </div>
-              <h3 className="service-title">{service.title}</h3>
-              <p className="service-subtitle">{service.subtitle}</p>
-              <p className="service-description">{service.description}</p>
-              <span className="service-arrow">→</span>
-            </div>
-          ))}
+          {services.map((service, index) => {
+            // If service has scrollTo property, render as clickable div instead of Link
+            if (service.scrollTo) {
+              return (
+                <div
+                  key={index}
+                  className="service-card"
+                  role="button"
+                  tabIndex="0"
+                  onClick={() => scrollToSection(service.scrollTo)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      scrollToSection(service.scrollTo);
+                    }
+                  }}
+                  aria-label={`Läs mer om ${service.title}`}
+                >
+                  <div className="service-icon">
+                    {service.icon}
+                  </div>
+                  <h3 className="service-title">{service.title}</h3>
+                  <p className="service-subtitle">{service.subtitle}</p>
+                  <p className="service-description">{service.description}</p>
+                  <span className="service-arrow">→</span>
+                </div>
+              );
+            }
+
+            // For services with route property, render as Link
+            return (
+              <Link
+                key={index}
+                to={service.route}
+                className="service-card"
+                aria-label={`Läs mer om ${service.title}`}
+              >
+                <div className="service-icon">
+                  {service.icon}
+                </div>
+                <h3 className="service-title">{service.title}</h3>
+                <p className="service-subtitle">{service.subtitle}</p>
+                <p className="service-description">{service.description}</p>
+                <span className="service-arrow">→</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

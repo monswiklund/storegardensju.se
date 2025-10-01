@@ -31,9 +31,8 @@ export const profiles = {
         title: "Carl Wiklund",
         about: "Event & Restaurang Konsult",
         contact: {
-            email: "cw@carlwiklund.com",
+            email: "cwconsultingevent@gmail.com",
             instagram: "www.instagram.com/_wiklund_",
-            webpage: "www.carlwiklund.com/"
         },
         texts: [
             "Jag driver bolaget CW Consulting & Event där jag bland annat hjälper till med event i olika storlekar, både för företag, privatpersoner samt restauranger och barer. Jag dj:ar även på klubbar, restauranger, event av olika slag och på privata tillställningar.",
@@ -78,7 +77,7 @@ export const profiles = {
         title: "Måns Wiklund",
         about: "Cloud Developer Student",
         contact: {
-            email: "monswiklund99.jobb@gmail.com",
+            email: "monswiklund99@gmail.com",
             github: "github.com/monswiklund",
             linkedin: "www.linkedin.com/in/monswiklund/",
             instagram: "www.instagram.com/monswiklund/"

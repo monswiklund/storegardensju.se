@@ -2,8 +2,8 @@ import "./EventFestStyles.css";
 
 function EventFest() {
   const offerings = [
-    "Flexibel lokal för 10-140 personer",
-      "Ljud och ljussystem",
+    //"Flexibel lokal för 10-140 personer",
+      // "Ljud och ljussystem",
   ];
 
   return (
@@ -13,9 +13,9 @@ function EventFest() {
 
         <div className="event-fest-content">
           <div className="event-fest-intro">
-            <h3>Skapa minnen som varar</h3>
+{/*            <h3>Skapa minnen som varar</h3>
             <p>
-              Storegården 7 är den perfekta lokalen för ditt nästa evenemang. Oavsett om du
+              Oavsett om du
               planerar en företagsfest, födelsedagskalas, vernissage eller privat tillställning,
               erbjuder vi en flexibel och välkomnande miljö.
             </p>
@@ -23,24 +23,25 @@ function EventFest() {
               Vår lokal rymmer 10-140 gäster beroende på typ av arrangemang och kan anpassas
               efter dina önskemål. Vi hjälper dig att skapa det perfekta evenemanget.
             </p>
+         */}
           </div>
 
-          <div className="offerings-grid">
+          {/*<div className="offerings-grid">
             <h4>Vad vi erbjuder:</h4>
             <ul className="offerings-list">
               {offerings.map((item, index) => (
                 <li key={index}>{item}</li>
               ))}
             </ul>
-          </div>
+          </div>*/}
         </div>
 
         <div className="event-types">
           <h4>Perfekt för:</h4>
           <div className="types-grid">
+            <div className="type-item">Bröllop</div>
             <div className="type-item">Företagsevent</div>
             <div className="type-item">Födelsedagsfester</div>
-            <div className="type-item">Bröllop & Kalas</div>
             <div className="type-item">Vernissage</div>
             <div className="type-item">Workshops</div>
           </div>

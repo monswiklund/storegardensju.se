@@ -21,7 +21,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Vendor libraries
-          vendor: ['react', 'react-dom'],
+          vendor: ['react', 'react-dom', 'react-router-dom'],
           // Image gallery related
           gallery: ['react-image-gallery'],
         },
@@ -54,6 +54,8 @@ export default defineConfig({
   server: {
     hmr: {
       overlay: false
-    }
+    },
+    // Support client-side routing
+    historyApiFallback: true
   }
 })

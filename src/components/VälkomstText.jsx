@@ -1,10 +1,13 @@
+import "./VälkomstTextStyles.css";
+
+
 function VälkomstText() {
   return (
     <div className="content-container">
         <div className="välkomst-text">
           <div className="tjänster">
-            <h3>Vi Erbjuder</h3>
-            <h4>Evenemang</h4>
+            {/*<h2>Vi Erbjuder</h2>
+            <h3>Evenemang</h3>
             <p>
               Möteslokal för kalas, mat och fest!
             </p>
@@ -15,24 +18,24 @@ function VälkomstText() {
               Gäster mingel: 150+
 
             </p>
-            <h4>Keramik- och Målarkurser</h4>
+            <h3>Keramik- och Målarkurser</h3>
             <p>
               Våra kurser leds av
               erfarna konstnärer och erbjuder en avslappnad och inspirerande
               miljö för att låta din kreativitet flöda.
             </p>
-            <h4>Workshops</h4>
+            <h3>Workshops</h3>
             <p>
               Vi har även workshops för drejning och i måleri. Boka med ditt
               företag, vänner, möhippa eller svensexa.
             </p>
-            <h4>Utställningar</h4>
+            <h3>Utställningar</h3>
             <p>
               Vi erbjuder även utställningar i vår ladugård. Vill du ställa ut
               din konst eller ha din egen loppis? Kontakta oss för mer information.
-            </p>
+            </p>*/}
           </div>
-          <hr />
+          {/*<hr />
             <h3>Vilka vi är</h3>
             <p>
               Vi är en familj som vuxit upp här sedan 1990-talet och har sedan dess drömt om att skapa en plats främst till oss själva som vi sedan kan dela med andra.
@@ -122,22 +125,15 @@ function VälkomstText() {
               }}
             >
               Läs mer om Måns
-            </button>
+            </button>*/}
 
-            <hr />
-            <h3>Om platsen</h3>
+ {/*           <h3>Om platsen</h3>
             <p>
               Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum i en lantlig omgivning,
               långt från stadens brus. En plats där dina gäster kan koppla av och uppleva något unikt.
               Vi har tagit vara på den gamla gårdens charm och kombinerat den med moderna bekvämligheter.
-            </p>
+            </p>*/}
 
-            <hr />
-            <h3>Samarbeta med oss</h3>
-            <p>
-              Vi samarbetar gärna med andra som har idéer eller vill ställa ut konst, arrangera evenemang eller skapa något kreativt.
-              Hör av dig så diskuterar vi möjligheterna!
-            </p>
         </div>
 
         </div>
