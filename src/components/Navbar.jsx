@@ -16,6 +16,8 @@ function Navbar() {
 
   const handleNavClick = () => {
     setIsOpen(false);
+    // Scroll to top of the page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -53,7 +55,10 @@ function Navbar() {
         {isOpen && (
           <div
             className="nav-overlay"
-            onClick={() => setIsOpen(false)}
+            onClick={() => {
+              setIsOpen(false);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             aria-hidden="true"
           />
         )}
