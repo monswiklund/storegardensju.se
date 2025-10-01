@@ -33,14 +33,24 @@
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+    <!-- GitHub Pages SPA redirect -->
+    <script>
+      (function() {
+        const redirectPath = sessionStorage.getItem('redirectPath');
+        if (redirectPath) {
+          sessionStorage.removeItem('redirectPath');
+          history.replaceState(null, null, redirectPath);
+        }
+      })();
+    </script>
+
 
 
 
       <div id="app"></div>
-    <script type="module" crossorigin src="/js/index-BCFl7rfo.js"></script>
-    <link rel="modulepreload" crossorigin href="/js/vendor-DomL0yj5.js">
-    <link rel="modulepreload" crossorigin href="/js/gallery-6kJrPrsg.js">
-    <link rel="stylesheet" crossorigin href="/css/index-BhuDkJpY.css">
+    <script type="module" crossorigin src="/js/index-BJTOwhwN.js"></script>
+    <link rel="modulepreload" crossorigin href="/js/vendor-DaLL37dA.js">
+    <link rel="stylesheet" crossorigin href="/css/index-B6QCGbbH.css">
   </head>
   <body>
     <div id="root"></div>
