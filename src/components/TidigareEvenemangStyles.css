@@ -2,11 +2,13 @@
   width: 100%;
   background-color: var(--background-alt);
   padding: 100px 20px;
+  box-sizing: border-box;
 }
 
 .tidigare-evenemang-container {
   max-width: 1100px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .tidigare-evenemang-container h2 {
@@ -66,18 +68,26 @@
 .past-event-time {
   font-size: 0.9rem;
   color: var(--text-muted);
+  white-space: pre-line;
 }
 
 .past-event-description {
   font-size: 1rem;
   line-height: 1.6;
   color: var(--text-secondary);
+  margin: 0 0 12px 0;
+}
+
+.past-event-location {
+  font-size: 0.875rem;
+  color: var(--text-muted);
   margin: 0;
+  font-style: italic;
 }
 
 @media (max-width: 768px) {
   .tidigare-evenemang-section {
-    padding: 60px 20px;
+    padding: 60px 15px;
   }
 
   .past-events-grid {
@@ -86,6 +96,16 @@
   }
 
   .past-event-card {
-    padding: 24px;
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tidigare-evenemang-section {
+    padding: 40px 10px;
+  }
+
+  .past-event-card {
+    padding: 20px 15px;
   }
 }

@@ -2,12 +2,8 @@ import "./EventFestStyles.css";
 
 function EventFest() {
   const offerings = [
-    "Fullständigt utrustat kök",
-    "Ljud- och bildanläggning",
-    "Flexibel rumslayout",
-    "Atmosfärisk belysning",
-    "Möblering för upp till 140 gäster",
-    "Fri parkering"
+    "Flexibel lokal för 10-140 personer",
+      "Ljud och ljussystem",
   ];
 
   return (
@@ -47,7 +43,6 @@ function EventFest() {
             <div className="type-item">Bröllop & Kalas</div>
             <div className="type-item">Vernissage</div>
             <div className="type-item">Workshops</div>
-            <div className="type-item">Föreläsningar</div>
           </div>
         </div>
 

@@ -9,7 +9,8 @@ function KommandeEvenemang() {
       description: "En plats för kreativitet och nöje. Vi öppnar upp dörrarna till ateljén, keramikbutiken och vår eventlokal med utställning på loftet. Vi bjuder in alla för inspiration, skapande och en upplevelse kring gården.",
       artists: "Ann - Keramik & Måleri, Lina - Digital design & Måleri",
       spots: "Fri entré",
-      link: "https://konstafton.se/"
+      link: "https://konstafton.se/",
+      location: "Storegården 7, Rackeby"
     }
   ];
 
@@ -23,7 +24,7 @@ function KommandeEvenemang() {
 
         <div className="events-grid">
           {events.map((event, index) => (
-            <div key={index} className="event-card konstafton-card">
+            <div key={index} className={`event-card ${event.link ? 'konstafton-card' : ''}`}>
               <div className="event-header">
                 <h3 className="event-title">{event.title}</h3>
                 <span className="event-spots">{event.spots}</span>
@@ -38,14 +39,19 @@ function KommandeEvenemang() {
                   <strong>Konstnärer:</strong> {event.artists}
                 </p>
               )}
-              <a
-                href={event.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="event-link-btn"
-              >
-                Läs mer på konstafton.se
-              </a>
+              {event.location && (
+                <p className="event-location">{event.location}</p>
+              )}
+              {event.link && (
+                <a
+                  href={event.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="event-link-btn"
+                >
+                  Läs mer på konstafton.se
+                </a>
+              )}
             </div>
           ))}
         </div>

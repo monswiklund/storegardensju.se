@@ -7,6 +7,7 @@ function VälkomstBild() {
         <img src={välkomstBild} alt="Lägg till Storegården 7 Loggan" />
       </div>
       <div className="titel">
+          <h1>Välkommen till Storegården 7</h1>
         <h2>En plats för kreativt nöje!</h2>
         <div className="hero-cta-group">
           <button

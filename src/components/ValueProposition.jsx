@@ -3,8 +3,9 @@ import "./ValuePropositionStyles.css";
 function ValueProposition() {
   const values = [
     {
-      title: "Perfekt läge",
-      description: "Centralt beläget med närhet till kollektivtrafik och parkering",
+      title: "Lantligt läge",
+      description: "15 minuter från Lidköpings centrum, omgivet av natur och lugn",
+      link: "https://www.google.com/maps/place/Storeg%C3%A5rden+7/@58.5741102,13.0274976,1253m/data=!3m2!1e3!4b1!4m6!3m5!1s0x465b29cb4b35b863:0xd0f867a1fbdcc24f!8m2!3d58.5741102!4d13.0300779!16s%2Fg%2F11vx72yztc?entry=ttu&g_ep=EgoyMDI1MDkyOC4wIKXMDSoASAFQAw%3D%3D",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
@@ -42,15 +43,33 @@ function ValueProposition() {
       <div className="value-proposition-container">
         <h2 id="value-props-heading" className="sr-only">Våra fördelar</h2>
         <div className="value-props-grid">
-          {values.map((value, index) => (
-            <div key={index} className="value-prop-card">
-              <div className="value-icon">
-                {value.icon}
+          {values.map((value, index) => {
+            const CardContent = (
+              <>
+                <div className="value-icon">
+                  {value.icon}
+                </div>
+                <h3 className="value-title">{value.title}</h3>
+                <p className="value-description">{value.description}</p>
+              </>
+            );
+
+            return value.link ? (
+              <a
+                key={index}
+                href={value.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="value-prop-card value-prop-link"
+              >
+                {CardContent}
+              </a>
+            ) : (
+              <div key={index} className="value-prop-card">
+                {CardContent}
               </div>
-              <h3 className="value-title">{value.title}</h3>
-              <p className="value-description">{value.description}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

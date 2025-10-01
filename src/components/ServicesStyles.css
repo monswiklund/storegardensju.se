@@ -2,11 +2,13 @@
   width: 100%;
   background-color: white;
   padding: 80px 20px;
+  box-sizing: border-box;
 }
 
 .services-container {
   max-width: 1200px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .services-container h2 {
@@ -22,7 +24,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 32px;
-  padding: 0 20px;
+  padding: 0;
 }
 
 .service-card {
@@ -113,7 +115,7 @@
 
 @media (max-width: 768px) {
   .services-section {
-    padding: 60px 20px;
+    padding: 60px 15px;
   }
 
   .services-container h2 {
@@ -132,5 +134,19 @@
 
   .service-title {
     font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-section {
+    padding: 40px 10px;
+  }
+
+  .services-grid {
+    gap: 16px;
+  }
+
+  .service-card {
+    padding: 24px 20px;
   }
 }

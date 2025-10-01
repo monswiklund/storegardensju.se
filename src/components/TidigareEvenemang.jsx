@@ -3,40 +3,25 @@ import "./TidigareEvenemangStyles.css";
 function TidigareEvenemang() {
   const pastEvents = [
     {
-      title: "Julmarknad 2024",
-      date: "15 December 2024",
-      time: "12:00 - 18:00",
-      description: "Lokal julmarknad med hantverk, konst och julstämning"
+      title: "Västra Kållands Kulturrunda",
+      date: "29 Maj 2024",
+      time: "10:00 - 17:00",
+      description: "Kom och häng på Storegården 7, ta en kaffe i solen, gå in i Ann's ateljé med konst över hela väggarna, fynda på loppisen och ta ett djupt andetag på denna drömmiga plats!",
+        location: "Storegården 7, Rackeby"
     },
     {
-      title: "Akrylmålning - Nybörjarkurs",
-      date: "8 November 2024",
-      time: "10:00 - 15:00",
-      description: "Heldag med akrylmålning för nybörjare"
+      title: "Helgkurs Keramik",
+      date: "22-23 November 2024",
+      time: "17:00 - 21:00\n10:00 - 16:00",
+      description: "Både för nybörjare och dig som provat tidigare. Tillkommer ett glaseringstillfälle.",
+      location: "Skaparverkstaden, Rörstrand, Lidköping"
     },
     {
-      title: "Höstvernissage",
-      date: "20 Oktober 2024",
-      time: "17:00 - 20:00",
-      description: "Utställning av lokala konstnärer med mingel"
-    },
-    {
-      title: "Keramikworkshop",
-      date: "5 Oktober 2024",
-      time: "13:00 - 16:00",
-      description: "Workshop i keramik och lerformning"
-    },
-    {
-      title: "Sommargalleri 2024",
-      date: "15 Juni 2024",
-      time: "14:00 - 19:00",
-      description: "Utställning av sommarkonst och skulpturer"
-    },
-    {
-      title: "Vårmålning",
-      date: "25 April 2024",
-      time: "10:00 - 14:00",
-      description: "Målarkurs med våren som tema"
+      title: "Helgkurs Keramik",
+      date: "7-8 November 2024",
+      time: "17:00-21:00\n10:00-16:00",
+      description: "Både för nybörjare och dig som provat tidigare. Tillkommer ett glaseringstillfälle.",
+      location: "Skaparverkstaden, Rörstrand, Lidköping"
     }
   ];
 
@@ -57,6 +42,9 @@ function TidigareEvenemang() {
                 <span className="past-event-time">{event.time}</span>
               </div>
               <p className="past-event-description">{event.description}</p>
+              {event.location && (
+                <p className="past-event-location">{event.location}</p>
+              )}
             </div>
           ))}
         </div>

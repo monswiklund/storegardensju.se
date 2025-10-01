@@ -16,6 +16,10 @@
   box-sizing: border-box;
 }
 
+#gallery-heading {
+    font-weight: 400;
+}
+
 /* Masonry grid container */
 .gallery-grid {
   display: flex;

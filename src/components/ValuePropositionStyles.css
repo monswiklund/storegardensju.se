@@ -1,19 +1,21 @@
 .value-proposition-section {
   width: 100%;
-  background-color: var(--background-warm);
+  background-color: var(--background-alt);
   padding: 80px 20px;
+  box-sizing: border-box;
 }
 
 .value-proposition-container {
   max-width: 1200px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .value-props-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 40px;
-  padding: 0 20px;
+  padding: 0;
 }
 
 .value-prop-card {
@@ -24,11 +26,22 @@
   transition: all 0.3s ease;
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(139, 108, 77, 0.1);
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .value-prop-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 8px 24px rgba(64, 123, 94, 0.15);
+}
+
+.value-prop-link {
+  cursor: pointer;
+}
+
+.value-prop-link:hover .value-title {
+  color: var(--primary-color);
 }
 
 .value-icon {
@@ -66,7 +79,7 @@
 
 @media (max-width: 768px) {
   .value-proposition-section {
-    padding: 60px 20px;
+    padding: 60px 15px;
   }
 
   .value-props-grid {
@@ -81,5 +94,19 @@
 
   .value-title {
     font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .value-proposition-section {
+    padding: 40px 10px;
+  }
+
+  .value-props-grid {
+    gap: 16px;
+  }
+
+  .value-prop-card {
+    padding: 24px 20px;
   }
 }
