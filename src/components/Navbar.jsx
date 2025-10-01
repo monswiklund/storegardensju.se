@@ -11,7 +11,7 @@ function Navbar() {
     { label: "Event", path: "/event" },
     { label: "Konst", path: "/konst" },
     { label: "Galleri", path: "/galleri" },
-      { label: "Vilka Vi Är", path: "/team" },
+      { label: "Om Oss", path: "/team" },
   ];
 
   const handleNavClick = () => {
