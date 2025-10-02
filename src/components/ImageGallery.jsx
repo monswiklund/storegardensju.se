@@ -27,17 +27,6 @@ function StoregardensImageGallery() {
 
     // Memoize expensive image data generation
     const allImages = useMemo(() => {
-        // Function to assign subtle size variations
-        const getRandomSize = (index) => {
-            const sizePatterns = [
-                'small', 'medium', 'small', 'small', 'large', 'small',
-                'medium', 'small', 'small', 'medium', 'small', 'large',
-                'small', 'small', 'medium', 'small', 'small', 'large',
-                'medium', 'small'
-            ];
-            return sizePatterns[index % sizePatterns.length];
-        };
-        
         // Samla alla bildnummer från alla kategorier (exklusive "alla")
         const allImageNumbers = new Set();
         galleryData.categories.forEach(category => {
@@ -45,16 +34,15 @@ function StoregardensImageGallery() {
                 category.images.forEach(imgNum => allImageNumbers.add(imgNum));
             }
         });
-        
+
         const sortedImageNumbers = Array.from(allImageNumbers).sort((a, b) => a - b);
-        
-        return sortedImageNumbers.map((imageNumber, index) => ({
+
+        return sortedImageNumbers.map((imageNumber) => ({
             original: getImagePath(imageNumber, 'alla'),
             thumbnail: getImagePath(imageNumber, 'alla'),
             description: `Bild ${imageNumber} från Storegården 7`,
             originalAlt: `Bild ${imageNumber}`,
             thumbnailAlt: `Miniatyr ${imageNumber}`,
-            sizeClass: getRandomSize(index),
             imageNumber: imageNumber
         }));
     }, []);
@@ -67,27 +55,14 @@ function StoregardensImageGallery() {
         }
         
         // För specifika kategorier, skapa bilder med rätt paths
-        return activeCategeryData.images.map((imageNumber, index) => {
-            const getRandomSize = (idx) => {
-                const sizePatterns = [
-                    'small', 'medium', 'small', 'small', 'large', 'small',
-                    'medium', 'small', 'small', 'medium', 'small', 'large',
-                    'small', 'small', 'medium', 'small', 'small', 'large',
-                    'medium', 'small'
-                ];
-                return sizePatterns[idx % sizePatterns.length];
-            };
-
-            return {
-                original: getImagePath(imageNumber, activeCategory),
-                thumbnail: getImagePath(imageNumber, activeCategory),
-                description: `Bild ${imageNumber} från Storegården 7`,
-                originalAlt: `Bild ${imageNumber}`,
-                thumbnailAlt: `Miniatyr ${imageNumber}`,
-                sizeClass: getRandomSize(index),
-                imageNumber: imageNumber
-            };
-        });
+        return activeCategeryData.images.map((imageNumber) => ({
+            original: getImagePath(imageNumber, activeCategory),
+            thumbnail: getImagePath(imageNumber, activeCategory),
+            description: `Bild ${imageNumber} från Storegården 7`,
+            originalAlt: `Bild ${imageNumber}`,
+            thumbnailAlt: `Miniatyr ${imageNumber}`,
+            imageNumber: imageNumber
+        }));
     }, [activeCategory]);
 
     const [showAllImages, setShowAllImages] = useState(false);
@@ -156,7 +131,7 @@ function StoregardensImageGallery() {
                     {images.slice(0, 6).map((image, index) => (
                         <div
                             key={index}
-                            className={`gallery-thumbnail ${image.sizeClass}`}
+                            className="gallery-thumbnail"
                             onClick={() => openLightbox(index)}
                             role="button"
                             tabIndex={0}
@@ -197,7 +172,7 @@ function StoregardensImageGallery() {
 
             {/* Expanded grid - remaining images */}
             {showAllImages && (
-                <>
+                <div className="expanded-gallery-container">
                     <Masonry
                         breakpointCols={breakpointColumns}
                         className="gallery-grid expanded-grid"
@@ -207,7 +182,7 @@ function StoregardensImageGallery() {
                         {images.slice(6).map((image, index) => (
                             <div
                                 key={index + 6}
-                                className={`gallery-thumbnail ${image.sizeClass}`}
+                                className="gallery-thumbnail"
                                 onClick={() => openLightbox(index + 6)}
                                 role="button"
                                 tabIndex={0}
@@ -240,7 +215,7 @@ function StoregardensImageGallery() {
                     >
                         Dölj bilder
                     </button>
-                </>
+                </div>
             )}
 
             {/* Lightbox Modal - only when clicking on individual images */}

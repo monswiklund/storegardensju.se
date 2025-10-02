@@ -14,6 +14,7 @@
   margin: 30px auto;
   padding: 40px 20px;
   box-sizing: border-box;
+  position: relative;
 }
 
 #gallery-heading {
@@ -27,16 +28,25 @@
   max-width: 100%;
   padding: 8px;
   margin-bottom: 20px;
+  gap: 8px;
 }
 
 /* Masonry columns */
 .gallery-column {
-  padding-left: 16px;
   background-clip: padding-box;
 }
 
-.gallery-column:first-child {
-  padding-left: 0;
+/* Staggered vertical offset to avoid grid illusion */
+.gallery-column:nth-child(1) {
+  padding-top: 50px;
+}
+
+.gallery-column:nth-child(2) {
+  padding-top: 25px;
+}
+
+.gallery-column:nth-child(3) {
+  padding-top: 0px;
 }
 
 .expanded-grid {
@@ -58,7 +68,7 @@
 .gallery-thumbnail {
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 2px;
   background: #ffffff;
   box-shadow: var(--shadow-md);
   transform: translateY(0);
@@ -66,8 +76,9 @@
   cursor: pointer;
   width: 100%;
   height: fit-content;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   break-inside: avoid;
+  padding: 12px;
 }
 
 .gallery-thumbnail:hover {
@@ -79,22 +90,9 @@
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 0;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: block;
-}
-
-/* Subtle vertical offset variations to avoid grid illusion */
-.gallery-thumbnail.small {
-  padding-top: 0px;
-}
-
-.gallery-thumbnail.medium {
-  padding-top: 8px;
-}
-
-.gallery-thumbnail.large {
-  padding-top: 16px;
 }
 
 .gallery-thumbnail:hover img {
@@ -126,12 +124,19 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Sticky hide button */
+/* Expanded gallery container */
+.expanded-gallery-container {
+  position: relative;
+}
+
+/* Fixed hide button - follows viewport during scroll */
 .hide-images-button {
-  position: sticky;
-  bottom: 20px;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   display: block;
-  margin: 40px auto 0;
+  margin: 0;
   padding: 14px 32px;
   background: var(--primary-color);
   color: white;
@@ -141,14 +146,14 @@
   font-size: 1.125rem;
   font-weight: 500;
   transition: var(--transition-smooth);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-xl);
   z-index: 100;
   width: fit-content;
 }
 
 .hide-images-button:hover {
   background: var(--primary-hover);
-  transform: translateY(-2px);
+  transform: translateX(-50%) translateY(-2px);
   box-shadow: var(--shadow-xl);
 }
 
@@ -198,12 +203,12 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .gallery-column {
-    padding-left: 12px;
+  .gallery-grid {
+    gap: 6px;
   }
 
   .gallery-thumbnail {
-    margin-bottom: 12px;
+    margin-bottom: 6px;
   }
 }
 
@@ -223,12 +228,12 @@
 }
 
 @media (max-width: 480px) {
-  .gallery-column {
-    padding-left: 0;
+  .gallery-grid {
+    gap: 6px;
   }
 
   .gallery-thumbnail {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
 }
 

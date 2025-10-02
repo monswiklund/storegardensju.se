@@ -101,19 +101,17 @@
     }
 
     .category-toggle-container {
-        padding: 4px;
+        padding: 8px;
         gap: 8px;
-        max-width: none;
-        justify-content: flex-start;
-        margin: 0;
+        max-width: fit-content;
+        justify-content: center;
+        margin: 0 auto;
         overflow-x: auto;
         overflow-y: hidden;
         scrollbar-width: none;
         -ms-overflow-style: none;
         scroll-behavior: smooth;
         scroll-snap-type: x proximity;
-        padding-left: 1rem;
-        padding-right: 1rem;
     }
 
     .category-toggle-container::-webkit-scrollbar {
@@ -122,13 +120,12 @@
 
     .category-button {
         scroll-snap-align: start;
-    }
-
-    .category-button {
-        padding: 10px 16px;
+        padding: 10px 14px;
         font-size: 13px;
         min-width: auto;
+        max-width: fit-content;
         flex-shrink: 0;
+        white-space: nowrap;
     }
 
     .category-name {
