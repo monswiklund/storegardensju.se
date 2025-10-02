@@ -126,16 +126,16 @@
 
 /* Expanded gallery container */
 .expanded-gallery-container {
-  position: relative;
+  position: relative; /* keep containing context */
 }
 
-/* Fixed hide button - follows viewport during scroll */
+/* Sticky hide button (was fixed + .stuck states) */
 .hide-images-button {
-  position: fixed;
-  bottom: 30px;
+  position: sticky;
+  bottom: 30px; /* stick to bottom edge of viewport while within container */
   left: 50%;
   transform: translateX(-50%);
-  display: block;
+  display: inline-block;
   margin: 0;
   padding: 14px 32px;
   background: var(--primary-color);
@@ -147,14 +147,8 @@
   font-weight: 500;
   transition: all 0.2s ease-in-out;
   box-shadow: var(--shadow-xl);
-  z-index: 100;
+  z-index: 10; /* reduced from 100; sufficient above thumbnails */
   width: fit-content;
-}
-
-/* Stuck state - absolute positioned at bottom of gallery */
-.hide-images-button.stuck {
-  position: absolute;
-  bottom: -30px;
 }
 
 .hide-images-button:hover {
@@ -222,10 +216,6 @@
     padding: 12px 24px;
     font-size: 1rem;
   }
-
-  .hide-images-button.stuck {
-    bottom: -45px;
-  }
 }
 
 @media (max-width: 600px) {
@@ -257,10 +247,6 @@
     padding: 10px 20px;
     font-size: 0.9375rem;
   }
-
-  .hide-images-button.stuck {
-    bottom: -15px;
-  }
 }
 
 /* Image Overlay */
@@ -278,7 +264,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium, 500);
 }
 
 .gallery-thumbnail:hover .image-overlay {
@@ -291,7 +277,7 @@
 }
 
 .image-number {
-  font-weight: var(--font-weight-normal);
+  font-weight: var(--font-weight-normal, 400);
   opacity: 0.9;
 }
 

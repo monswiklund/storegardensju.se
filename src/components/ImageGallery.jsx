@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
 import ImageGallery from "react-image-gallery";
 import Masonry from "react-masonry-css";
 import "react-image-gallery/styles/css/image-gallery.css";
@@ -9,8 +9,10 @@ import galleryData from "../data/galleryCategories.json";
 function StoregardensImageGallery() {
     const [activeCategory, setActiveCategory] = useState('alla');
     const [isLoading, setIsLoading] = useState(false);
-    const [hideButton, setHideButton] = useState(false);
-    
+    const [showAllImages, setShowAllImages] = useState(false);
+    const [showLightbox, setShowLightbox] = useState(false);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
+
     // Helper function to get image path based on category and image number
     const getImagePath = (imageNumber, categoryId) => {
         if (categoryId === 'alla') {
@@ -64,11 +66,7 @@ function StoregardensImageGallery() {
             thumbnailAlt: `Miniatyr ${imageNumber}`,
             imageNumber: imageNumber
         }));
-    }, [activeCategory]);
-
-    const [showAllImages, setShowAllImages] = useState(false);
-    const [showLightbox, setShowLightbox] = useState(false);
-    const [lightboxIndex, setLightboxIndex] = useState(0);
+    }, [activeCategory, allImages]);
 
     const toggleAllImages = useCallback(() => {
         setShowAllImages(!showAllImages);
@@ -100,34 +98,6 @@ function StoregardensImageGallery() {
         768: 2,
         480: 1
     };
-
-    // Scroll listener to stick button when reaching end of gallery
-    useEffect(() => {
-        if (!showAllImages) {
-            setHideButton(false);
-            return;
-        }
-
-        const handleScroll = () => {
-            const expandedContainer = document.querySelector('.expanded-gallery-container');
-            if (!expandedContainer) return;
-
-            const containerRect = expandedContainer.getBoundingClientRect();
-            const containerBottom = containerRect.bottom;
-            const viewportHeight = window.innerHeight;
-
-            // If container bottom is above viewport bottom + small margin (10px), stick it
-            const shouldStick = containerBottom < viewportHeight - 10;
-            setHideButton(shouldStick);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Check initial state
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, [showAllImages]);
 
     return (
         <div className="storegarden-gallery">
@@ -238,7 +208,7 @@ function StoregardensImageGallery() {
 
                     {/* Sticky hide button */}
                     <button
-                        className={`hide-images-button ${hideButton ? 'stuck' : ''}`}
+                        className="hide-images-button"
                         onClick={toggleAllImages}
                         aria-label="Dölj utökade galleri bilder"
                     >
