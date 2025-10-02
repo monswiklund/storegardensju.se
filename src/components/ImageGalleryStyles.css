@@ -145,10 +145,16 @@
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: 500;
-  transition: var(--transition-smooth);
+  transition: all 0.2s ease-in-out;
   box-shadow: var(--shadow-xl);
   z-index: 100;
   width: fit-content;
+}
+
+/* Stuck state - absolute positioned at bottom of gallery */
+.hide-images-button.stuck {
+  position: absolute;
+  bottom: -30px;
 }
 
 .hide-images-button:hover {
@@ -210,6 +216,16 @@
   .gallery-thumbnail {
     margin-bottom: 6px;
   }
+
+  .hide-images-button {
+    bottom: 20px;
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+
+  .hide-images-button.stuck {
+    bottom: -45px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -234,6 +250,16 @@
 
   .gallery-thumbnail {
     margin-bottom: 6px;
+  }
+
+  .hide-images-button {
+    bottom: 15px;
+    padding: 10px 20px;
+    font-size: 0.9375rem;
+  }
+
+  .hide-images-button.stuck {
+    bottom: -15px;
   }
 }
 
