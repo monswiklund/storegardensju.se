@@ -37,6 +37,13 @@ const ProfileShowcase = ({ profile, imageLayout = 'default' }) => {
         <div className="profile-showcase-row">
             {/* Portfolio horizontal scroll gallery with profile as first slide */}
             <div className="portfolio-gallery">
+                {/* Swipe indicator - sticky absolute */}
+                <div className="swipe-indicator">
+                    <span>Swipe</span>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </div>
                 <div className="portfolio-scroll-container">
                     {/* Profile as first slide */}
                     <div className="profile-slide-wrapper">
@@ -118,14 +125,6 @@ const ProfileShowcase = ({ profile, imageLayout = 'default' }) => {
                     </div>
                 )}
                         </div>
-                    </div>
-
-                    {/* Swipe indicator - sticky */}
-                    <div className="swipe-indicator">
-                        <span>Swipe</span>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
                     </div>
 
                     {/* Portfolio images */}
