@@ -1,0 +1,323 @@
+/* ProfileShowcase Grid Layout */
+
+.profile-showcase-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.profile-showcase-container h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: var(--text-color);
+}
+
+/* Each profile row - Grid with 2 columns: Profil | Portfolio Gallery */
+.profile-showcase-row {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 24px;
+    margin-bottom: 60px;
+    min-height: 500px;
+}
+
+/* Profile cell (first column) */
+.profile-cell {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: var(--shadow-md);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.profile-cell:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto;
+    box-shadow: var(--shadow-md);
+    border: 4px solid var(--background-alt);
+}
+
+.profile-title {
+    font-size: 1.8rem;
+    margin: 0;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.profile-about {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text-light);
+    text-align: center;
+    margin: 0;
+}
+
+.profile-description {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.profile-description p {
+    margin: 8px 0;
+}
+
+.profile-skills h4,
+.profile-contact h4 {
+    font-size: 1.1rem;
+    margin: 12px 0 8px 0;
+    color: var(--text-secondary);
+}
+
+.profile-skills ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-skills li {
+    padding: 6px 12px;
+    margin: 4px 0;
+    background-color: var(--card-hover-bg);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    transition: background-color 0.3s ease;
+}
+
+.profile-skills li:hover {
+    background-color: var(--background-alt);
+}
+
+/* Contact section */
+.profile-contact {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--card-border);
+}
+
+.showcase-contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.showcase-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.showcase-contact-item svg {
+    flex-shrink: 0;
+    color: var(--primary-color);
+}
+
+.showcase-contact-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.showcase-contact-item a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* Portfolio horizontal scroll gallery */
+.portfolio-gallery {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    height: 100%;
+}
+
+.portfolio-scroll-container {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar but keep functionality */
+.portfolio-scroll-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.portfolio-scroll-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.portfolio-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.portfolio-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
+
+/* Individual portfolio slide */
+.portfolio-slide {
+    position: relative;
+    flex: 0 0 100%;
+    height: 100%;
+    min-height: 500px;
+    scroll-snap-align: start;
+    overflow: hidden;
+}
+
+.portfolio-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Text overlay on images */
+.portfolio-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 30px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+    color: white;
+    pointer-events: none;
+}
+
+.portfolio-overlay h3 {
+    font-size: 2rem;
+    margin: 0 0 8px 0;
+    font-weight: 500;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.portfolio-overlay p {
+    font-size: 1.1rem;
+    margin: 0;
+    opacity: 0.95;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Placeholder for missing portfolio images */
+.portfolio-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--background-alt) 0%, var(--background-warm) 100%);
+    min-height: 500px;
+    width: 100%;
+}
+
+.portfolio-placeholder p {
+    color: var(--text-light);
+    font-style: italic;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* Responsive Design */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .profile-showcase-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .profile-cell {
+        min-height: auto;
+    }
+
+    .portfolio-gallery {
+        min-height: 400px;
+    }
+
+    .portfolio-slide {
+        min-height: 400px;
+    }
+
+    .portfolio-placeholder {
+        min-height: 400px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .profile-showcase-container {
+        padding: 20px 12px;
+    }
+
+    .profile-showcase-container h2 {
+        font-size: 2rem;
+        margin-bottom: 40px;
+    }
+
+    .profile-showcase-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 40px;
+        min-height: auto;
+    }
+
+    .profile-cell {
+        padding: 20px;
+    }
+
+    .portfolio-gallery {
+        min-height: 350px;
+    }
+
+    .portfolio-slide {
+        min-height: 350px;
+    }
+
+    .portfolio-placeholder {
+        min-height: 350px;
+    }
+
+    .profile-title {
+        font-size: 1.5rem;
+    }
+
+    .profile-about {
+        font-size: 14px;
+    }
+
+    .profile-description {
+        font-size: 0.9rem;
+    }
+
+    .portfolio-overlay h3 {
+        font-size: 1.5rem;
+    }
+
+    .portfolio-overlay p {
+        font-size: 1rem;
+    }
+
+    .portfolio-overlay {
+        padding: 24px 20px;
+    }
+}

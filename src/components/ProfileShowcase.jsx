@@ -1,0 +1,161 @@
+import PropTypes from 'prop-types';
+import { Phone, Mail, MapPin, Linkedin, Github, Instagram, Globe } from 'lucide-react';
+import './ProfileShowcaseStyles.css';
+
+const ProfileShowcase = ({ profile, imageLayout = 'default' }) => {
+    const renderContactItem = (icon, content, href = null, isExternal = false) => {
+        const Icon = icon;
+        const linkProps = isExternal
+            ? { target: "_blank", rel: "noopener noreferrer" }
+            : {};
+
+        return (
+            <li className="showcase-contact-item">
+                <Icon size={16} />
+                {href ? (
+                    <a href={href} {...linkProps}>{content}</a>
+                ) : (
+                    <span>{content}</span>
+                )}
+            </li>
+        );
+    };
+
+    const renderPortfolioImage = (item, index) => {
+        return (
+            <div key={index} className="portfolio-slide">
+                <img src={item.src} alt={item.alt || 'Portfolio bild'} loading="lazy" />
+                <div className="portfolio-overlay">
+                    {item.title && <h3>{item.title}</h3>}
+                    {item.caption && <p>{item.caption}</p>}
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <div className="profile-showcase-row">
+            {/* Profil kolumn */}
+            <div className="profile-cell">
+                {profile.imageSrc && (
+                    <img
+                        className="profile-image"
+                        src={profile.imageSrc}
+                        alt={profile.imageAlt || 'Profilbild'}
+                    />
+                )}
+
+                {profile.title && <h3 className="profile-title">{profile.title}</h3>}
+                {profile.about && <p className="profile-about">{profile.about}</p>}
+
+                {profile.texts && profile.texts.length > 0 && (
+                    <div className="profile-description">
+                        {profile.texts.map((text, index) => (
+                            <p key={index}>{text}</p>
+                        ))}
+                    </div>
+                )}
+
+                {profile.listItems && profile.listItems.length > 0 && (
+                    <div className="profile-skills">
+                        <h4>Kompetenser</h4>
+                        <ul>
+                            {profile.listItems.map((item, index) => (
+                                <li key={index}>{item}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+                {/* Kontakt sektion */}
+                {profile.contact && Object.keys(profile.contact).length > 0 && (
+                    <div className="profile-contact">
+                        <h4>Kontakt</h4>
+                        <ul className="showcase-contact-list">
+                            {profile.contact.phone && renderContactItem(
+                                Phone,
+                                profile.contact.phone,
+                                `tel:${profile.contact.phone}`
+                            )}
+                            {profile.contact.email && renderContactItem(
+                                Mail,
+                                profile.contact.email,
+                                `mailto:${profile.contact.email}`
+                            )}
+                            {profile.contact.address && renderContactItem(
+                                MapPin,
+                                profile.contact.address
+                            )}
+                            {profile.contact.github && renderContactItem(
+                                Github,
+                                'GitHub',
+                                `https://${profile.contact.github}`,
+                                true
+                            )}
+                            {profile.contact.linkedin && renderContactItem(
+                                Linkedin,
+                                'LinkedIn',
+                                `https://${profile.contact.linkedin}`,
+                                true
+                            )}
+                            {profile.contact.instagram && renderContactItem(
+                                Instagram,
+                                'Instagram',
+                                `https://${profile.contact.instagram}`,
+                                true
+                            )}
+                            {profile.contact.webpage && renderContactItem(
+                                Globe,
+                                'Hemsida',
+                                `https://${profile.contact.webpage}`,
+                                true
+                            )}
+                        </ul>
+                    </div>
+                )}
+            </div>
+
+            {/* Portfolio horizontal scroll gallery */}
+            <div className="portfolio-gallery">
+                <div className="portfolio-scroll-container">
+                    {profile.portfolio && profile.portfolio.length > 0 ? (
+                        profile.portfolio.map((item, index) => renderPortfolioImage(item, index))
+                    ) : (
+                        <div className="portfolio-placeholder">
+                            <p>Portfolio bilder kommer snart</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+ProfileShowcase.propTypes = {
+    profile: PropTypes.shape({
+        title: PropTypes.string,
+        about: PropTypes.string,
+        texts: PropTypes.arrayOf(PropTypes.string),
+        listItems: PropTypes.arrayOf(PropTypes.string),
+        imageSrc: PropTypes.string,
+        imageAlt: PropTypes.string,
+        contact: PropTypes.shape({
+            phone: PropTypes.string,
+            email: PropTypes.string,
+            address: PropTypes.string,
+            linkedin: PropTypes.string,
+            github: PropTypes.string,
+            instagram: PropTypes.string,
+            webpage: PropTypes.string
+        }),
+        portfolio: PropTypes.arrayOf(PropTypes.shape({
+            src: PropTypes.string.isRequired,
+            alt: PropTypes.string,
+            caption: PropTypes.string,
+            title: PropTypes.string
+        }))
+    }).isRequired,
+    imageLayout: PropTypes.string
+};
+
+export default ProfileShowcase;

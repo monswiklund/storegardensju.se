@@ -1,23 +1,23 @@
-import { Suspense, lazy } from 'react';
 import FadeInSection from "../components/FadeInSection.jsx";
 import ErrorBoundary from "../components/ErrorBoundary.jsx";
-import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import PageSection from "../components/PageSection.jsx";
-
-// Lazy load heavy components
-const Vilka = lazy(() => import('../components/Vilka.jsx'));
+import ProfileShowcase from "../components/ProfileShowcase.jsx";
+import { profiles } from "../data/profileData.js";
 
 function TeamPage() {
     return (
         <main role="main" id="main-content">
-
             {/* Team */}
             <PageSection background="var(--background-alt)" spacing="default" ariaLabel="about-heading">
                 <ErrorBoundary>
                     <FadeInSection>
-                        <Suspense fallback={<LoadingSpinner size="medium" text="Laddar teamet..." />}>
-                            <Vilka/>
-                        </Suspense>
+                        <div className="profile-showcase-container">
+                            <h2 id="about-heading">Om Oss</h2>
+                            <ProfileShowcase profile={profiles.ann} />
+                            <ProfileShowcase profile={profiles.carl} />
+                            <ProfileShowcase profile={profiles.lina} />
+                            <ProfileShowcase profile={profiles.mans} />
+                        </div>
                     </FadeInSection>
                 </ErrorBoundary>
             </PageSection>

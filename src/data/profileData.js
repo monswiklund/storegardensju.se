@@ -25,6 +25,26 @@ export const profiles = {
             "Konstprojekt"
         ],
         imageSrc: "/images/ann-profile.jpg",
+        portfolio: [
+            {
+                src: '/images/portfolio/ann-1.jpg',
+                alt: 'Keramikarbete av Ann Wiklund',
+                title: 'Keramik',
+                caption: 'Handgjorda unika kärl och skulpturer'
+            },
+            {
+                src: '/images/portfolio/ann-2.jpg',
+                alt: 'Konstutställning',
+                title: 'Utställningar',
+                caption: 'Gemensamma projekt med Alea'
+            },
+            {
+                src: '/images/portfolio/ann-3.jpg',
+                alt: 'Kursverksamhet',
+                title: 'Kurser & Workshops',
+                caption: 'Teckning, måleri och keramik'
+            }
+        ]
     },
 
     carl: {
@@ -49,6 +69,26 @@ export const profiles = {
             "Designer i Shapr3D",
         ],
         imageSrc: "/images/carl-profile.jpg",
+        portfolio: [
+            {
+                src: '/images/portfolio/carl-1.jpg',
+                alt: 'Event av Carl Wiklund',
+                title: 'DJ & Event',
+                caption: 'Klubbar, restauranger och privata tillställningar'
+            },
+            {
+                src: '/images/portfolio/carl-2.jpg',
+                alt: 'Byggnation på Storegården 7',
+                title: 'Byggnation & Design',
+                caption: '3D-ritning och snickeri på Storegården 7'
+            },
+            {
+                src: '/images/portfolio/carl-3.jpg',
+                alt: 'Ljud och ljus setup',
+                title: 'Ljud & Ljus',
+                caption: 'Professionell utrustning för uthyrning'
+            }
+        ]
     },
 
     lina: {
@@ -72,6 +112,26 @@ export const profiles = {
             "Digital design & illustration",
         ],
         imageSrc: "/images/lina-profile.jpg",
+        portfolio: [
+            {
+                src: '/images/portfolio/lina-1.jpg',
+                alt: 'Eventdekoration av Lina Wiklund',
+                title: 'Bröllop & Event',
+                caption: 'Planering och genomförande från idé till färdigt event'
+            },
+            {
+                src: '/images/portfolio/lina-2.jpg',
+                alt: 'Festdekoration och miljöskapande',
+                title: 'Dekoration & Miljö',
+                caption: 'Unika upplevelser för minnesvärda tillfällen'
+            },
+            {
+                src: '/images/portfolio/lina-3.jpg',
+                alt: 'Digital design och illustration',
+                title: 'Digital Design',
+                caption: 'Namnskyltar, menyer och tryckt material'
+            }
+        ]
     },
     mans: {
         title: "Måns Wiklund",
@@ -100,5 +160,25 @@ export const profiles = {
             "Git"
         ],
         imageSrc: "/images/mans-profile.jpg",
+        portfolio: [
+            {
+                src: '/images/portfolio/mans-1.jpg',
+                alt: 'Kodprojekt av Måns Wiklund',
+                title: 'Cloud Development',
+                caption: 'C# och .NET Core molnbaserade lösningar'
+            },
+            {
+                src: '/images/portfolio/mans-2.jpg',
+                alt: 'Storegården 7 webbplats',
+                title: 'Web Development',
+                caption: 'React, responsive design och modern arkitektur'
+            },
+            {
+                src: '/images/portfolio/mans-3.jpg',
+                alt: 'DevOps och CI/CD',
+                title: 'DevOps & Azure',
+                caption: 'Containerteknologier och CI/CD-pipelines'
+            }
+        ]
     }
 };
