@@ -2,7 +2,7 @@ import "./SkapandeStyles.css";
 
 function Skapande() {
   return (
-    <section id="skapande-section" className="skapande-section" aria-labelledby="skapande-heading">
+    <div id="skapande-section" className="skapande-section">
       <div className="skapande-container">
         <h2 id="skapande-heading">Skapande - Målning & Lera</h2>
           <div className="skapande-content">
@@ -50,7 +50,7 @@ function Skapande() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

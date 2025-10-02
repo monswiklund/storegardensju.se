@@ -7,7 +7,7 @@ function EventPage() {
     return (
         <main role="main" id="main-content">
             {/* Event & Fest */}
-            <PageSection background="white" ariaLabel="event-fest-heading">
+            <PageSection background="white" spacing="default" ariaLabel="event-fest-heading">
                 <FadeInSection>
                     <EventFest/>
                 </FadeInSection>

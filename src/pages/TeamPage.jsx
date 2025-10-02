@@ -12,7 +12,7 @@ function TeamPage() {
         <main role="main" id="main-content">
 
             {/* Team */}
-            <PageSection background="var(--background-alt)" ariaLabel="about-heading">
+            <PageSection background="var(--background-alt)" spacing="default" ariaLabel="about-heading">
                 <ErrorBoundary>
                     <FadeInSection>
                         <Suspense fallback={<LoadingSpinner size="medium" text="Laddar teamet..." />}>

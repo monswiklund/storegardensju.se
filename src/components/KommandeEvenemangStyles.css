@@ -1,8 +1,8 @@
 .evenemang-section {
   width: 100%;
   background-color: white;
-  padding: 100px 20px;
   box-sizing: border-box;
+  padding: 80px 20px;
 }
 
 .evenemang-container {
@@ -16,7 +16,7 @@
   font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: 400;
   color: var(--text-color);
-  margin: 0 0 24px 0;
+  margin: 0 0 48px 0;
   letter-spacing: -0.02em;
 }
 
@@ -228,6 +228,10 @@
 @media (max-width: 768px) {
   .evenemang-section {
     padding: 60px 15px;
+  }
+
+  .evenemang-container h2 {
+    margin-bottom: 32px;
   }
 
   .events-grid {

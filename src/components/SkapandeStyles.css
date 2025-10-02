@@ -1,8 +1,8 @@
 .skapande-section {
   width: 100%;
   background-color: var(--background-alt);
-  padding: 100px 20px;
   box-sizing: border-box;
+  padding: 80px 20px;
 }
 
 .skapande-container {
@@ -177,6 +177,10 @@
 @media (max-width: 768px) {
   .skapande-section {
     padding: 60px 15px;
+  }
+
+  .skapande-container h2 {
+    margin-bottom: 32px;
   }
 
   .skapande-content {

@@ -7,7 +7,7 @@ function FeaturedGallery({ onViewAll }) {
   ];
 
   return (
-    <section className="featured-gallery-section" aria-labelledby="featured-gallery-heading">
+    <div className="featured-gallery-section">
       <div className="featured-gallery-container">
         <div className="featured-grid">
           {featuredImages.map((image, index) => (
@@ -41,7 +41,7 @@ function FeaturedGallery({ onViewAll }) {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

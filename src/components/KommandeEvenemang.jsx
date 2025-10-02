@@ -44,7 +44,7 @@ function KommandeEvenemang() {
   const [showPast, setShowPast] = useState(false);
 
   return (
-    <section id="evenemang-section" className="evenemang-section" aria-labelledby="evenemang-heading">
+    <div id="evenemang-section" className="evenemang-section">
       <div className="evenemang-container">
         <h2 id="evenemang-heading">Kommande evenemang</h2>
         <p className="evenemang-intro">
@@ -94,7 +94,6 @@ function KommandeEvenemang() {
             </svg>
           </div>
           <div className="info-content">
-            <h3>Begränsat antal platser</h3>
             <p>Vi har begränsat antal evenemang och kurstillfällen vi kan genomföra varje år. Ser du inget som passar? Kontakta oss för att anmäla ditt intresse eller boka privata kurser och gruppbokningar.</p>
             <button
               className="info-cta-button"
@@ -144,7 +143,7 @@ function KommandeEvenemang() {
         </div>
 
       </div>
-    </section>
+    </div>
   );
 }
 

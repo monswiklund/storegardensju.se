@@ -53,7 +53,7 @@ function Services() {
   };
 
   return (
-    <section className="services-section" aria-labelledby="services-heading">
+    <div className="services-section">
       <div className="services-container">
         <h2 id="services-heading">Vad vi erbjuder</h2>
         <div className="services-grid">
@@ -106,7 +106,7 @@ function Services() {
           })}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

@@ -1,7 +1,6 @@
 .value-proposition-section {
   width: 100%;
   background-color: var(--background-alt);
-  padding: 80px 20px;
   box-sizing: border-box;
 }
 
@@ -78,10 +77,6 @@
 }
 
 @media (max-width: 768px) {
-  .value-proposition-section {
-    padding: 60px 15px;
-  }
-
   .value-props-grid {
     grid-template-columns: 1fr;
     gap: 24px;
@@ -98,10 +93,6 @@
 }
 
 @media (max-width: 480px) {
-  .value-proposition-section {
-    padding: 40px 10px;
-  }
-
   .value-props-grid {
     gap: 16px;
   }

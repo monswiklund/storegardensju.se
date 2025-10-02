@@ -6,7 +6,7 @@ function KonstPage() {
     return (
         <main role="main" id="main-content">
             {/* Skapande sektion */}
-            <PageSection background="white" ariaLabel="skapande-heading">
+            <PageSection background="white" spacing="default" ariaLabel="skapande-heading">
                 <FadeInSection>
                     <Skapande/>
                 </FadeInSection>

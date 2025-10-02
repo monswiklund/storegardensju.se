@@ -12,14 +12,14 @@ function GalleriPage() {
     return (
         <main role="main" id="main-content">
             {/* Om lokalen */}
-            <PageSection background="var(--background-alt)" padding="32px 20px 80px" ariaLabel="welcome-heading">
+            <PageSection background="var(--background-alt)" spacing="compact" ariaLabel="welcome-heading">
                 <FadeInSection>
                     <VälkomstText/>
                 </FadeInSection>
             </PageSection>
 
             {/* Full Gallery */}
-            <PageSection background="white" ariaLabel="gallery-heading">
+            <PageSection background="white" spacing="default" ariaLabel="gallery-heading">
                 <ErrorBoundary>
                     <FadeInSection>
                         <Suspense fallback={<LoadingSpinner size="large" text="Laddar bildgalleri..." />}>

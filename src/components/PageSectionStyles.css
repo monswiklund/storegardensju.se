@@ -2,3 +2,18 @@
     width: 100%;
     box-sizing: border-box;
 }
+
+/* Default spacing - för de flesta sektioner */
+.page-section-default {
+    padding: 0;
+}
+
+/* Compact spacing - för tätare innehåll */
+.page-section-compact {
+    padding: 0;
+}
+
+/* None - ingen padding (för hero, fullbleed bilder etc) */
+.page-section-none {
+    padding: 0;
+}

@@ -174,11 +174,23 @@ body {
   align-items: center;
   width: 100%;
   max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 15px;
+  margin: 0 auto;
+  padding: 80px 20px;
   font-size: 1rem;
   font-weight: 300;
   box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .vilka-container {
+    padding: 60px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vilka-container {
+    padding: 40px 10px;
+  }
 }
 
 .vilka-container h2 {
@@ -424,8 +436,7 @@ body {
   }
 
   .content-container,
-  .välkomst-text,
-  .vilka-container {
+  .välkomst-text {
     padding: 0 10px;
   }
 

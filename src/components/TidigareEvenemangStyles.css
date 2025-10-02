@@ -1,19 +1,8 @@
 .tidigare-evenemang-section {
   width: 100%;
   background-color: var(--background-alt);
-  padding: 100px 20px; /* default (open) */
   box-sizing: border-box;
-  transition: padding 0.35s ease;
-}
-
-/* Reduced vertical space when collapsed to remove big gap */
-.tidigare-evenemang-section.collapsed {
-  padding: 16px 20px 0; /* no bottom padding when collapsed */
-}
-
-/* Slightly tweaked when open (can adjust if needed) */
-.tidigare-evenemang-section.open {
-  padding: 90px 20px 100px;
+  padding: 80px 20px;
 }
 
 /* Optional: tighter spacing below toggle when collapsed */
@@ -32,7 +21,7 @@
   font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: 400;
   color: var(--text-color);
-  margin: 0 0 24px 0;
+  margin: 0 0 48px 0;
   letter-spacing: -0.02em;
 }
 
@@ -206,9 +195,13 @@
 }
 
 @media (max-width: 768px) {
-  .tidigare-evenemang-section {
-    padding: 60px 15px;
-  }
+    .tidigare-evenemang-section {
+      padding: 60px 15px;
+    }
+
+    .tidigare-evenemang-container h2 {
+      margin-bottom: 32px;
+    }
 
     .collapsible-title {
         font-weight: 300;

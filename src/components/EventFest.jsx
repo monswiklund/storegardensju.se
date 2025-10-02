@@ -7,7 +7,7 @@ function EventFest() {
   ];
 
   return (
-    <section id="event-fest-section" className="event-fest-section" aria-labelledby="event-fest-heading">
+    <div id="event-fest-section" className="event-fest-section">
       <div className="event-fest-container">
         <h2 id="event-fest-heading">Event & Fest</h2>
 
@@ -57,7 +57,7 @@ function EventFest() {
           </button>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

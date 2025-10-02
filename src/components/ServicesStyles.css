@@ -1,5 +1,6 @@
 .services-section {
     width: 100%;
+    padding: 40px 20px;
 }
 
 .services-container {
@@ -13,7 +14,7 @@
   font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: 400;
   color: var(--text-color);
-  margin: 0 0 60px 0;
+  margin: 0 0 48px 0;
   letter-spacing: -0.02em;
 }
 
@@ -114,11 +115,11 @@
 
 @media (max-width: 768px) {
   .services-section {
-    padding: 60px 15px;
+    padding: 30px 15px;
   }
 
   .services-container h2 {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
   }
 
   .services-grid {
@@ -138,7 +139,7 @@
 
 @media (max-width: 480px) {
   .services-section {
-    padding: 40px 10px;
+    padding: 20px 10px;
   }
 
   .services-grid {

@@ -16,7 +16,7 @@ function HomePage() {
     return (
         <>
             <header role="banner">
-                <PageSection background="white" padding="0" ariaLabel="hero-heading">
+                <PageSection background="white" spacing="none" ariaLabel="hero-heading">
                     <FadeInSection>
                         <VälkomstBild/>
                     </FadeInSection>
@@ -25,26 +25,26 @@ function HomePage() {
 
             <main role="main" id="main-content">
                 {/* Featured Images Grid */}
-                <PageSection background="white" padding="20px 0">
+                <PageSection background="white" spacing="compact" ariaLabel="featured-gallery-heading">
                     <FadeInSection>
                         <FeaturedGallery onViewAll={scrollToGallery} />
                     </FadeInSection>
                 </PageSection>
 
                 {/* Services - Klickbara kort */}
-                <PageSection background="white" ariaLabel="services-heading">
+                <PageSection background="white" spacing="compact" ariaLabel="services-heading">
                     <FadeInSection>
                         <Services/>
                     </FadeInSection>
                 </PageSection>
 
                 {/* Kommande evenemang */}
-                <PageSection background="var(--background-alt)" ariaLabel="evenemang-heading">
+                <PageSection background="var(--background-alt)" spacing="compact" ariaLabel="evenemang-heading">
                     <FadeInSection>
                         <KommandeEvenemang/>
                     </FadeInSection>
                 </PageSection>
-                
+
             </main>
         </>
     );
