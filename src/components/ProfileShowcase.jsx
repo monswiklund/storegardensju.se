@@ -35,8 +35,12 @@ const ProfileShowcase = ({ profile, imageLayout = 'default' }) => {
 
     return (
         <div className="profile-showcase-row">
-            {/* Profil kolumn */}
-            <div className="profile-cell">
+            {/* Portfolio horizontal scroll gallery with profile as first slide */}
+            <div className="portfolio-gallery">
+                <div className="portfolio-scroll-container">
+                    {/* Profile as first slide */}
+                    <div className="profile-slide-wrapper">
+                        <div className="profile-cell">
                 {profile.imageSrc && (
                     <img
                         className="profile-image"
@@ -113,11 +117,18 @@ const ProfileShowcase = ({ profile, imageLayout = 'default' }) => {
                         </ul>
                     </div>
                 )}
-            </div>
+                        </div>
+                    </div>
 
-            {/* Portfolio horizontal scroll gallery */}
-            <div className="portfolio-gallery">
-                <div className="portfolio-scroll-container">
+                    {/* Swipe indicator - sticky */}
+                    <div className="swipe-indicator">
+                        <span>Swipe</span>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </div>
+
+                    {/* Portfolio images */}
                     {profile.portfolio && profile.portfolio.length > 0 ? (
                         profile.portfolio.map((item, index) => renderPortfolioImage(item, index))
                     ) : (
