@@ -1,4 +1,8 @@
 /* React Image Gallery Custom Styles */
+:root {
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+}
 
 /* Force consistent font across all gallery elements */
 .storegarden-gallery *,
@@ -46,7 +50,7 @@
 }
 
 .gallery-column:nth-child(3) {
-  padding-top: 0px;
+  padding-top: 0; /* removed redundant px unit */
 }
 
 .expanded-grid {
@@ -131,77 +135,51 @@
 
 /* Sticky hide button (was fixed + .stuck states) */
 .hide-images-button {
-  position: sticky;
-  bottom: 30px; /* stick to bottom edge of viewport while within container */
-  left: 50%;
-  transform: translateX(-50%);
+  --hide-btn-offset: 30px;
   display: inline-block;
   margin: 0;
   padding: 14px 32px;
   background: var(--primary-color);
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 50px;
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: 500;
-  transition: all 0.2s ease-in-out;
   box-shadow: var(--shadow-xl);
-  z-index: 10; /* reduced from 100; sufficient above thumbnails */
+  z-index: 100;
   width: fit-content;
+  position: absolute; /* default inside container when at-bottom state applies*/
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -30px; /* final resting point inside container */
+  opacity: 1;
 }
 
-.hide-images-button:hover {
+.hide-images-button.is-fixed {
+  position: fixed;
+  left: 50%;
+  bottom: var(--hide-btn-offset);
+  transform: translateX(-50%);
+}
+
+.hide-images-button.at-bottom {
+  position: absolute;
+  bottom: 30; /* already anchored to container bottom */
+  transform: translateX(-50%);
+}
+
+.hide-images-button.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(4px);
+}
+
+.hide-images-button:hover:not(.is-hidden) {
   background: var(--primary-hover);
   transform: translateX(-50%) translateY(-2px);
-  box-shadow: var(--shadow-xl);
 }
 
-/* Gallery modal */
-.gallery-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gallery-modal-content {
-  position: relative;
-  width: 90%;
-  height: 90%;
-  max-width: 1000px;
-}
-
-.gallery-close-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  font-size: 30px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s ease;
-}
-
-.gallery-close-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .gallery-grid {
     gap: 6px;
@@ -212,10 +190,17 @@
   }
 
   .hide-images-button {
-    bottom: 20px;
+    --hide-btn-offset: -20px;
     padding: 12px 24px;
     font-size: 1rem;
   }
+
+    .hide-images-button.at-bottom {
+        position: absolute;
+        bottom: -45px; /* already anchored to container bottom */
+        transform: translateX(-50%);
+    }
+
 }
 
 @media (max-width: 600px) {
@@ -233,6 +218,13 @@
   }
 }
 
+.hide-images-button.is-fixed {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+}
+
 @media (max-width: 480px) {
   .gallery-grid {
     gap: 6px;
@@ -243,10 +235,11 @@
   }
 
   .hide-images-button {
-    bottom: 15px;
+    --hide-btn-offset: 30px;
     padding: 10px 20px;
     font-size: 0.9375rem;
   }
+
 }
 
 /* Image Overlay */

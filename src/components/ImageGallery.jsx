@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import ImageGallery from "react-image-gallery";
 import Masonry from "react-masonry-css";
 import "react-image-gallery/styles/css/image-gallery.css";
@@ -12,6 +12,16 @@ function StoregardensImageGallery() {
     const [showAllImages, setShowAllImages] = useState(false);
     const [showLightbox, setShowLightbox] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
+    const [buttonMode, setButtonMode] = useState('hidden'); // hidden | fixed | bottom
+    const buttonModeRef = useRef('hidden');
+    const setMode = useCallback((mode) => {
+        if (buttonModeRef.current !== mode) {
+            buttonModeRef.current = mode;
+            setButtonMode(mode);
+        }
+    }, []);
+    const containerRef = useRef(null);
+    const buttonRef = useRef(null);
 
     // Helper function to get image path based on category and image number
     const getImagePath = (imageNumber, categoryId) => {
@@ -93,6 +103,125 @@ function StoregardensImageGallery() {
         setShowLightbox(false);
     }, []);
 
+    // Scroll-based button behavior
+    useEffect(() => {
+        if (!showAllImages) {
+            setMode('hidden');
+            return;
+        }
+        const el = containerRef.current;
+        if (!el) return;
+
+        let ticking = false;
+        const FIXED_OFFSET = 30; // distance from viewport bottom while fixed
+        const DOCK_THRESHOLD = 8; // how close (px) viewport bottom must be to container bottom to dock
+
+        const getAbsoluteTop = (node) => {
+            let top = 0;
+            let current = node;
+            while (current) {
+                top += current.offsetTop || 0;
+                current = current.offsetParent;
+            }
+            return top;
+        };
+
+        let topIn = false;
+        let bottomIn = false;
+        const topSentinel = el.querySelector('.sentinel-top');
+        const bottomSentinel = el.querySelector('.sentinel-bottom');
+        let io;
+        if ('IntersectionObserver' in window && topSentinel && bottomSentinel) {
+            io = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.target === topSentinel) topIn = entry.isIntersecting;
+                    if (entry.target === bottomSentinel) bottomIn = entry.isIntersecting;
+                });
+                if (!topIn && !bottomIn) {
+                    const containerTopAbs = getAbsoluteTop(el);
+                    const containerBottomAbs = containerTopAbs + el.offsetHeight;
+                    const scrollY = window.scrollY || window.pageYOffset;
+                    const viewportBottom = scrollY + (window.innerHeight || document.documentElement.clientHeight);
+                    if (viewportBottom < containerTopAbs || scrollY >= containerBottomAbs) {
+                        setMode('hidden');
+                        return;
+                    }
+                }
+                if (bottomIn) {
+                    setMode('bottom');
+                } else if (topIn) {
+                    setMode('fixed');
+                }
+            }, { root: null, threshold: 0 });
+            io.observe(topSentinel);
+            io.observe(bottomSentinel);
+        }
+
+        const computeAndSet = () => {
+            if (!containerRef.current) return;
+            const container = containerRef.current;
+            const containerTop = getAbsoluteTop(container);
+            const containerHeight = container.offsetHeight;
+            const containerBottom = containerTop + containerHeight;
+
+            const scrollY = window.scrollY || window.pageYOffset;
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            const viewportBottom = scrollY + viewportHeight;
+
+            if (viewportBottom < containerTop) {
+                setMode('hidden');
+                return;
+            }
+            if (scrollY >= containerBottom) {
+                setMode('hidden');
+                return;
+            }
+            // Later docking: only dock when really near bottom
+            if (viewportBottom >= containerBottom - DOCK_THRESHOLD) {
+                setMode('bottom');
+                return;
+            }
+            setMode('fixed');
+        };
+
+        const onScroll = () => {
+            if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(() => {
+                    computeAndSet();
+                    ticking = false;
+                });
+            }
+        };
+        const onResize = () => computeAndSet();
+
+        let resizeObserver;
+        if (window.ResizeObserver) {
+            resizeObserver = new ResizeObserver(() => computeAndSet());
+            resizeObserver.observe(el);
+        }
+        const imgs = el.querySelectorAll('img');
+        imgs.forEach(img => {
+            if (!img.complete) {
+                img.addEventListener('load', computeAndSet, { once: true });
+            }
+        });
+
+        setTimeout(computeAndSet, 50);
+        setTimeout(computeAndSet, 200);
+        setTimeout(computeAndSet, 600);
+
+        computeAndSet();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onResize);
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onResize);
+            if (resizeObserver) resizeObserver.disconnect();
+            if (io) io.disconnect();
+        };
+    }, [showAllImages, setMode]);
+
     const breakpointColumns = {
         default: 3,
         768: 2,
@@ -171,7 +300,8 @@ function StoregardensImageGallery() {
 
             {/* Expanded grid - remaining images */}
             {showAllImages && (
-                <div className="expanded-gallery-container">
+                <div className="expanded-gallery-container" ref={containerRef}>
+                    <div className="gallery-sentinel sentinel-top" aria-hidden="true" />
                     <Masonry
                         breakpointCols={breakpointColumns}
                         className="gallery-grid expanded-grid"
@@ -205,12 +335,14 @@ function StoregardensImageGallery() {
                             </div>
                         ))}
                     </Masonry>
-
+                    <div className="gallery-sentinel sentinel-bottom" aria-hidden="true" />
                     {/* Sticky hide button */}
                     <button
-                        className="hide-images-button"
+                        ref={buttonRef}
+                        className={`hide-images-button ${buttonMode === 'fixed' ? 'is-fixed' : ''} ${buttonMode === 'bottom' ? 'at-bottom' : ''} ${buttonMode === 'hidden' ? 'is-hidden' : ''}`}
                         onClick={toggleAllImages}
                         aria-label="Dölj utökade galleri bilder"
+                        aria-hidden={buttonMode === 'hidden'}
                     >
                         Dölj bilder
                     </button>
