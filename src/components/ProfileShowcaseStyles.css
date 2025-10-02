@@ -128,7 +128,7 @@
 
 .profile-skills h4,
 .profile-contact h4 {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -148,7 +148,7 @@
 
 .profile-skills li {
   padding: 2px 0;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
   position: relative;
 }
@@ -181,7 +181,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
 }
 
@@ -222,7 +222,6 @@
   scroll-behavior: smooth;
   height: 100%;
   -webkit-overflow-scrolling: touch;
-  /* Completely disable any drag behavior */
   scroll-snap-type: none;
   overscroll-behavior-x: auto; /* Changed from contain to auto */
   touch-action: manipulation; /* Changed from pan-x to manipulation */
@@ -272,7 +271,7 @@
 .portfolio-slide img {
   width: auto;
   height: 100%;
-  max-height: 800px;
+  max-height: 600px;
   object-fit: contain;
   display: block;
 }
@@ -376,25 +375,25 @@
   }
 
   .profile-title {
-    font-size: 1.75rem;
+    font-size: 1.9rem;
   }
 
   .profile-about {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
 
   .profile-skills h4,
   .profile-contact h4 {
     margin: 16px 0 8px 0;
-    font-size: 0.7rem;
+    font-size: 0.9rem;
   }
 
   .profile-skills li {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
   }
 
   .showcase-contact-item {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
   }
 
   .portfolio-slide {
@@ -444,7 +443,7 @@
   }
 
   .profile-cell {
-    max-width: 180px;
+    max-width: 250px;
     gap: 8px;
   }
 
@@ -459,21 +458,21 @@
   }
 
   .profile-title {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   .profile-about {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .profile-description {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .profile-skills h4,
   .profile-contact h4 {
     margin: 16px 0 8px 0;
-    font-size: 0.65rem;
+    font-size: 0.9rem;
   }
 
   .profile-skills ul {
@@ -481,11 +480,11 @@
   }
 
   .profile-skills li {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .showcase-contact-item {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     gap: 6px;
   }
 

@@ -81,10 +81,7 @@ const ProfileShowcase = ({ profile, imageLayout = "default" }) => {
             />
           </svg>
         </div>
-        <div
-          className="portfolio-scroll-container"
-          ref={scrollContainerRef}
-        >
+        <div className="portfolio-scroll-container" ref={scrollContainerRef}>
           {/* Profile as first slide */}
           <div className="profile-slide-wrapper">
             <div className="profile-cell">
@@ -182,7 +179,7 @@ const ProfileShowcase = ({ profile, imageLayout = "default" }) => {
             )
           ) : (
             <div className="portfolio-placeholder">
-              <p>Portfolio bilder kommer snart</p>
+              <p></p>
             </div>
           )}
         </div>
