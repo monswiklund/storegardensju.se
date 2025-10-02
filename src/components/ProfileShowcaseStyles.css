@@ -221,17 +221,16 @@
   scroll-behavior: smooth;
   height: 100%;
   -webkit-overflow-scrolling: touch;
-  /* Enhanced for free drag */
-  scroll-snap-type: none; /* Remove snap points for free scrolling */
-  overscroll-behavior-x: contain; /* Prevent overscroll effects */
-  touch-action: pan-x; /* Allow horizontal panning only */
-  will-change: scroll-position; /* Optimize for smooth scrolling */
-  cursor: grab;
+  /* Completely disable any drag behavior */
+  scroll-snap-type: none;
+  overscroll-behavior-x: auto; /* Changed from contain to auto */
+  touch-action: manipulation; /* Changed from pan-x to manipulation */
+  cursor: default;
+  user-select: auto; /* Ensure text selection works normally */
 }
 
-.portfolio-scroll-container:active {
-  cursor: grabbing;
-}
+/* Remove active cursor state since no mouse drag */
+/* .portfolio-scroll-container:active removed */
 
 /* Smoother scrollbar for desktop */
 .portfolio-scroll-container::-webkit-scrollbar {

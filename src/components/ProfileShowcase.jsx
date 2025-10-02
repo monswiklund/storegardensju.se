@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import {
   Phone,
   Mail,
@@ -13,127 +13,11 @@ import "./ProfileShowcaseStyles.css";
 
 const ProfileShowcase = ({ profile, imageLayout = "default" }) => {
   const scrollContainerRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [velocity, setVelocity] = useState(0);
-  const [lastX, setLastX] = useState(0);
-  const [lastTime, setLastTime] = useState(0);
 
-  // Mouse drag handlers with improved "free" feel
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
-    setScrollLeft(scrollContainerRef.current.scrollLeft);
-    setLastX(e.pageX);
-    setLastTime(Date.now());
-    setVelocity(0);
-    scrollContainerRef.current.style.cursor = "grabbing";
-    scrollContainerRef.current.style.userSelect = "none";
-    // Prevent default to avoid text selection
-    e.preventDefault();
-  };
-
-  const handleMouseUp = () => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.style.cursor = "grab";
-      scrollContainerRef.current.style.userSelect = "auto";
-
-      // Add momentum/inertia effect for free-flowing feel
-      if (Math.abs(velocity) > 0.3) {
-        const momentum = velocity * 300; // Increased momentum multiplier for freer feel
-        const targetScroll = scrollContainerRef.current.scrollLeft - momentum;
-        scrollContainerRef.current.scrollTo({
-          left: targetScroll,
-          behavior: "smooth",
-        });
-      }
-    }
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-
-    const currentTime = Date.now();
-    const currentX = e.pageX;
-    const timeDiff = currentTime - lastTime;
-
-    if (timeDiff > 0) {
-      setVelocity((currentX - lastX) / timeDiff);
-    }
-
-    const x = e.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - startX) * 1.5; // Slightly increased for more responsive free scrolling
-    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
-
-    setLastX(currentX);
-    setLastTime(currentTime);
-  };
-
-  const handleMouseLeave = () => {
-    if (isDragging) {
-      setIsDragging(false);
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.style.cursor = "grab";
-        scrollContainerRef.current.style.userSelect = "auto";
-      }
-    }
-  };
-
-  // Touch handlers for mobile free drag
-  const handleTouchStart = (e) => {
-    const touch = e.touches[0];
-    setIsDragging(true);
-    setStartX(touch.pageX - scrollContainerRef.current.offsetLeft);
-    setScrollLeft(scrollContainerRef.current.scrollLeft);
-    setLastX(touch.pageX);
-    setLastTime(Date.now());
-    setVelocity(0);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault(); // Prevent default scroll behavior
-
-    const touch = e.touches[0];
-    const currentTime = Date.now();
-    const currentX = touch.pageX;
-    const timeDiff = currentTime - lastTime;
-
-    if (timeDiff > 0) {
-      setVelocity((currentX - lastX) / timeDiff);
-    }
-
-    const x = touch.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - startX) * 1; // Natural 1:1 drag ratio
-    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
-
-    setLastX(currentX);
-    setLastTime(currentTime);
-  };
-
-  const handleTouchEnd = () => {
-    if (!isDragging) return;
-    setIsDragging(false);
-
-    // Add momentum for touch as well
-    if (Math.abs(velocity) > 0.5) {
-      const momentum = velocity * 300; // Higher momentum for touch
-      const targetScroll = scrollContainerRef.current.scrollLeft - momentum;
-      scrollContainerRef.current.scrollTo({
-        left: targetScroll,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  // Set initial cursor style
+  // Set initial cursor style for desktop (no drag)
   useEffect(() => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.style.cursor = "grab";
+      scrollContainerRef.current.style.cursor = "default";
     }
   }, []);
 
@@ -200,13 +84,6 @@ const ProfileShowcase = ({ profile, imageLayout = "default" }) => {
         <div
           className="portfolio-scroll-container"
           ref={scrollContainerRef}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
         >
           {/* Profile as first slide */}
           <div className="profile-slide-wrapper">
