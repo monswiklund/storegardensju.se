@@ -156,7 +156,7 @@ function StoregardensImageGallery() {
                     {images.slice(0, 6).map((image, index) => (
                         <div
                             key={index}
-                            className="gallery-thumbnail"
+                            className={`gallery-thumbnail ${image.sizeClass}`}
                             onClick={() => openLightbox(index)}
                             role="button"
                             tabIndex={0}
@@ -207,7 +207,7 @@ function StoregardensImageGallery() {
                         {images.slice(6).map((image, index) => (
                             <div
                                 key={index + 6}
-                                className="gallery-thumbnail"
+                                className={`gallery-thumbnail ${image.sizeClass}`}
                                 onClick={() => openLightbox(index + 6)}
                                 role="button"
                                 tabIndex={0}

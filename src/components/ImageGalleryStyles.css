@@ -10,9 +10,9 @@
 /* Thumbnail grid for react-image-gallery */
 .storegarden-gallery {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 30px auto;
-  padding: 15px;
+  padding: 40px 20px;
   box-sizing: border-box;
 }
 
@@ -58,11 +58,11 @@
 .gallery-thumbnail {
   position: relative;
   overflow: hidden;
-  border-radius: 0;
+  border-radius: 8px;
   background: #ffffff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   transform: translateY(0);
-  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   cursor: pointer;
   width: 100%;
   height: fit-content;
@@ -72,45 +72,58 @@
 
 .gallery-thumbnail:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
 }
 
 .gallery-thumbnail img {
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 0;
+  border-radius: 8px;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: block;
+}
+
+/* Subtle vertical offset variations to avoid grid illusion */
+.gallery-thumbnail.small {
+  padding-top: 0px;
+}
+
+.gallery-thumbnail.medium {
+  padding-top: 8px;
+}
+
+.gallery-thumbnail.large {
+  padding-top: 16px;
 }
 
 .gallery-thumbnail:hover img {
   transform: scale(1.01);
 }
 
-/* Show more button - matching Tillbaka Upp green */
+/* Show more button */
 .show-more-button {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-  background-color: hsl(160, 29%, 66%);
+  display: flex;
+  margin: 30px auto;
+  padding: 12px 28px;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 25px;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 300;
-  transition: all 0.3s ease;
-  display: flex;
+  font-weight: 400;
+  transition: var(--transition-smooth);
   align-items: center;
   gap: 8px;
   justify-content: center;
+  box-shadow: var(--shadow-md);
 }
 
 .show-more-button:hover {
-  background-color: hsl(160, 29%, 56%);
+  background-color: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Sticky hide button */
@@ -120,23 +133,23 @@
   display: block;
   margin: 40px auto 0;
   padding: 14px 32px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 50px;
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(64, 123, 94, 0.3);
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-lg);
   z-index: 100;
   width: fit-content;
 }
 
 .hide-images-button:hover {
-  background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+  background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(64, 123, 94, 0.4);
+  box-shadow: var(--shadow-xl);
 }
 
 /* Gallery modal */
