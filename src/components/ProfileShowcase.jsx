@@ -169,6 +169,23 @@ const ProfileShowcase = ({ profile, imageLayout = "default" }) => {
                   </ul>
                 </div>
               )}
+
+              {/* Action buttons */}
+              {profile.actions && profile.actions.length > 0 && (
+                <div className="profile-actions">
+                  {profile.actions.map((action, index) => (
+                    <a
+                      key={index}
+                      href={action.href}
+                      className={`profile-action-btn ${action.primary ? 'primary' : 'secondary'}`}
+                      target={action.external ? "_blank" : undefined}
+                      rel={action.external ? "noopener noreferrer" : undefined}
+                    >
+                      {action.label}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -205,6 +222,14 @@ ProfileShowcase.propTypes = {
       instagram: PropTypes.string,
       webpage: PropTypes.string,
     }),
+    actions: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        href: PropTypes.string.isRequired,
+        primary: PropTypes.bool,
+        external: PropTypes.bool,
+      })
+    ),
     portfolio: PropTypes.arrayOf(
       PropTypes.shape({
         src: PropTypes.string.isRequired,

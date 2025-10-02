@@ -617,11 +617,19 @@ body {
 /* Hero CTA Buttons */
 .hero-cta-group {
   display: flex;
+  flex-direction: column;
   gap: 16px;
   justify-content: center;
   align-items: center;
   margin-top: 32px;
-  flex-wrap: wrap;
+}
+
+.hero-cta-secondary-group {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .hero-cta {
@@ -636,6 +644,7 @@ body {
   transition: all 0.3s ease;
   min-width: 200px;
   border: 2px solid transparent;
+  text-decoration: none;
 }
 
 .hero-cta-primary {
@@ -663,18 +672,33 @@ body {
   box-shadow: var(--shadow-md);
 }
 
-@media (max-width: 640px) {
+.hero-cta:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(64, 123, 94, 0.3);
+}
+
+@media (max-width: 768px) {
   .hero-cta-group {
-    flex-direction: column;
     width: 100%;
     gap: 12px;
   }
 
+  .hero-cta-secondary-group {
+    gap: 12px;
+  }
+
   .hero-cta {
-    width: 100%;
     min-width: auto;
     font-size: 1rem;
-    padding: 14px 28px;
+    padding: 14px 20px;
+  }
+
+  .hero-cta-primary {
+    width: 100%;
+  }
+
+  .hero-cta-secondary-group .hero-cta {
+    flex: 1;
   }
 }
 

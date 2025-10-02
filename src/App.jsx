@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar.jsx";
 import Kontakt from "./components/Kontakt.jsx";
 import FadeInSection from "./components/FadeInSection.jsx";
 import ScrollToTopButton from "./components/ScrollToTopButton.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 import BuildInfo from "./components/BuildInfo.jsx";
 
 // Pages
@@ -15,6 +16,7 @@ import TeamPage from "./pages/TeamPage.jsx";
 function App() {
     return (
         <Router>
+            <ScrollToTop />
             <Navbar />
             <a href="#main-content" className="skip-link">Hoppa till huvudinnehåll</a>
 

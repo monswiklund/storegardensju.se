@@ -6,8 +6,8 @@ function Services() {
       {
           id: "event-fest",
           title: "Event, Bröllop & Fest",
-          subtitle: "Boka lokalen för ditt nästa evenemang",
-          description: "",
+          subtitle: "",
+          description: "Boka lokalen för ditt nästa evenemang",
           route: "/event",
           icon: (
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -20,7 +20,7 @@ function Services() {
       {
       id: "skapande",
       title: "Kurser & Skapande",
-      subtitle: "Målning & Lera",
+      subtitle: "",
       description: "Kreativa workshops i en inspirerande miljö",
       route: "/konst",
       icon: (
@@ -29,22 +29,22 @@ function Services() {
           <path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/>
         </svg>
       )
-    },
-    {
-      id: "evenemang",
-      title: "Kommande evenemang",
-      subtitle: "Se vad som händer",
-      description: "Upptäck och boka våra kommande event",
-      scrollTo: "evenemang",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-          <line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
-        </svg>
-      )
     }
+    // {
+    //   id: "evenemang",
+    //   title: "Kommande evenemang",
+    //   subtitle: "Se vad som händer",
+    //   description: "Upptäck och boka våra kommande event",
+    //   scrollTo: "evenemang",
+    //   icon: (
+    //     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    //       <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+    //       <line x1="16" y1="2" x2="16" y2="6"/>
+    //       <line x1="8" y1="2" x2="8" y2="6"/>
+    //       <line x1="3" y1="10" x2="21" y2="10"/>
+    //     </svg>
+    //   )
+    // }
   ];
 
   const scrollToSection = (sectionId) => {
@@ -81,7 +81,7 @@ function Services() {
                   <h3 className="service-title">{service.title}</h3>
                   <p className="service-subtitle">{service.subtitle}</p>
                   <p className="service-description">{service.description}</p>
-                  <span className="service-arrow">→</span>
+                  <span className="service-arrow">Läs mer</span>
                 </div>
               );
             }
@@ -100,7 +100,7 @@ function Services() {
                 <h3 className="service-title">{service.title}</h3>
                 <p className="service-subtitle">{service.subtitle}</p>
                 <p className="service-description">{service.description}</p>
-                <span className="service-arrow">→</span>
+                <span className="service-arrow">Läs mer</span>
               </Link>
             );
           })}

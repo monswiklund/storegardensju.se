@@ -94,7 +94,7 @@ function KommandeEvenemang() {
             </svg>
           </div>
           <div className="info-content">
-            <p>Vi har begränsat antal evenemang och kurstillfällen vi kan genomföra varje år. Ser du inget som passar? Kontakta oss för att anmäla ditt intresse eller boka privata kurser och gruppbokningar.</p>
+            <p>Vi har begränsat antal evenemang och kurstillfällen vi kan genomföra varje år. Ser du inget som passar? Kontakta oss gärna för att anmäla ditt intresse eller boka privata kurser och gruppbokningar.</p>
             <button
               className="info-cta-button"
               onClick={() => document.querySelector('.kontakt-container')?.scrollIntoView({behavior: 'smooth', block: 'center'})}
@@ -122,23 +122,21 @@ function KommandeEvenemang() {
             role="region"
             aria-label="Tidigare evenemang"
           >
-            {showPast && (
-              <div className="past-events-grid" style={{marginTop: '28px'}}>
-                {pastEvents.map((event, idx) => (
-                  <article key={idx} className="past-event-card" aria-labelledby={`past-event-title-${idx}`}>
-                    <h3 id={`past-event-title-${idx}`} className="past-event-title">{event.title}</h3>
-                    <div className="past-event-meta">
-                      <span className="past-event-date">{event.date}</span>
-                      <span className="past-event-time" style={{ whiteSpace: 'pre-line' }}>{event.time}</span>
-                    </div>
-                    <p className="past-event-description">{event.description}</p>
-                    {event.location && (
-                      <p className="past-event-location">{event.location}</p>
-                    )}
-                  </article>
-                ))}
-              </div>
-            )}
+            <div className="past-events-grid" style={{marginTop: '28px'}}>
+              {pastEvents.map((event, idx) => (
+                <article key={idx} className="past-event-card" aria-labelledby={`past-event-title-${idx}`}>
+                  <h3 id={`past-event-title-${idx}`} className="past-event-title">{event.title}</h3>
+                  <div className="past-event-meta">
+                    <span className="past-event-date">{event.date}</span>
+                    <span className="past-event-time" style={{ whiteSpace: 'pre-line' }}>{event.time}</span>
+                  </div>
+                  <p className="past-event-description">{event.description}</p>
+                  {event.location && (
+                    <p className="past-event-location">{event.location}</p>
+                  )}
+                </article>
+              ))}
+            </div>
           </div>
         </div>
 

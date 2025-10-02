@@ -148,11 +148,11 @@
 }
 
 .info-box {
-  max-width: 800px;
+  max-width: 750px;
   margin: 48px auto;
   padding: 20px 24px;
-  background: rgba(64, 123, 94, 0.02);
-  border: 1px solid rgba(64, 123, 94, 0.12);
+  background: transparent;
+  border: none;
   border-radius: 10px;
   display: flex;
   gap: 16px;
@@ -163,12 +163,12 @@
   flex-shrink: 0;
   width: 32px;
   height: 32px;
-  background: rgba(64, 123, 94, 0.08);
+  background: transparent;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-color);
+  color: var(--text-secondary);
 }
 
 .info-icon svg {
@@ -195,21 +195,23 @@
 }
 
 .info-cta-button {
-  padding: 8px 20px;
-  background: white;
+  padding: 0;
+  background: transparent;
   color: var(--primary-color);
-  border: 1px solid rgba(64, 123, 94, 0.3);
-  border-radius: 50px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  border: none;
+  border-radius: 0;
+  font-size: 0.9rem;
+  font-weight: 400;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: transparent;
 }
 
 .info-cta-button:hover {
-  background: rgba(64, 123, 94, 0.05);
-  border-color: var(--primary-color);
-  transform: translateY(-1px);
+  background: transparent;
+  text-decoration-color: var(--primary-color);
 }
 
 .evenemang-footer {

@@ -36,13 +36,24 @@ function VälkomstBild() {
           >
             Boka ditt evenemang
           </button>
-          <button
-            className="hero-cta hero-cta-secondary"
-            onClick={() => navigate("/galleri")}
-            aria-label="Gå till bildgalleri"
-          >
-            Se galleriet
-          </button>
+          <div className="hero-cta-secondary-group">
+            <button
+              className="hero-cta hero-cta-secondary"
+              onClick={() => navigate("/galleri")}
+              aria-label="Gå till bildgalleri"
+            >
+              Se galleriet
+            </button>
+            <a
+              href="https://maps.google.com/?q=Storegården+7+Rackeby+Lidköping"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hero-cta hero-cta-secondary"
+              aria-label="Öppna Google Maps för vägbeskrivning"
+            >
+              Hitta hit
+            </a>
+          </div>
         </div>
       </div>
     </div>
