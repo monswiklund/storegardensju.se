@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./NavbarStyles.css";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navMenuRef = useRef(null);
+  const hamburgerRef = useRef(null);
 
   const navItems = [
     { label: "Hem", path: "/" },
@@ -20,10 +22,34 @@ function Navbar() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isOpen &&
+        navMenuRef.current &&
+        hamburgerRef.current &&
+        !navMenuRef.current.contains(event.target) &&
+        !hamburgerRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
     <nav className="navbar" role="navigation" aria-label="Huvudnavigation">
       <div className="navbar-container">
         <button
+          ref={hamburgerRef}
           className={`hamburger ${isOpen ? "open" : ""}`}
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle navigation menu"
@@ -34,7 +60,7 @@ function Navbar() {
           <span></span>
         </button>
 
-        <div className={`nav-menu ${isOpen ? "open" : ""}`}>
+        <div ref={navMenuRef} className={`nav-menu ${isOpen ? "open" : ""}`}>
           <ul className="nav-list">
             {navItems.map((item, index) => (
               <li key={index} className="nav-item">
@@ -51,17 +77,6 @@ function Navbar() {
             ))}
           </ul>
         </div>
-
-        {isOpen && (
-          <div
-            className="nav-overlay"
-            onClick={() => {
-              setIsOpen(false);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            aria-hidden="true"
-          />
-        )}
       </div>
     </nav>
   );

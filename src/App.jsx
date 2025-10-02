@@ -18,8 +18,6 @@ function App() {
         <Router>
             <ScrollToTop />
             <Navbar />
-            <a href="#main-content" className="skip-link">Hoppa till huvudinnehåll</a>
-
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/event" element={<EventPage />} />
