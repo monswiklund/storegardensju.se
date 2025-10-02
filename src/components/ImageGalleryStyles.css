@@ -154,6 +154,13 @@
   transform: translateX(-50%);
   bottom: -30px; /* final resting point inside container */
   opacity: 1;
+  /* Remove default focus outline but keep custom accessible one below */
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+
+  /* Added smooth transitions & performance hint */
+  transition: background-color .25s ease, box-shadow .25s ease, transform .18s ease;
+  will-change: box-shadow, transform;
 }
 
 .hide-images-button.is-fixed {
@@ -165,7 +172,7 @@
 
 .hide-images-button.at-bottom {
   position: absolute;
-  bottom: 30; /* already anchored to container bottom */
+  bottom: -30px; /* already anchored to container bottom */
   transform: translateX(-50%);
 }
 
@@ -175,9 +182,25 @@
   transform: translateX(-50%) translateY(4px);
 }
 
+/* Removed vertical hover jump (translateY) */
 .hide-images-button:hover:not(.is-hidden) {
   background: var(--primary-hover);
-  transform: translateX(-50%) translateY(-2px);
+  /* Keep original centering transform inherited from base (no redefinition) */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.18);
+}
+
+/* Accessible focus ring (återinförd) */
+.hide-images-button:focus { outline: none; }
+.hide-images-button:focus:not(:focus-visible) { outline: none; }
+.hide-images-button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px; /* separerar lite visuellt */
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.18);
+}
+
+/* Use a subtle scale instead of vertical snap; no movement */
+.hide-images-button:active {
+  transform: translateX(-50%) scale(.97);
 }
 
 @media (max-width: 768px) {
