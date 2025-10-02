@@ -143,6 +143,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  max-width: 280px;
 }
 
 .profile-skills li {
@@ -360,12 +361,12 @@
   }
 
   .profile-cell {
-    max-width: 280px;
+    max-width: 200px;
     gap: 10px;
   }
 
   .profile-skills ul {
-    max-width: 280px;
+    max-width: 200px;
   }
 
   .profile-image {
@@ -443,12 +444,12 @@
   }
 
   .profile-cell {
-    max-width: 240px;
+    max-width: 180px;
     gap: 8px;
   }
 
   .profile-skills ul {
-    max-width: 240px;
+    max-width: 280px;
   }
 
   .profile-image {
@@ -476,7 +477,7 @@
   }
 
   .profile-skills ul {
-    gap: 5px;
+    gap: 3px;
   }
 
   .profile-skills li {
