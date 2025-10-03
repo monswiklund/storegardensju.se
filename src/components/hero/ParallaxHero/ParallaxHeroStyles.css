@@ -1,0 +1,128 @@
+.parallax-hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  display: block;
+  margin: 0 0 -2px 0;
+  padding: 0;
+  scroll-snap-align: start;
+}
+
+.parallax-hero-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+.parallax-hero-overlay {
+  display: none;
+}
+
+.parallax-hero-content {
+  display: none;
+}
+
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s ease;
+  animation: bounce 2s infinite;
+}
+
+.scroll-indicator:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%) scale(1.1);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) and (orientation: portrait) {
+  .parallax-hero {
+    min-height: 70vh;
+    height: 70vh;
+  }
+
+  .parallax-hero-title {
+    margin-bottom: 16px;
+  }
+
+  .scroll-indicator {
+    bottom: 24px;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .parallax-hero {
+    min-height: 90vh;
+  }
+
+  .parallax-hero-title {
+    margin-bottom: 16px;
+  }
+
+  .scroll-indicator {
+    bottom: 24px;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .parallax-hero {
+    min-height: 65vh;
+    height: 65vh;
+  }
+
+  .parallax-hero-content {
+    padding: 0 16px;
+  }
+
+  .scroll-indicator {
+    bottom: 16px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .scroll-indicator svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
