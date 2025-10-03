@@ -61,22 +61,18 @@ function StickyImageSection({
 
   return (
     <section ref={sectionRef} className="sticky-image-section">
-      <div className="sticky-image-container">
-        <div
-          className="sticky-image-wrapper"
-          style={{
-            transform: `translate(-50%, calc(-50% + ${parallaxOffset}px))`,
-          }}
-        >
-          <div className="sticky-image-parallax">
-            <img
-              src={image}
-              alt={imageAlt}
-              className="sticky-image"
-              loading="lazy"
-            />
-          </div>
-        </div>
+      <div
+        className="sticky-image-wrapper"
+        style={{
+          transform: `translate(-50%, calc(-50% + ${parallaxOffset}px))`,
+        }}
+      >
+        <img
+          src={image}
+          alt={imageAlt}
+          className="sticky-image"
+          loading="lazy"
+        />
       </div>
     </section>
   );

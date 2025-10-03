@@ -8,6 +8,7 @@ main#main-content.event-page {
   line-height: 0 !important;
   font-size: 0 !important;
   display: block;
+  scroll-snap-type: y proximity;
 }
 
 .event-page {
@@ -18,6 +19,7 @@ main#main-content.event-page {
   line-height: 0 !important;
   font-size: 0 !important;
   display: block;
+  scroll-snap-type: y proximity;
 }
 
 .event-page > *,

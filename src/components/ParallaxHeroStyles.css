@@ -5,8 +5,10 @@
   min-height: 100vh;
   overflow: hidden;
   display: block;
-  margin: 0;
+  margin: 0 0 -1px 0;
   padding: 0;
+  scroll-snap-align: start;
+  contain: layout;
 }
 
 .parallax-hero-background {
@@ -126,8 +128,22 @@
   }
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 769px) {
+  .parallax-hero {
+    margin-bottom: -15px;
+  }
+
   .parallax-hero-background {
-    height: 140vh;
+    height: 135vh;
+  }
+}
+
+@media (min-width: 1025px) {
+  .parallax-hero {
+    margin-bottom: -30px;
+  }
+
+  .parallax-hero-background {
+    height: 160vh;
   }
 }
