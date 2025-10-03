@@ -7,7 +7,7 @@
   background-color: white;
 }
 
-.page-section.bg-var(--background-alt) {
+.page-section.bg-alt {
   background-color: var(--background-alt);
 }
 

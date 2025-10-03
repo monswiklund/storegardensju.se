@@ -364,7 +364,7 @@ test.describe('Storegården 7 E2E Tests', () => {
     // Wait for lightbox to close - try multiple methods
     try {
       await page.waitForSelector('.gallery-modal', { state: 'hidden', timeout: 3000 });
-    } catch (e) {
+    } catch {
       // If escape doesn't work, try clicking close button
       await page.locator('.gallery-close-button').click({ force: true });
       await page.waitForSelector('.gallery-modal', { state: 'hidden' });

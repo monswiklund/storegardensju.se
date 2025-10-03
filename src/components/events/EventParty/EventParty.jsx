@@ -1,11 +1,6 @@
 import "./EventPartyStyles.css";
 
 function EventParty() {
-  const offerings = [
-    //"Flexibel lokal för 10-140 personer",
-      // "Ljud och ljussystem",
-  ];
-
   return (
     <div id="event-party-section" className="event-party-section">
       <div className="event-party-container">

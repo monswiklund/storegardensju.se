@@ -1,3 +1,6 @@
+import PropTypes from 'prop-types';
+import './LoadingSpinner.css';
+
 function LoadingSpinner({ size = "medium", text = "Laddar..." }) {
   const sizeClasses = {
     small: "loading-spinner--small",
@@ -12,5 +15,10 @@ function LoadingSpinner({ size = "medium", text = "Laddar..." }) {
     </div>
   );
 }
+
+LoadingSpinner.propTypes = {
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
+  text: PropTypes.string,
+};
 
 export default LoadingSpinner;

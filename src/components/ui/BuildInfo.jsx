@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './BuildInfo.css';
 
 function BuildInfo() {
     const [buildInfo, setBuildInfo] = useState(null);

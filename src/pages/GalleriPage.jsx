@@ -12,7 +12,7 @@ function GalleriPage() {
     return (
         <main role="main" id="main-content">
             {/* Om lokalen */}
-            <PageSection background="var(--background-alt)" spacing="compact" ariaLabel="welcome-heading">
+            <PageSection background="alt" spacing="compact" ariaLabel="welcome-heading">
                 <FadeInSection>
                     <WelcomeText/>
                 </FadeInSection>

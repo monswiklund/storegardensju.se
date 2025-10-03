@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import './StickyImageSectionStyles.css';
 
 function StickyImageSection({
@@ -17,5 +18,10 @@ function StickyImageSection({
     </section>
   );
 }
+
+StickyImageSection.propTypes = {
+  image: PropTypes.string.isRequired,
+  imageAlt: PropTypes.string,
+};
 
 export default StickyImageSection;

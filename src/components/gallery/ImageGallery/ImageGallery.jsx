@@ -113,7 +113,6 @@ function StoregardensImageGallery() {
         if (!el) return;
 
         let ticking = false;
-        const FIXED_OFFSET = 30; // distance from viewport bottom while fixed
         const DOCK_THRESHOLD = 8; // how close (px) viewport bottom must be to container bottom to dock
 
         const getAbsoluteTop = (node) => {

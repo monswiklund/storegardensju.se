@@ -13,7 +13,7 @@ function Navbar() {
     { label: "Event", path: "/event" },
     { label: "Konst", path: "/konst" },
     { label: "Galleri", path: "/galleri" },
-      { label: "Om Oss", path: "/team" },
+      { label: "Om Oss", path: "/om-oss" },
   ];
 
   const handleNavClick = () => {

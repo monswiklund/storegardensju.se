@@ -143,14 +143,19 @@
     }
 
     .category-toggle-container {
-        padding: 4px 8px;
-        gap: 6px;
-        border-radius: 25px;
+        display: grid;
+        grid-template-columns: 0fr 0fr;
+        padding: 8px;
+        gap: 8px;
+        border-radius: 16px;
+        overflow: visible;
     }
 
     .category-button {
-        padding: 8px 14px;
-        min-width: auto;
+        padding: 10px 12px;
+        min-width: 100px;
+        gap: 2px;
+        flex-shrink: 1;
     }
 
     .category-name {

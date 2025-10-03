@@ -39,7 +39,7 @@ function HomePage() {
                 </PageSection>
 
                 {/* Kommande evenemang */}
-                <PageSection background="var(--background-alt)" spacing="compact" ariaLabel="evenemang-heading">
+                <PageSection background="alt" spacing="compact" ariaLabel="evenemang-heading">
                     <FadeInSection>
                         <UpcomingEvents/>
                     </FadeInSection>

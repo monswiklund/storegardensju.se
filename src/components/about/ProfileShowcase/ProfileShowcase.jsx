@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import "./ProfileShowcaseStyles.css";
 
-const ProfileShowcase = ({ profile, imageLayout = "default" }) => {
+const ProfileShowcase = ({ profile }) => {
   const scrollContainerRef = useRef(null);
 
   // Set initial cursor style for desktop (no drag)
@@ -238,7 +238,6 @@ ProfileShowcase.propTypes = {
       })
     ),
   }).isRequired,
-  imageLayout: PropTypes.string,
 };
 
 export default ProfileShowcase;

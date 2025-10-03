@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import "./CategoryToggle.css";
 
 function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
@@ -59,5 +60,17 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
         </div>
     );
 }
+
+CategoryToggle.propTypes = {
+    categories: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            images: PropTypes.array.isRequired,
+        })
+    ).isRequired,
+    activeCategory: PropTypes.string.isRequired,
+    onCategoryChange: PropTypes.func.isRequired,
+};
 
 export default CategoryToggle;

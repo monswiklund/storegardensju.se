@@ -14,17 +14,70 @@
 /* Thumbnail grid for react-image-gallery */
 .storegarden-gallery {
   width: 100%;
-  max-width: 1000px;
-  margin: 30px auto;
-  padding: 40px 20px;
   box-sizing: border-box;
   position: relative;
 }
 
 #gallery-heading {
-    font-weight: 400;
+  text-align: center;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 400;
+  color: var(--text-color);
+  margin: 0 0 48px 0;
+  letter-spacing: -0.02em;
 }
 
+@media (max-width: 768px) {
+  #gallery-heading {
+    margin: 0 0 32px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  #gallery-heading {
+    margin: 0 0 24px 0;
+  }
+}
+
+/* Gallery Grid - Masonry Layout */
+.gallery-grid {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.gallery-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gallery-thumbnail {
+  position: relative;
+  background: white;
+  padding: 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.08);
+  margin-bottom: 12px;
+}
+
+.gallery-thumbnail:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.10);
+}
+
+.gallery-thumbnail img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0;
+}
 
 .expanded-grid {
   margin-top: 20px;

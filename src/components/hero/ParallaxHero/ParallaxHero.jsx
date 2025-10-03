@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { ChevronDown } from 'lucide-react';
 import './ParallaxHeroStyles.css';
 
@@ -32,5 +33,11 @@ function ParallaxHero({ image, title, subtitle }) {
     </section>
   );
 }
+
+ParallaxHero.propTypes = {
+  image: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string,
+};
 
 export default ParallaxHero;
