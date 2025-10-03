@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import ParallaxHero from '../components/ParallaxHero';
-import StickyImageSection from '../components/StickyImageSection';
-import EventFest from '../components/EventFest';
-import '../components/EventPageStyles.css';
+import ParallaxHero from '../components/hero/ParallaxHero/ParallaxHero';
+import StickyImageSection from '../components/hero/StickyImageSection/StickyImageSection';
+import EventFest from '../components/events/EventFest/EventFest';
+import '../components/events/EventPageStyles.css';
 
 function EventPage() {
   const [eventFestVisible, setEventFestVisible] = useState(false);

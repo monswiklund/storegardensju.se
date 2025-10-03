@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from "./components/Navbar.jsx";
-import Kontakt from "./components/Kontakt.jsx";
-import FadeInSection from "./components/FadeInSection.jsx";
-import ScrollToTopButton from "./components/ScrollToTopButton.jsx";
-import ScrollToTop from "./components/ScrollToTop.jsx";
-import BuildInfo from "./components/BuildInfo.jsx";
+import Navbar from "./components/layout/Navbar/Navbar.jsx";
+import Kontakt from "./components/kontakt/kontakt.jsx";
+import FadeInSection from "./components/ui/FadeInSection.jsx";
+import ScrollToTopButton from "./components/layout/ScrollToTopButton.jsx";
+import ScrollToTop from "./components/layout/ScrollToTop.jsx";
+import BuildInfo from "./components/ui/BuildInfo.jsx";
 
 // Pages
 import HomePage from "./pages/HomePage.jsx";

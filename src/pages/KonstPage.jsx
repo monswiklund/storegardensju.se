@@ -1,6 +1,6 @@
-import Skapande from "../components/Skapande.jsx";
-import FadeInSection from "../components/FadeInSection.jsx";
-import PageSection from "../components/PageSection.jsx";
+import Skapande from "../components/sections/Skapande/Skapande.jsx";
+import FadeInSection from "../components/ui/FadeInSection.jsx";
+import PageSection from "../components/sections/PageSection/PageSection.jsx";
 
 function KonstPage() {
     return (

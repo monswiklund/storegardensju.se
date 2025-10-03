@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import VälkomstBild from "../components/VälkomstBild.jsx";
-import FeaturedGallery from "../components/FeaturedGallery.jsx";
-import Services from "../components/Services.jsx";
-import FadeInSection from "../components/FadeInSection.jsx";
-import PageSection from "../components/PageSection.jsx";
-import KommandeEvenemang from "../components/KommandeEvenemang.jsx";
+import VälkomstBild from "../components/hero/VälkomstBild.jsx";
+import FeaturedGallery from "../components/gallery/FeaturedGallery/FeaturedGallery.jsx";
+import Services from "../components/sections/Services/Services.jsx";
+import FadeInSection from "../components/ui/FadeInSection.jsx";
+import PageSection from "../components/sections/PageSection/PageSection.jsx";
+import KommandeEvenemang from "../components/events/KommandeEvenemang/KommandeEvenemang.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
