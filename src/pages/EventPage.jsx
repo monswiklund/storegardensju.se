@@ -78,9 +78,9 @@ function EventPage() {
         subtitle=""
       />
 
-      {/* Sticky Image Section: Lokalen */}
+      {/* Sticky Image Section 1: Lokalen */}
       <StickyImageSection
-        image="/images/lokal/slide3.jpg"
+          image="/images/event/hero/hero-2.webp"
         imageAlt="Storegården 7 lokal interiör"
         imageSide="left"
         backgroundColor="var(--background-alt)"
@@ -105,6 +105,69 @@ function EventPage() {
             <li>Parkeringsmöjligheter</li>
             <li>Centralt läge</li>
           </ul>
+        </div>
+      </StickyImageSection>
+
+      {/* Sticky Image Section 2: Utrymmet */}
+      <StickyImageSection
+        image="/images/lokal/slide5.jpg"
+        imageAlt="Storegården 7 utrymme"
+        imageSide="right"
+        backgroundColor="white"
+      >
+        <div className="lokalen-content event-story-section">
+          <h2>Utrymme för alla tillfällen</h2>
+          <p>
+            Vårt unika loft skapar en atmosfär som är både intim och rymlig.
+            Det höga taket med synliga takstolar ger en känsla av rymlighet
+            samtidigt som den rustika charmen bibehålls.
+          </p>
+          <p>
+            Lokalen kan enkelt anpassas för allt från workshops och mindre middagar
+            till större fester och konferenser. Flexibiliteten är vår styrka.
+          </p>
+        </div>
+      </StickyImageSection>
+
+      {/* Sticky Image Section 3: Detaljer */}
+      <StickyImageSection
+        image="/images/lokal/slide7.jpg"
+        imageAlt="Storegården 7 detaljer"
+        imageSide="left"
+        backgroundColor="var(--background-alt)"
+      >
+        <div className="lokalen-content event-story-section">
+          <h2>Varje detalj räknas</h2>
+          <p>
+            Vi tror på att det är detaljerna som skapar upplevelsen. Från belysning
+            till möblering - allt kan anpassas för att skapa rätt atmosfär för just
+            ditt evenemang.
+          </p>
+          <p>
+            Ljussystemet ger dig full kontroll över stämningen, från varmt och intimt
+            till festligt och energiskt. Ljudsystemet ser till att alla hör - oavsett
+            om det är tal, musik eller presentationer.
+          </p>
+        </div>
+      </StickyImageSection>
+
+      {/* Sticky Image Section 4: Möjligheter */}
+      <StickyImageSection
+        image="/images/lokal/slide9.jpg"
+        imageAlt="Storegården 7 möjligheter"
+        imageSide="right"
+        backgroundColor="white"
+      >
+        <div className="lokalen-content event-story-section">
+          <h2>Oändliga möjligheter</h2>
+          <p>
+            Från bröllop och jubileum till företagsevent och vernissage -
+            Storegården 7 har varit scen för otaliga minnesrika stunder.
+          </p>
+          <p>
+            Låt oss hjälpa dig skapa ditt nästa evenemang. Med vår erfarenhet
+            och din vision blir resultatet något alldeles särskilt.
+          </p>
         </div>
       </StickyImageSection>
 
