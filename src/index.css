@@ -699,6 +699,27 @@ body {
   }
 }
 
+@media (max-width: 480px) {
+  .hero-cta-group {
+    gap: 10px;
+  }
+
+  .hero-cta-secondary-group {
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 15px;
+  }
+
+  .hero-cta {
+    font-size: 0.9rem;
+    padding: 12px 16px;
+  }
+
+  .hero-cta-secondary-group .hero-cta {
+    width: 100%;
+  }
+}
+
 /* Focus Styles for Accessibility */
 *:focus {
   outline: 2px solid var(--primary-color);

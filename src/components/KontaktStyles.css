@@ -168,11 +168,33 @@
 }
 
 @media (max-width: 480px) {
+  .kontakt-container {
+    padding: 15px 10px;
+  }
+
   .kontakt-cards {
-    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .kontakt-card {
-    padding: 32px 24px;
+    padding: 24px 20px;
+  }
+
+  .kontakt-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 6px;
+  }
+
+  .kontakt-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .kontakt-card p {
+    font-size: 0.85rem;
+  }
+
+  .kontakt-info {
+    font-size: 0.9rem;
   }
 }

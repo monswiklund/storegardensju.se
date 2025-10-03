@@ -143,11 +143,33 @@
     padding: 20px 10px;
   }
 
+  .services-container h2 {
+    margin-bottom: 32px;
+  }
+
   .services-grid {
     gap: 16px;
   }
 
   .service-card {
     padding: 24px 20px;
+  }
+
+  .service-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 20px;
+  }
+
+  .service-title {
+    font-size: 1.1rem;
+  }
+
+  .service-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .service-description {
+    font-size: 0.9rem;
   }
 }

@@ -110,7 +110,6 @@ const ProfileShowcase = ({ profile, imageLayout = "default" }) => {
 
               {profile.listItems && profile.listItems.length > 0 && (
                 <div className="profile-skills">
-                  <h4>Kompetenser</h4>
                   <ul>
                     {profile.listItems.map((item, index) => (
                       <li key={index}>{item}</li>

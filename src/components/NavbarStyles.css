@@ -238,7 +238,43 @@
   }
 }
 
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .navbar {
+    height: 55px;
+  }
+
+  .navbar-container {
+    padding: 0 10px;
+  }
+
+  .hamburger {
+    right: 10px;
+  }
+
+  .hamburger span {
+    width: 24px;
+    height: 2.5px;
+  }
+
+  .nav-menu {
+    max-width: 90vw;
+    width: 260px;
+  }
+
+  .nav-link {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+  }
+}
+
 /* Adjust body padding for fixed navbar */
 body {
   padding-top: 60px;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 55px;
+  }
 }
