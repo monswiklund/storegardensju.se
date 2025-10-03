@@ -1,14 +1,11 @@
 import { ChevronDown } from 'lucide-react';
-import useScrollParallax from '../hooks/useScrollParallax';
 import './ParallaxHeroStyles.css';
 
 function ParallaxHero({ image, title, subtitle }) {
-  const { parallaxY } = useScrollParallax(0.4);
-
   const handleScrollDown = () => {
-    const firstSection = document.querySelector('.event-story-section');
-    if (firstSection) {
-      firstSection.scrollIntoView({ behavior: 'smooth' });
+    const nextSection = document.querySelector('.sticky-image-section');
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -18,7 +15,6 @@ function ParallaxHero({ image, title, subtitle }) {
         className="parallax-hero-background"
         style={{
           backgroundImage: `url(${image})`,
-          transform: `translate(-50%, calc(-50% + ${parallaxY}px))`,
         }}
       />
       <div className="parallax-hero-overlay" />

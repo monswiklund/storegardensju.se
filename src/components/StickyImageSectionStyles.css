@@ -5,20 +5,19 @@
   min-height: 100vh;
   overflow: hidden;
   display: block;
-  margin: 0 0 -1px 0;
+  margin: 0;
   padding: 0;
   scroll-snap-align: start;
-  contain: layout;
 }
 
 .sticky-image-wrapper {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: auto;
-  height: 120vh;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: auto;
   aspect-ratio: 4 / 5;
-  will-change: transform;
   z-index: 1;
 }
 
@@ -47,24 +46,9 @@
     min-height: 65vh;
     height: 65vh;
   }
-}
-
-@media (min-width: 769px) {
-  .sticky-image-section {
-    margin-bottom: -15px;
-  }
 
   .sticky-image-wrapper {
-    height: 135vh;
+    aspect-ratio: 3 / 4;
   }
 }
 
-@media (min-width: 1025px) {
-  .sticky-image-section {
-    margin-bottom: -30px;
-  }
-
-  .sticky-image-wrapper {
-    height: 160vh;
-  }
-}
