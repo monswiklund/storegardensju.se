@@ -1,18 +1,18 @@
-import Skapande from "../components/sections/Skapande/Skapande.jsx";
+import Creation from "../components/sections/Creation/Creation.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import PageSection from "../components/sections/PageSection/PageSection.jsx";
 
-function KonstPage() {
+function ArtPage() {
     return (
         <main role="main" id="main-content">
             {/* Skapande sektion */}
-            <PageSection background="white" spacing="default" ariaLabel="skapande-heading">
+            <PageSection background="white" spacing="default" ariaLabel="creation-heading">
                 <FadeInSection>
-                    <Skapande/>
+                    <Creation/>
                 </FadeInSection>
             </PageSection>
         </main>
     );
 }
 
-export default KonstPage;
+export default ArtPage;

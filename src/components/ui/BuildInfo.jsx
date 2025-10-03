@@ -5,7 +5,7 @@ function BuildInfo() {
 
     useEffect(() => {
         // Try to load build info
-        import('../build.json')
+        import('../../build.json')
             .then(module => setBuildInfo(module.default))
             .catch(() => {
                 // Fallback if build.json doesn't exist

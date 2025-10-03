@@ -1,3 +1,16 @@
+/* ==========================================================================
+   Content Layout
+   ========================================================================== */
+.content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
 
 /* ==========================================================================
    Welcome Text Section
@@ -15,8 +28,8 @@
 .välkomst-text h2,
 .välkomst-text h3,
 .välkomst-text h4,
-.tjänster h3,
-.tjänster h4 {
+.services h3,
+.services h4 {
     font-weight: 300;
     margin: 1.5rem 0 1rem 0;
     padding: 0;
@@ -29,17 +42,17 @@
 }
 
 .välkomst-text h3,
-.tjänster h3 {
+.services h3 {
     font-size: clamp(1.3rem, 3.5vw, 1.8rem);
 }
 
 .välkomst-text h4,
-.tjänster h4 {
+.services h4 {
     font-size: clamp(1.1rem, 3vw, 1.5rem);
 }
 
 .välkomst-text p,
-.tjänster p {
+.services p {
     font-size: 1rem;
     line-height: 1.5;
     margin: 0 0 1rem 0;
@@ -50,7 +63,7 @@
 /* ==========================================================================
    Services Section
    ========================================================================== */
-.tjänster {
+.services {
     flex: 1;
     max-width: 800px;
     font-weight: 300;
@@ -58,7 +71,16 @@
     padding: 0;
 }
 
-.tjänster h4:last-child {
+.services h4:last-child {
     justify-content: center;
     text-align: center;
+}
+
+/* Mobile Small */
+@media (max-width: 480px) {
+
+    .content-container,
+    .välkomst-text {
+        padding: 0 10px;
+    }
 }

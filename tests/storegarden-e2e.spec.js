@@ -324,7 +324,7 @@ test.describe('Storegården 7 E2E Tests', () => {
     
     // Test that components load without errors
     await page.waitForSelector('.storegarden-gallery', { timeout: 10000 });
-    await page.waitForSelector('.vilka-container', { timeout: 10000 });
+    await page.waitForSelector('.Vilka-container', { timeout: 10000 });
     
     // Test loading states by throttling network
     await page.route('**/*', async route => {

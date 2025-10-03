@@ -1,11 +1,11 @@
-import "./VälkomstTextStyles.css";
+import "./WelcomeText.css";
 
 
-function VälkomstText() {
+function WelcomeText() {
   return (
     <div className="content-container">
         <div className="välkomst-text">
-          <div className="tjänster">
+          <div className="services">
             {/*<h2>Vi Erbjuder</h2>
             <h3>Evenemang</h3>
             <p>
@@ -40,7 +40,7 @@ function VälkomstText() {
             <p>
               Vi är en familj som vuxit upp här sedan 1990-talet och har sedan dess drömt om att skapa en plats främst till oss själva som vi sedan kan dela med andra.
               Vi kombinerar olika kompetenser och erfarenheter - både formell utbildning och självlärt kunnande.
-              Detta är en del av vår vardag och livsstil - att arrangera och skapa hemma hos oss själva.
+              Detta är en del av vår vardag och livstil - att arrangera och skapa hemma hos oss själva.
             </p>
 
             <h4>Ann Wiklund - Konstnär & Keramiker</h4>
@@ -140,4 +140,4 @@ function VälkomstText() {
   );
 }
 
-export default VälkomstText;
+export default WelcomeText;

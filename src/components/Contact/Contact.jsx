@@ -1,37 +1,37 @@
-import "./KontaktStyles.css";
+import "./ContactStyles.css";
 
-function Kontakt() {
+function Contact() {
     return (
-        <div className="kontakt-container">
+        <div className="contact-container">
             <h2 id="contact-heading">Kontakta oss</h2>
-            <p className="kontakt-subtitle">
+            <p className="contact-subtitle">
                 Har du frågor eller vill boka in ditt nästa evenemang? Tveka inte att höra av dig!
             </p>
 
-            <div className="kontakt-cards">
+            <div className="contact-cards">
                 <a
                     href="mailto:storegardensju@gmail.com"
-                    className="kontakt-card"
+                    className="contact-card"
                     aria-label="Skicka e-post till storegardensju@gmail.com"
                 >
-                    <div className="kontakt-icon">
+                    <div className="contact-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <rect x="2" y="4" width="20" height="16" rx="2"/>
                             <path d="m2 7 10 7 10-7"/>
                         </svg>
                     </div>
                     <h3>E-post</h3>
-                    <p className="kontakt-info">storegardensju@gmail.com</p>
+                    <p className="contact-info">storegardensju@gmail.com</p>
                 </a>
 
                 <a
                     href="https://www.instagram.com/storegarden7/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="kontakt-card"
+                    className="contact-card"
                     aria-label="Besök oss på Instagram @storegarden7"
                 >
-                    <div className="kontakt-icon">
+                    <div className="contact-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
@@ -39,11 +39,11 @@ function Kontakt() {
                         </svg>
                     </div>
                     <h3>Instagram</h3>
-                    <p className="kontakt-info">@storegarden7</p>
+                    <p className="contact-info">@storegarden7</p>
                 </a>
             </div>
 
-            <div className="tjänster">
+            <div className="services">
 
             <h3>Samarbeta med oss</h3>
             <p>
@@ -55,4 +55,4 @@ function Kontakt() {
     );
 }
 
-export default Kontakt;
+export default Contact;

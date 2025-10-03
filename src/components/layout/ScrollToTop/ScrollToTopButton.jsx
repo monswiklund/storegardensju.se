@@ -1,6 +1,7 @@
 // ScrollToTopButton.jsx
 import { useState, useEffect } from 'react';
 import { ChevronUp } from 'lucide-react';
+import './ScrollToTopStyling.css';
 
 const ScrollToTopButton = () => {
     const [isVisible, setIsVisible] = useState(false);

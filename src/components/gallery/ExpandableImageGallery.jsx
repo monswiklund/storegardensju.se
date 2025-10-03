@@ -78,13 +78,25 @@ function ExpandableImageGallery() {
         const adjustedIndex = isFromExpanded ? index + visibleImages.length - 2 : index;
         setActiveImage(adjustedIndex);
         setLightboxOpen(true);
-        document.body.style.overflow = 'hidden';
     };
 
     const closeLightbox = () => {
         setLightboxOpen(false);
-        document.body.style.overflow = 'auto';
     };
+
+    // Effect to manage body overflow when lightbox is open/closed
+    useEffect(() => {
+        if (lightboxOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cleanup function to reset overflow when component unmounts
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [lightboxOpen]);
 
     const goPrev = (e) => {
         e.stopPropagation();

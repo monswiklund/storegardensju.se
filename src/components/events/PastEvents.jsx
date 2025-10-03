@@ -1,7 +1,7 @@
 import { useState } from "react";
-import "./TidigareEvenemangStyles.css";
+import "./PastEvents.css";
 
-function TidigareEvenemang() {
+function PastEvents() {
   const pastEvents = [
     {
       title: "Västra Kållands Kulturrunda",
@@ -30,26 +30,26 @@ function TidigareEvenemang() {
 
   return (
     <section
-      id="tidigare-evenemang-section"
-      className={`tidigare-evenemang-section ${isOpen ? 'open' : 'collapsed'}`}
-      aria-labelledby="tidigare-evenemang-heading"
+      id="past-events-section"
+      className={`past-events-section ${isOpen ? 'open' : 'collapsed'}`}
+      aria-labelledby="past-events-heading"
     >
-      <div className="tidigare-evenemang-container">
+      <div className="past-events-container">
         <button
           type="button"
           className="collapsible-toggle"
           aria-expanded={isOpen}
-          aria-controls="tidigare-evenemang-collapsible-content"
+          aria-controls="past-events-collapsible-content"
           onClick={() => setIsOpen(o => !o)}
         >
-          <span className="collapsible-title" id="tidigare-evenemang-heading">Tidigare evenemang</span>
+          <span className="collapsible-title" id="past-events-heading">Tidigare evenemang</span>
           <span className={`chevron ${isOpen ? 'open' : ''}`} aria-hidden>▾</span>
         </button>
         <div className="collapsible-intro-wrapper" aria-hidden={!isOpen}>
-            <p className="tidigare-evenemang-intro">Ett urval av våra tidigare workshops, kurser och evenemang.</p>
+            <p className="past-events-intro">Ett urval av våra tidigare workshops, kurser och evenemang.</p>
         </div>
         <div
-          id="tidigare-evenemang-collapsible-content"
+          id="past-events-collapsible-content"
           className={`collapsible-content ${isOpen ? 'open' : ''}`}
           role="region"
           aria-label="Lista över tidigare evenemang"
@@ -77,4 +77,4 @@ function TidigareEvenemang() {
   );
 }
 
-export default TidigareEvenemang;
+export default PastEvents;

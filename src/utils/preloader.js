@@ -6,7 +6,7 @@ export const preloadGallery = () => {
 
 export const preloadProfiles = () => {
   // Preload the profiles component
-  return import('../components/Vilka.jsx');
+  return import('../components/team/Who/Who.jsx');
 };
 
 // Preload critical images

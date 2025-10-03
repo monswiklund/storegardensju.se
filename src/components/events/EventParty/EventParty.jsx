@@ -1,18 +1,18 @@
-import "./EventFestStyles.css";
+import "./EventPartyStyles.css";
 
-function EventFest() {
+function EventParty() {
   const offerings = [
     //"Flexibel lokal för 10-140 personer",
       // "Ljud och ljussystem",
   ];
 
   return (
-    <div id="event-fest-section" className="event-fest-section">
-      <div className="event-fest-container">
-        <h2 id="event-fest-heading">Event & Fest</h2>
+    <div id="event-party-section" className="event-party-section">
+      <div className="event-party-container">
+        <h2 id="event-party-heading">Event & Fest</h2>
 
-        <div className="event-fest-content">
-          <div className="event-fest-intro">
+        <div className="event-party-content">
+          <div className="event-party-intro">
 {/*            <h3>Skapa minnen som varar</h3>
             <p>
               Oavsett om du
@@ -47,11 +47,11 @@ function EventFest() {
           </div>
         </div>
 
-        <div className="event-fest-cta">
+        <div className="event-party-cta">
           <h3>Intresserad av att boka lokalen?</h3>
           <button
             className="contact-button"
-            onClick={() => document.querySelector('.kontakt-container')?.scrollIntoView({behavior: 'smooth', block: 'center'})}
+            onClick={() => document.querySelector('.contact-container')?.scrollIntoView({behavior: 'smooth', block: 'center'})}
           >
             Kontakta oss
           </button>
@@ -61,4 +61,4 @@ function EventFest() {
   );
 }
 
-export default EventFest;
+export default EventParty;

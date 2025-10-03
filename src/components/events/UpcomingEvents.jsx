@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import "./KommandeEvenemangStyles.css";
-import "../TidigareEvenemang/TidigareEvenemangStyles.css"; // reuse collapsible styles
+import "./UpcomingEvents.css";
+import "./PastEvents.css"; // reuse collapsible styles
 
-function KommandeEvenemang() {
+function UpcomingEvents() {
   const events = [
     {
       title: "Konstafton 2025",
@@ -44,10 +44,10 @@ function KommandeEvenemang() {
   const [showPast, setShowPast] = useState(false);
 
   return (
-    <div id="evenemang-section" className="evenemang-section">
-      <div className="evenemang-container">
-        <h2 id="evenemang-heading">Kommande evenemang</h2>
-        <p className="evenemang-intro">
+    <div id="events-section" className="events-section">
+      <div className="events-container">
+        <h2 id="events-heading">Kommande evenemang</h2>
+        <p className="events-intro">
           Upptäck våra kommande workshops, kurser och evenemang. Boka din plats redan idag!
         </p>
 
@@ -97,7 +97,7 @@ function KommandeEvenemang() {
             <p>Vi har begränsat antal evenemang och kurstillfällen vi kan genomföra varje år. Ser du inget som passar? Kontakta oss gärna för att anmäla ditt intresse eller boka privata kurser och gruppbokningar.</p>
             <button
               className="info-cta-button"
-              onClick={() => document.querySelector('.kontakt-container')?.scrollIntoView({behavior: 'smooth', block: 'center'})}
+              onClick={() => document.querySelector('.contact-container')?.scrollIntoView({behavior: 'smooth', block: 'center'})}
             >
               Kontakta oss
             </button>
@@ -145,4 +145,4 @@ function KommandeEvenemang() {
   );
 }
 
-export default KommandeEvenemang;
+export default UpcomingEvents;

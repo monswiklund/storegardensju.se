@@ -1,18 +1,18 @@
-.kontakt-container {
+.contact-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px 20px;
   text-align: center;
 }
 
-.kontakt-container h2 {
+.contact-container h2 {
   font-size: clamp(1.8rem, 5vw, 2.2rem);
   font-weight: 500;
   margin-bottom: 12px;
   color: var(--text-color);
 }
 
-.kontakt-subtitle {
+.contact-subtitle {
   font-size: 1rem;
   color: var(--text-secondary);
   margin-bottom: 24px;
@@ -21,7 +21,7 @@
   margin-right: auto;
 }
 
-.kontakt-cards {
+.contact-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
@@ -29,7 +29,7 @@
   width: 100%;
 }
 
-.kontakt-card {
+.contact-card {
   background: white;
   border-radius: 12px;
   padding: 24px 20px;
@@ -43,13 +43,13 @@
   border: 2px solid transparent;
 }
 
-.kontakt-card:hover {
+.contact-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(64, 123, 94, 0.2);
   border-color: var(--primary-color);
 }
 
-.kontakt-icon {
+.contact-icon {
   width: 48px;
   height: 48px;
   background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
@@ -62,32 +62,31 @@
   margin-bottom: 8px;
 }
 
-.kontakt-card:hover .kontakt-icon {
+.contact-card:hover .contact-icon {
   transform: scale(1.1);
 }
 
-.kontakt-card h3 {
+.contact-card h3 {
   font-size: 1.3rem;
   font-weight: 300;
   margin: 0 0 4px 0;
   color: var(--text-color);
 }
 
-.kontakt-card p {
+.contact-card p {
   font-size: 0.9rem;
   font-weight: 300;
   margin: 0;
   color: var(--text-color);
 }
 
-.kontakt-info {
+.contact-info {
   font-size: 1rem;
   color: var(--primary-color);
   margin: 0;
   font-weight: 500;
   word-break: break-word;
 }
-
 
 
 
@@ -109,8 +108,8 @@
 .välkomst-text h2,
 .välkomst-text h3,
 .välkomst-text h4,
-.tjänster h3,
-.tjänster h4 {
+.services h3,
+.services h4 {
     font-weight: 300;
     margin: 1rem 0 0.5rem 0;
     padding: 0;
@@ -123,17 +122,17 @@
 }
 
 .välkomst-text h3,
-.tjänster h3 {
+.services h3 {
     font-size: clamp(1.3rem, 3.5vw, 1.8rem);
 }
 
 .välkomst-text h4,
-.tjänster h4 {
+.services h4 {
     font-size: clamp(1.1rem, 3vw, 1.5rem);
 }
 
 .välkomst-text p,
-.tjänster p {
+.services p {
     font-size: 1rem;
     line-height: 1.5;
     margin: 0 0 0.5rem 0;
@@ -144,7 +143,7 @@
 /* ==========================================================================
    Services Section
    ========================================================================== */
-.tjänster {
+.services {
     flex: 1;
     max-width: 800px;
     font-weight: 300;
@@ -152,49 +151,49 @@
     padding: 0;
 }
 
-.tjänster h3:last-child {
+.services h3:last-child {
     justify-content: center;
     text-align: center;
 }
 
 @media (max-width: 640px) {
-  .kontakt-cards {
+  .contact-cards {
     grid-template-columns: 1fr;
   }
 
-  .kontakt-card {
+  .contact-card {
     padding: 32px 24px;
   }
 }
 
 @media (max-width: 480px) {
-  .kontakt-container {
+  .contact-container {
     padding: 15px 10px;
   }
 
-  .kontakt-cards {
+  .contact-cards {
     gap: 12px;
   }
 
-  .kontakt-card {
+  .contact-card {
     padding: 24px 20px;
   }
 
-  .kontakt-icon {
+  .contact-icon {
     width: 40px;
     height: 40px;
     margin-bottom: 6px;
   }
 
-  .kontakt-card h3 {
+  .contact-card h3 {
     font-size: 1.1rem;
   }
 
-  .kontakt-card p {
+  .contact-card p {
     font-size: 0.85rem;
   }
 
-  .kontakt-info {
+  .contact-info {
     font-size: 0.9rem;
   }
 }

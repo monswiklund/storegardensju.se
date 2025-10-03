@@ -1,17 +1,17 @@
-.evenemang-section {
+.events-section {
   width: 100%;
   background-color: white;
   box-sizing: border-box;
   padding: 80px 20px;
 }
 
-.evenemang-container {
+.events-container {
   max-width: 800px;
   margin: 0 auto;
   box-sizing: border-box;
 }
 
-.evenemang-container h2 {
+.events-container h2 {
   text-align: center;
   font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: 400;
@@ -20,7 +20,7 @@
   letter-spacing: -0.02em;
 }
 
-.evenemang-intro {
+.events-intro {
   text-align: center;
   font-size: 1.125rem;
   color: var(--text-secondary);
@@ -30,14 +30,7 @@
   margin-right: auto;
 }
 
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 32px;
-  /* Center the narrower grid area */
-  max-width: 500px;
-  margin: 0 auto 48px;
-}
+
 
 .event-card {
   background: white;
@@ -214,29 +207,29 @@
   text-decoration-color: var(--primary-color);
 }
 
-.evenemang-footer {
+.events-footer {
   text-align: center;
   padding: 32px;
   background: var(--background-alt);
   border-radius: 12px;
 }
 
-.evenemang-footer p {
+.events-footer p {
   margin: 0;
   font-size: 1.125rem;
   color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {
-  .evenemang-section {
+  .events-container {
     padding: 60px 15px;
   }
 
-  .evenemang-container h2 {
+  .events-container h2 {
     margin-bottom: 32px;
   }
 
-  .events-grid {
+  .event-grid {
     grid-template-columns: 1fr;
     gap: 24px;
   }
@@ -272,7 +265,7 @@
 }
 
 @media (max-width: 480px) {
-  .evenemang-section {
+  .event-section {
     padding: 40px 10px;
   }
 

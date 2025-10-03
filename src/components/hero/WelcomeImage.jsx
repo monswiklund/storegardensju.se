@@ -1,12 +1,13 @@
-import välkomstBild from "../../assets/logoTransp.png";
+import welcomeImage from "../../assets/logoTransp.png";
 import { useNavigate } from "react-router-dom";
+import "./WelcomeImage.css";
 
-function VälkomstBild() {
+function WelcomeImage() {
   const navigate = useNavigate();
   return (
     <div className="stor-logga-container">
       <div className="stor-logga">
-        <img src={välkomstBild} alt="Lägg till Storegården 7 Loggan" />
+        <img src={welcomeImage} alt="Lägg till Storegården 7 Loggan" />
       </div>
       <div className="titel">
         <h1>Välkommen till Storegården 7</h1>
@@ -29,7 +30,7 @@ function VälkomstBild() {
             className="hero-cta hero-cta-primary"
             onClick={() =>
               document
-                .querySelector(".kontakt-container")
+                .querySelector(".contact-container")
                 ?.scrollIntoView({ behavior: "smooth", block: "center" })
             }
             aria-label="Scrolla till kontakt-sektion"
@@ -60,4 +61,4 @@ function VälkomstBild() {
   );
 }
 
-export default VälkomstBild;
+export default WelcomeImage;

@@ -1,21 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import ParallaxHero from '../components/hero/ParallaxHero/ParallaxHero';
 import StickyImageSection from '../components/hero/StickyImageSection/StickyImageSection';
-import EventFest from '../components/events/EventFest/EventFest';
+import EventParty from '../components/events/EventParty/EventParty';
 import '../components/events/EventPageStyles.css';
 
 function EventPage() {
-  const [eventFestVisible, setEventFestVisible] = useState(false);
+  const [eventPartyVisible, setEventPartyVisible] = useState(false);
   const [gridItemsVisible, setGridItemsVisible] = useState(false);
-  const eventFestRef = useRef(null);
+  const eventPartyRef = useRef(null);
   const eventsGridRef = useRef(null);
 
-  // Intersection observer för EventFest section
+  // Intersection observer för EventParty section
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setEventFestVisible(true);
+          setEventPartyVisible(true);
         }
       },
       {
@@ -24,13 +24,13 @@ function EventPage() {
       }
     );
 
-    if (eventFestRef.current) {
-      observer.observe(eventFestRef.current);
+    if (eventPartyRef.current) {
+      observer.observe(eventPartyRef.current);
     }
 
     return () => {
-      if (eventFestRef.current) {
-        observer.unobserve(eventFestRef.current);
+      if (eventPartyRef.current) {
+        observer.unobserve(eventPartyRef.current);
       }
     };
   }, []);
@@ -102,52 +102,13 @@ function EventPage() {
         imageAlt="Storegården 7 möjligheter"
       />
 
-      {/* EventFest Section med scroll-triggered animation */}
+      {/* EventParty Section med scroll-triggered animation */}
       <div
-        ref={eventFestRef}
-        className={`event-fest-wrapper ${eventFestVisible ? 'is-visible' : ''}`}
+        ref={eventPartyRef}
+        className={`event-party-wrapper ${eventPartyVisible ? 'is-visible' : ''}`}
       >
-        <EventFest />
+        <EventParty />
       </div>
-
-      {/* Previous Events Grid */}
-      <section className="previous-events-section">
-        <div className="previous-events-container">
-          <h2>Tidigare Evenemang</h2>
-          <div ref={eventsGridRef} className="events-grid">
-            {previousEvents.map((event, index) => (
-              <div
-                key={index}
-                className={`event-grid-item ${gridItemsVisible ? 'is-visible' : ''}`}
-              >
-                <img src={event.image} alt={event.alt} loading="lazy" />
-                <div className="event-grid-overlay" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="event-cta-section">
-        <div className="event-cta-content">
-          <h2>Redo att boka?</h2>
-          <p>
-            Kontakta oss för att diskutera ditt evenemang och få en offert anpassad efter
-            dina behov.
-          </p>
-          <button
-            className="cta-button"
-            onClick={() =>
-              document
-                .querySelector('.kontakt-container')
-                ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-            }
-          >
-            Kontakta oss
-          </button>
-        </div>
-      </section>
     </main>
   );
 }
