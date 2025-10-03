@@ -1,8 +1,31 @@
 /* Event Page Scroll Storytelling Styles */
 
+main#main-content.event-page {
+  width: 100%;
+  overflow-x: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+  display: block;
+}
+
 .event-page {
   width: 100%;
   overflow-x: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+  display: block;
+}
+
+.event-page > *,
+.event-page section {
+  display: block;
+  margin: 0 !important;
+  padding: 0 !important;
+  vertical-align: top;
 }
 
 .event-story-section {
@@ -235,6 +258,44 @@
 
   .event-grid-item {
     height: 350px;
+  }
+}
+
+/* Mobile portrait - dark text on white background */
+@media (max-width: 768px) and (orientation: portrait) {
+  .lokalen-content {
+    max-width: 100%;
+  }
+
+  .lokalen-content h2 {
+    color: var(--text-color);
+    text-shadow: none;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+  }
+
+  .lokalen-content h3 {
+    color: var(--text-color);
+    text-shadow: none;
+    font-size: clamp(1.5rem, 4vw, 1.8rem);
+  }
+
+  .lokalen-content p {
+    color: var(--text-secondary);
+    text-shadow: none;
+    opacity: 1;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .lokalen-features li {
+    color: var(--text-secondary);
+    text-shadow: none;
+    font-size: 1rem;
+  }
+
+  .lokalen-features li::before {
+    color: var(--primary-color);
+    text-shadow: none;
   }
 }
 

@@ -18,7 +18,7 @@ function ParallaxHero({ image, title, subtitle }) {
         className="parallax-hero-background"
         style={{
           backgroundImage: `url(${image})`,
-          transform: `translateY(${parallaxY}px)`,
+          transform: `translate(-50%, calc(-50% + ${parallaxY}px))`,
         }}
       />
       <div className="parallax-hero-overlay" />
