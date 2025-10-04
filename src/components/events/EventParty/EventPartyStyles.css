@@ -92,9 +92,9 @@
 .event-types h4 {
   font-size: 1.5rem;
   font-weight: 500;
-  color: var(--text-color);
   margin: 0 0 24px 0;
   text-align: center;
+  color: var(--text-color);
 }
 
 .types-grid {
@@ -108,9 +108,13 @@
   background: var(--background-alt);
   border-radius: 8px;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--text-color, #1f1f1f);
   font-weight: 500;
   transition: all 0.3s ease;
+}
+
+.type-item p {
+  color: var(--text-secondary);
 }
 
 .type-item:hover {

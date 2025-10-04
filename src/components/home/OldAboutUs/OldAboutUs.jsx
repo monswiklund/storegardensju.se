@@ -1,7 +1,7 @@
-import "./WelcomeText.css";
+import "./OldAboutUs.css";
 
 
-function WelcomeText() {
+function OldAboutUs() {
   return (
     <div className="content-container">
         <div className="välkomst-text">
@@ -140,4 +140,4 @@ function WelcomeText() {
   );
 }
 
-export default WelcomeText;
+export default OldAboutUs;

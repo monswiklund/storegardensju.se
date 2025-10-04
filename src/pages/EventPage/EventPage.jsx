@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import ParallaxHero from '../../components/hero/ParallaxHero/ParallaxHero';
-import StickyImageSection from '../../components/hero/StickyImageSection/StickyImageSection';
+import ParallaxHero from '../../components/events/ParallaxHero/ParallaxHero';
+import StickyImageSection from '../../components/home/StickyImageSection/StickyImageSection';
 import EventParty from '../../components/events/EventParty/EventParty';
 import './EventPage.css';
 

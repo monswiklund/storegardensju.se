@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import "./UpcomingEvents.css";
-import "./PastEvents.css"; // reuse collapsible styles
+import "../PastEvents/PastEvents.css"; // reuse collapsible styles
 
 function UpcomingEvents() {
   const events = [

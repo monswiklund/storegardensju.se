@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import WelcomeImage from "../components/hero/WelcomeImage.jsx";
-import FeaturedGallery from "../components/gallery/FeaturedGallery/FeaturedGallery.jsx";
+import Hero from "../components/home/Hero/Hero.jsx";
+import FeaturedGallery from "../components/home/FeaturedGallery/FeaturedGallery.jsx";
 import Services from "../components/sections/Services/Services.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import PageSection from "../components/sections/PageSection/PageSection.jsx";
-import UpcomingEvents from "../components/events/UpcomingEvents.jsx";
+import UpcomingEvents from "../components/home/UpcomingEvents/UpcomingEvents.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ function HomePage() {
             <header role="banner">
                 <PageSection background="white" spacing="none" ariaLabel="hero-heading">
                     <FadeInSection>
-                        <WelcomeImage/>
+                        <Hero/>
                     </FadeInSection>
                 </PageSection>
             </header>

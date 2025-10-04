@@ -1,15 +1,15 @@
-import welcomeImage from "../../assets/logoTransp.png";
+import welcomeImage from "../../../assets/logoTransp.png";
 import { useNavigate } from "react-router-dom";
-import "./WelcomeImage.css";
+import "./Hero.css";
 
-function WelcomeImage() {
+function Hero() {
   const navigate = useNavigate();
   return (
-    <div className="stor-logga-container">
-      <div className="stor-logga">
+    <div className="hero-container">
+      <div className="hero-logo">
         <img src={welcomeImage} alt="Lägg till Storegården 7 Loggan" />
       </div>
-      <div className="titel">
+      <div className="hero-titel">
         <h1>Välkommen till Storegården 7</h1>
         <h2>En plats för kreativt nöje!</h2>
         <p>
@@ -61,4 +61,4 @@ function WelcomeImage() {
   );
 }
 
-export default WelcomeImage;
+export default Hero;

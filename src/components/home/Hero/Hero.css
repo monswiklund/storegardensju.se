@@ -1,7 +1,7 @@
 /* ==========================================================================
    Hero Section (Logo & Title)
    ========================================================================== */
-.stor-logga-container {
+.hero-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,7 +13,7 @@
     position: relative;
 }
 
-.stor-logga {
+.hero-logo {
     width: 100%;
     max-width: 500px;
     display: flex;
@@ -21,7 +21,7 @@
     margin-bottom: 20px;
 }
 
-.stor-logga img {
+.hero-logo img {
     width: 150vw;
     max-width: 1200px;
     height: auto;
@@ -30,7 +30,7 @@
     margin: 0 auto;
 }
 
-.titel {
+.hero-titel {
 
     width: 100%;
     position: relative;
@@ -39,7 +39,7 @@
 
 }
 
-.titel h1 {
+.hero-titel h1 {
     font-size: clamp(2rem, 5vw, 3rem);
     padding-bottom: 10px;
     font-weight: 300;
@@ -48,7 +48,7 @@
     color: var(--text-color);
 }
 
-.titel h2 {
+.hero-titel h2 {
 
     font-size: clamp(1.2rem, 3vw, 1.8rem);
     font-weight: 300;

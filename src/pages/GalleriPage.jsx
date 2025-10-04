@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react';
-import WelcomeText from "../components/hero/WelcomeText.jsx";
+import OldAboutUs from "../components/home/OldAboutUs/OldAboutUs.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
@@ -14,7 +14,7 @@ function GalleriPage() {
             {/* Om lokalen */}
             <PageSection background="alt" spacing="compact" ariaLabel="welcome-heading">
                 <FadeInSection>
-                    <WelcomeText/>
+                    <OldAboutUs/>
                 </FadeInSection>
             </PageSection>
 

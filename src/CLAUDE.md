@@ -108,8 +108,8 @@ Projektet har en **critical multi-step build process** som måste köras i rätt
 - `ValueProposition/ValueProposition.jsx`: Value proposition section
 
 **Hero Components** (`components/hero/`):
-- `WelcomeImage.jsx`: Hero image
-- `WelcomeText.jsx`: Hero text
+- `Hero.jsx`: Hero image
+- `OldAboutUs.jsx`: Hero text
 - `ParallaxHero/ParallaxHero.jsx`: Parallax hero section
 - `StickyImageSection/StickyImageSection.jsx`: Sticky scroll image section
 

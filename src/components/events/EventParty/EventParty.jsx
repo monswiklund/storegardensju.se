@@ -8,7 +8,7 @@ function EventParty() {
 
         <div className="event-party-content">
           <div className="event-party-intro">
-{/*            <h3>Skapa minnen som varar</h3>
+            {/*            <h3>Skapa minnen som varar</h3>
             <p>
               Oavsett om du
               planerar en företagsfest, födelsedagskalas, vernissage eller privat tillställning,
@@ -34,11 +34,21 @@ function EventParty() {
         <div className="event-types">
           <h4>Perfekt för:</h4>
           <div className="types-grid">
-            <div className="type-item">Bröllop</div>
-            <div className="type-item">Företagsevent</div>
-            <div className="type-item">Födelsedagsfester</div>
-            <div className="type-item">Vernissage</div>
-            <div className="type-item">Workshops</div>
+            <div className="type-item">
+              <p>Bröllop</p>
+            </div>
+            <div className="type-item">
+              <p>Företagsevent</p>
+            </div>
+            <div className="type-item">
+              <p>Födelsedagsfester</p>
+            </div>
+            <div className="type-item">
+              <p>Vernissage</p>
+            </div>
+            <div className="type-item">
+              <p>Workshops</p>
+            </div>
           </div>
         </div>
 
@@ -46,7 +56,11 @@ function EventParty() {
           <h3>Intresserad av att boka lokalen?</h3>
           <button
             className="contact-button"
-            onClick={() => document.querySelector('.contact-container')?.scrollIntoView({behavior: 'smooth', block: 'center'})}
+            onClick={() =>
+              document
+                .querySelector(".contact-container")
+                ?.scrollIntoView({ behavior: "smooth", block: "center" })
+            }
           >
             Kontakta oss
           </button>
