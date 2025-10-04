@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://storegardensju.se/</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://storegardensju.se/images/evenemang/slide4.jpg</image:loc>
+      <image:title>Storegården 7 Eventlokal</image:title>
+    </image:image>
+  </url>
+
+  <!-- Event Page -->
+  <url>
+    <loc>https://storegardensju.se/event</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://storegardensju.se/images/evenemang/slide2.jpg</image:loc>
+      <image:title>Evenemang på Storegården 7</image:title>
+    </image:image>
+  </url>
+
+  <!-- Konst & Keramik Page -->
+  <url>
+    <loc>https://storegardensju.se/konst</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://storegardensju.se/images/konst-keramik/slide16.jpg</image:loc>
+      <image:title>Konst och keramik på Storegården 7</image:title>
+    </image:image>
+  </url>
+
+  <!-- Galleri Page -->
+  <url>
+    <loc>https://storegardensju.se/galleri</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Team Page -->
+  <url>
+    <loc>https://storegardensju.se/team</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>
