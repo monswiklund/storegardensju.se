@@ -38,6 +38,15 @@ function StoregardensImageGallery() {
         return `/images/${categoryId}/slide${imageNumber}.jpg`;
     };
 
+    // Helper function to get image metadata (alt-text, title)
+    const getImageMetadata = (imageNumber) => {
+        return {
+            alt: `Bild från Storegården 7`,
+            title: `Bild ${imageNumber}`,
+            description: `Bild ${imageNumber} från Storegården 7`
+        };
+    };
+
     // Memoize expensive image data generation
     const allImages = useMemo(() => {
         // Samla alla bildnummer från alla kategorier (exklusive "alla")
@@ -50,14 +59,17 @@ function StoregardensImageGallery() {
 
         const sortedImageNumbers = Array.from(allImageNumbers).sort((a, b) => a - b);
 
-        return sortedImageNumbers.map((imageNumber) => ({
-            original: getImagePath(imageNumber, 'alla'),
-            thumbnail: getImagePath(imageNumber, 'alla'),
-            description: `Bild ${imageNumber} från Storegården 7`,
-            originalAlt: `Bild ${imageNumber}`,
-            thumbnailAlt: `Miniatyr ${imageNumber}`,
-            imageNumber: imageNumber
-        }));
+        return sortedImageNumbers.map((imageNumber) => {
+            const metadata = getImageMetadata(imageNumber);
+            return {
+                original: getImagePath(imageNumber, 'alla'),
+                thumbnail: getImagePath(imageNumber, 'alla'),
+                description: metadata.description,
+                originalAlt: metadata.alt,
+                thumbnailAlt: metadata.title,
+                imageNumber: imageNumber
+            };
+        });
     }, []);
     
     // Filter images based on active category
@@ -68,14 +80,17 @@ function StoregardensImageGallery() {
         }
         
         // För specifika kategorier, skapa bilder med rätt paths
-        return activeCategeryData.images.map((imageNumber) => ({
-            original: getImagePath(imageNumber, activeCategory),
-            thumbnail: getImagePath(imageNumber, activeCategory),
-            description: `Bild ${imageNumber} från Storegården 7`,
-            originalAlt: `Bild ${imageNumber}`,
-            thumbnailAlt: `Miniatyr ${imageNumber}`,
-            imageNumber: imageNumber
-        }));
+        return activeCategeryData.images.map((imageNumber) => {
+            const metadata = getImageMetadata(imageNumber);
+            return {
+                original: getImagePath(imageNumber, activeCategory),
+                thumbnail: getImagePath(imageNumber, activeCategory),
+                description: metadata.description,
+                originalAlt: metadata.alt,
+                thumbnailAlt: metadata.title,
+                imageNumber: imageNumber
+            };
+        });
     }, [activeCategory, allImages]);
 
     const toggleAllImages = useCallback(() => {

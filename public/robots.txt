@@ -1,0 +1,24 @@
+# robots.txt för Storegården 7
+# Uppdaterad: 2025-10-04
+
+# Tillåt alla legitima sökmotorer
+User-agent: *
+Allow: /
+
+# Blockera onödiga tekniska filer
+Disallow: /build.json
+Disallow: /stats.html
+Disallow: /*.js.map$
+
+# Sitemap för snabbare indexering
+Sitemap: https://storegardensju.se/sitemap.xml
+
+# Blockera skräpbotar
+User-agent: AhrefsBot
+User-agent: SemrushBot
+User-agent: DotBot
+Disallow: /
+
+# Crawl-delay för att inte överbelasta servern
+User-agent: *
+Crawl-delay: 1
