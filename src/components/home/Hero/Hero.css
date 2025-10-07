@@ -1,0 +1,213 @@
+/* ==========================================================================
+   Hero Section (Logo & Title)
+   ========================================================================== */
+.hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    max-width: 90vw;
+    margin: 40px auto;
+    position: relative;
+}
+
+.hero-logo {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.hero-logo img {
+    width: 150vw;
+    max-width: 1200px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.hero-titel {
+
+    width: 100%;
+    position: relative;
+    text-align: center;
+    margin-top: -100px;
+
+}
+
+.hero-titel h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    padding-bottom: 10px;
+    font-weight: 300;
+    margin-top: -80px;
+    line-height: 1.2;
+    color: var(--text-color);
+}
+
+.hero-titel h2 {
+
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 300;
+    margin: 0;
+    line-height: 1.2;
+    color: var(--text-secondary);
+}
+
+
+/* Mobile Small */
+@media (max-width: 480px) {
+    .stor-logga-container {
+        margin: 20px auto;
+        padding: 15px 10px;
+    }
+
+    .stor-logga {
+        max-width: 400px;
+        margin-bottom: 15px;
+    }
+
+    .titel h2 {
+        font-size: clamp(1rem, 4vw, 1.4rem);
+    }
+
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+    .stor-logga-container {
+        margin: 60px auto;
+        padding: 30px 20px;
+    }
+
+    .stor-logga {
+        max-width: 600px;
+        margin-bottom: 25px;
+    }
+
+    .titel h2 {
+        font-size: clamp(1.4rem, 3vw, 2rem);
+    }
+}
+
+/* Desktop Large */
+@media (min-width: 1200px) {
+
+    .stor-logga {
+        max-width: 700px;
+    }
+}
+
+
+/* Hero CTA Buttons */
+.hero-cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+}
+
+.hero-cta-secondary-group {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-size: 1.125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+    border: 2px solid transparent;
+    text-decoration: none;
+}
+
+.hero-cta-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    box-shadow: 0 4px 12px rgba(64, 123, 94, 0.3);
+}
+
+.hero-cta-primary:hover {
+    background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(64, 123, 94, 0.4);
+}
+
+.hero-cta-secondary {
+    background: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.hero-cta-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.hero-cta:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(64, 123, 94, 0.3);
+}
+
+@media (max-width: 768px) {
+    .hero-cta-group {
+        width: 100%;
+        gap: 12px;
+    }
+
+    .hero-cta-secondary-group {
+        gap: 12px;
+        padding-bottom: 20px;
+    }
+
+    .hero-cta {
+        min-width: auto;
+        font-size: 1rem;
+        padding: 14px 20px;
+    }
+
+    .hero-cta-primary {
+        width: 100%;
+    }
+
+    .hero-cta-secondary-group .hero-cta {
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-cta-group {
+        gap: 10px;
+    }
+
+    .hero-cta-secondary-group {
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 15px;
+    }
+
+    .hero-cta {
+        font-size: 0.9rem;
+        padding: 12px 16px;
+    }
+
+    .hero-cta-secondary-group .hero-cta {
+        width: 100%;
+    }
+}

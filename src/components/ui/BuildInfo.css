@@ -1,0 +1,43 @@
+/* ==========================================================================
+   Build Info & Footer Styles
+   ========================================================================== */
+.site-footer {
+  margin-top: 60px;
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid var(--card-border);
+  background: var(--card-bg);
+}
+
+.build-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.build-version {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.build-details {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+@media (min-width: 768px) {
+  .build-info {
+    flex-direction: row;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .build-details:before {
+    content: "•";
+    margin-right: 8px;
+    color: var(--text-light);
+  }
+}

@@ -324,7 +324,7 @@ test.describe('Storegården 7 E2E Tests', () => {
     
     // Test that components load without errors
     await page.waitForSelector('.storegarden-gallery', { timeout: 10000 });
-    await page.waitForSelector('.vilka-container', { timeout: 10000 });
+    await page.waitForSelector('.Vilka-container', { timeout: 10000 });
     
     // Test loading states by throttling network
     await page.route('**/*', async route => {
@@ -364,7 +364,7 @@ test.describe('Storegården 7 E2E Tests', () => {
     // Wait for lightbox to close - try multiple methods
     try {
       await page.waitForSelector('.gallery-modal', { state: 'hidden', timeout: 3000 });
-    } catch (e) {
+    } catch {
       // If escape doesn't work, try clicking close button
       await page.locator('.gallery-close-button').click({ force: true });
       await page.waitForSelector('.gallery-modal', { state: 'hidden' });

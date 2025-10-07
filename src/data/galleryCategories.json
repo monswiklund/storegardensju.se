@@ -5,67 +5,429 @@
       "name": "Alla bilder",
       "description": "Alla bilder från Storegården 7",
       "images": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20
-      ]
-    },
-    {
-      "id": "evenemang",
-      "name": "Evenemang",
-      "description": "Evenemang från Storegården 7",
-      "images": [
-        2,
-        4,
-        6,
-        8,
-        10,
-        12,
-        14
-      ]
-    },
-    {
-      "id": "konst-keramik",
-      "name": "Konst & Keramik",
-      "description": "Konst och keramik från Storegården 7",
-      "images": [
-        16,
-        18,
-        19,
-        20
+        {
+          "filename": "lokal-upper-1.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-1.webp"
+        },
+        {
+          "filename": "lokal-upper-2.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-2.webp"
+        },
+        {
+          "filename": "lokal-upper-3.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 3,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-3.webp"
+        },
+        {
+          "filename": "lokal-upper-4.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 4,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-4.webp"
+        },
+        {
+          "filename": "lokal-upper-5.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 5,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-5.webp"
+        },
+        {
+          "filename": "lokal-under-1.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-1.webp"
+        },
+        {
+          "filename": "lokal-under-2.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-2.webp"
+        },
+        {
+          "filename": "lokal-under-3.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 3,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-3.webp"
+        },
+        {
+          "filename": "lokal-under-4.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 4,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-4.webp"
+        },
+        {
+          "filename": "lokal-under-5.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 5,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-5.webp"
+        },
+        {
+          "filename": "lokal-under-6.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 6,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-6.webp"
+        },
+        {
+          "filename": "lokal-under-7.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 7,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-7.webp"
+        },
+        {
+          "filename": "lokal-under-8.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 8,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-8.webp"
+        },
+        {
+          "filename": "lokal-under-9.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 9,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-9.webp"
+        },
+        {
+          "filename": "lokal-under-10.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 10,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-10.webp"
+        },
+        {
+          "filename": "lokal-under-11.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 11,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-11.webp"
+        },
+        {
+          "filename": "lokal-kok-1.webp",
+          "category": "lokal",
+          "subcategory": "kok",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-kok-1.webp"
+        },
+        {
+          "filename": "lokal-kok-2.webp",
+          "category": "lokal",
+          "subcategory": "kok",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-kok-2.webp"
+        },
+        {
+          "filename": "lokal-kok-3.webp",
+          "category": "lokal",
+          "subcategory": "kok",
+          "number": 3,
+          "displayName": "",
+          "path": "/images/gallery/lokal-kok-3.webp"
+        },
+        {
+          "filename": "lokal-kok-4.webp",
+          "category": "lokal",
+          "subcategory": "kok",
+          "number": 4,
+          "displayName": "",
+          "path": "/images/gallery/lokal-kok-4.webp"
+        },
+        {
+          "filename": "lokal-service-1.webp",
+          "category": "lokal",
+          "subcategory": "service",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-service-1.webp"
+        },
+        {
+          "filename": "lokal-service-2.webp",
+          "category": "lokal",
+          "subcategory": "service",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-service-2.webp"
+        },
+        {
+          "filename": "lokal-service-3.webp",
+          "category": "lokal",
+          "subcategory": "service",
+          "number": 3,
+          "displayName": "",
+          "path": "/images/gallery/lokal-service-3.webp"
+        },
+        {
+          "filename": "lokal-ute-1.webp",
+          "category": "lokal",
+          "subcategory": "ute",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-ute-1.webp"
+        },
+        {
+          "filename": "lokal-ute-toa-1.webp",
+          "category": "lokal",
+          "subcategory": "ute-toa",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-ute-toa-1.webp"
+        },
+        {
+          "filename": "lokal-ute-toa-2.webp",
+          "category": "lokal",
+          "subcategory": "ute-toa",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-ute-toa-2.webp"
+        }
       ]
     },
     {
       "id": "lokal",
       "name": "Lokal",
-      "description": "Lokal bilder från Storegården 7",
+      "description": "Lokalen på Storegården 7",
       "images": [
-        1,
-        3,
-        5,
-        7,
-        9,
-        11,
-        13,
-        15,
-        17
+        {
+          "filename": "lokal-upper-1.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-1.webp"
+        },
+        {
+          "filename": "lokal-upper-2.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-2.webp"
+        },
+        {
+          "filename": "lokal-upper-3.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 3,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-3.webp"
+        },
+        {
+          "filename": "lokal-upper-4.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 4,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-4.webp"
+        },
+        {
+          "filename": "lokal-upper-5.webp",
+          "category": "lokal",
+          "subcategory": "upper",
+          "number": 5,
+          "displayName": "",
+          "path": "/images/gallery/lokal-upper-5.webp"
+        },
+        {
+          "filename": "lokal-under-1.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-1.webp"
+        },
+        {
+          "filename": "lokal-under-2.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-2.webp"
+        },
+        {
+          "filename": "lokal-under-3.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 3,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-3.webp"
+        },
+        {
+          "filename": "lokal-under-4.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 4,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-4.webp"
+        },
+        {
+          "filename": "lokal-under-5.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 5,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-5.webp"
+        },
+        {
+          "filename": "lokal-under-6.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 6,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-6.webp"
+        },
+        {
+          "filename": "lokal-under-7.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 7,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-7.webp"
+        },
+        {
+          "filename": "lokal-under-8.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 8,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-8.webp"
+        },
+        {
+          "filename": "lokal-under-9.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 9,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-9.webp"
+        },
+        {
+          "filename": "lokal-under-10.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 10,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-10.webp"
+        },
+        {
+          "filename": "lokal-under-11.webp",
+          "category": "lokal",
+          "subcategory": "under",
+          "number": 11,
+          "displayName": "",
+          "path": "/images/gallery/lokal-under-11.webp"
+        },
+        {
+          "filename": "lokal-kok-1.webp",
+          "category": "lokal",
+          "subcategory": "kok",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-kok-1.webp"
+        },
+        {
+          "filename": "lokal-kok-2.webp",
+          "category": "lokal",
+          "subcategory": "kok",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-kok-2.webp"
+        },
+        {
+          "filename": "lokal-kok-3.webp",
+          "category": "lokal",
+          "subcategory": "kok",
+          "number": 3,
+          "displayName": "",
+          "path": "/images/gallery/lokal-kok-3.webp"
+        },
+        {
+          "filename": "lokal-kok-4.webp",
+          "category": "lokal",
+          "subcategory": "kok",
+          "number": 4,
+          "displayName": "",
+          "path": "/images/gallery/lokal-kok-4.webp"
+        },
+        {
+          "filename": "lokal-service-1.webp",
+          "category": "lokal",
+          "subcategory": "service",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-service-1.webp"
+        },
+        {
+          "filename": "lokal-service-2.webp",
+          "category": "lokal",
+          "subcategory": "service",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-service-2.webp"
+        },
+        {
+          "filename": "lokal-service-3.webp",
+          "category": "lokal",
+          "subcategory": "service",
+          "number": 3,
+          "displayName": "",
+          "path": "/images/gallery/lokal-service-3.webp"
+        },
+        {
+          "filename": "lokal-ute-1.webp",
+          "category": "lokal",
+          "subcategory": "ute",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-ute-1.webp"
+        },
+        {
+          "filename": "lokal-ute-toa-1.webp",
+          "category": "lokal",
+          "subcategory": "ute-toa",
+          "number": 1,
+          "displayName": "",
+          "path": "/images/gallery/lokal-ute-toa-1.webp"
+        },
+        {
+          "filename": "lokal-ute-toa-2.webp",
+          "category": "lokal",
+          "subcategory": "ute-toa",
+          "number": 2,
+          "displayName": "",
+          "path": "/images/gallery/lokal-ute-toa-2.webp"
+        }
       ]
     }
   ]

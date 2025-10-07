@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import VälkomstBild from "../components/VälkomstBild.jsx";
-import FeaturedGallery from "../components/FeaturedGallery.jsx";
-import Services from "../components/Services.jsx";
-import FadeInSection from "../components/FadeInSection.jsx";
-import PageSection from "../components/PageSection.jsx";
-import KommandeEvenemang from "../components/KommandeEvenemang.jsx";
+import Hero from "../components/home/Hero/Hero.jsx";
+import FeaturedGallery from "../components/home/FeaturedGallery/FeaturedGallery.jsx";
+import Services from "../components/sections/Services/Services.jsx";
+import FadeInSection from "../components/ui/FadeInSection.jsx";
+import PageSection from "../components/sections/PageSection/PageSection.jsx";
+import UpcomingEvents from "../components/home/UpcomingEvents/UpcomingEvents.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ function HomePage() {
             <header role="banner">
                 <PageSection background="white" spacing="none" ariaLabel="hero-heading">
                     <FadeInSection>
-                        <VälkomstBild/>
+                        <Hero/>
                     </FadeInSection>
                 </PageSection>
             </header>
@@ -39,9 +39,9 @@ function HomePage() {
                 </PageSection>
 
                 {/* Kommande evenemang */}
-                <PageSection background="var(--background-alt)" spacing="compact" ariaLabel="evenemang-heading">
+                <PageSection background="alt" spacing="compact" ariaLabel="evenemang-heading">
                     <FadeInSection>
-                        <KommandeEvenemang/>
+                        <UpcomingEvents/>
                     </FadeInSection>
                 </PageSection>
 

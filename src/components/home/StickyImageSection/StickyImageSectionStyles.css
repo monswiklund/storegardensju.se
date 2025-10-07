@@ -1,0 +1,49 @@
+.sticky-image-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  display: block;
+  margin: 0 0 -2px 0;
+  padding: 0;
+  scroll-snap-align: start;
+}
+
+.sticky-image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.sticky-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) and (orientation: portrait) {
+  .sticky-image-section {
+    min-height: 70vh;
+    height: 70vh;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .sticky-image-section {
+    min-height: 90vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .sticky-image-section {
+    min-height: 65vh;
+    height: 65vh;
+  }
+}
+
