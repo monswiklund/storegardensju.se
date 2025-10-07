@@ -14,6 +14,10 @@ function StoregardensImageGallery() {
     const [lightboxIndex, setLightboxIndex] = useState(0);
     const [buttonMode, setButtonMode] = useState('hidden'); // hidden | fixed | bottom
     const buttonModeRef = useRef('hidden');
+    const modelRef = useRef(null);
+    const closeButtonRef = useRef(null);
+    const previouslyFocusedElementRef = useRef(null);
+    const preloadedSourcesRef = useRef(new Set());
     const setMode = useCallback((mode) => {
         if (buttonModeRef.current !== mode) {
             buttonModeRef.current = mode;
@@ -41,13 +45,14 @@ function StoregardensImageGallery() {
             filename: imageData.filename,
             subcategory: imageData.subcategory
         }));
-    }, [activeCategory, activeCategeryData]);
+    }, [activeCategeryData]);
 
     const toggleAllImages = useCallback(() => {
         setShowAllImages(!showAllImages);
     }, [showAllImages]);
 
     const openLightbox = useCallback((index) => {
+        previouslyFocusedElementRef.current = document.activeElement;
         setLightboxIndex(index);
         setShowLightbox(true);
     }, []);
@@ -70,10 +75,18 @@ function StoregardensImageGallery() {
 
     // ESC key to close lightbox & prevent body scroll
     useEffect(() => {
-        if (!showLightbox) return;
+        if (showLightbox) {
+            document.body.classList.add('lightbox-open');
+        } else {
+            document.body.classList.remove('lightbox-open');
+        }
+        return () => {
+            document.body.classList.remove('lightbox-open');
+        };
+    }, [showLightbox]);
 
-        // Prevent body scroll when lightbox is open
-        document.body.style.overflow = 'hidden';
+    useEffect(() => {
+        if (!showLightbox) return;
 
         const handleEscape = (e) => {
             if (e.key === 'Escape') {
@@ -84,9 +97,99 @@ function StoregardensImageGallery() {
         document.addEventListener('keydown', handleEscape);
         return () => {
             document.removeEventListener('keydown', handleEscape);
-            document.body.style.overflow = '';
         };
     }, [showLightbox, closeLightbox]);
+
+    useEffect(() => {
+        if (!showLightbox) {
+            const node = previouslyFocusedElementRef.current;
+            if (node && typeof node.focus === 'function') {
+                requestAnimationFrame(() => {
+                    node.focus({ preventScroll: true });
+                    previouslyFocusedElementRef.current = null;
+                });
+            }
+            return;
+        }
+
+        const closeBtn = closeButtonRef.current;
+        if (closeBtn) {
+            closeBtn.focus({ preventScroll: true });
+        }
+    }, [showLightbox]);
+
+    useEffect(() => {
+        if (!showLightbox) return;
+        const modelNode = modelRef.current;
+        if (!modelNode) return;
+
+        const focusableSelector = [
+            'a[href]',
+            'area[href]',
+            'button:not([disabled])',
+            'input:not([disabled]):not([type="hidden"])',
+            'select:not([disabled])',
+            'textarea:not([disabled])',
+            '[tabindex]:not([tabindex="-1"])'
+        ].join(',');
+
+        const handleKeyDown = (event) => {
+            if (event.key !== 'Tab') return;
+
+            const focusableElements = Array.from(modelNode.querySelectorAll(focusableSelector))
+                .filter((el) => !el.hasAttribute('aria-hidden'));
+
+            if (focusableElements.length === 0) {
+                event.preventDefault();
+                return;
+            }
+
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+            const isShift = event.shiftKey;
+            const active = document.activeElement;
+
+            if (!isShift && active === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+            } else if (isShift && active === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [showLightbox]);
+
+    const preloadImageAtIndex = useCallback((index) => {
+        if (!images.length) return;
+        const normalizedIndex = (index + images.length) % images.length;
+        const item = images[normalizedIndex];
+        if (!item?.original) return;
+        if (preloadedSourcesRef.current.has(item.original)) return;
+
+        const img = new Image();
+        img.src = item.original;
+        preloadedSourcesRef.current.add(item.original);
+    }, [images]);
+
+    useEffect(() => {
+        preloadedSourcesRef.current.clear();
+    }, [activeCategory]);
+
+    useEffect(() => {
+        if (!showLightbox || !images.length) return;
+        preloadImageAtIndex(lightboxIndex);
+        preloadImageAtIndex(lightboxIndex + 1);
+        preloadImageAtIndex(lightboxIndex - 1);
+    }, [showLightbox, lightboxIndex, images, preloadImageAtIndex]);
+
+    const handleLightboxSlide = useCallback((nextIndex) => {
+        setLightboxIndex(nextIndex);
+    }, []);
 
     // Scroll-based button behavior
     useEffect(() => {
@@ -330,16 +433,22 @@ function StoregardensImageGallery() {
                 </div>
             )}
 
-            {/* Lightbox Modal - only when clicking on individual images */}
+            {/* Lightbox model - only when clicking on individual images */}
             {showLightbox && (
                 <div 
-                    className="gallery-modal" 
+                    className="gallery-model"
                     role="dialog" 
-                    aria-modal="true" 
+                    aria-modal="true"
                     aria-labelledby="gallery-heading"
                     aria-describedby="gallery-description"
+                    ref={modelRef}
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) {
+                            closeLightbox();
+                        }
+                    }}
                 >
-                    <div className="gallery-modal-content">
+                    <div className="gallery-model-content">
                         <div id="gallery-description" className="sr-only">
                             Bildgalleri med {images.length} bilder. Använd pilknapparna för att navigera, ESC för att stänga.
                         </div>
@@ -348,6 +457,7 @@ function StoregardensImageGallery() {
                             onClick={closeLightbox}
                             aria-label="Stäng bildgalleri"
                             title="Stäng lightbox (ESC)"
+                            ref={closeButtonRef}
                         >
                             ×
                         </button>
@@ -362,6 +472,7 @@ function StoregardensImageGallery() {
                             infinite={true}
                             slideDuration={300}
                             slideInterval={2000}
+                            onSlide={handleLightboxSlide}
                         />
                     </div>
                 </div>

@@ -100,7 +100,7 @@ const ProfileShowcase = ({ profile }) => {
                 <p className="profile-about">{profile.about}</p>
               )}
 
-              {profile.texts && profile.texts.length > 0 && (
+        {/*      {profile.texts && profile.texts.length > 0 && (
                 <div className="profile-descriptior">
                   {profile.texts.map((text, index) => (
                     <p key={index}>{text}</p>
@@ -108,7 +108,7 @@ const ProfileShowcase = ({ profile }) => {
                 </div>
               )}
 
-              {profile.listItems && profile.listItems.length > 0 && (
+*/}              {profile.listItems && profile.listItems.length > 0 && (
                 <div className="profile-skills">
                   <ul>
                     {profile.listItems.map((item, index) => (
