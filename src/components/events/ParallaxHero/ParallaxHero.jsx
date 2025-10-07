@@ -23,6 +23,17 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
 
     if (!wrapper || !hero) return;
 
+    // Check if mobile device (under 768px)
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    // Skip GSAP animations on mobile devices - use CSS sticky instead
+    if (isMobile) {
+      // Set initial opacity for content and overlay on mobile
+      if (content) content.style.opacity = '1';
+      if (overlay) overlay.style.opacity = '0.6';
+      return;
+    }
+
     // Add small delay to ensure all DOM elements are ready
     const ctx = gsap.context(() => {
       // Pin the hero section while scrolling through wrapper
