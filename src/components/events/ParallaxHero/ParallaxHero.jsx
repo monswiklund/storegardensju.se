@@ -12,47 +12,62 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
   const heroRef = useRef(null);
   const contentRef = useRef(null);
   const overlayRef = useRef(null);
+  const backgroundRef = useRef(null);
 
   useLayoutEffect(() => {
     const wrapper = wrapperRef.current;
     const hero = heroRef.current;
     const content = contentRef.current;
     const overlay = overlayRef.current;
+    const background = backgroundRef.current;
 
     if (!wrapper || !hero) return;
 
-    const triggers = [];
+    // Add small delay to ensure all DOM elements are ready
+    const ctx = gsap.context(() => {
+      // Pin the hero section while scrolling through wrapper
+      ScrollTrigger.create({
+        trigger: wrapper,
+        start: 'top top',
+        end: 'bottom bottom',
+        pin: hero,
+        pinSpacing: false,
+        anticipatePin: 1,
+      });
 
-    // Pin the hero section while scrolling through wrapper
-    const pinTrigger = ScrollTrigger.create({
-      trigger: wrapper,
-      start: 'top top',
-      end: 'bottom bottom',
-      pin: hero,
-      pinSpacing: false,
-    });
-    triggers.push(pinTrigger);
-
-    // Animate text and overlay fade in
-    if (content && overlay) {
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: wrapper,
-          start: 'top bottom',
-          end: 'top center',
-          scrub: 1,
-        }
-      })
-      .fromTo(content, { opacity: 0 }, { opacity: 1 }, 0)
-      .fromTo(overlay, { opacity: 0 }, { opacity: 0.6 }, 0);
-
-      if (timeline.scrollTrigger) {
-        triggers.push(timeline.scrollTrigger);
+      // Animate text and overlay fade in when scrolling through hero
+      if (content && overlay) {
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: wrapper,
+            start: 'top top',
+            end: 'top -30%',
+            scrub: 1,
+          }
+        })
+        .fromTo(content, { opacity: 0 }, { opacity: 1 }, 0)
+        .fromTo(overlay, { opacity: 0 }, { opacity: 0.6 }, 0);
       }
-    }
+
+      // Animate background zoom in while scrolling through wrapper
+      if (background) {
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: wrapper,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 1,
+          }
+        })
+        .fromTo(background, { scale: 1 }, { scale: 1.1 });
+      }
+    }, wrapperRef);
+
+    // Refresh ScrollTrigger after setup
+    ScrollTrigger.refresh();
 
     return () => {
-      triggers.forEach(trigger => trigger.kill());
+      ctx.revert();
     };
   }, []);
 
@@ -68,6 +83,7 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
       <section className="parallax-hero" ref={heroRef} style={{ zIndex }}>
         <div
           className="parallax-hero-background"
+          ref={backgroundRef}
           style={{
             backgroundImage: `url(${image})`,
           }}

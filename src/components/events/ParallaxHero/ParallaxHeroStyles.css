@@ -42,18 +42,22 @@
 }
 
 .parallax-hero-content {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 3;
   text-align: center;
   color: white;
   padding: 0 20px;
   max-width: 1200px;
+  width: 100%;
   opacity: 0;
 }
 
 .parallax-hero-title {
   font-size: clamp(2.5rem, 6vw, 5rem);
-  font-weight: 700;
+  font-weight: 400;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
   line-height: 1.2;
@@ -61,7 +65,7 @@
 
 .parallax-hero-subtitle {
   font-size: clamp(1.2rem, 2.5vw, 2rem);
-  font-weight: 400;
+  font-weight: 300;
   margin: 0;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
   line-height: 1.4;
@@ -106,16 +110,24 @@
   }
 }
 
+/* Tablet and smaller devices */
+@media (max-width: 1024px) {
+  .parallax-hero-wrapper {
+    height: 130vh;
+    min-height: 130vh;
+  }
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) and (orientation: portrait) {
   .parallax-hero-wrapper {
-    height: 140vh;
-    min-height: 140vh;
+    height: 60vh;
+    min-height: 60vh;
   }
 
   .parallax-hero {
-    min-height: 70vh;
-    height: 70vh;
+    min-height: 60vh;
+    height: 60vh;
   }
 
   .parallax-hero-title {
@@ -131,8 +143,8 @@
 
 @media (max-width: 768px) and (orientation: landscape) {
   .parallax-hero-wrapper {
-    height: 180vh;
-    min-height: 180vh;
+    height: 95vh;
+    min-height: 95vh;
   }
 
   .parallax-hero {
@@ -152,8 +164,8 @@
 
 @media (max-width: 480px) {
   .parallax-hero-wrapper {
-    height: 130vh;
-    min-height: 130vh;
+    height: 65vh;
+    min-height: 65vh;
   }
 
   .parallax-hero {

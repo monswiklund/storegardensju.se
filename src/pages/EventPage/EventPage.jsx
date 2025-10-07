@@ -38,7 +38,7 @@ function EventPage() {
       {/* Hero Section med Parallax */}
       <ParallaxHero
         image="/images/event/hero/hero.webp"
-        title="Event på Storegården 7"
+        title="Lokal med lantlig charm"
         subtitle=""
         zIndex={1}
       />
@@ -46,12 +46,16 @@ function EventPage() {
       {/* Sticky Image Section 1 */}
       <ParallaxHero
         image="/images/event/hero/hero-2.webp"
+        title="Bröllop"
+        subtitle=""
         zIndex={2}
       />
 
       {/* Sticky Image Section 2 */}
       <ParallaxHero
         image="/images/event/hero/hero-3.webp"
+        title="Event & Fest"
+        subtitle=""
         zIndex={3}
       />
 
