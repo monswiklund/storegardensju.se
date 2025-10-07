@@ -204,6 +204,67 @@ box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px r
   transform: translateX(-50%) scale(.97);
 }
 
+/* Lightbox Modal */
+.gallery-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.gallery-modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 1200px;
+  height: 90vh;
+  background: transparent;
+}
+
+.gallery-close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0);
+    border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 52px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-weight: 300;
+}
+
+.gallery-close-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 @media (max-width: 768px) {
   .gallery-grid {
     gap: 6px;

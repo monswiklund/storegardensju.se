@@ -68,6 +68,26 @@ function StoregardensImageGallery() {
         setShowLightbox(false);
     }, []);
 
+    // ESC key to close lightbox & prevent body scroll
+    useEffect(() => {
+        if (!showLightbox) return;
+
+        // Prevent body scroll when lightbox is open
+        document.body.style.overflow = 'hidden';
+
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        };
+
+        document.addEventListener('keydown', handleEscape);
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+            document.body.style.overflow = '';
+        };
+    }, [showLightbox, closeLightbox]);
+
     // Scroll-based button behavior
     useEffect(() => {
         if (!showAllImages) {
@@ -335,7 +355,7 @@ function StoregardensImageGallery() {
                             items={images}
                             startIndex={lightboxIndex}
                             showThumbnails={true}
-                            showFullscreenButton={true}
+                            showFullscreenButton={false}
                             showPlayButton={false}
                             showIndex={true}
                             showBullets={false}
