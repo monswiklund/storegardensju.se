@@ -11,7 +11,7 @@
 
 .services-container h2 {
   text-align: center;
-  font-size: clamp(1.8rem, 5vw, 2.2rem);
+  font-size: clamp(1.6rem, 1.25rem + 2vw, 2.2rem);
   font-weight: 400;
   color: var(--text-color);
   margin: 0 0 48px 0;
@@ -80,7 +80,7 @@
 }
 
 .service-title {
-  font-size: 1.3rem;
+  font-size: clamp(1.1rem, 0.95rem + 1vw, 1.45rem);
   font-weight: 500;
   color: var(--text-color);
   margin: 0 0 8px 0;
@@ -88,7 +88,7 @@
 }
 
 .service-subtitle {
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 0.9rem + 0.6vw, 1.1rem);
   font-weight: 400;
   color: var(--primary-color);
   margin: 0 0 16px 0;
@@ -96,7 +96,7 @@
 }
 
 .service-description {
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
   line-height: 1.6;
   color: var(--text-secondary);
   margin: 0 0 24px 0;
@@ -104,7 +104,7 @@
 
 .service-arrow {
   display: inline-block;
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
   font-weight: 500;
   color: var(--primary-color);
   transition: transform 0.3s ease;
@@ -119,10 +119,6 @@
     padding: 30px 15px;
   }
 
-  .services-container h2 {
-    margin-bottom: 32px;
-  }
-
   .services-grid {
     grid-template-columns: 1fr;
     gap: 24px;
@@ -132,19 +128,11 @@
   .service-card {
     padding: 32px 24px;
   }
-
-  .service-title {
-    font-size: 1.5rem;
-  }
 }
 
 @media (max-width: 480px) {
   .services-section {
     padding: 20px 10px;
-  }
-
-  .services-container h2 {
-    margin-bottom: 32px;
   }
 
   .services-grid {
@@ -159,17 +147,5 @@
     width: 40px;
     height: 40px;
     margin: 0 auto 20px;
-  }
-
-  .service-title {
-    font-size: 1.1rem;
-  }
-
-  .service-subtitle {
-    font-size: 0.9rem;
-  }
-
-  .service-description {
-    font-size: 0.9rem;
   }
 }

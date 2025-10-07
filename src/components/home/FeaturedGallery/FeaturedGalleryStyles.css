@@ -60,7 +60,7 @@
 }
 
 .featured-title {
-  font-size: clamp(2.2rem, 4vw, 2.8rem);
+  font-size: clamp(1.9rem, 1.35rem + 2vw, 2.8rem);
   font-weight: 400;
   margin: 0 0 16px 0;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
@@ -68,7 +68,7 @@
 }
 
 .featured-subtitle {
-  font-size: clamp(1.5rem, 2vw, 1.8rem);
+  font-size: clamp(1.05rem, 0.95rem + 1vw, 1.6rem);
   font-weight: 300;
   margin: 0;
   line-height: 1.6;
@@ -83,7 +83,7 @@
 
 .view-more-text {
   color: white;
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.95rem + 0.5vw, 1.125rem);
   font-weight: 500;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -96,7 +96,7 @@
   color: white;
   border: none;
   border-radius: 50px;
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.95rem + 0.6vw, 1.125rem);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -119,15 +119,15 @@
   }
 
   .featured-text-overlay {
-    padding: 30px 20px;
+    padding: 24px 18px;
   }
 
   .featured-title {
-    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    font-size: clamp(1.5rem, 1.2rem + 2.5vw, 2.1rem);
   }
 
   .featured-subtitle {
-    font-size: clamp(1.3rem, 3vw, 1.1rem);
+    font-size: clamp(1rem, 0.9rem + 1.2vw, 1.35rem);
     margin: 0 auto;
     max-width: 430px;
   }
@@ -144,13 +144,13 @@
   }
 
   .featured-title {
-    font-size: clamp(1.4rem, 6.5vw, 1.8rem);
+    font-size: clamp(1.3rem, 1.05rem + 2.5vw, 1.6rem);
     margin: 0 0 4px 0;
   }
 
   .featured-subtitle {
     max-width: 300px;
     margin: 0 auto;
-    font-size: clamp(0.95rem, 3.5vw, 1rem);
+    font-size: clamp(0.95rem, 0.9rem + 1.5vw, 1.1rem);
   }
 }

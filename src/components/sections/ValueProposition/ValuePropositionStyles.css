@@ -61,7 +61,7 @@
 }
 
 .value-title {
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 1.05rem + 1.8vw, 1.6rem);
   font-weight: 500;
   color: var(--text-color);
   margin: 0 0 16px 0;
@@ -70,7 +70,7 @@
 }
 
 .value-description {
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
   line-height: 1.6;
   color: var(--text-secondary);
   margin: 0;
@@ -85,10 +85,6 @@
 
   .value-prop-card {
     padding: 32px 24px;
-  }
-
-  .value-title {
-    font-size: 1.3rem;
   }
 }
 
@@ -105,14 +101,5 @@
     width: 48px;
     height: 48px;
     margin: 0 auto 16px;
-  }
-
-  .value-title {
-    font-size: 1.2rem;
-    margin: 0 0 12px 0;
-  }
-
-  .value-description {
-    font-size: 0.9rem;
   }
 }

@@ -38,22 +38,22 @@
 }
 
 .välkomst-text h2 {
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-size: clamp(1.6rem, 1.2rem + 2.5vw, 2.2rem);
 }
 
 .välkomst-text h3,
 .services h3 {
-    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+    font-size: clamp(1.25rem, 1.05rem + 2vw, 1.7rem);
 }
 
 .välkomst-text h4,
 .services h4 {
-    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-size: clamp(1.1rem, 1rem + 1.2vw, 1.4rem);
 }
 
 .välkomst-text p,
 .services p {
-    font-size: 1rem;
+    font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
     line-height: 1.5;
     margin: 0 0 1rem 0;
     padding: 0;

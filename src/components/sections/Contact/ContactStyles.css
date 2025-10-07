@@ -6,14 +6,14 @@
 }
 
 .contact-container h2 {
-  font-size: clamp(1.8rem, 5vw, 2.2rem);
+  font-size: clamp(1.6rem, 1.25rem + 2.5vw, 2.2rem);
   font-weight: 500;
   margin-bottom: 12px;
   color: var(--text-color);
 }
 
 .contact-subtitle {
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 0.92rem + 0.5vw, 1.1rem);
   color: var(--text-secondary);
   margin-bottom: 24px;
   max-width: 600px;
@@ -67,21 +67,21 @@
 }
 
 .contact-card h3 {
-  font-size: 1.3rem;
+  font-size: clamp(1.15rem, 0.95rem + 1.8vw, 1.4rem);
   font-weight: 300;
   margin: 0 0 4px 0;
   color: var(--text-color);
 }
 
 .contact-card p {
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.4vw, 0.95rem);
   font-weight: 300;
   margin: 0;
   color: var(--text-color);
 }
 
 .contact-info {
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
   color: var(--primary-color);
   margin: 0;
   font-weight: 500;
@@ -118,22 +118,22 @@
 }
 
 .välkomst-text h2 {
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-size: clamp(1.6rem, 1.2rem + 2.5vw, 2.2rem);
 }
 
 .välkomst-text h3,
 .services h3 {
-    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+    font-size: clamp(1.25rem, 1.05rem + 2vw, 1.7rem);
 }
 
 .välkomst-text h4,
 .services h4 {
-    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-size: clamp(1.05rem, 0.95rem + 1.4vw, 1.4rem);
 }
 
 .välkomst-text p,
 .services p {
-    font-size: 1rem;
+    font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
     line-height: 1.5;
     margin: 0 0 0.5rem 0;
     padding: 0;
@@ -185,15 +185,4 @@
     margin-bottom: 6px;
   }
 
-  .contact-card h3 {
-    font-size: 1.1rem;
-  }
-
-  .contact-card p {
-    font-size: 0.85rem;
-  }
-
-  .contact-info {
-    font-size: 0.9rem;
-  }
 }

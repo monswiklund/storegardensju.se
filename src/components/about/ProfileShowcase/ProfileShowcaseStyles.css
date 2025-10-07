@@ -9,7 +9,7 @@
 
 .profile-showcase-container h2 {
   text-align: left;
-  font-size: 3rem;
+  font-size: clamp(2.2rem, 1.8rem + 3vw, 3rem);
   font-weight: 300;
   letter-spacing: -0.02em;
   margin-bottom: 80px;
@@ -42,7 +42,7 @@
   align-items: center;
   gap: 8px;
   color: var(--text-muted);
-  font-size: 0.875rem;
+  font-size: clamp(0.8rem, 0.75rem + 0.35vw, 0.95rem);
   font-weight: 300;
   opacity: 0.7;
   animation: pulse 2s ease-in-out infinite;
@@ -91,7 +91,7 @@
 }
 
 .profile-title {
-  font-size: 2rem;
+  font-size: clamp(1.65rem, 1.3rem + 3vw, 2.4rem);
   font-weight: 300;
   margin: 0;
   text-align: left;
@@ -101,7 +101,7 @@
 }
 
 .profile-about {
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1.05rem);
   font-weight: 400;
   color: var(--text-light);
   text-align: left;
@@ -110,7 +110,7 @@
 }
 
 .profile-description {
-  font-size: 0.875rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.3vw, 1rem);
   color: var(--text-muted);
   line-height: 1.6;
   margin-top: 16px;
@@ -128,7 +128,7 @@
 
 .profile-skills h4,
 .profile-contact h4 {
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -148,7 +148,7 @@
 
 .profile-skills li {
   padding: 2px 0;
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
   color: var(--text-muted);
   position: relative;
 }
@@ -181,7 +181,7 @@
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: clamp(0.9rem, 0.85rem + 0.4vw, 1.05rem);
   font-weight: 500;
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -225,7 +225,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.35vw, 0.95rem);
   color: var(--text-muted);
 }
 
@@ -338,14 +338,14 @@
 }
 
 .portfolio-overlay h3 {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 1.7rem + 2.5vw, 2.6rem);
   margin: 0 0 8px 0;
   font-weight: 300;
   letter-spacing: -0.02em;
 }
 
 .portfolio-overlay p {
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.1rem);
   margin: 0;
   opacity: 0.9;
   font-weight: 300;
@@ -364,7 +364,7 @@
 
 .portfolio-placeholder p {
   color: var(--text-light);
-  font-size: 1rem;
+  font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.1rem);
   font-weight: 300;
   margin: 0;
 }
@@ -378,7 +378,6 @@
   }
 
   .profile-showcase-container h2 {
-    font-size: 2.5rem;
     margin-bottom: 60px;
   }
 
@@ -400,7 +399,6 @@
   .swipe-indicator {
     bottom: 30px;
     right: 30px;
-    font-size: 0.8rem;
   }
 
   .profile-cell {
@@ -418,26 +416,9 @@
     margin: 0 0 10px 0;
   }
 
-  .profile-title {
-    font-size: 1.9rem;
-  }
-
-  .profile-about {
-    font-size: 1rem;
-  }
-
   .profile-skills h4,
   .profile-contact h4 {
     margin: 16px 0 8px 0;
-    font-size: 0.9rem;
-  }
-
-  .profile-skills li {
-    font-size: 0.9rem;
-  }
-
-  .showcase-contact-item {
-    font-size: 0.85rem;
   }
 
   .portfolio-slide {
@@ -456,7 +437,6 @@
   }
 
   .profile-showcase-container h2 {
-    font-size: 2rem;
     margin-bottom: 40px;
   }
 
@@ -477,7 +457,6 @@
   .swipe-indicator {
     bottom: 20px;
     right: 20px;
-    font-size: 0.75rem;
     gap: 6px;
   }
 
@@ -501,34 +480,16 @@
     margin: 0 0 10px 0;
   }
 
-  .profile-title {
-    font-size: 1.8rem;
-  }
-
-  .profile-about {
-    font-size: 0.9rem;
-  }
-
-  .profile-description {
-    font-size: 0.9rem;
-  }
-
   .profile-skills h4,
   .profile-contact h4 {
     margin: 16px 0 8px 0;
-    font-size: 0.9rem;
   }
 
   .profile-skills ul {
     gap: 3px;
   }
 
-  .profile-skills li {
-    font-size: 0.8rem;
-  }
-
   .showcase-contact-item {
-    font-size: 0.75rem;
     gap: 6px;
   }
 
@@ -568,14 +529,6 @@
   .portfolio-overlay {
     padding: 32px 24px;
   }
-
-  .portfolio-overlay h3 {
-    font-size: 1.75rem;
-  }
-
-  .portfolio-overlay p {
-    font-size: 0.9rem;
-  }
 }
 
 /* Extra small mobile */
@@ -585,7 +538,6 @@
   }
 
   .profile-showcase-container h2 {
-    font-size: 1.75rem;
     margin-bottom: 30px;
   }
 
@@ -610,26 +562,11 @@
     margin: 0 0 8px 0;
   }
 
-  .profile-title {
-    font-size: 1.5rem;
-  }
-
-  .profile-about {
-    font-size: 0.85rem;
-  }
-
   .profile-skills h4,
   .profile-contact h4 {
     margin: 12px 0 6px 0;
-    font-size: 0.85rem;
   }
-
-  .profile-skills li {
-    font-size: 0.75rem;
-  }
-
   .showcase-contact-item {
-    font-size: 0.7rem;
     gap: 4px;
   }
 
@@ -649,17 +586,8 @@
     padding: 24px 16px;
   }
 
-  .portfolio-overlay h3 {
-    font-size: 1.5rem;
-  }
-
-  .portfolio-overlay p {
-    font-size: 0.85rem;
-  }
-
   .swipe-indicator {
     bottom: 15px;
     right: 15px;
-    font-size: 0.7rem;
   }
 }

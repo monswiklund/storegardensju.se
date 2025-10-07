@@ -43,7 +43,7 @@
 }
 
 .hero-titel h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(1.9rem, 1.4rem + 3vw, 3rem);
     padding-bottom: 10px;
     font-weight: 300;
     margin-top: 0;
@@ -53,7 +53,7 @@
 
 .hero-titel h2 {
 
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-size: clamp(1.15rem, 0.95rem + 2.2vw, 1.8rem);
     font-weight: 300;
     margin: 0;
     line-height: 1.2;
@@ -64,6 +64,7 @@
     margin: 12px auto;
     max-width: 60ch;
     line-height: 1.6;
+    font-size: clamp(0.95rem, 0.92rem + 0.5vw, 1.1rem);
 }
 
 
@@ -80,7 +81,7 @@
     }
 
     .titel h2 {
-        font-size: clamp(1rem, 4vw, 1.4rem);
+        font-size: clamp(1rem, 0.9rem + 2vw, 1.3rem);
     }
 
 }
@@ -98,7 +99,7 @@
     }
 
     .titel h2 {
-        font-size: clamp(1.4rem, 3vw, 2rem);
+        font-size: clamp(1.3rem, 1.1rem + 2.2vw, 1.9rem);
 }
 }
 
@@ -135,7 +136,7 @@
     justify-content: center;
     padding: 14px 26px;
     border-radius: 50px;
-    font-size: 1rem;
+    font-size: clamp(0.95rem, 0.9rem + 0.5vw, 1.1rem);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -193,11 +194,11 @@
     }
 
     .hero-titel h1 {
-        font-size: clamp(1.75rem, 6vw, 2.25rem);
+        font-size: clamp(1.65rem, 1.3rem + 3vw, 2.25rem);
     }
 
     .hero-titel h2 {
-        font-size: clamp(1.1rem, 4.5vw, 1.5rem);
+        font-size: clamp(1.05rem, 0.9rem + 2.2vw, 1.45rem);
         margin-bottom: 10px;
     }
 
@@ -217,7 +218,7 @@
 
     .hero-cta {
         min-width: auto;
-        font-size: 1rem;
+        font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.05rem);
         padding: 14px 20px;
     }
 
@@ -255,7 +256,7 @@
     }
 
     .hero-titel h1 {
-        font-size: clamp(1.6rem, 8vw, 2rem);
+        font-size: clamp(1.5rem, 1.2rem + 3vw, 2rem);
     }
 
     .hero-logo img {
@@ -263,19 +264,19 @@
     }
 
     .hero-cta {
-        font-size: 1rem !important;
-        padding: 12px 12px !important;
-        width: 100% !important;
-        max-width: 240px !important;
-        min-width: auto !important;
+        font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1.05rem);
+        padding: 12px 12px;
+        width: 100%;
+        max-width: 240px;
+        min-width: auto;
     }
 
     .hero-cta-primary {
-        width: 100% !important;
+        width: 100%;
     }
 
     .hero-cta-secondary-group .hero-cta {
-        flex: 1 !important;
+        flex: 1;
     }
 
     .hero-titel p {
