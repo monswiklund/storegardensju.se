@@ -26,12 +26,6 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
     // Check if mobile device (under 768px)
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-    // Set initial opacity for mobile (no fade animation on mobile)
-    if (isMobile) {
-      if (content) content.style.opacity = '1';
-      if (overlay) overlay.style.opacity = '0.6';
-    }
-
     // Add small delay to ensure all DOM elements are ready
     const ctx = gsap.context(() => {
       // Pin the hero section while scrolling through wrapper
@@ -44,8 +38,8 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
         anticipatePin: 1,
       });
 
-      // Animate text and overlay fade in when scrolling through hero (desktop only)
-      if (!isMobile && content && overlay) {
+      // Animate text and overlay fade in when scrolling through hero
+      if (content && overlay) {
         gsap.timeline({
           scrollTrigger: {
             trigger: wrapper,
@@ -58,7 +52,7 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
         .fromTo(overlay, { opacity: 0 }, { opacity: 0.6 }, 0);
       }
 
-      // Animate background zoom in while scrolling through wrapper (desktop only)
+      // Animate background zoom in while scrolling through wrapper (desktop only - too heavy on mobile)
       if (!isMobile && background) {
         gsap.timeline({
           scrollTrigger: {
