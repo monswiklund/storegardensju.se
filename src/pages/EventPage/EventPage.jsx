@@ -59,7 +59,7 @@ function EventPage() {
         zIndex={3}
       />
 
-        <EventParty />
+      <EventParty />
     </main>
   );
 }

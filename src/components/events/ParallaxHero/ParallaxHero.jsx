@@ -7,7 +7,7 @@ import './ParallaxHeroStyles.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
+function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true }) {
   const wrapperRef = useRef(null);
   const heroRef = useRef(null);
   const contentRef = useRef(null);
@@ -15,18 +15,25 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
   const backgroundRef = useRef(null);
 
   useLayoutEffect(() => {
-    const wrapper = wrapperRef.current;
     const hero = heroRef.current;
     const content = contentRef.current;
     const overlay = overlayRef.current;
     const background = backgroundRef.current;
 
-    if (!wrapper || !hero) return;
+    if (!hero) return;
 
     // Check if mobile device (under 768px)
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-    // Add small delay to ensure all DOM elements are ready
+    // On mobile without wrapper, ParallaxHeroGroup handles GSAP - skip here
+    if (isMobile && !useWrapper) {
+      return;
+    }
+
+    // Desktop or wrapper mode: use GSAP pinning
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
     const ctx = gsap.context(() => {
       // Pin the hero section while scrolling through wrapper
       ScrollTrigger.create({
@@ -72,7 +79,7 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
     return () => {
       ctx.revert();
     };
-  }, []);
+  }, [useWrapper]);
 
   const handleScrollDown = () => {
     const nextSection = document.querySelector('.sticky-image-section');
@@ -81,33 +88,42 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1 }) {
     }
   };
 
-  return (
-    <div className="parallax-hero-wrapper" ref={wrapperRef}>
-      <section className="parallax-hero" ref={heroRef} style={{ zIndex }}>
-        <div
-          className="parallax-hero-background"
-          ref={backgroundRef}
-          style={{
-            backgroundImage: `url(${image})`,
-          }}
-        />
-        <div className="parallax-hero-overlay" ref={overlayRef} />
-        {(title || subtitle) && (
-          <div className="parallax-hero-content" ref={contentRef}>
-            {title && <h1 className="parallax-hero-title">{title}</h1>}
-            {subtitle && <p className="parallax-hero-subtitle">{subtitle}</p>}
-          </div>
-        )}
-        <button
-          className="scroll-indicator"
-          onClick={handleScrollDown}
-          aria-label="Scrolla ner"
-        >
-          <ChevronDown size={32} />
-        </button>
-      </section>
-    </div>
+  const heroContent = (
+    <section className="parallax-hero" ref={heroRef} style={{ zIndex }}>
+      <div
+        className="parallax-hero-background"
+        ref={backgroundRef}
+        style={{
+          backgroundImage: `url(${image})`,
+        }}
+      />
+      <div className="parallax-hero-overlay" ref={overlayRef} />
+      {(title || subtitle) && (
+        <div className="parallax-hero-content" ref={contentRef}>
+          {title && <h1 className="parallax-hero-title">{title}</h1>}
+          {subtitle && <p className="parallax-hero-subtitle">{subtitle}</p>}
+        </div>
+      )}
+      <button
+        className="scroll-indicator"
+        onClick={handleScrollDown}
+        aria-label="Scrolla ner"
+      >
+        <ChevronDown size={32} />
+      </button>
+    </section>
   );
+
+  // Conditionally wrap with wrapper div (desktop) or render directly (mobile in group)
+  if (useWrapper) {
+    return (
+      <div className="parallax-hero-wrapper" ref={wrapperRef}>
+        {heroContent}
+      </div>
+    );
+  }
+
+  return heroContent;
 }
 
 ParallaxHero.propTypes = {
@@ -115,6 +131,7 @@ ParallaxHero.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   zIndex: PropTypes.number,
+  useWrapper: PropTypes.bool,
 };
 
 export default ParallaxHero;
