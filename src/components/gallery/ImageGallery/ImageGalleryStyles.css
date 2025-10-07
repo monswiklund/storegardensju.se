@@ -79,6 +79,12 @@
   border-radius: 0;
 }
 
+@media (max-width: 480px) {
+  .gallery-thumbnail {
+    padding: 6px;
+  }
+}
+
 .expanded-grid {
   margin-top: 20px;
   animation: fadeIn 0.3s ease-in-out;
@@ -190,7 +196,7 @@
 .hide-images-button:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px; /* separerar lite visuellt */
-  box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.18);
+box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.18);
 }
 
 /* Use a subtle scale instead of vertical snap; no movement */
@@ -247,6 +253,25 @@
     padding: 10px 20px;
     font-size: 0.9375rem;
   }
+
+    /* Show more button */
+    .show-more-button {
+        display: flex;
+        margin: 30px auto;
+        padding: 8px 20px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 400;
+        transition: var(--transition-smooth);
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+        box-shadow: var(--shadow-md);
+    }
 }
 
 /* Image Overlay */

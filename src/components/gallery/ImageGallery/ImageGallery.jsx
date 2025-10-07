@@ -23,60 +23,25 @@ function StoregardensImageGallery() {
     const containerRef = useRef(null);
     const buttonRef = useRef(null);
 
-    // Helper function to get image path based on category and image number
-    const getImagePath = (imageNumber, categoryId) => {
-        if (categoryId === 'alla') {
-            // För "alla", hitta i vilken kategori bilden finns
-            for (const category of galleryData.categories) {
-                if (category.id !== 'alla' && category.images.includes(imageNumber)) {
-                    return `/images/${category.id}/slide${imageNumber}.jpg`;
-                }
-            }
-            // Fallback till gamla strukturen om inte hittad
-            return `/images/slides/slide${imageNumber}.jpg`;
-        }
-        return `/images/${categoryId}/slide${imageNumber}.jpg`;
-    };
+    // Get current category data
+    const activeCategeryData = galleryData.categories.find(cat => cat.id === activeCategory);
 
-    // Memoize expensive image data generation
-    const allImages = useMemo(() => {
-        // Samla alla bildnummer från alla kategorier (exklusive "alla")
-        const allImageNumbers = new Set();
-        galleryData.categories.forEach(category => {
-            if (category.id !== 'alla') {
-                category.images.forEach(imgNum => allImageNumbers.add(imgNum));
-            }
-        });
-
-        const sortedImageNumbers = Array.from(allImageNumbers).sort((a, b) => a - b);
-
-        return sortedImageNumbers.map((imageNumber) => ({
-            original: getImagePath(imageNumber, 'alla'),
-            thumbnail: getImagePath(imageNumber, 'alla'),
-            description: `Bild ${imageNumber} från Storegården 7`,
-            originalAlt: `Bild ${imageNumber}`,
-            thumbnailAlt: `Miniatyr ${imageNumber}`,
-            imageNumber: imageNumber
-        }));
-    }, []);
-    
-    // Filter images based on active category
+    // Transform images for current category
     const images = useMemo(() => {
-        const activeCategeryData = galleryData.categories.find(cat => cat.id === activeCategory);
-        if (!activeCategeryData || activeCategory === 'alla') {
-            return allImages;
+        if (!activeCategeryData || !activeCategeryData.images) {
+            return [];
         }
-        
-        // För specifika kategorier, skapa bilder med rätt paths
-        return activeCategeryData.images.map((imageNumber) => ({
-            original: getImagePath(imageNumber, activeCategory),
-            thumbnail: getImagePath(imageNumber, activeCategory),
-            description: `Bild ${imageNumber} från Storegården 7`,
-            originalAlt: `Bild ${imageNumber}`,
-            thumbnailAlt: `Miniatyr ${imageNumber}`,
-            imageNumber: imageNumber
+
+        return activeCategeryData.images.map((imageData) => ({
+            original: imageData.path,
+            thumbnail: imageData.path,
+            description: imageData.displayName,
+            originalAlt: imageData.displayName,
+            thumbnailAlt: imageData.displayName,
+            filename: imageData.filename,
+            subcategory: imageData.subcategory
         }));
-    }, [activeCategory, allImages]);
+    }, [activeCategory, activeCategeryData]);
 
     const toggleAllImages = useCallback(() => {
         setShowAllImages(!showAllImages);
@@ -132,7 +97,7 @@ function StoregardensImageGallery() {
         let io;
         if ('IntersectionObserver' in window && topSentinel && bottomSentinel) {
             io = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
+                entries.forEach((entry) => {
                     if (entry.target === topSentinel) topIn = entry.isIntersecting;
                     if (entry.target === bottomSentinel) bottomIn = entry.isIntersecting;
                 });
@@ -223,8 +188,7 @@ function StoregardensImageGallery() {
 
     const breakpointColumns = {
         default: 3,
-        768: 2,
-        480: 1
+        768: 2
     };
 
     return (
@@ -276,8 +240,7 @@ function StoregardensImageGallery() {
                                 loading="eager"
                             />
                             <div className="image-overlay">
-                                <span className="image-category">{galleryData.categories.find(cat => cat.id === activeCategory)?.name || 'Alla'}</span>
-                                <span className="image-number">#{image.imageNumber}</span>
+                                <span className="image-category">{activeCategeryData?.name || 'Alla'}</span>
                             </div>
                         </div>
                     ))}
@@ -328,8 +291,7 @@ function StoregardensImageGallery() {
                                     loading="lazy"
                                 />
                                 <div className="image-overlay">
-                                    <span className="image-category">{galleryData.categories.find(cat => cat.id === activeCategory)?.name || 'Alla'}</span>
-                                    <span className="image-number">#{image.imageNumber}</span>
+                                    <span className="image-category">{activeCategeryData?.name || 'Alla'}</span>
                                 </div>
                             </div>
                         ))}
