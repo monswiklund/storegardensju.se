@@ -16,6 +16,7 @@ import EventPage from "./pages/EventPage/EventPage.jsx";
 import ArtPage from "./pages/ArtPage.jsx";
 import GalleriPage from "./pages/GalleriPage.jsx";
 import TeamPage from "./pages/TeamPage.jsx";
+import Contact from "./components/sections/Contact/Contact.jsx";
 
 function App() {
     // Initialize Lenis smooth scroll globally
@@ -56,7 +57,8 @@ function App() {
                 <Route path="/galleri" element={<GalleriPage />} />
                 <Route path="/om-oss" element={<TeamPage />} />
             </Routes>
-
+            <Contact>
+            </Contact>
             <footer role="contentinfo" className="site-footer">
                 <BuildInfo />
             </footer>

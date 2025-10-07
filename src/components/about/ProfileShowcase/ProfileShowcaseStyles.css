@@ -594,13 +594,13 @@
   }
 
   .profile-slide-wrapper {
-    min-width: 100%;
+    min-width: 60%;
     min-height: 350px;
     padding: 20px 15px;
   }
 
   .profile-cell {
-    max-width: 100%;
+    max-width: 80%;
     gap: 6px;
   }
 

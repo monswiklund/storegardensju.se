@@ -1,9 +1,3 @@
-.events-section {
-  width: 100%;
-  background-color: white;
-  box-sizing: border-box;
-  padding: 80px 20px;
-}
 
 .events-container {
   max-width: 800px;
@@ -222,7 +216,7 @@
 
 @media (max-width: 768px) {
   .events-container {
-    padding: 60px 15px;
+    padding: 20px 0px;
   }
 
   .events-container h2 {
@@ -265,9 +259,17 @@
 }
 
 @media (max-width: 480px) {
-  .event-section {
-    padding: 40px 10px;
+  .events-container h2{
+      font-size: 1.8rem; !important;
   }
+
+    .events-container p{
+        font-size: 1.1rem; !important;
+    }
+
+    .events-container {
+        padding: 20px 1px;
+    }
 
   .event-card {
     padding: 20px 15px;
