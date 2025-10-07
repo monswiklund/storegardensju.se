@@ -17,6 +17,7 @@
   "dependencies": {
     "@playwright/mcp": "^0.0.36",
     "@playwright/test": "^1.55.0",
+    "gsap": "^3.13.0",
     "lucide-react": "^0.454.0",
     "playwright": "^1.55.0",
     "react": "^18.3.1",

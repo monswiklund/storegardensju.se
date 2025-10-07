@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import ParallaxHero from '../../components/events/ParallaxHero/ParallaxHero';
-import StickyImageSection from '../../components/home/StickyImageSection/StickyImageSection';
 import EventParty from '../../components/events/EventParty/EventParty';
 import './EventPage.css';
 
@@ -41,39 +40,22 @@ function EventPage() {
         image="/images/event/hero/hero.webp"
         title="Event på Storegården 7"
         subtitle=""
+        zIndex={1}
       />
 
       {/* Sticky Image Section 1 */}
-      <StickyImageSection
+      <ParallaxHero
         image="/images/event/hero/hero-2.webp"
-        imageAlt="Storegården 7 lokal interiör"
+        zIndex={2}
       />
 
       {/* Sticky Image Section 2 */}
-      <StickyImageSection
-        image="/images/lokal/slide5.jpg"
-        imageAlt="Storegården 7 utrymme"
+      <ParallaxHero
+        image="/images/event/hero/hero-3.webp"
+        zIndex={3}
       />
 
-      {/* Sticky Image Section 3 */}
-      <StickyImageSection
-        image="/images/lokal/slide7.jpg"
-        imageAlt="Storegården 7 detaljer"
-      />
-
-      {/* Sticky Image Section 4 */}
-      <StickyImageSection
-        image="/images/lokal/slide9.jpg"
-        imageAlt="Storegården 7 möjligheter"
-      />
-
-      {/* EventParty Section med scroll-triggered animation */}
-      <div
-        ref={eventPartyRef}
-        className={`event-party-wrapper ${eventPartyVisible ? 'is-visible' : ''}`}
-      >
         <EventParty />
-      </div>
     </main>
   );
 }

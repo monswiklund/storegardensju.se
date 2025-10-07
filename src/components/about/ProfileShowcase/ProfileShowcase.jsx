@@ -101,7 +101,7 @@ const ProfileShowcase = ({ profile }) => {
               )}
 
               {profile.texts && profile.texts.length > 0 && (
-                <div className="profile-description">
+                <div className="profile-descriptior">
                   {profile.texts.map((text, index) => (
                     <p key={index}>{text}</p>
                   ))}
