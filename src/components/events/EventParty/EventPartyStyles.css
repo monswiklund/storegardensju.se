@@ -208,6 +208,77 @@
     padding: 24px 15px;
   }
 
+
+    /* Hero CTA Buttons */
+    .hero-cta-group {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        justify-content: center;
+        align-items: center;
+        margin-top: 32px;
+    }
+
+    .hero-cta-secondary-group {
+        display: flex;
+        gap: 16px;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 32px;
+        border-radius: 50px;
+        font-size: 1.125rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 200px;
+        border: 2px solid transparent;
+        text-decoration: none;
+    }
+
+    .hero-cta-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        color: white;
+        box-shadow: 0 4px 12px rgba(64, 123, 94, 0.3);
+    }
+
+    .hero-cta-primary:hover {
+        background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(64, 123, 94, 0.4);
+    }
+
+    .hero-cta-secondary {
+        background: transparent;
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .hero-cta-secondary:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .hero-cta:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(64, 123, 94, 0.3);
+    }
+
+
+
+    .event-gallery-button-container {
+    flex-direction: column;
+
+    }
+
   .contact-button {
     width: 100%;
     padding: 12px 24px;

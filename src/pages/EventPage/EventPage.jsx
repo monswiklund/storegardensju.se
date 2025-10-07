@@ -2,6 +2,27 @@ import { useState, useEffect, useRef } from 'react';
 import ParallaxHero from '../../components/events/ParallaxHero/ParallaxHero';
 import EventParty from '../../components/events/EventParty/EventParty';
 import './EventPage.css';
+import { useNavigate } from "react-router-dom";
+
+function SendToGalleryButton() {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/galleri");
+  };
+
+  return (
+    <div className="event-gallery-button-container">
+      <button
+        className="event-gallery-button"
+        onClick={handleClick}
+        aria-label="Gå till bildgalleri"
+      >
+        Se galleriet
+      </button>
+    </div>
+  );
+}
 
 function EventPage() {
   const [eventPartyVisible, setEventPartyVisible] = useState(false);
@@ -58,6 +79,7 @@ function EventPage() {
             subtitle=""
             zIndex={3}
         />
+        <SendToGalleryButton />
         {/*<EventParty /> */}
     </main>
   );
