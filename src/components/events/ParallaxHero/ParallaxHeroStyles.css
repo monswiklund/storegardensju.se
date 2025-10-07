@@ -118,18 +118,17 @@
   }
 }
 
-/* Mobile responsiveness - Use CSS sticky instead of GSAP */
+/* Mobile responsiveness - GSAP pinning with optimized heights */
 @media (max-width: 768px) and (orientation: portrait) {
   .parallax-hero-wrapper {
-    height: auto;
-    min-height: auto;
+    height: 140vh;
+    min-height: 140vh;
   }
 
   .parallax-hero {
-    position: sticky;
-    top: 0;
-    min-height: 60vh;
-    height: 60vh;
+    position: relative;
+    min-height: 100vh;
+    height: 100vh;
   }
 
   .parallax-hero-title {
@@ -145,14 +144,14 @@
 
 @media (max-width: 768px) and (orientation: landscape) {
   .parallax-hero-wrapper {
-    height: auto;
-    min-height: auto;
+    height: 140vh;
+    min-height: 140vh;
   }
 
   .parallax-hero {
-    position: sticky;
-    top: 0;
-    min-height: 90vh;
+    position: relative;
+    min-height: 100vh;
+    height: 100vh;
   }
 
   .parallax-hero-title {
@@ -168,15 +167,14 @@
 
 @media (max-width: 480px) {
   .parallax-hero-wrapper {
-    height: auto;
-    min-height: auto;
+    height: 140vh;
+    min-height: 140vh;
   }
 
   .parallax-hero {
-    position: sticky;
-    top: 0;
-    min-height: 65vh;
-    height: 65vh;
+    position: relative;
+    min-height: 100vh;
+    height: 100vh;
   }
 
   .parallax-hero-content {
