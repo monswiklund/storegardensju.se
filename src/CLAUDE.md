@@ -67,7 +67,7 @@ Projektet har en **critical multi-step build process** som måste köras i rätt
    - Används av BuildInfo.jsx komponenten i footer
 
 3. **Vite Build**:
-   - Code splitting: `vendor` chunk (react, react-dom, react-router-dom), `gallery` chunk (react-image-gallery)
+   - Code splitting: `vendor` chunk (react, react-dom, react-router-dom)
    - Asset organization: `js/`, `css/`, `images/` directories
    - Bundle analyzer: `dist/stats.html` genereras för bundle size-analys (rollup-plugin-visualizer)
 
@@ -91,7 +91,7 @@ Projektet har en **critical multi-step build process** som måste köras i rätt
 - `CategoryToggle/CategoryToggle.jsx`: Kategoriväxlare för att filtrera bilder
 - `FeaturedGallery/FeaturedGallery.jsx`: Featured gallery för homepage
 - Bilderna organiseras i kategorier: lokal, evenemang, konst-keramik, alla
-- Använder `react-image-gallery` för lightbox-funktionalitet
+- Egen lightbox med tangentbordsnavigering, thumbnails och fokusfälla
 - Thumbnail grid med lazy loading
 - **Critical path**: Bilder måste finnas i `public/images/{category}/slide{number}.jpg`
 
@@ -100,28 +100,21 @@ Projektet har en **critical multi-step build process** som måste köras i rätt
 - `layout/ScrollToTop/ScrollToTop.jsx`: Scrollar till top vid route change
 - `layout/ScrollToTop/ScrollToTopButton.jsx`: Floating button för scroll to top
 
-**Section Components** (`components/sections/`):
-- `PageSection/PageSection.jsx`: Reusable section wrapper med background/spacing variants
-- `Services/Services.jsx`: Services grid
-- `Contact/Contact.jsx`: Contact section (används i footer)
-- `Creation/Creation.jsx`: Creation showcase
-- `ValueProposition/ValueProposition.jsx`: Value proposition section
+**Feature Modules** (`src/features/`):
+- `home/Hero/Hero.jsx`: Hero med CTA
+- `home/FeaturedGallery/FeaturedGallery.jsx`: Featured gallery på startsidan
+- `home/Services/Services.jsx`: Services grid
+- `home/UpcomingEvents/UpcomingEvents.jsx`: Evenemangskort + historik
+- `venue/VenueIntro/VenueIntro.jsx`: Delad "Om platsen"-sektion
+- `contact/Contact.jsx`: Kontaktsektion (renderas i footer)
+- `creation/Creation.jsx`: Creation showcase för konst/kurser
+- `events/ParallaxHero/ParallaxHero.jsx`: Parallax hero för eventsidan
+- `events/EventParty/EventParty.jsx`: Event showcase component
+- `gallery/ImageGallery/ImageGallery.jsx`: Huvudgalleri
+- `team/ProfileShowcase/ProfileShowcase.jsx`: Profilpresentationer
 
-**Hero Components** (`components/hero/`):
-- `Hero.jsx`: Hero image
-- `OldAboutUs.jsx`: Hero text
-- `ParallaxHero/ParallaxHero.jsx`: Parallax hero section
-- `StickyImageSection/StickyImageSection.jsx`: Sticky scroll image section
-
-**Event Components** (`components/events/`):
-- `UpcomingEvents.jsx`: Visar upcoming events på homepage
-- `EventParty/EventParty.jsx`: Event showcase component
-- `PastEvents.jsx`: Past events showcase
-
-**About Components** (`components/about/`):
-- `TeamMemberProfile.jsx`: Team member card
-- `ProfileShowcase/ProfileShowcase.jsx`: Profile showcase component
-- `Who/Who.jsx`: Who section
+**Common Layout**:
+- `layout/PageSection/PageSection.jsx`: Reusable section wrapper med background/spacing variants
 
 **Utility Components** (`components/ui/`):
 - `ErrorBoundary.jsx`: Fångar React rendering errors
@@ -135,7 +128,7 @@ Projektet har en **critical multi-step build process** som måste köras i rätt
 - **Custom CSS** med CSS variables i `index.css` (:root)
 - **Tailwind CSS** är installerad men används **inte** (ingen tailwind.config.js)
 - **CSS-variablerna** inkluderar: colors, shadows, z-index, transitions, backgrounds
-- **Font**: Jost används genomgående (imported från Google Fonts)
+- **Font**: Jost används genomgående (via lokala filer i `public/fonts/`)
 - **Component-specifik CSS**:
   - Varje komponent har sin egen CSS-fil i samma mapp
   - Exempel: `ImageGallery/ImageGalleryStyles.css`, `CategoryToggle/CategoryToggle.css`
@@ -217,7 +210,7 @@ public/
 - **Build Tool**: Vite 6.2.3
 - **Routing**: React Router DOM 7.9.3
 - **UI Libraries**:
-  - react-image-gallery (lightbox)
+  - Custom lightbox (ingen extern dependency)
   - lucide-react (icons)
   - react-masonry-css (grid layouts)
 - **Testing**: Playwright 1.55.0

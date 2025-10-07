@@ -45,7 +45,7 @@ Projektet har en multi-step build process:
    - Används av `BuildInfo.jsx` komponenten
 
 3. **Vite Build**:
-   - Code splitting: vendor chunk (react, react-dom), gallery chunk (react-image-gallery)
+   - Code splitting: vendor chunk (react, react-dom)
    - Asset organization: js/, css/, images/ directories
    - Bundle analyzer: stats.html genereras i dist/ för bundle size-analys
 
@@ -61,7 +61,7 @@ Projektet har en multi-step build process:
 - `ImageGallery.jsx`: Huvudkomponent som läser från `galleryCategories.json`
 - `CategoryToggle.jsx`: Kategoriväxlare för att filtrera bilder
 - Bilderna organiseras i kategorier: lokal, evenemang, konst-keramik, alla
-- Använder `react-image-gallery` för lightbox-funktionalitet
+- Egen lightbox med tangentbordsnavigering, swipe-stöd och thumbnails
 - Thumbnail grid med lazy loading för bilder utanför initial viewport
 - Bilder måste finnas i `public/images/{category}/slide{number}.jpg`
 

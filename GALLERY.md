@@ -230,7 +230,7 @@ När du kör `npm run build:gallery`:
 `ImageGallery.jsx` läser JSON-filen och renderar:
 - **Thumbnail grid** (Masonry layout)
 - **Kategorifilter** (tabs)
-- **Lightbox** (react-image-gallery)
+- **Lightbox** (custom implementation)
 
 ## Användning
 

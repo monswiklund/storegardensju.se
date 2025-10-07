@@ -1,0 +1,53 @@
+.venue-intro {
+  display: grid;
+  gap: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+
+.venue-intro__copy h2 {
+  font-size: clamp(1.8rem, 2vw + 1.2rem, 2.4rem);
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
+
+.venue-intro__copy p {
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.15rem);
+  line-height: 1.6;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.venue-intro__highlights {
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.venue-intro__highlight {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: clamp(0.95rem, 0.9rem + 0.4vw, 1.1rem);
+  line-height: 1.5;
+}
+
+.venue-intro__icon {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  line-height: 1.45;
+}
+
+@media (min-width: 768px) {
+  .venue-intro {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+
+  .venue-intro__copy {
+    padding-right: 2rem;
+  }
+}

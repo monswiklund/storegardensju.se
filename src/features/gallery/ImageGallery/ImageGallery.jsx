@@ -1,7 +1,5 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import ImageGallery from "react-image-gallery";
 import Masonry from "react-masonry-css";
-import "react-image-gallery/styles/css/image-gallery.css";
 import "./ImageGalleryStyles.css";
 import CategoryToggle from "../CategoryToggle/CategoryToggle";
 import galleryData from "../../../data/galleryCategories.json";
@@ -73,6 +71,22 @@ function StoregardensImageGallery() {
         setShowLightbox(false);
     }, []);
 
+    const goToImage = useCallback((index) => {
+        if (!images.length) return;
+        const normalized = ((index % images.length) + images.length) % images.length;
+        setLightboxIndex(normalized);
+    }, [images.length]);
+
+    const goToNextImage = useCallback(() => {
+        if (!images.length) return;
+        setLightboxIndex((prev) => (prev + 1) % images.length);
+    }, [images.length]);
+
+    const goToPreviousImage = useCallback(() => {
+        if (!images.length) return;
+        setLightboxIndex((prev) => (prev - 1 + images.length) % images.length);
+    }, [images.length]);
+
     // ESC key to close lightbox & prevent body scroll
     useEffect(() => {
         if (showLightbox) {
@@ -99,6 +113,38 @@ function StoregardensImageGallery() {
             document.removeEventListener('keydown', handleEscape);
         };
     }, [showLightbox, closeLightbox]);
+
+    useEffect(() => {
+        if (!showLightbox || !images.length) return;
+
+        const handleKeyNavigation = (event) => {
+            switch (event.key) {
+                case 'ArrowRight':
+                    event.preventDefault();
+                    goToNextImage();
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    goToPreviousImage();
+                    break;
+                case 'Home':
+                    event.preventDefault();
+                    goToImage(0);
+                    break;
+                case 'End':
+                    event.preventDefault();
+                    goToImage(images.length - 1);
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyNavigation);
+        return () => {
+            document.removeEventListener('keydown', handleKeyNavigation);
+        };
+    }, [showLightbox, images.length, goToNextImage, goToPreviousImage, goToImage]);
 
     useEffect(() => {
         if (!showLightbox) {
@@ -181,15 +227,28 @@ function StoregardensImageGallery() {
     }, [activeCategory]);
 
     useEffect(() => {
+        if (!images.length) {
+            setLightboxIndex(0);
+            return;
+        }
+
+        setLightboxIndex((prev) => {
+            if (prev >= images.length) {
+                return images.length - 1;
+            }
+            if (prev < 0) {
+                return 0;
+            }
+            return prev;
+        });
+    }, [images.length]);
+
+    useEffect(() => {
         if (!showLightbox || !images.length) return;
         preloadImageAtIndex(lightboxIndex);
         preloadImageAtIndex(lightboxIndex + 1);
         preloadImageAtIndex(lightboxIndex - 1);
     }, [showLightbox, lightboxIndex, images, preloadImageAtIndex]);
-
-    const handleLightboxSlide = useCallback((nextIndex) => {
-        setLightboxIndex(nextIndex);
-    }, []);
 
     // Scroll-based button behavior
     useEffect(() => {
@@ -313,6 +372,11 @@ function StoregardensImageGallery() {
         default: 3,
         768: 2
     };
+
+    const hasImages = images.length > 0;
+    const currentImage = hasImages
+        ? images[((lightboxIndex % images.length) + images.length) % images.length]
+        : null;
 
     return (
         <div className="storegarden-gallery">
@@ -458,22 +522,80 @@ function StoregardensImageGallery() {
                             aria-label="Stäng bildgalleri"
                             title="Stäng lightbox (ESC)"
                             ref={closeButtonRef}
+                            type="button"
                         >
                             ×
                         </button>
-                        <ImageGallery
-                            items={images}
-                            startIndex={lightboxIndex}
-                            showThumbnails={true}
-                            showFullscreenButton={false}
-                            showPlayButton={false}
-                            showIndex={true}
-                            showBullets={false}
-                            infinite={true}
-                            slideDuration={300}
-                            slideInterval={2000}
-                            onSlide={handleLightboxSlide}
-                        />
+                        {currentImage ? (
+                            <>
+                                <div className="lightbox-stage">
+                                    {images.length > 1 && (
+                                        <button
+                                            type="button"
+                                            className="lightbox-nav lightbox-nav--prev"
+                                            onClick={goToPreviousImage}
+                                            aria-label="Visa föregående bild"
+                                        >
+                                            ‹
+                                        </button>
+                                    )}
+                                    <figure className="lightbox-image-wrapper">
+                                        <img
+                                            src={currentImage.original}
+                                            alt={currentImage.originalAlt || currentImage.description || 'Bild i galleriet'}
+                                            loading="eager"
+                                        />
+                                        {currentImage.description && (
+                                            <figcaption className="lightbox-caption">
+                                                {currentImage.description}
+                                            </figcaption>
+                                        )}
+                                    </figure>
+                                    {images.length > 1 && (
+                                        <button
+                                            type="button"
+                                            className="lightbox-nav lightbox-nav--next"
+                                            onClick={goToNextImage}
+                                            aria-label="Visa nästa bild"
+                                        >
+                                            ›
+                                        </button>
+                                    )}
+                                </div>
+                                <div className="lightbox-footer">
+                                    <span className="lightbox-counter" aria-live="polite">
+                                        {lightboxIndex + 1} / {images.length}
+                                    </span>
+                                    {images.length > 1 && (
+                                        <div className="lightbox-thumbnails" role="list">
+                                            {images.map((image, idx) => {
+                                                const isActive = idx === lightboxIndex;
+                                                return (
+                                                    <button
+                                                        key={image.filename ?? idx}
+                                                        type="button"
+                                                        className={`lightbox-thumbnail ${isActive ? 'is-active' : ''}`}
+                                                        onClick={() => goToImage(idx)}
+                                                        aria-label={`Gå till bild ${idx + 1} av ${images.length}`}
+                                                        aria-current={isActive ? 'true' : undefined}
+                                                    >
+                                                        <img
+                                                            src={image.thumbnail}
+                                                            alt={image.thumbnailAlt}
+                                                            loading="lazy"
+                                                        />
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="lightbox-empty">
+                                <p>Inga bilder tillgängliga i denna kategori.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

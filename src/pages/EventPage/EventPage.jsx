@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import ParallaxHero from '../../components/events/ParallaxHero/ParallaxHero';
-import EventParty from '../../components/events/EventParty/EventParty';
+import ParallaxHero from '../../features/events/ParallaxHero/ParallaxHero';
+import EventParty from '../../features/events/EventParty/EventParty';
 import './EventPage.css';
 import { useNavigate } from "react-router-dom";
 

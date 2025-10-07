@@ -1,15 +1,13 @@
 import PropTypes from "prop-types";
+import { featuredGalleryImages, venueIntro } from "../../../data/homeContent.js";
 import "./FeaturedGalleryStyles.css";
 
 function FeaturedGallery({ onViewAll }) {
-  const featuredImages = [
-    { src: "/images/evenemang/slide4.jpg", alt: "Evenemang" },
-  ];
 
   return (
     <div className="featured-gallery-container">
       <div className="featured-grid">
-        {featuredImages.map((image, index) => (
+        {featuredGalleryImages.map((image, index) => (
           <div
             key={index}
             className={`featured-item featured-item-${index + 1}`}
@@ -26,11 +24,9 @@ function FeaturedGallery({ onViewAll }) {
           >
             <img src={image.src} alt={image.alt} loading="eager" />
             <div className="featured-text-overlay">
-              <h3 className="featured-title">Om platsen</h3>
+              <h3 className="featured-title">{venueIntro.title}</h3>
               <p className="featured-subtitle">
-                Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum i en lantlig omgivning,
-                långt från stadens brus. En plats där dina gäster kan koppla av och uppleva något unikt.
-                Vi har tagit vara på den gamla gårdens charm och kombinerat den med moderna bekvämligheter.
+                {venueIntro.description}
               </p>
             </div>
             <div className="featured-overlay">

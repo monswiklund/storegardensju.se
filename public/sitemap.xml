@@ -5,7 +5,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://storegardensju.se/</loc>
-    <lastmod>2025-10-04</lastmod>
+    <lastmod>2025-03-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -17,7 +17,7 @@
   <!-- Event Page -->
   <url>
     <loc>https://storegardensju.se/event</loc>
-    <lastmod>2025-10-04</lastmod>
+    <lastmod>2025-03-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
@@ -29,7 +29,7 @@
   <!-- Konst & Keramik Page -->
   <url>
     <loc>https://storegardensju.se/konst</loc>
-    <lastmod>2025-10-04</lastmod>
+    <lastmod>2025-03-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
@@ -41,15 +41,15 @@
   <!-- Galleri Page -->
   <url>
     <loc>https://storegardensju.se/galleri</loc>
-    <lastmod>2025-10-04</lastmod>
+    <lastmod>2025-03-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Team Page -->
   <url>
-    <loc>https://storegardensju.se/team</loc>
-    <lastmod>2025-10-04</lastmod>
+    <loc>https://storegardensju.se/om-oss</loc>
+    <lastmod>2025-03-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

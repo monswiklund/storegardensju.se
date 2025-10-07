@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Lenis from 'lenis';
 import gsap from 'gsap';
@@ -16,11 +16,35 @@ import EventPage from "./pages/EventPage/EventPage.jsx";
 import ArtPage from "./pages/ArtPage.jsx";
 import GalleriPage from "./pages/GalleriPage.jsx";
 import TeamPage from "./pages/TeamPage.jsx";
-import Contact from "./components/sections/Contact/Contact.jsx";
+import Contact from "./features/contact/Contact.jsx";
 
 function App() {
-    // Initialize Lenis smooth scroll globally
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
     useEffect(() => {
+        if (!window.matchMedia) {
+            setPrefersReducedMotion(false);
+            return;
+        }
+
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const handleChange = (event) => setPrefersReducedMotion(event.matches);
+
+        setPrefersReducedMotion(mediaQuery.matches);
+        mediaQuery.addEventListener('change', handleChange);
+
+        return () => {
+            mediaQuery.removeEventListener('change', handleChange);
+        };
+    }, []);
+
+    // Initialize Lenis smooth scroll globally when motion is allowed
+    useEffect(() => {
+        if (prefersReducedMotion) {
+            ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+            return undefined;
+        }
+
         const lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -34,17 +58,18 @@ function App() {
         // Connect Lenis with GSAP ScrollTrigger
         lenis.on('scroll', ScrollTrigger.update);
 
-        gsap.ticker.add((time) => {
+        const tickerCallback = (time) => {
             lenis.raf(time * 1000);
-        });
+        };
 
+        gsap.ticker.add(tickerCallback);
         gsap.ticker.lagSmoothing(0);
 
         return () => {
             lenis.destroy();
-            gsap.ticker.remove(lenis.raf);
+            gsap.ticker.remove(tickerCallback);
         };
-    }, []);
+    }, [prefersReducedMotion]);
 
     return (
         <Router>
@@ -57,8 +82,7 @@ function App() {
                 <Route path="/galleri" element={<GalleriPage />} />
                 <Route path="/om-oss" element={<TeamPage />} />
             </Routes>
-            <Contact>
-            </Contact>
+            <Contact />
             <footer role="contentinfo" className="site-footer">
                 <BuildInfo />
             </footer>

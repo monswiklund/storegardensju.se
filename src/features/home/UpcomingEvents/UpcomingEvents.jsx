@@ -1,46 +1,9 @@
 import { useState } from 'react';
 import "./UpcomingEvents.css";
 import "../PastEvents/PastEvents.css"; // reuse collapsible styles
+import { upcomingEvents, pastEvents as pastEventsData } from "../../../data/homeContent.js";
 
 function UpcomingEvents() {
-  const events = [
-    {
-      title: "Konstafton 2025",
-      date: "1 November 2025",
-      time: "12:00 - 24:00",
-      description: "En plats för kreativitet och nöje. Vi öppnar upp dörrarna till ateljén, keramikbutiken och vår eventlokal med utställning på loftet. Vi bjuder in alla för inspiration, skapande och en upplevelse kring gården.",
-      artists: "Ann - Keramik & Måleri, Lina - Digital design & Måleri",
-      spots: "Fri entré",
-      link: "https://konstafton.se/",
-      location: "Storegården 7, Rackeby"
-    }
-  ];
-
-  // Past events moved here
-  const pastEvents = [
-    {
-      title: "Västra Kållands Kulturrunda",
-      date: "29 Maj 2024",
-      time: "10:00 - 17:00",
-      description: "Kom och häng på Storegården 7, ta en kaffe i solen, gå in i Ann's ateljé med konst över hela väggarna, fynda på loppisen och ta ett djupt andetag på denna drömmiga plats!",
-      location: "Storegården 7, Rackeby"
-    },
-    {
-      title: "Helgkurs Keramik",
-      date: "22-23 November 2024",
-      time: "17:00 - 21:00\n10:00 - 16:00",
-      description: "Både för nybörjare och dig som provat tidigare. Tillkommer ett glaseringstillfälle.",
-      location: "Skaparverkstaden, Rörstrand, Lidköping"
-    },
-    {
-      title: "Helgkurs Keramik",
-      date: "7-8 November 2024",
-      time: "17:00-21:00\n10:00-16:00",
-      description: "Både för nybörjare och dig som provat tidigare. Tillkommer ett glaseringstillfälle.",
-      location: "Skaparverkstaden, Rörstrand, Lidköping"
-    }
-  ];
-
   const [showPast, setShowPast] = useState(false);
 
   return (
@@ -52,7 +15,7 @@ function UpcomingEvents() {
         </p>
 
         <div className="events-grid">
-          {events.map((event, index) => (
+          {upcomingEvents.map((event, index) => (
             <div key={index} className={`event-card ${event.link ? 'konstafton-card' : ''}`}>
               <div className="event-header">
                 <h3 className="event-title">{event.title}</h3>
@@ -78,7 +41,7 @@ function UpcomingEvents() {
                   rel="noopener noreferrer"
                   className="event-link-btn"
                 >
-                  Läs mer på konstafton.se
+                  {event.linkLabel ?? 'Läs mer'}
                 </a>
               )}
             </div>
@@ -123,7 +86,7 @@ function UpcomingEvents() {
             aria-label="Tidigare evenemang"
           >
             <div className="past-events-grid" style={{marginTop: '28px'}}>
-              {pastEvents.map((event, idx) => (
+              {pastEventsData.map((event, idx) => (
                 <article key={idx} className="past-event-card" aria-labelledby={`past-event-title-${idx}`}>
                   <h3 id={`past-event-title-${idx}`} className="past-event-title">{event.title}</h3>
                   <div className="past-event-meta">

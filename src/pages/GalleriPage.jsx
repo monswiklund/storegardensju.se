@@ -1,20 +1,20 @@
 import { Suspense, lazy } from 'react';
-import OldAboutUs from "../components/home/OldAboutUs/OldAboutUs.jsx";
+import VenueIntro from "../features/venue/VenueIntro/VenueIntro.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
-import PageSection from "../components/sections/PageSection/PageSection.jsx";
+import PageSection from "../layout/PageSection/PageSection.jsx";
 
 // Lazy load heavy components
-const ImageGallery = lazy(() => import('../components/gallery/ImageGallery/ImageGallery.jsx'));
+const ImageGallery = lazy(() => import('../features/gallery/ImageGallery/ImageGallery.jsx'));
 
 function GalleriPage() {
     return (
         <main role="main" id="main-content">
             {/* Om lokalen */}
-            <PageSection background="alt" spacing="compact" ariaLabel="welcome-heading">
+            <PageSection background="alt" spacing="compact" ariaLabel="venue-intro-heading">
                 <FadeInSection>
-                    <OldAboutUs/>
+                    <VenueIntro />
                 </FadeInSection>
             </PageSection>
 

@@ -1,6 +1,6 @@
-import Creation from "../components/sections/Creation/Creation.jsx";
+import Creation from "../features/creation/Creation.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
-import PageSection from "../components/sections/PageSection/PageSection.jsx";
+import PageSection from "../layout/PageSection/PageSection.jsx";
 
 function ArtPage() {
     return (

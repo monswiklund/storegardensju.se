@@ -1,7 +1,7 @@
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
-import PageSection from "../components/sections/PageSection/PageSection.jsx";
-import ProfileShowcase from "../components/about/ProfileShowcase/ProfileShowcase.jsx";
+import PageSection from "../layout/PageSection/PageSection.jsx";
+import ProfileShowcase from "../features/team/ProfileShowcase/ProfileShowcase.jsx";
 import { profiles } from "../data/profileData.js";
 
 function TeamPage() {

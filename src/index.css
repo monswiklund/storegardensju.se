@@ -1,4 +1,11 @@
-/* Local Jost font - removing Google Fonts import to avoid conflicts */
+/* Local Jost font */
+@font-face {
+  font-family: "Jost";
+  src: url("/fonts/jost.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* ==========================================================================
    CSS Variables & Root Styles

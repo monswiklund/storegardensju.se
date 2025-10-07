@@ -1,4 +1,4 @@
-/* React Image Gallery Custom Styles */
+/* Gallery Styles */
 :root {
   --font-weight-medium: 500;
   --font-weight-normal: 400;
@@ -6,12 +6,11 @@
 
 /* Force consistent font across all gallery elements */
 .storegarden-gallery *,
-.gallery-model *,
-.image-gallery * {
+.gallery-model * {
   font-family: "Jost", Helvetica, sans-serif !important;
 }
 
-/* Thumbnail grid for react-image-gallery */
+/* Gallery grid (masonry layout) */
 .storegarden-gallery {
   width: 100%;
   box-sizing: border-box;
@@ -231,94 +230,138 @@ box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px r
   flex-direction: column;
 }
 
-.gallery-model .image-gallery-content {
-  max-height: 100%;
-}
-
-/* Hide library caption; accessibility handled via sr-only description */
-.gallery-model .image-gallery-description {
-  display: none;
-}
-
-.gallery-model .image-gallery-slide {
+.lightbox-stage {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: calc(90vh - 140px);
+  padding: clamp(16px, 5vw, 60px);
+  min-height: 0;
 }
 
-.gallery-model .image-gallery-slide img {
+.lightbox-image-wrapper {
+  margin: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: calc(90vh - 200px);
+}
+
+.lightbox-image-wrapper img {
   width: auto;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
 }
 
-.gallery-model .image-gallery-left-nav,
-.gallery-model .image-gallery-right-nav {
-  padding: 0;
+.lightbox-caption {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 300;
 }
 
-.gallery-model .image-gallery-icon {
-  color: #fff;
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
   border-radius: 999px;
-
-    width: 58px;
-  height: 58px;
-  display: inline-flex;
+  border: none;
+  display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.24s ease, box-shadow 0.24s ease, background-color 0.24s ease;
-  transform: translate3d(0, 0, 0);
+  font-size: 2.8rem;
+  line-height: 1;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.22s ease, background 0.22s ease;
 }
 
-.gallery-model .image-gallery-icon .image-gallery-svg {
-  width: 50px;
-  height: 50px;
-  transition: transform 0.22s ease;
-}
-
-.gallery-model .image-gallery-left-nav .image-gallery-icon:hover,
-.gallery-model .image-gallery-left-nav .image-gallery-icon:focus-visible {
-  transform: translate3d(-6px, 0, 0) scale(1.05);
-}
-
-.gallery-model .image-gallery-right-nav .image-gallery-icon:hover,
-.gallery-model .image-gallery-right-nav .image-gallery-icon:focus-visible {
-  transform: translate3d(6px, 0, 0) scale(1.05);
-}
-
-.gallery-model .image-gallery-icon:hover .image-gallery-svg,
-.gallery-model .image-gallery-icon:focus-visible .image-gallery-svg {
-  transform: scale(1.08);
-}
-
-.gallery-model .image-gallery-icon:active {
-  transform: translate3d(0, 0, 0) scale(0.94);
-}
-
-.gallery-model .image-gallery-left-nav .image-gallery-icon:active {
-  transform: translate3d(-2px, 0, 0) scale(0.93);
-}
-
-.gallery-model .image-gallery-right-nav .image-gallery-icon:active {
-  transform: translate3d(2px, 0, 0) scale(0.93);
-}
-
-.gallery-model .image-gallery-icon:focus {
+.lightbox-nav:hover,
+.lightbox-nav:focus-visible {
+  background: rgba(0, 0, 0, 0.65);
+  transform: translateY(-50%) scale(1.05);
   outline: none;
 }
 
-.gallery-model .image-gallery-thumbnail.active,
-.gallery-model .image-gallery-thumbnail:focus,
-.gallery-model .image-gallery-thumbnail:hover {
-  border-color: var(--primary-color) !important;
-  border-width: 2px;
+.lightbox-nav:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
-.gallery-model .image-gallery-thumbnail.active .image-gallery-thumbnail-inner,
-.gallery-model .image-gallery-thumbnail:focus .image-gallery-thumbnail-inner {
-  box-shadow: 0 0 0 2px var(--primary-color) inset;
+.lightbox-nav--prev {
+  left: clamp(16px, 4vw, 36px);
+}
+
+.lightbox-nav--next {
+  right: clamp(16px, 4vw, 36px);
+}
+
+.lightbox-footer {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.lightbox-counter {
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.lightbox-thumbnails {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  width: 100%;
+  justify-content: center;
+}
+
+.lightbox-thumbnail {
+  border: none;
+  padding: 4px;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lightbox-thumbnail img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.lightbox-thumbnail.is-active {
+  box-shadow: 0 0 0 2px var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.lightbox-thumbnail:hover:not(.is-active),
+.lightbox-thumbnail:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.45);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.lightbox-empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 80px 20px;
+  font-size: 1.1rem;
+  font-weight: 300;
 }
 
 .gallery-close-button {
@@ -389,6 +432,21 @@ box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px r
   .hide-images-button.at-bottom {
     bottom: -45px;
   }
+
+  .lightbox-stage {
+    padding: 20px 48px;
+  }
+
+  .lightbox-nav {
+    width: 48px;
+    height: 48px;
+    font-size: 2.2rem;
+  }
+
+  .lightbox-thumbnail img {
+    width: 56px;
+    height: 56px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -400,9 +458,32 @@ box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px r
   .gallery-close-button {
     top: 10px;
     right: 10px;
-    width: 35px;
-    height: 35px;
-    font-size: clamp(1.6rem, 1.2rem + 2.5vw, 2rem);
+    width: 50px;
+    height: 50px;
+    font-size: clamp(1.8rem, 1.4rem + 2vw, 2.2rem);
+  }
+
+  .lightbox-stage {
+    padding: 16px 32px;
+  }
+
+  .lightbox-nav {
+    width: 44px;
+    height: 44px;
+    font-size: 2rem;
+  }
+
+  .lightbox-thumbnail img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .lightbox-footer {
+    gap: 10px;
+  }
+
+  .lightbox-caption {
+    font-size: 0.9rem;
   }
 }
 

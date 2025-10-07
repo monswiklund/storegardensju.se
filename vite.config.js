@@ -22,8 +22,6 @@ export default defineConfig({
         manualChunks: {
           // Vendor libraries
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          // Image gallery related
-          gallery: ['react-image-gallery'],
         },
         chunkFileNames: (chunkInfo) => {
           const facadeModuleId = chunkInfo.facadeModuleId

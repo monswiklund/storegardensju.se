@@ -1,5 +1,5 @@
 # robots.txt för Storegården 7
-# Uppdaterad: 2025-10-04
+# Uppdaterad: 2025-03-06
 
 # Tillåt alla legitima sökmotorer
 User-agent: *

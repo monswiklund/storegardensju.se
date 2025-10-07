@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import Hero from "../components/home/Hero/Hero.jsx";
-import FeaturedGallery from "../components/home/FeaturedGallery/FeaturedGallery.jsx";
-import Services from "../components/sections/Services/Services.jsx";
+import Hero from "../features/home/Hero/Hero.jsx";
+import FeaturedGallery from "../features/home/FeaturedGallery/FeaturedGallery.jsx";
+import Services from "../features/home/Services/Services.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
-import PageSection from "../components/sections/PageSection/PageSection.jsx";
-import UpcomingEvents from "../components/home/UpcomingEvents/UpcomingEvents.jsx";
+import PageSection from "../layout/PageSection/PageSection.jsx";
+import UpcomingEvents from "../features/home/UpcomingEvents/UpcomingEvents.jsx";
+import VenueIntro from "../features/venue/VenueIntro/VenueIntro.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
@@ -42,6 +43,13 @@ function HomePage() {
                 <PageSection background="alt" spacing="compact" ariaLabel="evenemang-heading">
                     <FadeInSection>
                         <UpcomingEvents/>
+                    </FadeInSection>
+                </PageSection>
+
+                {/* Venue intro */}
+                <PageSection background="white" spacing="compact" ariaLabel="venue-intro-heading">
+                    <FadeInSection>
+                        <VenueIntro />
                     </FadeInSection>
                 </PageSection>
 
