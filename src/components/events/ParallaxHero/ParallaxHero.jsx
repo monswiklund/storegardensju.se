@@ -16,72 +16,114 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true })
 
   useLayoutEffect(() => {
     const hero = heroRef.current;
+    const wrapper = wrapperRef.current;
     const content = contentRef.current;
     const overlay = overlayRef.current;
     const background = backgroundRef.current;
 
-    if (!hero) return;
+    if (!hero || !wrapper) return;
 
-    // Check if mobile device (under 768px)
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const mm = ScrollTrigger.matchMedia();
 
-    // On mobile without wrapper, ParallaxHeroGroup handles GSAP - skip here
-    if (isMobile && !useWrapper) {
-      return;
-    }
-
-    // Desktop or wrapper mode: use GSAP pinning
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-
-    const ctx = gsap.context(() => {
-      // Pin the hero section while scrolling through wrapper
-      ScrollTrigger.create({
-        trigger: wrapper,
-        start: 'top top',
-        end: 'bottom bottom',
-        pin: hero,
-        pinSpacing: false,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
+    mm.add('(min-width: 769px)', () => {
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrapper,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: true,
+          pin: hero,
+          pinSpacing: false,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        }
       });
 
-      // Animate text and overlay fade in when scrolling through hero
-      if (content && overlay) {
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: wrapper,
-            start: 'top top',
-            end: isMobile ? 'top -20%' : 'top -30%',
-            scrub: true,
-            invalidateOnRefresh: true,
-          }
-        })
-        .fromTo(content, { opacity: 0 }, { opacity: 1, duration: 1 }, 0)
-        .fromTo(overlay, { opacity: 0 }, { opacity: 0.6, duration: 1 }, 0);
+      if (content) {
+        timeline.fromTo(
+          content,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.4, ease: 'none' },
+          0
+        );
       }
 
-      // Animate background zoom - lighter effect on mobile
-      if (background) {
-        const scaleAmount = isMobile ? 1.05 : 1.1; // Lighter scale on mobile for better performance
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: wrapper,
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: true,
-            invalidateOnRefresh: true,
-          }
-        })
-        .fromTo(background, { scale: 1 }, { scale: scaleAmount, duration: 1 });
+      if (overlay) {
+        timeline.fromTo(
+          overlay,
+          { opacity: 0 },
+          { opacity: 0.6, duration: 0.4, ease: 'none' },
+          0
+        );
       }
-    }, wrapperRef);
+
+      if (background) {
+        timeline.fromTo(
+          background,
+          { scale: 1 },
+          { scale: 1.1, duration: 1, ease: 'none' },
+          0
+        );
+      }
+
+      return () => {
+        timeline.scrollTrigger?.kill();
+        timeline.kill();
+      };
+    });
+
+    mm.add('(max-width: 768px)', () => {
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrapper,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: true,
+          pin: hero,
+          pinSpacing: false,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        }
+      });
+
+      if (content) {
+        timeline.fromTo(
+          content,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.4, ease: 'none' },
+          0
+        );
+      }
+
+      if (overlay) {
+        timeline.fromTo(
+          overlay,
+          { opacity: 0 },
+          { opacity: 0.6, duration: 0.4, ease: 'none' },
+          0
+        );
+      }
+
+      if (background) {
+        timeline.fromTo(
+          background,
+          { scale: 1 },
+          { scale: 1.05, duration: 1, ease: 'none' },
+          0
+        );
+      }
+
+      return () => {
+        timeline.scrollTrigger?.kill();
+        timeline.kill();
+      };
+    });
 
     // Refresh ScrollTrigger after setup
     ScrollTrigger.refresh();
 
     return () => {
-      ctx.revert();
+      mm.revert();
     };
   }, [useWrapper]);
 

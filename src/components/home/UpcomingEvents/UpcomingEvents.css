@@ -260,11 +260,11 @@
 
 @media (max-width: 480px) {
   .events-container h2{
-      font-size: 1.8rem; !important;
+      font-size: 1.8rem;
   }
 
     .events-container p{
-        font-size: 1.1rem; !important;
+        font-size: 1.1rem;
     }
 
     .events-container {
