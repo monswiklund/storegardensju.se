@@ -43,6 +43,7 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true })
         pin: hero,
         pinSpacing: false,
         anticipatePin: 1,
+        invalidateOnRefresh: true,
       });
 
       // Animate text and overlay fade in when scrolling through hero
@@ -51,25 +52,28 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true })
           scrollTrigger: {
             trigger: wrapper,
             start: 'top top',
-            end: 'top -30%',
-            scrub: 1,
+            end: isMobile ? 'top -20%' : 'top -30%',
+            scrub: true,
+            invalidateOnRefresh: true,
           }
         })
-        .fromTo(content, { opacity: 0 }, { opacity: 1 }, 0)
-        .fromTo(overlay, { opacity: 0 }, { opacity: 0.6 }, 0);
+        .fromTo(content, { opacity: 0 }, { opacity: 1, duration: 1 }, 0)
+        .fromTo(overlay, { opacity: 0 }, { opacity: 0.6, duration: 1 }, 0);
       }
 
-      // Animate background zoom in while scrolling through wrapper (desktop only - too heavy on mobile)
-      if (!isMobile && background) {
+      // Animate background zoom - lighter effect on mobile
+      if (background) {
+        const scaleAmount = isMobile ? 1.05 : 1.1; // Lighter scale on mobile for better performance
         gsap.timeline({
           scrollTrigger: {
             trigger: wrapper,
             start: 'top top',
             end: 'bottom bottom',
-            scrub: 1,
+            scrub: true,
+            invalidateOnRefresh: true,
           }
         })
-        .fromTo(background, { scale: 1 }, { scale: 1.1 });
+        .fromTo(background, { scale: 1 }, { scale: scaleAmount, duration: 1 });
       }
     }, wrapperRef);
 

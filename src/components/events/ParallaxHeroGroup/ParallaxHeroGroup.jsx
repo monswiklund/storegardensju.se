@@ -20,10 +20,14 @@ function ParallaxHeroGroup({ children }) {
     const heroes = group.querySelectorAll('.parallax-hero');
     if (heroes.length === 0) return;
 
+    // Check if mobile device (under 768px)
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
     const ctx = gsap.context(() => {
       heroes.forEach((hero, index) => {
         const content = hero.querySelector('.parallax-hero-content');
         const overlay = hero.querySelector('.parallax-hero-overlay');
+        const background = hero.querySelector('.parallax-hero-background');
 
         // Pin each hero while scrolling through the group
         ScrollTrigger.create({
@@ -39,6 +43,7 @@ function ParallaxHeroGroup({ children }) {
           pin: hero,
           pinSpacing: false,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
         });
 
         // Fade in text and overlay when hero reaches top
@@ -47,12 +52,33 @@ function ParallaxHeroGroup({ children }) {
             scrollTrigger: {
               trigger: hero,
               start: 'top top',
-              end: 'top -30%',
-              scrub: 1,
+              end: isMobile ? 'top -20%' : 'top -30%',
+              scrub: true,
+              invalidateOnRefresh: true,
             }
           })
-          .fromTo(content, { opacity: 0 }, { opacity: 1 }, 0)
-          .fromTo(overlay, { opacity: 0 }, { opacity: 0.6 }, 0);
+          .fromTo(content, { opacity: 0 }, { opacity: 1, duration: 1 }, 0)
+          .fromTo(overlay, { opacity: 0 }, { opacity: 0.6, duration: 1 }, 0);
+        }
+
+        // Animate background zoom - lighter effect on mobile
+        if (background) {
+          const scaleAmount = isMobile ? 1.05 : 1.1; // Lighter scale on mobile for better performance
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: hero,
+              start: 'top top',
+              end: () => {
+                const heroHeight = hero.offsetHeight;
+                const remainingHeroes = heroes.length - index - 1;
+                const extraScroll = heroHeight * remainingHeroes * 1.5;
+                return `+=${extraScroll}`;
+              },
+              scrub: true,
+              invalidateOnRefresh: true,
+            }
+          })
+          .fromTo(background, { scale: 1 }, { scale: scaleAmount, duration: 1 });
         }
       });
     }, groupRef);

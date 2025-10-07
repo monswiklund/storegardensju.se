@@ -51,15 +51,14 @@ function EventPage() {
         zIndex={2}
       />
 
-      {/* Sticky Image Section 2 */}
-      <ParallaxHero
-        image="/images/event/hero/hero-3.webp"
-        title="Event & Fest"
-        subtitle=""
-        zIndex={3}
-      />
-
-      <EventParty />
+     {/* Sticky Image Section 2 */}
+        <ParallaxHero
+            image="/images/event/hero/hero-3.webp"
+            title="Event & Fest"
+            subtitle=""
+            zIndex={3}
+        />
+        {/*<EventParty /> */}
     </main>
   );
 }
