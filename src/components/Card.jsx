@@ -1,7 +1,6 @@
 // components/Card.jsx
 import PropTypes from 'prop-types';
 import { Phone, Mail, MapPin, Linkedin, Github, Instagram, Globe } from 'lucide-react';
-
 const Card = ({
                   title,
                   about,
@@ -22,8 +21,8 @@ const Card = ({
                 />
             )}
 
-            {title && <h2 className="card-name-title">{title}</h2>}
-            {about && <h3 className="card-about">{about}</h3>}
+        {title && <h2 className="card-name-title">{title}</h2>}
+        {about && <h3 className="card-about">{about}</h3>}
 
             {texts.map((text, index) => (
                 <p key={`text-${index}`} className={`card-text-${index + 1}`}>
@@ -52,6 +51,7 @@ const Card = ({
                         )}
                         {contact.email && (
                             <li className="contact-item">
+
                                 <Mail size={16} />
                                 <a href={`mailto:${contact.email}`}>{contact.email}</a>
                             </li>
