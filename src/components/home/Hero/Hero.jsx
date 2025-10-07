@@ -10,7 +10,7 @@ function Hero() {
         <img src={welcomeImage} alt="Lägg till Storegården 7 Loggan" />
       </div>
       <div className="hero-titel">
-        <h1>Välkommen till Storegården 7</h1>
+        <h1>Välkommen till Storegården&nbsp;7</h1>
         <h2>En plats för kreativt nöje!</h2>
         <p>
           En ständigt växande plats där tanken är att det ska finnas något för
