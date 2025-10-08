@@ -3,8 +3,8 @@ export const heroContent = {
   subtitle: 'En plats för kreativt nöje!',
   paragraphs: [
     'En ständigt växande plats där tanken är att det ska finnas något för alla.',
+    'Hyr vår fina lokal till att anordna kalas, bröllop, eller fest.',
     'Konstnärliga kurser i att måla och att skapa med keramik.',
-    'Eller hyr vår fina lokal till att anordna kalas, bröllop, eller fest.',
     'Loppis har vi även emellanåt och det finns en gårdsbutik med konst, keramik och en ateljé för inspiration.'
   ],
   primaryCta: { label: 'Boka ditt evenemang', ariaLabel: 'Scrolla till kontakt-sektion' },
@@ -86,11 +86,8 @@ export const pastEvents = [
 export const venueIntro = {
   title: 'Om platsen',
   description:
-    'Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum i en lantlig omgivning, långt från stadens brus. En plats där dina gäster kan koppla av och uppleva något unikt.',
+    'Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum i en lantlig omgivning, långt från stadens brus.',
   highlights: [
-    'Idyllisk gårdsmiljö med modern komfort',
-    'Flexibla ytor för allt från workshops till större fest',
-    'Kreativa miljöer både inne och ute'
   ]
 };
 

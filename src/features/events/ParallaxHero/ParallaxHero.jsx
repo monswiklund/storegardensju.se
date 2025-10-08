@@ -146,7 +146,21 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true })
       <div className="parallax-hero-overlay" ref={overlayRef} />
       {(title || subtitle) && (
         <div className="parallax-hero-content" ref={contentRef}>
-          {title && <h1 className="parallax-hero-title">{title}</h1>}
+          {title && (
+            <h1
+              className="parallax-hero-title"
+              style={{
+                whiteSpace: 'pre-line',
+                textAlign: 'left',
+                lineHeight: 1.45,
+                fontWeight: 300,
+                display: 'inline-block',
+                margin: '0 auto'
+              }}
+            >
+              {title}
+            </h1>
+          )}
           {subtitle && <p className="parallax-hero-subtitle">{subtitle}</p>}
         </div>
       )}

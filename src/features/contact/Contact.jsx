@@ -53,15 +53,11 @@ function Contact() {
             </div>
 
             <div className="services">
-
-            <h3>{collaborationCopy.title}</h3>
-            <p>
-                {collaborationCopy.body}
-            </p>
+                <h3>{collaborationCopy.title}</h3>
+                <p>{collaborationCopy.body}</p>
             </div>
         </div>
     );
 }
-
 
 export default Contact;

@@ -545,11 +545,7 @@ function StoregardensImageGallery() {
                                             alt={currentImage.originalAlt || currentImage.description || 'Bild i galleriet'}
                                             loading="eager"
                                         />
-                                        {currentImage.description && (
-                                            <figcaption className="lightbox-caption">
-                                                {currentImage.description}
-                                            </figcaption>
-                                        )}
+                                        )
                                     </figure>
                                     {images.length > 1 && (
                                         <button

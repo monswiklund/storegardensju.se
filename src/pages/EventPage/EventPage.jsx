@@ -59,7 +59,7 @@ function EventPage() {
       {/* Hero Section med Parallax */}
       <ParallaxHero
         image="/images/event/hero/hero.webp"
-        title="Lokal med lantlig charm"
+        title="Bröllop, Event & Fest"
         subtitle=""
         zIndex={1}
       />
@@ -67,7 +67,9 @@ function EventPage() {
       {/* Sticky Image Section 1 */}
       <ParallaxHero
         image="/images/event/hero/hero-2.webp"
-        title="Bröllop"
+        title={`Loftet 150+ sittandes
+Ladan 500+ sittandes
+Mingel 300+`}
         subtitle=""
         zIndex={2}
       />
@@ -75,8 +77,8 @@ function EventPage() {
      {/* Sticky Image Section 2 */}
         <ParallaxHero
             image="/images/event/hero/hero-3.webp"
-            title="Event & Fest"
-            subtitle=""
+            title="Vi har allt som behövs för ett lyckat event"
+            subtitle="Läs mer nedan med vad vi erbjuder"
             zIndex={3}
         />
         <SendToGalleryButton />
