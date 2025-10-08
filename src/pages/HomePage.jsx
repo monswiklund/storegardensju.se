@@ -48,9 +48,6 @@ function HomePage() {
 
                 {/* Venue intro */}
                 <PageSection background="white" spacing="compact" ariaLabel="venue-intro-heading">
-                    <FadeInSection>
-                        <VenueIntro />
-                    </FadeInSection>
                 </PageSection>
 
             </main>
