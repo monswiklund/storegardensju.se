@@ -32,4 +32,4 @@ function BuildInfo() {
     );
 }
 
-export default BuildInfo;
+export default BuildInfo

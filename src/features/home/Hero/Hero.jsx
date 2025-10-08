@@ -1,10 +1,18 @@
-import welcomeImage from "../../../assets/logoTransp.png";
+import { useLayoutEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import welcomeImage from "../../../assets/logoTransp.png";
 import { heroContent } from "../../../data/homeContent.js";
 import "./Hero.css";
 
+gsap.registerPlugin(ScrollTrigger);
+
 function Hero() {
   const navigate = useNavigate();
+  const heroRef = useRef(null);
+  const logoRef = useRef(null);
+  const textRef = useRef(null);
   const { title, subtitle, paragraphs, primaryCta, secondaryCtas } = heroContent;
 
   const handlePrimaryCta = () => {
@@ -12,6 +20,112 @@ function Hero() {
       .querySelector(".contact-container")
       ?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
+
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const heroElement = heroRef.current;
+    const logoElement = logoRef.current;
+    const textElement = textRef.current;
+
+    if (
+      !heroElement ||
+      !logoElement ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    const mm = ScrollTrigger.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      const ctx = gsap.context(() => {
+        gsap.set(logoElement, { yPercent: 0, scale: 1.01 });
+        if (textElement) {
+          gsap.set(textElement, { opacity: 0, yPercent: 14 });
+        }
+
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: heroElement,
+            start: "top top",
+            end: "+=70%",
+            scrub: 0.45,
+          },
+        });
+
+        timeline.to(logoElement, {
+          yPercent: 1.2,
+          scale: 0.995,
+          ease: "power1.out",
+          duration: 0.8,
+        });
+
+        if (textElement) {
+          timeline.to(
+            textElement,
+            {
+              opacity: 1,
+              yPercent: 0,
+              ease: "power1.out",
+              duration: 0.5,
+            },
+            0.08
+          );
+        }
+      }, heroElement);
+
+      return () => ctx.revert();
+    });
+
+    mm.add("(max-width: 767px)", () => {
+      const ctx = gsap.context(() => {
+        gsap.set(logoElement, { yPercent: 0, scale: 1.008 });
+        if (textElement) {
+          gsap.set(textElement, { opacity: 0, yPercent: 11 });
+        }
+
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: heroElement,
+            start: "top top",
+            end: "+=60%",
+            scrub: 0.45,
+          },
+        });
+
+        timeline.to(logoElement, {
+          yPercent: 0.9,
+          scale: 0.994,
+          ease: "power1.out",
+          duration: 0.8,
+        });
+
+        if (textElement) {
+          timeline.to(
+            textElement,
+            {
+              opacity: 1,
+              yPercent: 0,
+              ease: "power1.out",
+              duration: 0.5,
+            },
+            0.05
+          );
+        }
+      }, heroElement);
+
+      return () => ctx.revert();
+    });
+
+    ScrollTrigger.refresh();
+
+    return () => {
+      mm.revert();
+    };
+  }, []);
 
   const renderSecondaryCta = (cta) => {
     if (cta.type === "route") {
@@ -46,11 +160,15 @@ function Hero() {
   };
 
   return (
-    <div className="hero-container">
+    <div className="hero-container" ref={heroRef}>
       <div className="hero-logo">
-        <img src={welcomeImage} alt="Storegården 7 logotyp" />
+        <img
+          ref={logoRef}
+          src={welcomeImage}
+          alt="Storegården 7 logotyp"
+        />
       </div>
-      <div className="hero-titel">
+      <div className="hero-titel" ref={textRef}>
         <h1>{title}</h1>
         <h2>{subtitle}</h2>
         {paragraphs.map((text, index) => (

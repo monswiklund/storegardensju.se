@@ -39,7 +39,7 @@ function App() {
     }, []);
 
     // Initialize Lenis smooth scroll globally when motion is allowed
-    useEffect(() => {
+   useEffect(() => {
         if (prefersReducedMotion) {
             ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
             return undefined;

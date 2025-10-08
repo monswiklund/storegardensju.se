@@ -151,11 +151,9 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true })
               className="parallax-hero-title"
               style={{
                 whiteSpace: 'pre-line',
-                textAlign: 'left',
+                textAlign: 'center',
                 lineHeight: 1.45,
-                fontWeight: 300,
-                display: 'inline-block',
-                margin: '0 auto'
+                fontWeight: 300
               }}
             >
               {title}
