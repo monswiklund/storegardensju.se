@@ -51,14 +51,16 @@ function Hero() {
           scrollTrigger: {
             trigger: heroElement,
             start: "top top",
-            end: "+=70%",
+            end: "+=25%",
             scrub: 0.45,
+            pin: logoElement,
+            pinSpacing: false,
           },
         });
 
         timeline.to(logoElement, {
-          yPercent: 1.2,
-          scale: 0.995,
+          yPercent: 0.8,
+          scale: 0.996,
           ease: "power1.out",
           duration: 0.8,
         });
@@ -72,7 +74,7 @@ function Hero() {
               ease: "power1.out",
               duration: 0.5,
             },
-            0.08
+            0.1
           );
         }
       }, heroElement);
@@ -84,23 +86,25 @@ function Hero() {
       const ctx = gsap.context(() => {
         gsap.set(logoElement, { yPercent: 0, scale: 1.008 });
         if (textElement) {
-          gsap.set(textElement, { opacity: 0, yPercent: 11 });
+          gsap.set(textElement, { opacity: 0, yPercent: 16 });
         }
 
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: heroElement,
             start: "top top",
-            end: "+=60%",
+            end: "+=40%",
             scrub: 0.45,
+            pin: logoElement,
+            pinSpacing: false,
           },
         });
 
         timeline.to(logoElement, {
-          yPercent: 0.9,
-          scale: 0.994,
+          yPercent: 0.6,
+          scale: 0,
           ease: "power1.out",
-          duration: 0.8,
+          duration: 1,
         });
 
         if (textElement) {
@@ -108,11 +112,11 @@ function Hero() {
             textElement,
             {
               opacity: 1,
-              yPercent: 0,
+              yPercent: -35,
               ease: "power1.out",
-              duration: 0.5,
+              duration: 2.5,
             },
-            0.05
+            ">+0.2"
           );
         }
       }, heroElement);
