@@ -40,6 +40,7 @@ function HomeHeroSection() {
       // Skip animations for users who prefer reduced motion
       gsap.set(contentRef.current, { clearProps: "all" });
       gsap.set(logoRef.current, { clearProps: "transform" });
+      contentRef.current.setAttribute("aria-hidden", "false");
       return;
     }
 
@@ -47,10 +48,10 @@ function HomeHeroSection() {
 
     gsap.set(contentRef.current, {
       autoAlpha: 0,
-      y: 48,
-      maxHeight: 0,
+      y: 56,
       pointerEvents: "none",
     });
+    contentRef.current.setAttribute("aria-hidden", "true");
 
     gsap.set(logoRef.current, {
       yPercent: 0,
@@ -63,14 +64,23 @@ function HomeHeroSection() {
         },
         scrollTrigger: {
           trigger: heroRef.current,
-          start: "top+=180 top",
-          once: true,
+          start: "top top",
+          end: "+=120%",
+          scrub: true,
+          pin: true,
+          anticipatePin: 1,
+          onLeave: () => {
+            if (contentRef.current) {
+              contentRef.current.setAttribute("aria-hidden", "false");
+              contentRef.current.style.pointerEvents = "auto";
+            }
+          },
         },
       });
 
       timeline.to(logoRef.current, {
-        yPercent: -22,
-        duration: 1.1,
+        yPercent: -28,
+        duration: 1.2,
       });
 
       timeline.to(
@@ -78,20 +88,24 @@ function HomeHeroSection() {
         {
           autoAlpha: 1,
           y: 0,
-          maxHeight: 1200,
-          pointerEvents: "auto",
-          duration: 1.3,
+          duration: 1.2,
+          onUpdate: () => {
+            if (contentRef.current) {
+              const isVisible = gsap.getProperty(contentRef.current, "autoAlpha") > 0.6;
+              contentRef.current.style.pointerEvents = isVisible ? "auto" : "none";
+            }
+          },
         },
-        "-=0.6"
+        0.2
       );
-
-      timeline.add(() => {
-        gsap.set(contentRef.current, { clearProps: "maxHeight" });
-      });
     }, heroRef);
 
     return () => {
       ctx.revert();
+      if (contentRef.current) {
+        contentRef.current.setAttribute("aria-hidden", "false");
+        contentRef.current.style.pointerEvents = "auto";
+      }
     };
   }, []);
 

@@ -17,11 +17,12 @@ header[role="banner"] .page-section-content {
   justify-items: center;
   width: min(100%, 1320px);
   margin: 0 auto;
-  padding: clamp(32px, 8vh, 104px) clamp(16px, 5vw, 72px);
-  row-gap: clamp(20px, 6vh, 80px);
+  padding: clamp(48px, 14vh, 160px) clamp(16px, 5vw, 72px);
+  row-gap: clamp(32px, 10vh, 140px);
   text-align: center;
-  min-height: min(100vh, 820px);
-  min-height: min(100dvh, 820px);
+  min-height: min(100vh, 960px);
+  min-height: min(100dvh, 960px);
+  overflow: hidden;
 }
 
 /* Logo: scale smoothly without overpowering the copy */
@@ -33,9 +34,6 @@ header[role="banner"] .page-section-content {
   margin: 0;
   margin-bottom: clamp(20px, 5vh, 72px);
   will-change: transform;
-  position: sticky;
-  top: clamp(48px, 10vh, 120px);
-  z-index: 1;
 }
 
 .hero-logo img {
@@ -56,8 +54,6 @@ header[role="banner"] .page-section-content {
   opacity: 0;
   transform: translateY(56px);
   visibility: hidden;
-  max-height: 0;
-  overflow: hidden;
   pointer-events: none;
   will-change: transform, opacity;
 }
@@ -168,44 +164,6 @@ header[role="banner"] .page-section-content {
   .hero-cta {
     width: auto;
     min-width: 180px;
-  }
-}
-
-@media (min-width: 960px) {
-  /* Desktop grid: two columns with left-aligned content */
-  .hero-container--activated {
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-    align-items: center;
-    column-gap: clamp(48px, 7vw, 112px);
-    text-align: left;
-  }
-
-  .hero-container--activated .hero-logo {
-    justify-content: flex-end;
-    margin: 0;
-    transform: translateY(-60px);
-  }
-
-  .hero-container--activated .hero-logo img {
-    width: clamp(520px, 44vw, 820px);
-  }
-
-  .hero-container--activated .hero-titel {
-    align-items: flex-start;
-  }
-
-  .hero-container--activated .hero-cta-group {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    max-width: none;
-    gap: 16px 24px;
-  }
-
-  .hero-container--activated .hero-cta-secondary-group {
-    flex-direction: row;
-    gap: 16px;
-    width: auto;
   }
 }
 
