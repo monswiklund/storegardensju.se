@@ -1,12 +1,13 @@
 import PropTypes from "prop-types";
+import { forwardRef } from "react";
 
-function HomeHeroLogo({ imageSrc, alt }) {
+const HomeHeroLogo = forwardRef(function HomeHeroLogo({ imageSrc, alt }, ref) {
   return (
-    <div className="hero-logo">
+    <div className="hero-logo" ref={ref}>
       <img src={imageSrc} alt={alt} />
     </div>
   );
-}
+});
 
 HomeHeroLogo.propTypes = {
   imageSrc: PropTypes.string.isRequired,

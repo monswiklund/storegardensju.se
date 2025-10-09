@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import welcomeImage from "../../../assets/logoTransp.png";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import welcomeImage from "../../../assets/logoTransp_cropped.png";
 import { heroContent } from "../../../data/homeContent.js";
 import "./Hero.css";
 import HomeHeroLogo from "./HomeHeroLogo.jsx";
@@ -9,8 +11,9 @@ import HomeHeroContent from "./HomeHeroContent.jsx";
 function HomeHeroSection() {
   const navigate = useNavigate();
   const { title, subtitle, paragraphs, primaryCta, secondaryCtas } = heroContent;
+  const heroRef = useRef(null);
+  const logoRef = useRef(null);
   const contentRef = useRef(null);
-  const [isTitleVisible, setIsTitleVisible] = useState(false);
 
   const handlePrimaryCta = () => {
     document
@@ -22,54 +25,86 @@ function HomeHeroSection() {
     navigate(to);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-      setIsTitleVisible(true);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (!heroRef.current || !logoRef.current || !contentRef.current) {
       return;
     }
 
-    if (!("IntersectionObserver" in window)) {
-      setIsTitleVisible(true);
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    if (prefersReducedMotion.matches) {
+      // Skip animations for users who prefer reduced motion
+      gsap.set(contentRef.current, { clearProps: "all" });
+      gsap.set(logoRef.current, { clearProps: "transform" });
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsTitleVisible(true);
-          }
-        });
-      },
-      {
-        threshold: 0.25,
-      }
-    );
+    gsap.registerPlugin(ScrollTrigger);
 
-    const node = contentRef.current;
-    if (node) {
-      observer.observe(node);
-    }
+    gsap.set(contentRef.current, {
+      autoAlpha: 0,
+      y: 48,
+      maxHeight: 0,
+      pointerEvents: "none",
+    });
+
+    gsap.set(logoRef.current, {
+      yPercent: 0,
+    });
+
+    const ctx = gsap.context(() => {
+      const timeline = gsap.timeline({
+        defaults: {
+          ease: "power2.out",
+        },
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top+=180 top",
+          once: true,
+        },
+      });
+
+      timeline.to(logoRef.current, {
+        yPercent: -22,
+        duration: 1.1,
+      });
+
+      timeline.to(
+        contentRef.current,
+        {
+          autoAlpha: 1,
+          y: 0,
+          maxHeight: 1200,
+          pointerEvents: "auto",
+          duration: 1.3,
+        },
+        "-=0.6"
+      );
+
+      timeline.add(() => {
+        gsap.set(contentRef.current, { clearProps: "maxHeight" });
+      });
+    }, heroRef);
 
     return () => {
-      if (node) {
-        observer.unobserve(node);
-      }
-      observer.disconnect();
+      ctx.revert();
     };
   }, []);
 
   return (
-    <div className="hero-container">
+    <div className="hero-container" ref={heroRef}>
+      {/* Responsive grid keeps logo and content balanced across breakpoints */}
       <HomeHeroLogo
+        ref={logoRef}
         imageSrc={welcomeImage}
         alt="Storegården 7 logotyp"
       />
       <HomeHeroContent
+        ref={contentRef}
         title={title}
         subtitle={subtitle}
         paragraphs={paragraphs}
@@ -77,8 +112,6 @@ function HomeHeroSection() {
         secondaryCtas={secondaryCtas}
         onPrimaryClick={handlePrimaryCta}
         onRouteClick={handleSecondaryRoute}
-        isVisible={isTitleVisible}
-        ref={contentRef}
       />
     </div>
   );

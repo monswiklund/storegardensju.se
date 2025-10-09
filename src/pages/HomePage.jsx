@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { HomeHeroSection, HomeFeaturedGallery, HomeServicesSection, HomeUpcomingEventsSection } from "../features/home";
-import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { PageSection } from "../components";
+import FadeInSection from "../components/ui/FadeInSection.jsx";
 import VenueIntroSection from "../features/venue/VenueIntro/VenueIntroSection.jsx";
 
 function HomePage() {
@@ -15,9 +15,7 @@ function HomePage() {
         <>
             <header role="banner">
                 <PageSection background="white" spacing="none" ariaLabel="hero-heading">
-                    <FadeInSection>
-                        <HomeHeroSection/>
-                    </FadeInSection>
+                    <HomeHeroSection/>
                 </PageSection>
             </header>
 

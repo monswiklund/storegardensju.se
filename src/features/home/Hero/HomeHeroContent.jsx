@@ -10,7 +10,6 @@ const HomeHeroContent = forwardRef((props, ref) => {
     secondaryCtas,
     onPrimaryClick,
     onRouteClick,
-    isVisible,
   } = props;
 
   const renderSecondaryCta = (cta) => {
@@ -47,13 +46,15 @@ const HomeHeroContent = forwardRef((props, ref) => {
   };
 
   return (
-    <div className={`hero-titel${isVisible ? " is-visible" : ""}`} ref={ref}>
+    <div className="hero-titel" ref={ref}>
+      {/* Updated spacing keeps typography readable across viewports */}
       <h1>{title}</h1>
       <h2>{subtitle}</h2>
       {paragraphs.map((text, index) => (
         <p key={index}>{text}</p>
       ))}
 
+      {/* CTA cluster stacks on mobile and wraps on wider screens */}
       <div className="hero-cta-group">
         <button
           className="hero-cta hero-cta-primary"
@@ -92,7 +93,6 @@ HomeHeroContent.propTypes = {
   ).isRequired,
   onPrimaryClick: PropTypes.func.isRequired,
   onRouteClick: PropTypes.func.isRequired,
-  isVisible: PropTypes.bool.isRequired,
 };
 
 export default HomeHeroContent;
