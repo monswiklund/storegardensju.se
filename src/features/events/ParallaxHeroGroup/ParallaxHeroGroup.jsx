@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import './ParallaxHeroGroupStyles.css';
+import './ParallaxHeroGroup.css';
 
 gsap.registerPlugin(ScrollTrigger);
 

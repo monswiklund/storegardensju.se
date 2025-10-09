@@ -86,7 +86,7 @@ export const pastEvents = [
 export const venueIntro = {
   title: 'Om platsen',
   description:
-    'Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum i en lantlig omgivning, långt från stadens brus.',
+    'Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum i en lantlig omgivning, långt från stadens brus. En plats där dina gäster kan koppla av och uppleva något unikt. Vi har tagit vara på den gamla gårdens charm och kombinerat den med moderna bekvämligheter.',
   highlights: [
   ]
 };

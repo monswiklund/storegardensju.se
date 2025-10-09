@@ -1,7 +1,7 @@
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
-import PageSection from "../layout/PageSection/PageSection.jsx";
-import ProfileShowcase from "../features/team/ProfileShowcase/ProfileShowcase.jsx";
+import { PageSection } from "../components";
+import TeamProfileShowcase from "../features/team/ProfileShowcase/TeamProfileShowcase.jsx";
 import { profiles } from "../data/profileData.js";
 
 function TeamPage() {
@@ -13,10 +13,10 @@ function TeamPage() {
                     <FadeInSection>
                         <div className="profile-showcase-container">
                             <h2 id="about-heading">Om Oss</h2>
-                            <ProfileShowcase profile={profiles.ann} />
-                            <ProfileShowcase profile={profiles.carl} />
-                            <ProfileShowcase profile={profiles.lina} />
-                            <ProfileShowcase profile={profiles.mans} />
+                            <TeamProfileShowcase profile={profiles.ann} />
+                            <TeamProfileShowcase profile={profiles.carl} />
+                            <TeamProfileShowcase profile={profiles.lina} />
+                            <TeamProfileShowcase profile={profiles.mans} />
                         </div>
                     </FadeInSection>
                 </ErrorBoundary>

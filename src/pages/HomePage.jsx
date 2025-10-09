@@ -1,11 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import Hero from "../features/home/Hero/Hero.jsx";
-import FeaturedGallery from "../features/home/FeaturedGallery/FeaturedGallery.jsx";
-import Services from "../features/home/Services/Services.jsx";
+import { HomeHeroSection, HomeFeaturedGallery, HomeServicesSection, HomeUpcomingEventsSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
-import PageSection from "../layout/PageSection/PageSection.jsx";
-import UpcomingEvents from "../features/home/UpcomingEvents/UpcomingEvents.jsx";
-import VenueIntro from "../features/venue/VenueIntro/VenueIntro.jsx";
+import { PageSection } from "../components";
+import VenueIntroSection from "../features/venue/VenueIntro/VenueIntroSection.jsx";
 
 function HomePage() {
     const navigate = useNavigate();
@@ -19,7 +16,7 @@ function HomePage() {
             <header role="banner">
                 <PageSection background="white" spacing="none" ariaLabel="hero-heading">
                     <FadeInSection>
-                        <Hero/>
+                        <HomeHeroSection/>
                     </FadeInSection>
                 </PageSection>
             </header>
@@ -28,26 +25,29 @@ function HomePage() {
                 {/* Featured Images Grid */}
                 <PageSection background="white" spacing="compact" ariaLabel="featured-gallery-heading">
                     <FadeInSection>
-                        <FeaturedGallery onViewAll={scrollToGallery} />
+                        <HomeFeaturedGallery onViewAll={scrollToGallery} />
                     </FadeInSection>
                 </PageSection>
 
                 {/* Services - Klickbara kort */}
                 <PageSection background="white" spacing="compact" ariaLabel="services-heading">
                     <FadeInSection>
-                        <Services/>
+                        <HomeServicesSection/>
                     </FadeInSection>
                 </PageSection>
 
                 {/* Kommande evenemang */}
                 <PageSection background="alt" spacing="compact" ariaLabel="evenemang-heading">
                     <FadeInSection>
-                        <UpcomingEvents/>
+                        <HomeUpcomingEventsSection/>
                     </FadeInSection>
                 </PageSection>
 
                 {/* Venue intro */}
                 <PageSection background="white" spacing="compact" ariaLabel="venue-intro-heading">
+                    <FadeInSection>
+                        <VenueIntroSection />
+                    </FadeInSection>
                 </PageSection>
 
             </main>

@@ -1,6 +1,6 @@
-import Creation from "../features/creation/Creation.jsx";
+import CreativeWorkshopsSection from "../features/creation/CreativeWorkshopsSection.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
-import PageSection from "../layout/PageSection/PageSection.jsx";
+import { PageSection } from "../components";
 
 function ArtPage() {
     return (
@@ -8,7 +8,7 @@ function ArtPage() {
             {/* Skapande sektion */}
             <PageSection background="white" spacing="default" ariaLabel="creation-heading">
                 <FadeInSection>
-                    <Creation/>
+                    <CreativeWorkshopsSection />
                 </FadeInSection>
             </PageSection>
         </main>

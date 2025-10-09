@@ -1,4 +1,4 @@
-import ParallaxHero from '../../features/events/ParallaxHero/ParallaxHero';
+import ParallaxHero from '../../features/events/ParallaxHero/ParallaxHero.jsx';
 import './EventPage.css';
 import { useNavigate } from "react-router-dom";
 

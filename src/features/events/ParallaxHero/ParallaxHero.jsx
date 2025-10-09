@@ -1,136 +1,27 @@
-import { useLayoutEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { ChevronDown } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import './ParallaxHeroStyles.css';
+import PropTypes from "prop-types";
+import "./ParallaxHero.css";
+import ScrollCue from "./components/ScrollCue";
+import useParallaxHeroAnimation from "./hooks/useParallaxHeroAnimation";
 
-gsap.registerPlugin(ScrollTrigger);
-
-function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true }) {
-  const wrapperRef = useRef(null);
-  const heroRef = useRef(null);
-  const contentRef = useRef(null);
-  const overlayRef = useRef(null);
-  const backgroundRef = useRef(null);
-
-  useLayoutEffect(() => {
-    const hero = heroRef.current;
-    const wrapper = wrapperRef.current;
-    const content = contentRef.current;
-    const overlay = overlayRef.current;
-    const background = backgroundRef.current;
-
-    if (!hero || !wrapper) return;
-
-    const mm = ScrollTrigger.matchMedia();
-
-    mm.add('(min-width: 769px)', () => {
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: wrapper,
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: true,
-          pin: hero,
-          pinSpacing: false,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        }
-      });
-
-      if (content) {
-        timeline.fromTo(
-          content,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.4, ease: 'none' },
-          0
-        );
-      }
-
-      if (overlay) {
-        timeline.fromTo(
-          overlay,
-          { opacity: 0 },
-          { opacity: 0.6, duration: 0.4, ease: 'none' },
-          0
-        );
-      }
-
-      if (background) {
-        timeline.fromTo(
-          background,
-          { scale: 1 },
-          { scale: 1.1, duration: 1, ease: 'none' },
-          0
-        );
-      }
-
-      return () => {
-        timeline.scrollTrigger?.kill();
-        timeline.kill();
-      };
-    });
-
-    mm.add('(max-width: 768px)', () => {
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: wrapper,
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: true,
-          pin: hero,
-          pinSpacing: false,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        }
-      });
-
-      if (content) {
-        timeline.fromTo(
-          content,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.4, ease: 'none' },
-          0
-        );
-      }
-
-      if (overlay) {
-        timeline.fromTo(
-          overlay,
-          { opacity: 0 },
-          { opacity: 0.6, duration: 0.4, ease: 'none' },
-          0
-        );
-      }
-
-      if (background) {
-        timeline.fromTo(
-          background,
-          { scale: 1 },
-          { scale: 1.05, duration: 1, ease: 'none' },
-          0
-        );
-      }
-
-      return () => {
-        timeline.scrollTrigger?.kill();
-        timeline.kill();
-      };
-    });
-
-    // Refresh ScrollTrigger after setup
-    ScrollTrigger.refresh();
-
-    return () => {
-      mm.revert();
-    };
-  }, [useWrapper]);
+function ParallaxHero({
+  image,
+  title,
+  subtitle,
+  zIndex = 1,
+  useWrapper = true,
+}) {
+  const {
+    wrapperRef,
+    heroRef,
+    contentRef,
+    overlayRef,
+    backgroundRef,
+  } = useParallaxHeroAnimation({ isEnabled: useWrapper });
 
   const handleScrollDown = () => {
-    const nextSection = document.querySelector('.sticky-image-section');
+    const nextSection = document.querySelector(".sticky-image-section");
     if (nextSection) {
-      nextSection.scrollIntoView({ behavior: 'smooth' });
+      nextSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -139,9 +30,7 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true })
       <div
         className="parallax-hero-background"
         ref={backgroundRef}
-        style={{
-          backgroundImage: `url(${image})`,
-        }}
+        style={{ backgroundImage: `url(${image})` }}
       />
       <div className="parallax-hero-overlay" ref={overlayRef} />
       {(title || subtitle) && (
@@ -150,10 +39,10 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true })
             <h1
               className="parallax-hero-title"
               style={{
-                whiteSpace: 'pre-line',
-                textAlign: 'center',
+                whiteSpace: "pre-line",
+                textAlign: "center",
                 lineHeight: 1.45,
-                fontWeight: 300
+                fontWeight: 300,
               }}
             >
               {title}
@@ -162,17 +51,10 @@ function ParallaxHero({ image, title, subtitle, zIndex = 1, useWrapper = true })
           {subtitle && <p className="parallax-hero-subtitle">{subtitle}</p>}
         </div>
       )}
-      <button
-        className="scroll-indicator"
-        onClick={handleScrollDown}
-        aria-label="Scrolla ner"
-      >
-        <ChevronDown size={32} />
-      </button>
+      <ScrollCue onClick={handleScrollDown} />
     </section>
   );
 
-  // Conditionally wrap with wrapper div (desktop) or render directly (mobile in group)
   if (useWrapper) {
     return (
       <div className="parallax-hero-wrapper" ref={wrapperRef}>

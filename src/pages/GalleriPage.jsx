@@ -1,12 +1,12 @@
 import { Suspense, lazy } from 'react';
-import VenueIntro from "../features/venue/VenueIntro/VenueIntro.jsx";
+import VenueIntroSection from "../features/venue/VenueIntro/VenueIntroSection.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
-import PageSection from "../layout/PageSection/PageSection.jsx";
+import { PageSection } from "../components";
 
 // Lazy load heavy components
-const ImageGallery = lazy(() => import('../features/gallery/ImageGallery/ImageGallery.jsx'));
+const GalleryShowcase = lazy(() => import('../features/gallery/ImageGallery/GalleryShowcase.jsx'));
 
 function GalleriPage() {
     return (
@@ -14,7 +14,7 @@ function GalleriPage() {
             {/* Om lokalen */}
             <PageSection background="alt" spacing="compact" ariaLabel="venue-intro-heading">
                 <FadeInSection>
-                    <VenueIntro />
+                    <VenueIntroSection />
                 </FadeInSection>
             </PageSection>
 
@@ -23,7 +23,7 @@ function GalleriPage() {
                 <ErrorBoundary>
                     <FadeInSection>
                         <Suspense fallback={<LoadingSpinner size="large" text="Laddar bildgalleri..." />}>
-                            <ImageGallery/>
+                            <GalleryShowcase />
                         </Suspense>
                     </FadeInSection>
                 </ErrorBoundary>
