@@ -54,6 +54,8 @@ header[role="banner"] .page-section-content {
   opacity: 0;
   transform: translateY(56px);
   visibility: hidden;
+  max-height: 0;
+  overflow: hidden;
   pointer-events: none;
   will-change: transform, opacity;
 }

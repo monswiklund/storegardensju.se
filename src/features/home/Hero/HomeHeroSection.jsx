@@ -41,6 +41,7 @@ function HomeHeroSection() {
       gsap.set(contentRef.current, { clearProps: "all" });
       gsap.set(logoRef.current, { clearProps: "transform" });
       contentRef.current.setAttribute("aria-hidden", "false");
+      contentRef.current.style.pointerEvents = "auto";
       return;
     }
 
@@ -49,6 +50,7 @@ function HomeHeroSection() {
     gsap.set(contentRef.current, {
       autoAlpha: 0,
       y: 56,
+      maxHeight: 0,
       pointerEvents: "none",
     });
     contentRef.current.setAttribute("aria-hidden", "true");
@@ -88,6 +90,7 @@ function HomeHeroSection() {
         {
           autoAlpha: 1,
           y: 0,
+          maxHeight: 1200,
           duration: 1.2,
           onUpdate: () => {
             if (contentRef.current) {
@@ -98,6 +101,12 @@ function HomeHeroSection() {
         },
         0.2
       );
+
+      timeline.add(() => {
+        if (contentRef.current) {
+          gsap.set(contentRef.current, { clearProps: "maxHeight" });
+        }
+      });
     }, heroRef);
 
     return () => {
