@@ -1,0 +1,188 @@
+.contact-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 20px;
+  text-align: center;
+}
+
+.contact-container h2 {
+  font-size: clamp(1.6rem, 1.25rem + 2.5vw, 2.2rem);
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--text-color);
+}
+
+.contact-subtitle {
+  font-size: clamp(0.95rem, 0.92rem + 0.5vw, 1.1rem);
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.contact-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.contact-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px 20px;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid transparent;
+}
+
+.contact-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(64, 123, 94, 0.2);
+  border-color: var(--primary-color);
+}
+
+.contact-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: transform 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.contact-card:hover .contact-icon {
+  transform: scale(1.1);
+}
+
+.contact-card h3 {
+  font-size: clamp(1.15rem, 0.95rem + 1.8vw, 1.4rem);
+  font-weight: 300;
+  margin: 0 0 4px 0;
+  color: var(--text-color);
+}
+
+.contact-card p {
+  font-size: clamp(0.85rem, 0.8rem + 0.4vw, 0.95rem);
+  font-weight: 300;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.contact-info {
+  font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
+  color: var(--primary-color);
+  margin: 0;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+
+
+
+
+/* ==========================================================================
+   Welcome Text Section
+   ========================================================================== */
+.välkomst-text {
+    flex: 1;
+    max-width: 800px;
+    font-weight: 300;
+    width: 100%;
+    text-align: center;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+.välkomst-text h2,
+.välkomst-text h3,
+.välkomst-text h4,
+.services h3,
+.services h4 {
+    font-weight: 300;
+    margin: 1rem 0 0.5rem 0;
+    padding: 0;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.välkomst-text h2 {
+    font-size: clamp(1.6rem, 1.2rem + 2.5vw, 2.2rem);
+}
+
+.välkomst-text h3,
+.services h3 {
+    font-size: clamp(1.25rem, 1.05rem + 2vw, 1.7rem);
+}
+
+.välkomst-text h4,
+.services h4 {
+    font-size: clamp(1.05rem, 0.95rem + 1.4vw, 1.4rem);
+}
+
+.välkomst-text p,
+.services p {
+    font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
+    line-height: 1.5;
+    margin: 0 0 0.5rem 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* ==========================================================================
+   Services Section
+   ========================================================================== */
+.services {
+    flex: 1;
+    max-width: 800px;
+    font-weight: 300;
+    width: 100%;
+    padding: 0;
+}
+
+.services h3:last-child {
+    justify-content: center;
+    text-align: center;
+}
+
+@media (max-width: 640px) {
+  .contact-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-card {
+    padding: 32px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-container {
+    padding: 15px 10px;
+  }
+
+  .contact-cards {
+    gap: 12px;
+  }
+
+  .contact-card {
+    padding: 24px 20px;
+  }
+
+  .contact-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 6px;
+  }
+
+}
