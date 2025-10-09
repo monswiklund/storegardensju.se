@@ -52,11 +52,7 @@ header[role="banner"] .page-section-content {
   max-width: 840px;
   margin: 0 auto;
   opacity: 0;
-  transform: translateY(56px);
-  visibility: hidden;
-  max-height: 0;
-  overflow: hidden;
-  pointer-events: none;
+  transform: translateY(40px);
   will-change: transform, opacity;
 }
 

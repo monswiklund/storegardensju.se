@@ -1,98 +1,75 @@
-import { forwardRef } from "react";
-import PropTypes from "prop-types";
+import { useLayoutEffect, useRef } from "react"
+import { useNavigate } from "react-router-dom"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+import welcomeImage from "../../../assets/logoTransp_cropped.png"
+import { heroContent } from "../../../data/homeContent.js"
+import "./Hero.css"
+import HomeHeroLogo from "./HomeHeroLogo.jsx"
+import HomeHeroContent from "./HomeHeroContent.jsx"
 
-const HomeHeroContent = forwardRef((props, ref) => {
-  const {
-    title,
-    subtitle,
-    paragraphs,
-    primaryCta,
-    secondaryCtas,
-    onPrimaryClick,
-    onRouteClick,
-  } = props;
+function HomeHeroSection() {
+    const navigate = useNavigate()
+    const { title, subtitle, paragraphs, primaryCta, secondaryCtas } = heroContent
 
-  const renderSecondaryCta = (cta) => {
-    if (cta.type === "route") {
-      return (
-        <button
-          key={cta.label}
-          className="hero-cta hero-cta-secondary"
-          onClick={() => onRouteClick(cta.to)}
-          aria-label={cta.ariaLabel}
-          type="button"
-        >
-          {cta.label}
-        </button>
-      );
+    const heroRef = useRef(null)
+    const logoRef = useRef(null)
+    const contentRef = useRef(null)
+
+    const handlePrimaryCta = () => {
+        document.querySelector(".contact-container")?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        })
     }
 
-    if (cta.type === "external") {
-      return (
-        <a
-          key={cta.label}
-          href={cta.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hero-cta hero-cta-secondary"
-          aria-label={cta.ariaLabel}
-        >
-          {cta.label}
-        </a>
-      );
-    }
+    const handleSecondaryRoute = to => navigate(to)
 
-    return null;
-  };
+    useLayoutEffect(() => {
+        if (typeof window === "undefined") return
+        if (!heroRef.current || !logoRef.current || !contentRef.current) return
 
-  return (
-    <div className="hero-titel" ref={ref}>
-      {/* Updated spacing keeps typography readable across viewports */}
-      <h1>{title}</h1>
-      <h2>{subtitle}</h2>
-      {paragraphs.map((text, index) => (
-        <p key={index}>{text}</p>
-      ))}
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
+        if (prefersReducedMotion.matches) return // skip animation
 
-      {/* CTA cluster stacks on mobile and wraps on wider screens */}
-      <div className="hero-cta-group">
-        <button
-          className="hero-cta hero-cta-primary"
-          onClick={onPrimaryClick}
-          aria-label={primaryCta.ariaLabel}
-          type="button"
-        >
-          {primaryCta.label}
-        </button>
-        <div className="hero-cta-secondary-group">
-          {secondaryCtas.map(renderSecondaryCta)}
+        gsap.registerPlugin(ScrollTrigger)
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: heroRef.current,
+                start: "top top",
+                end: "bottom top",
+                scrub: true,
+                pin: true,
+            },
+            defaults: { ease: "power2.out", duration: 1 },
+        })
+
+        tl.to(logoRef.current, { yPercent: -30 })
+            .from(contentRef.current, { autoAlpha: 0, y: 40 }, "<")
+
+        return () => tl.scrollTrigger?.kill()
+    }, [])
+
+    return (
+        <div className="hero-container" ref={heroRef}>
+            <HomeHeroLogo
+                ref={logoRef}
+                imageSrc={welcomeImage}
+                alt="Storegården 7 logotyp"
+            />
+            <HomeHeroContent
+                ref={contentRef}
+                title={title}
+                subtitle={subtitle}
+                paragraphs={paragraphs}
+                primaryCta={primaryCta}
+                secondaryCtas={secondaryCtas}
+                onPrimaryClick={handlePrimaryCta}
+                onRouteClick={handleSecondaryRoute}
+            />
         </div>
-      </div>
-    </div>
-  );
-});
+    )
+}
 
-HomeHeroContent.displayName = "HomeHeroContent";
-
-HomeHeroContent.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
-  paragraphs: PropTypes.arrayOf(PropTypes.string).isRequired,
-  primaryCta: PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    ariaLabel: PropTypes.string,
-  }).isRequired,
-  secondaryCtas: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      ariaLabel: PropTypes.string,
-      type: PropTypes.oneOf(["route", "external"]).isRequired,
-      to: PropTypes.string,
-      href: PropTypes.string,
-    })
-  ).isRequired,
-  onPrimaryClick: PropTypes.func.isRequired,
-  onRouteClick: PropTypes.func.isRequired,
-};
-
-export default HomeHeroContent;
+export default HomeHeroSection
