@@ -24,34 +24,39 @@
   gap: 16px;
   padding: 0;
 }
-
 .service-card {
-  background: white;
-  padding: 24px 20px;
-  border-radius: 16px;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-sm);
-  border: 2px solid transparent;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  text-decoration: none;
-  display: block;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px;
+    border: 1px solid rgba(80, 120, 100, 0.15);
+    padding: 36px 28px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.35s ease;
+
+    box-shadow: 0 6px 20px rgba(20, 40, 30, 0.08);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.service-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, #467c60, #7fb392);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 8px rgba(60, 100, 80, 0.25);
+    transition: transform 0.3s ease;
 }
 
-.service-icon {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 24px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: transform 0.3s ease;
-}
 
 .service-card:hover .service-icon {
   transform: scale(1.1) rotate(5deg);
@@ -103,16 +108,12 @@
 }
 
 .service-arrow {
-  display: inline-block;
-  font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
-  font-weight: 500;
-  color: var(--primary-color);
-  transition: transform 0.3s ease;
+    font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+    font-weight: 500;
+    color: var(--primary-color, #4a8064);
+    transition: transform 0.3s ease;
 }
 
-.service-card:hover .service-arrow {
-  transform: translateX(8px);
-}
 
 @media (max-width: 768px) {
   .services-section {
