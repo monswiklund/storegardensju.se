@@ -1,75 +1,108 @@
-import { useLayoutEffect, useRef } from "react"
-import { useNavigate } from "react-router-dom"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-import welcomeImage from "../../../assets/logoTransp_cropped.png"
-import { heroContent } from "../../../data/homeContent.js"
-import "./Hero.css"
-import HomeHeroLogo from "./HomeHeroLogo.jsx"
-import HomeHeroContent from "./HomeHeroContent.jsx"
+import PropTypes from "prop-types";
+import { forwardRef } from "react";
 
-function HomeHeroSection() {
-    const navigate = useNavigate()
-    const { title, subtitle, paragraphs, primaryCta, secondaryCtas } = heroContent
+const HomeHeroContent = forwardRef(function HomeHeroContent(
+  { title, subtitle, paragraphs, primaryCta, secondaryCtas, onPrimaryClick, onRouteClick },
+  ref
+) {
+  const handleRouteCta = to => {
+    if (!to || typeof onRouteClick !== "function") return;
+    onRouteClick(to);
+  };
 
-    const heroRef = useRef(null)
-    const logoRef = useRef(null)
-    const contentRef = useRef(null)
+  return (
+    <div className="hero-titel" ref={ref}>
+      {title ? <h1>{title}</h1> : null}
+      {subtitle ? <h2>{subtitle}</h2> : null}
 
-    const handlePrimaryCta = () => {
-        document.querySelector(".contact-container")?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-        })
-    }
+      {Array.isArray(paragraphs)
+        ? paragraphs.map((text, index) => {
+            const paragraphText = typeof text === "string" ? text : String(text);
+            return <p key={`paragraph-${index}`}>{paragraphText}</p>;
+          })
+        : null}
 
-    const handleSecondaryRoute = to => navigate(to)
+      {(primaryCta || (secondaryCtas && secondaryCtas.length > 0)) && (
+        <div className="hero-cta-group">
+          {primaryCta ? (
+            <button
+              type="button"
+              className="hero-cta hero-cta-primary"
+              onClick={onPrimaryClick}
+              aria-label={primaryCta.ariaLabel || primaryCta.label}
+            >
+              {primaryCta.label}
+            </button>
+          ) : null}
 
-    useLayoutEffect(() => {
-        if (typeof window === "undefined") return
-        if (!heroRef.current || !logoRef.current || !contentRef.current) return
+          {secondaryCtas && secondaryCtas.length > 0 ? (
+            <div className="hero-cta-secondary-group">
+              {secondaryCtas.map(({ label, ariaLabel, type, href, to }, index) => {
+                if (type === "external") {
+                  return (
+                    <a
+                      key={`secondary-cta-${index}`}
+                      className="hero-cta hero-cta-secondary"
+                      href={href}
+                      aria-label={ariaLabel || label}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {label}
+                    </a>
+                  );
+                }
 
-        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
-        if (prefersReducedMotion.matches) return // skip animation
-
-        gsap.registerPlugin(ScrollTrigger)
-
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: heroRef.current,
-                start: "top top",
-                end: "bottom top",
-                scrub: true,
-                pin: true,
-            },
-            defaults: { ease: "power2.out", duration: 1 },
-        })
-
-        tl.to(logoRef.current, { yPercent: -30 })
-            .from(contentRef.current, { autoAlpha: 0, y: 40 }, "<")
-
-        return () => tl.scrollTrigger?.kill()
-    }, [])
-
-    return (
-        <div className="hero-container" ref={heroRef}>
-            <HomeHeroLogo
-                ref={logoRef}
-                imageSrc={welcomeImage}
-                alt="Storegården 7 logotyp"
-            />
-            <HomeHeroContent
-                ref={contentRef}
-                title={title}
-                subtitle={subtitle}
-                paragraphs={paragraphs}
-                primaryCta={primaryCta}
-                secondaryCtas={secondaryCtas}
-                onPrimaryClick={handlePrimaryCta}
-                onRouteClick={handleSecondaryRoute}
-            />
+                return (
+                  <button
+                    key={`secondary-cta-${index}`}
+                    type="button"
+                    className="hero-cta hero-cta-secondary"
+                    onClick={() => handleRouteCta(to)}
+                    aria-label={ariaLabel || label}
+                    disabled={!to || typeof onRouteClick !== "function"}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
-    )
-}
+      )}
+    </div>
+  );
+});
 
-export default HomeHeroSection
+HomeHeroContent.propTypes = {
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  paragraphs: PropTypes.arrayOf(PropTypes.string),
+  primaryCta: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    ariaLabel: PropTypes.string,
+  }),
+  secondaryCtas: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      ariaLabel: PropTypes.string,
+      type: PropTypes.oneOf(["route", "external"]),
+      to: PropTypes.string,
+      href: PropTypes.string,
+    })
+  ),
+  onPrimaryClick: PropTypes.func,
+  onRouteClick: PropTypes.func,
+};
+
+HomeHeroContent.defaultProps = {
+  title: "",
+  subtitle: "",
+  paragraphs: [],
+  primaryCta: null,
+  secondaryCtas: [],
+  onPrimaryClick: undefined,
+  onRouteClick: undefined,
+};
+
+export default HomeHeroContent;

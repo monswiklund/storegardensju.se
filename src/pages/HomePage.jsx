@@ -40,14 +40,6 @@ function HomePage() {
                         <HomeUpcomingEventsSection/>
                     </FadeInSection>
                 </PageSection>
-
-                {/* Venue intro */}
-                <PageSection background="white" spacing="compact" ariaLabel="venue-intro-heading">
-                    <FadeInSection>
-                        <VenueIntroSection />
-                    </FadeInSection>
-                </PageSection>
-
             </main>
         </>
     );

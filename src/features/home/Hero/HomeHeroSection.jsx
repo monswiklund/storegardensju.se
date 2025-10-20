@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,6 +15,9 @@ function HomeHeroSection() {
     const heroRef = useRef(null);
     const logoRef = useRef(null);
     const contentRef = useRef(null);
+    const indicatorTimeoutRef = useRef(null);
+    const timelineRef = useRef(null);
+    const [isScrollIndicatorVisible, setIsScrollIndicatorVisible] = useState(false);
 
     const handlePrimaryCta = () => {
         document
@@ -23,6 +26,38 @@ function HomeHeroSection() {
     };
 
     const handleSecondaryRoute = to => navigate(to);
+    const handleScrollIndicatorClick = () => {
+        if (typeof window === "undefined") return;
+        const target = contentRef.current;
+        if (!target) return;
+
+        const navbarHeight = document.querySelector(".navbar")?.getBoundingClientRect()?.height ?? 0;
+        const timeline = timelineRef.current;
+        const computeAndScroll = () => {
+            const targetRect = target.getBoundingClientRect();
+            const scrollTarget = window.scrollY + targetRect.top - navbarHeight - 12;
+
+            window.scrollTo({
+                top: Math.max(scrollTarget, 0),
+                behavior: "smooth",
+            });
+        };
+        const prepareScroll = () => {
+            if (timeline?.scrollTrigger && timeline.scrollTrigger.isActive) {
+                const st = timeline.scrollTrigger;
+                st.scroll(st.end - 1);
+                window.requestAnimationFrame(computeAndScroll);
+            } else {
+                computeAndScroll();
+            }
+        };
+
+        if ("requestAnimationFrame" in window) {
+            window.requestAnimationFrame(prepareScroll);
+        } else {
+            prepareScroll();
+        }
+    };
 
     useLayoutEffect(() => {
         if (typeof window === "undefined") return;
@@ -51,8 +86,48 @@ function HomeHeroSection() {
                 { opacity: 1, y: 0 },
                 "<"
             );
+        timelineRef.current = tl;
 
-        return () => tl.scrollTrigger?.kill();
+        return () => {
+            tl.scrollTrigger?.kill();
+            tl.kill();
+            timelineRef.current = null;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return undefined;
+
+        const logoElement = logoRef.current?.querySelector("img");
+        if (!logoElement) return undefined;
+
+        const revealWithDelay = () => {
+            if (indicatorTimeoutRef.current !== null) return;
+            indicatorTimeoutRef.current = window.setTimeout(() => {
+                setIsScrollIndicatorVisible(true);
+                indicatorTimeoutRef.current = null;
+            }, 2600);
+        };
+
+        const clearPendingTimeout = () => {
+            if (indicatorTimeoutRef.current !== null) {
+                clearTimeout(indicatorTimeoutRef.current);
+                indicatorTimeoutRef.current = null;
+            }
+        };
+
+        if (logoElement.complete) {
+            revealWithDelay();
+            return () => {
+                clearPendingTimeout();
+            };
+        }
+
+        logoElement.addEventListener("load", revealWithDelay);
+        return () => {
+            logoElement.removeEventListener("load", revealWithDelay);
+            clearPendingTimeout();
+        };
     }, []);
 
     return (
@@ -62,6 +137,29 @@ function HomeHeroSection() {
                 imageSrc={welcomeImage}
                 alt="Storegården 7 logotyp"
             />
+            <button
+                type="button"
+                className={`hero-scroll-indicator${isScrollIndicatorVisible ? " is-visible" : ""}`}
+                onClick={handleScrollIndicatorClick}
+                aria-label="Skrolla ned för att upptäcka mer innehåll"
+            >
+                <span className="hero-scroll-indicator-label">Skrolla för att upptäcka mer</span>
+                <svg
+                    className="hero-scroll-indicator-icon"
+                    aria-hidden="true"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        d="M12 5v14m0 0-6-6m6 6 6-6"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                </svg>
+            </button>
             <HomeHeroContent
                 ref={contentRef}
                 title={title}
