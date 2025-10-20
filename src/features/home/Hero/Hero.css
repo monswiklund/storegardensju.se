@@ -9,21 +9,28 @@ header[role="banner"] .page-section-content {
   padding-right: clamp(20px, 6vw, 96px);
 }
 
-/* Container: centered grid with generous breathing room */
-.hero-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  align-content: center;
-  justify-items: center;
+/* Container: centered layout with full-height intro */
+.hero-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
   width: min(100%, 1320px);
   margin: 0 auto;
-  padding: clamp(48px, 14vh, 160px) clamp(16px, 5vw, 72px);
-  row-gap: clamp(32px, 10vh, 140px);
+  padding: clamp(24px, 6vh, 72px) clamp(16px, 5vw, 72px) clamp(32px, 8vh, 96px);
   text-align: center;
-  min-height: min(100vh, 960px);
-  min-height: min(100dvh, 960px);
   overflow: hidden;
+}
+
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: min(100vh, 760px);
+  min-height: min(100dvh, 760px);
+  gap: clamp(16px, 4vh, 56px);
 }
 
 /* Logo: scale smoothly without overpowering the copy */
@@ -33,7 +40,6 @@ header[role="banner"] .page-section-content {
   width: 100%;
   max-width: 500px;
   margin: 0;
-  margin-bottom: clamp(20px, 5vh, 72px);
   will-change: transform;
 }
 
@@ -114,10 +120,16 @@ header[role="banner"] .page-section-content {
   align-items: center;
   gap: clamp(12px, 2.2vw, 24px);
   max-width: 840px;
-  margin: 0 auto;
+  margin: clamp(40px, 8vh, 120px) auto 0;
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(32px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
   will-change: transform, opacity;
+}
+
+.hero-titel.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .hero-titel h1 {
@@ -230,7 +242,7 @@ header[role="banner"] .page-section-content {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-container {
+  .hero-wrapper {
     transition: none;
   }
 

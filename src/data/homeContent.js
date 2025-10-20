@@ -92,7 +92,7 @@ export const venueIntro = {
 };
 
 export const featuredGalleryImages = [
-  { src: '/images/evenemang/slide4.jpg', alt: 'Evenemang' }
+  { src: '/images/event/hero/hero.webp', alt: 'Evenemang' }
 ];
 
 export const creationContent = {

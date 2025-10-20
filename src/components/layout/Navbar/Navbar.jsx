@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import "./Navbar.css";
 import NavLinks from "./NavLinks";
@@ -9,11 +10,50 @@ const NAV_ITEMS = appRoutes;
 function Navbar() {
   const location = useLocation();
   const { isOpen, toggle, close, menuRef, triggerRef } = useNavbarToggle();
+  const pendingScrollTargetRef = useRef(null);
 
-  const handleNavigate = () => {
+  const scrollToHeroTitle = () => {
+    if (typeof window === "undefined") return;
+    const target = document.querySelector(".hero-titel");
+    if (!target) return;
+
+    const navbarHeight =
+      document.querySelector(".navbar")?.getBoundingClientRect()?.height ?? 0;
+    const targetRect = target.getBoundingClientRect();
+    const scrollTarget = window.scrollY + targetRect.top - navbarHeight - 12;
+
+    window.requestAnimationFrame(() => {
+      window.scrollTo({
+        top: Math.max(scrollTarget, 0),
+        behavior: "smooth",
+      });
+    });
+  };
+
+  const handleNavigate = (path) => {
     close();
+    if (path === "/") {
+      if (location.pathname === "/") {
+        scrollToHeroTitle();
+      } else {
+        pendingScrollTargetRef.current = ".hero-titel";
+      }
+      return;
+    }
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      pendingScrollTargetRef.current = null;
+      return;
+    }
+
+    if (!pendingScrollTargetRef.current) return;
+    pendingScrollTargetRef.current = null;
+    scrollToHeroTitle();
+  }, [location.pathname]);
 
   return (
     <nav className="navbar" role="navigation" aria-label="Huvudnavigation">

@@ -1,7 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import welcomeImage from "../../../assets/logoTransp_cropped.png";
 import { heroContent } from "../../../data/homeContent.js";
 import "./Hero.css";
@@ -12,11 +10,9 @@ function HomeHeroSection() {
     const navigate = useNavigate();
     const { title, subtitle, paragraphs, primaryCta, secondaryCtas } = heroContent;
 
-    const heroRef = useRef(null);
     const logoRef = useRef(null);
     const contentRef = useRef(null);
     const indicatorTimeoutRef = useRef(null);
-    const timelineRef = useRef(null);
     const [isScrollIndicatorVisible, setIsScrollIndicatorVisible] = useState(false);
 
     const handlePrimaryCta = () => {
@@ -32,66 +28,49 @@ function HomeHeroSection() {
         if (!target) return;
 
         const navbarHeight = document.querySelector(".navbar")?.getBoundingClientRect()?.height ?? 0;
-        const timeline = timelineRef.current;
-        const computeAndScroll = () => {
-            const targetRect = target.getBoundingClientRect();
-            const scrollTarget = window.scrollY + targetRect.top - navbarHeight - 12;
+        const targetRect = target.getBoundingClientRect();
+        const scrollTarget = window.scrollY + targetRect.top - navbarHeight - 12;
 
+        const scroll = () =>
             window.scrollTo({
                 top: Math.max(scrollTarget, 0),
                 behavior: "smooth",
             });
-        };
-        const prepareScroll = () => {
-            if (timeline?.scrollTrigger && timeline.scrollTrigger.isActive) {
-                const st = timeline.scrollTrigger;
-                st.scroll(st.end - 1);
-                window.requestAnimationFrame(computeAndScroll);
-            } else {
-                computeAndScroll();
-            }
-        };
 
         if ("requestAnimationFrame" in window) {
-            window.requestAnimationFrame(prepareScroll);
+            window.requestAnimationFrame(scroll);
         } else {
-            prepareScroll();
+            scroll();
         }
     };
 
-    useLayoutEffect(() => {
-        if (typeof window === "undefined") return;
-        if (!heroRef.current || !logoRef.current || !contentRef.current) return;
+    useEffect(() => {
+        if (typeof window === "undefined") return undefined;
+        const contentElement = contentRef.current;
+        if (!contentElement) return undefined;
 
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-        if (prefersReducedMotion.matches) return;
+        if (prefersReducedMotion.matches) {
+            contentElement.classList.add("is-visible");
+            return () => {};
+        }
 
-        gsap.registerPlugin(ScrollTrigger);
-
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: heroRef.current,
-                start: "top top",
-                end: "bottom top",
-                scrub: true,
-                pin: true,
+        const observer = new IntersectionObserver(
+            entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
             },
-            defaults: { ease: "power2.out", duration: 1.2 },
-        });
+            { threshold: 0.35 },
+        );
 
-        tl.to(logoRef.current, { yPercent: -30 })
-            .fromTo(
-                contentRef.current,
-                { opacity: 0, y: 40 },
-                { opacity: 1, y: 0 },
-                "<"
-            );
-        timelineRef.current = tl;
+        observer.observe(contentElement);
 
         return () => {
-            tl.scrollTrigger?.kill();
-            tl.kill();
-            timelineRef.current = null;
+            observer.disconnect();
         };
     }, []);
 
@@ -131,35 +110,37 @@ function HomeHeroSection() {
     }, []);
 
     return (
-        <div className="hero-container" ref={heroRef}>
-            <HomeHeroLogo
-                ref={logoRef}
-                imageSrc={welcomeImage}
-                alt="Storegården 7 logotyp"
-            />
-            <button
-                type="button"
-                className={`hero-scroll-indicator${isScrollIndicatorVisible ? " is-visible" : ""}`}
-                onClick={handleScrollIndicatorClick}
-                aria-label="Skrolla ned för att upptäcka mer innehåll"
-            >
-                <span className="hero-scroll-indicator-label">Skrolla för att upptäcka mer</span>
-                <svg
-                    className="hero-scroll-indicator-icon"
-                    aria-hidden="true"
-                    focusable="false"
-                    viewBox="0 0 24 24"
+        <div className="hero-wrapper">
+            <div className="hero-container">
+                <HomeHeroLogo
+                    ref={logoRef}
+                    imageSrc={welcomeImage}
+                    alt="Storegården 7 logotyp"
+                />
+                <button
+                    type="button"
+                    className={`hero-scroll-indicator${isScrollIndicatorVisible ? " is-visible" : ""}`}
+                    onClick={handleScrollIndicatorClick}
+                    aria-label="Skrolla ned för att upptäcka mer innehåll"
                 >
-                    <path
-                        d="M12 5v14m0 0-6-6m6 6 6-6"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-            </button>
+                    <span className="hero-scroll-indicator-label">Skrolla för att upptäcka mer</span>
+                    <svg
+                        className="hero-scroll-indicator-icon"
+                        aria-hidden="true"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            d="M12 5v14m0 0-6-6m6 6 6-6"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </button>
+            </div>
             <HomeHeroContent
                 ref={contentRef}
                 title={title}
