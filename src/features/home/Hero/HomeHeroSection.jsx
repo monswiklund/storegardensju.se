@@ -28,14 +28,18 @@ function HomeHeroSection() {
         if (!target) return;
 
         const navbarHeight = document.querySelector(".navbar")?.getBoundingClientRect()?.height ?? 0;
-        const targetRect = target.getBoundingClientRect();
-        const scrollTarget = window.scrollY + targetRect.top - navbarHeight - 12;
 
-        const scroll = () =>
+        const scroll = () => {
+            const targetRect = target.getBoundingClientRect();
+            const targetCenter = window.scrollY + targetRect.top + targetRect.height / 2;
+            const desiredCenter = (window.innerHeight + navbarHeight) / 2;
+            const scrollTarget = targetCenter - desiredCenter;
+
             window.scrollTo({
                 top: Math.max(scrollTarget, 0),
                 behavior: "smooth",
             });
+        };
 
         if ("requestAnimationFrame" in window) {
             window.requestAnimationFrame(scroll);
