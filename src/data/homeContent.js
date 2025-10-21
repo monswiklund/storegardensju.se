@@ -52,7 +52,11 @@ export const upcomingEvents = [
     spots: 'Fri entré',
     link: 'https://konstafton.se/',
     linkLabel: 'Läs mer på konstafton.se',
-    location: 'Storegården 7, Rackeby'
+    location: 'Storegården 7, Rackeby',
+    image: {
+      src: '/images/evenemang//konstafton/konstafton-2025.webp',
+      alt: 'Affisch och besökare på Konstafton i Storegården 7'
+    }
   }
 ];
 

@@ -11,12 +11,6 @@ const GalleryShowcase = lazy(() => import('../features/gallery/ImageGallery/Gall
 function GalleriPage() {
     return (
         <main role="main" id="main-content">
-            {/* Om lokalen */}
-            <PageSection background="alt" spacing="compact" ariaLabel="venue-intro-heading">
-                <FadeInSection>
-                    <VenueIntroSection />
-                </FadeInSection>
-            </PageSection>
 
             {/* Full Gallery */}
             <PageSection background="white" spacing="default" ariaLabel="gallery-heading">
@@ -27,6 +21,12 @@ function GalleriPage() {
                         </Suspense>
                     </FadeInSection>
                 </ErrorBoundary>
+            </PageSection>
+            {/* Om lokalen */}
+            <PageSection background="alt" spacing="compact" ariaLabel="venue-intro-heading">
+                <FadeInSection>
+                    <VenueIntroSection />
+                </FadeInSection>
             </PageSection>
 
         </main>

@@ -20,7 +20,9 @@ function Navbar() {
     const navbarHeight =
       document.querySelector(".navbar")?.getBoundingClientRect()?.height ?? 0;
     const targetRect = target.getBoundingClientRect();
-    const scrollTarget = window.scrollY + targetRect.top - navbarHeight - 12;
+    const targetCenter = window.scrollY + targetRect.top + targetRect.height / 2;
+    const desiredCenter = (window.innerHeight + navbarHeight) / 2;
+    const scrollTarget = targetCenter - desiredCenter;
 
     window.requestAnimationFrame(() => {
       window.scrollTo({
