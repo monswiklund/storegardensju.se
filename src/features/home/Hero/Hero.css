@@ -82,6 +82,12 @@ header[role="banner"] .page-section-content {
   pointer-events: auto;
 }
 
+.hero-scroll-indicator.is-fading-out {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
 .hero-scroll-indicator:hover,
 .hero-scroll-indicator:focus-visible {
   color: var(--primary-color);

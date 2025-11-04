@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import welcomeImage from "../../../assets/logoTransp_cropped.png";
 import { heroContent } from "../../../data/homeContent.js";
@@ -13,7 +13,10 @@ function HomeHeroSection() {
     const logoRef = useRef(null);
     const contentRef = useRef(null);
     const indicatorTimeoutRef = useRef(null);
+    const hideTimeoutRef = useRef(null);
     const [isScrollIndicatorVisible, setIsScrollIndicatorVisible] = useState(false);
+    const [isIndicatorDismissed, setIsIndicatorDismissed] = useState(false);
+    const [isIndicatorRemoved, setIsIndicatorRemoved] = useState(false);
 
     const handlePrimaryCta = () => {
         document
@@ -22,10 +25,17 @@ function HomeHeroSection() {
     };
 
     const handleSecondaryRoute = to => navigate(to);
+    const dismissIndicator = useCallback(() => {
+        if (isIndicatorDismissed) return;
+        setIsScrollIndicatorVisible(false);
+        setIsIndicatorDismissed(true);
+    }, [isIndicatorDismissed]);
     const handleScrollIndicatorClick = () => {
         if (typeof window === "undefined") return;
         const target = contentRef.current;
         if (!target) return;
+
+        dismissIndicator();
 
         const navbarHeight = document.querySelector(".navbar")?.getBoundingClientRect()?.height ?? 0;
 
@@ -113,6 +123,48 @@ function HomeHeroSection() {
         };
     }, []);
 
+    useEffect(() => {
+        if (typeof window === "undefined") return undefined;
+        if (isIndicatorDismissed) return undefined;
+        const target = contentRef.current;
+        if (!target) return undefined;
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    dismissIndicator();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: null,
+            threshold: 0.3,
+        });
+
+        observer.observe(target);
+        return () => observer.disconnect();
+    }, [dismissIndicator, isIndicatorDismissed]);
+
+    useEffect(() => {
+        if (!isIndicatorDismissed || isIndicatorRemoved) return undefined;
+        if (typeof window === "undefined") {
+            setIsIndicatorRemoved(true);
+            return undefined;
+        }
+
+        hideTimeoutRef.current = window.setTimeout(() => {
+            setIsIndicatorRemoved(true);
+            hideTimeoutRef.current = null;
+        }, 360);
+
+        return () => {
+            if (hideTimeoutRef.current !== null) {
+                clearTimeout(hideTimeoutRef.current);
+                hideTimeoutRef.current = null;
+            }
+        };
+    }, [isIndicatorDismissed, isIndicatorRemoved]);
+
     return (
         <div className="hero-wrapper">
             <div className="hero-container">
@@ -121,29 +173,31 @@ function HomeHeroSection() {
                     imageSrc={welcomeImage}
                     alt="Storegården 7 logotyp"
                 />
-                <button
-                    type="button"
-                    className={`hero-scroll-indicator${isScrollIndicatorVisible ? " is-visible" : ""}`}
-                    onClick={handleScrollIndicatorClick}
-                    aria-label="Skrolla ned för att upptäcka mer innehåll"
-                >
-                    <span className="hero-scroll-indicator-label">Skrolla för att upptäcka mer</span>
-                    <svg
-                        className="hero-scroll-indicator-icon"
-                        aria-hidden="true"
-                        focusable="false"
-                        viewBox="0 0 24 24"
+                {!isIndicatorRemoved && (
+                    <button
+                        type="button"
+                        className={`hero-scroll-indicator${isScrollIndicatorVisible && !isIndicatorDismissed ? " is-visible" : ""}${isIndicatorDismissed ? " is-fading-out" : ""}`}
+                        onClick={handleScrollIndicatorClick}
+                        aria-label="Skrolla ned för att upptäcka mer innehåll"
                     >
-                        <path
-                            d="M12 5v14m0 0-6-6m6 6 6-6"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
-                </button>
+                        <span className="hero-scroll-indicator-label">Skrolla för att upptäcka mer</span>
+                        <svg
+                            className="hero-scroll-indicator-icon"
+                            aria-hidden="true"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                d="M12 5v14m0 0-6-6m6 6 6-6"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </button>
+                )}
             </div>
             <HomeHeroContent
                 ref={contentRef}
