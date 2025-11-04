@@ -41,7 +41,9 @@ export const services = [
   }
 ];
 
-export const upcomingEvents = [
+export const upcomingEvents = [];
+
+export const pastEvents = [
   {
     title: 'Konstafton 2025',
     date: '1 November 2025',
@@ -57,10 +59,7 @@ export const upcomingEvents = [
       src: '/images/evenemang//konstafton/konstafton-2025.webp',
       alt: 'Affisch och besökare på Konstafton i Storegården 7'
     }
-  }
-];
-
-export const pastEvents = [
+  },
   {
     title: 'Västra Kållands Kulturrunda',
     date: '29 Maj 2024',

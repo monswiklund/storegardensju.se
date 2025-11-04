@@ -24,6 +24,25 @@
   margin-right: auto;
 }
 
+.events-placeholder {
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--background-alt);
+  border-radius: 12px;
+  margin: 0 0 48px 0;
+}
+
+.events-placeholder p {
+  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.2rem);
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+}
+
+.events-placeholder p:last-child {
+  margin-bottom: 0;
+}
+
 
 .event-card {
   background: white;

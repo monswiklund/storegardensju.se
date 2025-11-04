@@ -19,11 +19,18 @@ function HomeUpcomingEventsSection() {
           Upptäck våra kommande workshops, kurser och evenemang. Boka din plats redan idag!
         </p>
 
-        <div className="events-grid">
-          {upcomingEvents.map((event) => (
-            <EventCard key={event.title} event={event} />
-          ))}
-        </div>
+        {upcomingEvents.length > 0 ? (
+          <div className="events-grid">
+            {upcomingEvents.map((event) => (
+              <EventCard key={event.title} event={event} />
+            ))}
+          </div>
+        ) : (
+          <div className="events-placeholder">
+            <p>Inga evenemang planerade just nu.</p>
+            <p>Håll utkik för kommande evenemang eller kontakta oss för att boka din egen workshop!</p>
+          </div>
+        )}
 
         <InfoCallout onContact={scrollToContact} />
 
