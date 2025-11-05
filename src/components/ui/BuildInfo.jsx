@@ -28,6 +28,9 @@ function BuildInfo() {
                     Build #{buildInfo.buildNumber} | {new Date(buildInfo.buildTime).toLocaleDateString('sv-SE')}
                 </span>
             )}
+            <span className="build-credit">
+                Skapad av Måns Wiklund
+            </span>
         </div>
     );
 }

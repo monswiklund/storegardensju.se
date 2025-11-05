@@ -28,6 +28,11 @@
   opacity: 0.7;
 }
 
+.build-credit {
+  font-size: clamp(0.75rem, 0.7rem + 0.3vw, 0.85rem);
+  opacity: 0.8;
+}
+
 @media (min-width: 768px) {
   .build-info {
     flex-direction: row;
@@ -36,6 +41,12 @@
   }
 
   .build-details:before {
+    content: "•";
+    margin-right: 8px;
+    color: var(--text-light);
+  }
+
+  .build-credit:before {
     content: "•";
     margin-right: 8px;
     color: var(--text-light);
