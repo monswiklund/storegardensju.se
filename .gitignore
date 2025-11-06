@@ -65,3 +65,6 @@ vite.config.ts.timestamp-*
 
 # TypeScript
 *.tsbuildinfo
+
+# Documentation - Ignore all markdown files
+*.md
