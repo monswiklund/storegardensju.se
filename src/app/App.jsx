@@ -13,6 +13,8 @@ import EventPage from '../pages/EventPage/EventPage.jsx';
 import ArtPage from '../pages/ArtPage.jsx';
 import GalleriPage from '../pages/GalleriPage.jsx';
 import TeamPage from '../pages/TeamPage.jsx';
+import ButikPage from '../pages/ButikPage.jsx';
+import ProductDetailPage from '../pages/ProductDetailPage.jsx';
 import { ContactSection } from '../features/contact';
 
 function App() {
@@ -77,6 +79,8 @@ function App() {
                 <Route path="/event" element={<EventPage />} />
                 <Route path="/konst" element={<ArtPage />} />
                 <Route path="/galleri" element={<GalleriPage />} />
+                <Route path="/butik" element={<ButikPage />} />
+                <Route path="/butik/:productId" element={<ProductDetailPage />} />
                 <Route path="/om-oss" element={<TeamPage />} />
             </Routes>
             <ContactSection />
