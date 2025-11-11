@@ -9,12 +9,21 @@ const __dirname = path.dirname(__filename);
 
 const GALLERY_DIR = path.join(__dirname, '../public/images/gallery');
 const OUTPUT_FILE = path.join(__dirname, '../src/data/galleryCategories.json');
+const ORDER_FILE = path.join(__dirname, '../src/data/gallery-order.json');
 
 // Kategori-metadata för displayNames
 const CATEGORY_METADATA = {
-  lokal: {
-    name: 'Lokal',
-    description: 'Lokalen på Storegården 7'
+  overvaning: {
+    name: 'Loftet',
+    description: 'Övre våningen på Storegården 7'
+  },
+  undervaning: {
+    name: 'Ladan',
+    description: 'Nedre våningen, kök och serviceområden'
+  },
+  ute: {
+    name: 'Övrigt',
+    description: 'Utemiljö och toaletter'
   },
   evenemang: {
     name: 'Evenemang',
@@ -23,6 +32,18 @@ const CATEGORY_METADATA = {
   'konst-keramik': {
     name: 'Konst & Keramik',
     description: 'Konst och keramik från Storegården 7'
+  }
+};
+
+// Mapping från filnamn-kategori och subkategori till display-kategori
+const CATEGORY_MAPPING = {
+  lokal: {
+    upper: 'overvaning',
+    under: 'undervaning',
+    kok: 'undervaning',
+    service: 'undervaning',
+    ute: 'ute',
+    'ute-toa': 'ute'
   }
 };
 
@@ -37,27 +58,38 @@ const SUBCATEGORY_METADATA = {
 };
 
 /**
+ * Mappar från filnamns-kategori och subkategori till display-kategori
+ */
+function getMappedCategory(fileCategory, subcategory) {
+  // Om vi har en mapping för denna kategori + subkategori, använd den
+  if (CATEGORY_MAPPING[fileCategory]?.[subcategory]) {
+    return CATEGORY_MAPPING[fileCategory][subcategory];
+  }
+  // Annars använd filnamns-kategorin direkt
+  return fileCategory;
+}
+
+/**
  * Parsar filnamn enligt formatet: {kategori}-{subkategori}-{nummer}.{ext}
- * Exempel: lokal-kok-1.webp → { category: 'lokal', subcategory: 'kok', number: 1 }
+ * Exempel: lokal-kok-1.webp → { category: 'undervaning', subcategory: 'kok', number: 1 }
  */
 function parseFilename(filename) {
-  // Prova matcha mot varje känd kategori (längsta först för att undvika false matches)
-  const categories = Object.keys(CATEGORY_METADATA).sort((a, b) => b.length - a.length);
+  // Filnamn kan börja med "lokal", "evenemang", "konst-keramik" etc
+  // Men vi mappar sedan till display-kategorier baserat på subkategori
+  const knownFilePrefixes = ['lokal', 'evenemang', 'konst-keramik'];
 
-  for (const category of categories) {
-    // Escape special regex characters in category name
-    const escapedCategory = category.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-    // Match pattern: {category}-{subcategory}-{number}.{ext}
-    // Double backslashes needed in template string for RegExp constructor
-    const pattern = new RegExp(`^${escapedCategory}-([a-z-]+)-(\\d+)\\.(webp|jpg|jpeg|png)$`, 'i');
+  for (const prefix of knownFilePrefixes) {
+    const escapedPrefix = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = new RegExp(`^${escapedPrefix}-([a-z-]+)-(\\d+)\\.(webp|jpg|jpeg|png)$`, 'i');
     const match = filename.match(pattern);
 
     if (match) {
       const [, subcategory, numberStr, ext] = match;
+      const mappedCategory = getMappedCategory(prefix, subcategory);
+
       return {
         filename,
-        category: category,
+        category: mappedCategory,
         subcategory: subcategory,
         number: parseInt(numberStr, 10),
         extension: ext
@@ -101,6 +133,73 @@ function scanGallery() {
 }
 
 /**
+ * Läser manuell bildordning från gallery-order.json om den finns
+ */
+function loadManualOrder() {
+  try {
+    if (fs.existsSync(ORDER_FILE)) {
+      const orderData = JSON.parse(fs.readFileSync(ORDER_FILE, 'utf8'));
+      console.log('📌 Använder manuell ordning från gallery-order.json');
+      return orderData;
+    }
+  } catch (error) {
+    console.warn('⚠️  Kunde inte läsa gallery-order.json:', error.message);
+  }
+  return null;
+}
+
+/**
+ * Sorterar bilder automatiskt (fallback när manuell ordning saknas)
+ */
+function automaticSort(images) {
+  return images.sort((a, b) => {
+    if (a.subcategory !== b.subcategory) {
+      const orderA = SUBCATEGORY_METADATA[a.subcategory]?.order ?? 999;
+      const orderB = SUBCATEGORY_METADATA[b.subcategory]?.order ?? 999;
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      return a.subcategory.localeCompare(b.subcategory);
+    }
+    return a.number - b.number;
+  });
+}
+
+/**
+ * Sorterar bilder med manuell ordning om tillgänglig, annars automatisk
+ */
+function sortImages(images, categoryId, manualOrder) {
+  // Om vi har manuell ordning för denna kategori, använd den
+  if (manualOrder?.categories?.[categoryId]) {
+    const order = manualOrder.categories[categoryId];
+    const orderMap = new Map(order.map((filename, index) => [filename, index]));
+
+    return [...images].sort((a, b) => {
+      const orderA = orderMap.get(a.filename) ?? 999999;
+      const orderB = orderMap.get(b.filename) ?? 999999;
+
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+
+      // Fallback till automatisk sortering för bilder som inte finns i manuell ordning
+      if (a.subcategory !== b.subcategory) {
+        const subOrderA = SUBCATEGORY_METADATA[a.subcategory]?.order ?? 999;
+        const subOrderB = SUBCATEGORY_METADATA[b.subcategory]?.order ?? 999;
+        if (subOrderA !== subOrderB) {
+          return subOrderA - subOrderB;
+        }
+        return a.subcategory.localeCompare(b.subcategory);
+      }
+      return a.number - b.number;
+    });
+  }
+
+  // Fallback till automatisk sortering
+  return automaticSort([...images]);
+}
+
+/**
  * Grupperar bilder per kategori och genererar metadata
  */
 function generateGalleryCategories() {
@@ -114,6 +213,9 @@ function generateGalleryCategories() {
   }
 
   console.log(`📸 Hittade ${allImages.length} bilder`);
+
+  // Ladda manuell ordning om den finns
+  const manualOrder = loadManualOrder();
 
   // Gruppera bilder per kategori
   const categoriesMap = new Map();
@@ -149,58 +251,33 @@ function generateGalleryCategories() {
     });
   }
 
-  // Sortera bilder inom varje kategori (order från metadata, sedan nummer)
+  // Sortera bilder inom varje kategori med manuell ordning eller automatisk
   for (const category of categoriesMap.values()) {
-    category.images.sort((a, b) => {
-      if (a.subcategory !== b.subcategory) {
-        // Sortera efter order om den finns i metadata, annars alfabetiskt
-        const orderA = SUBCATEGORY_METADATA[a.subcategory]?.order ?? 999;
-        const orderB = SUBCATEGORY_METADATA[b.subcategory]?.order ?? 999;
-        if (orderA !== orderB) {
-          return orderA - orderB;
-        }
-        return a.subcategory.localeCompare(b.subcategory);
-      }
-      return a.number - b.number;
-    });
+    category.images = sortImages(category.images, category.id, manualOrder);
   }
 
   const categories = Array.from(categoriesMap.values());
 
   // Lägg till "Alla bilder" kategori först
+  const allaSortedImages = sortImages([...allImages], 'alla', manualOrder);
+
   categories.unshift({
     id: 'alla',
     name: 'Alla bilder',
     description: 'Alla bilder från Storegården 7',
-    images: [...allImages]
-      .sort((a, b) => {
-        if (a.category !== b.category) {
-          return a.category.localeCompare(b.category);
-        }
-        if (a.subcategory !== b.subcategory) {
-          // Sortera efter order om den finns i metadata, annars alfabetiskt
-          const orderA = SUBCATEGORY_METADATA[a.subcategory]?.order ?? 999;
-          const orderB = SUBCATEGORY_METADATA[b.subcategory]?.order ?? 999;
-          if (orderA !== orderB) {
-            return orderA - orderB;
-          }
-          return a.subcategory.localeCompare(b.subcategory);
-        }
-        return a.number - b.number;
-      })
-      .map(img => {
-        const subcategoryMeta = SUBCATEGORY_METADATA[img.subcategory];
-        const subcategoryName = subcategoryMeta?.name || img.subcategory;
-        const categoryName = CATEGORY_METADATA[img.category]?.name || img.category;
-        return {
-          filename: img.filename,
-          category: img.category,
-          subcategory: img.subcategory,
-          number: img.number,
-          displayName: `${categoryName} - ${subcategoryName} ${img.number}`,
-          path: `/images/gallery/${img.filename}`
-        };
-      })
+    images: allaSortedImages.map(img => {
+      const subcategoryMeta = SUBCATEGORY_METADATA[img.subcategory];
+      const subcategoryName = subcategoryMeta?.name || img.subcategory;
+      const categoryName = CATEGORY_METADATA[img.category]?.name || img.category;
+      return {
+        filename: img.filename,
+        category: img.category,
+        subcategory: img.subcategory,
+        number: img.number,
+        displayName: `${categoryName} - ${subcategoryName} ${img.number}`,
+        path: `/images/gallery/${img.filename}`
+      };
+    })
   });
 
   const output = { categories };

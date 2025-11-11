@@ -2,11 +2,14 @@ import { useState, useMemo, useCallback } from "react";
 import "./Gallery.css";
 import CategoryToggle from "../CategoryToggle/CategoryToggle";
 import galleryData from "../../../data/galleryCategories.json";
+import galleryOrder from "../../../data/gallery-order.json";
 import GalleryGrid from "./components/GalleryGrid";
 import ExpandedGallery from "./components/ExpandedGallery";
 import GalleryLightbox from "./components/GalleryLightbox";
+import FeaturedGallery from "../FeaturedGallery/FeaturedGallery";
 import useGalleryLightbox from "./hooks/useGalleryLightbox";
 import useDockedToggle from "./hooks/useDockedToggle";
+import logoImage from "../../../assets/logoTransp_cropped.png";
 
 function GalleryShowcase() {
   const [activeCategory, setActiveCategory] = useState("alla");
@@ -34,6 +37,50 @@ function GalleryShowcase() {
     }));
   }, [activeCategoryData]);
 
+  // Featured images - lookup from "alla" category based on featured list
+  const featuredImages = useMemo(() => {
+    if (!galleryOrder?.featured || galleryOrder.featured.length === 0) {
+      return [];
+    }
+
+    const allaCategoryData = galleryData.categories.find((cat) => cat.id === "alla");
+    if (!allaCategoryData) {
+      return [];
+    }
+
+    return galleryOrder.featured
+      .map((filename) => {
+        const imageData = allaCategoryData.images.find((img) => img.filename === filename);
+        if (!imageData) return null;
+
+        return {
+          original: imageData.path,
+          thumbnail: imageData.path,
+          description: imageData.displayName,
+          originalAlt: imageData.displayName,
+          thumbnailAlt: imageData.displayName,
+          filename: imageData.filename,
+          subcategory: imageData.subcategory,
+        };
+      })
+      .filter(Boolean);
+  }, []);
+
+  // Separate lightbox for featured gallery
+  const {
+    isOpen: showFeaturedLightbox,
+    currentIndex: featuredLightboxIndex,
+    currentImage: featuredCurrentImage,
+    openLightbox: openFeaturedLightbox,
+    closeLightbox: closeFeaturedLightbox,
+    goToImage: goToFeaturedImage,
+    goToNextImage: goToFeaturedNextImage,
+    goToPreviousImage: goToFeaturedPreviousImage,
+    dialogRef: featuredDialogRef,
+    closeButtonRef: featuredCloseButtonRef,
+  } = useGalleryLightbox(featuredImages, 'featured');
+
+  // Main gallery lightbox
   const {
     isOpen: showLightbox,
     currentIndex: lightboxIndex,
@@ -71,7 +118,24 @@ function GalleryShowcase() {
 
   return (
     <div className="storegarden-gallery">
+      <div className="gallery-logo-container">
+        <img
+          src={logoImage}
+          alt="Storegården 7"
+          className="gallery-logo"
+        />
+      </div>
+
       <h2 id="gallery-heading">Bildgalleri</h2>
+
+      {/* Featured Gallery - always visible */}
+      {featuredImages.length > 0 && (
+        <FeaturedGallery
+          images={featuredImages}
+          onImageSelect={openFeaturedLightbox}
+        />
+      )}
+
       <CategoryToggle
         categories={galleryData.categories}
         activeCategory={activeCategory}
@@ -111,6 +175,21 @@ function GalleryShowcase() {
         />
       )}
 
+      {/* Featured Gallery Lightbox */}
+      <GalleryLightbox
+        isOpen={showFeaturedLightbox}
+        images={featuredImages}
+        currentIndex={featuredLightboxIndex}
+        currentImage={featuredCurrentImage}
+        onClose={closeFeaturedLightbox}
+        onNext={goToFeaturedNextImage}
+        onPrevious={goToFeaturedPreviousImage}
+        onSelectImage={goToFeaturedImage}
+        dialogRef={featuredDialogRef}
+        closeButtonRef={featuredCloseButtonRef}
+      />
+
+      {/* Main Gallery Lightbox */}
       <GalleryLightbox
         isOpen={showLightbox}
         images={images}

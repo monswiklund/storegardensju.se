@@ -1,0 +1,74 @@
+{
+  "_comment": "Flytta runt filnamn för att ändra visningsordning. Bilder som inte listas hamnar sist (automatiskt sorterade).",
+  "featured": [
+    "lokal-upper-1.webp",
+    "lokal-upper-5.webp",
+    "lokal-under-1.webp",
+    "lokal-under-10.webp",
+    "lokal-under-11.webp",
+    "lokal-service-3.webp",
+    "lokal-ute-1.webp"
+  ],
+  "categories": {
+    "alla": [
+      "lokal-upper-1.webp",
+      "lokal-upper-2.webp",
+      "lokal-upper-3.webp",
+      "lokal-upper-4.webp",
+      "lokal-upper-5.webp",
+      "lokal-under-1.webp",
+      "lokal-under-2.webp",
+      "lokal-under-3.webp",
+      "lokal-under-4.webp",
+      "lokal-under-5.webp",
+      "lokal-under-6.webp",
+      "lokal-under-7.webp",
+      "lokal-under-8.webp",
+      "lokal-under-9.webp",
+      "lokal-under-10.webp",
+      "lokal-under-11.webp",
+      "lokal-kok-1.webp",
+      "lokal-kok-2.webp",
+      "lokal-kok-3.webp",
+      "lokal-kok-4.webp",
+      "lokal-service-1.webp",
+      "lokal-service-2.webp",
+      "lokal-service-3.webp",
+      "lokal-ute-1.webp",
+      "lokal-ute-toa-1.webp",
+      "lokal-ute-toa-2.webp"
+    ],
+    "undervaning": [
+      "lokal-under-1.webp",
+      "lokal-under-2.webp",
+      "lokal-under-3.webp",
+      "lokal-under-4.webp",
+      "lokal-under-5.webp",
+      "lokal-under-6.webp",
+      "lokal-under-7.webp",
+      "lokal-under-8.webp",
+      "lokal-under-9.webp",
+      "lokal-under-10.webp",
+      "lokal-under-11.webp",
+      "lokal-kok-1.webp",
+      "lokal-kok-2.webp",
+      "lokal-kok-3.webp",
+      "lokal-kok-4.webp",
+      "lokal-service-1.webp",
+      "lokal-service-2.webp",
+      "lokal-service-3.webp"
+    ],
+    "overvaning": [
+      "lokal-upper-1.webp",
+      "lokal-upper-2.webp",
+      "lokal-upper-3.webp",
+      "lokal-upper-4.webp",
+      "lokal-upper-5.webp"
+    ],
+    "ute": [
+      "lokal-ute-1.webp",
+      "lokal-ute-toa-1.webp",
+      "lokal-ute-toa-2.webp"
+    ]
+  }
+}

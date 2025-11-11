@@ -52,9 +52,6 @@ function GalleryGrid({ images, isLoading, onImageSelect, categoryName }) {
             alt={image.thumbnailAlt}
             loading="eager"
           />
-          <div className="image-overlay">
-            <span className="image-category">{categoryName ?? "Alla"}</span>
-          </div>
         </div>
       ))}
     </Masonry>
