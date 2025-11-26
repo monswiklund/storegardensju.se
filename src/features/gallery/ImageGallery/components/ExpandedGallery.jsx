@@ -48,9 +48,6 @@ function ExpandedGallery({
                 alt={image.thumbnailAlt}
                 loading="lazy"
               />
-              <div className="image-overlay">
-                <span className="image-category">{categoryName ?? "Alla"}</span>
-              </div>
             </div>
           );
         })}

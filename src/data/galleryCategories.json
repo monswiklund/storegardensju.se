@@ -7,425 +7,439 @@
       "images": [
         {
           "filename": "lokal-upper-1.webp",
-          "category": "lokal",
+          "category": "overvaning",
           "subcategory": "upper",
           "number": 1,
-          "displayName": "Lokal - Övre våning 1",
+          "displayName": "Loftet - Övre våning 1",
           "path": "/images/gallery/lokal-upper-1.webp"
         },
         {
           "filename": "lokal-upper-2.webp",
-          "category": "lokal",
+          "category": "overvaning",
           "subcategory": "upper",
           "number": 2,
-          "displayName": "Lokal - Övre våning 2",
+          "displayName": "Loftet - Övre våning 2",
           "path": "/images/gallery/lokal-upper-2.webp"
         },
         {
           "filename": "lokal-upper-3.webp",
-          "category": "lokal",
+          "category": "overvaning",
           "subcategory": "upper",
           "number": 3,
-          "displayName": "Lokal - Övre våning 3",
+          "displayName": "Loftet - Övre våning 3",
           "path": "/images/gallery/lokal-upper-3.webp"
         },
         {
           "filename": "lokal-upper-4.webp",
-          "category": "lokal",
+          "category": "overvaning",
           "subcategory": "upper",
           "number": 4,
-          "displayName": "Lokal - Övre våning 4",
+          "displayName": "Loftet - Övre våning 4",
           "path": "/images/gallery/lokal-upper-4.webp"
         },
         {
           "filename": "lokal-upper-5.webp",
-          "category": "lokal",
+          "category": "overvaning",
           "subcategory": "upper",
           "number": 5,
-          "displayName": "Lokal - Övre våning 5",
+          "displayName": "Loftet - Övre våning 5",
           "path": "/images/gallery/lokal-upper-5.webp"
         },
         {
           "filename": "lokal-under-1.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 1,
-          "displayName": "Lokal - Nedre våning 1",
+          "displayName": "Ladan - Nedre våning 1",
           "path": "/images/gallery/lokal-under-1.webp"
         },
         {
           "filename": "lokal-under-2.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 2,
-          "displayName": "Lokal - Nedre våning 2",
+          "displayName": "Ladan - Nedre våning 2",
           "path": "/images/gallery/lokal-under-2.webp"
         },
         {
           "filename": "lokal-under-3.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 3,
-          "displayName": "Lokal - Nedre våning 3",
+          "displayName": "Ladan - Nedre våning 3",
           "path": "/images/gallery/lokal-under-3.webp"
         },
         {
           "filename": "lokal-under-4.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 4,
-          "displayName": "Lokal - Nedre våning 4",
+          "displayName": "Ladan - Nedre våning 4",
           "path": "/images/gallery/lokal-under-4.webp"
         },
         {
           "filename": "lokal-under-5.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 5,
-          "displayName": "Lokal - Nedre våning 5",
+          "displayName": "Ladan - Nedre våning 5",
           "path": "/images/gallery/lokal-under-5.webp"
         },
         {
           "filename": "lokal-under-6.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 6,
-          "displayName": "Lokal - Nedre våning 6",
+          "displayName": "Ladan - Nedre våning 6",
           "path": "/images/gallery/lokal-under-6.webp"
         },
         {
           "filename": "lokal-under-7.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 7,
-          "displayName": "Lokal - Nedre våning 7",
+          "displayName": "Ladan - Nedre våning 7",
           "path": "/images/gallery/lokal-under-7.webp"
         },
         {
           "filename": "lokal-under-8.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 8,
-          "displayName": "Lokal - Nedre våning 8",
+          "displayName": "Ladan - Nedre våning 8",
           "path": "/images/gallery/lokal-under-8.webp"
         },
         {
           "filename": "lokal-under-9.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 9,
-          "displayName": "Lokal - Nedre våning 9",
+          "displayName": "Ladan - Nedre våning 9",
           "path": "/images/gallery/lokal-under-9.webp"
         },
         {
           "filename": "lokal-under-10.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 10,
-          "displayName": "Lokal - Nedre våning 10",
+          "displayName": "Ladan - Nedre våning 10",
           "path": "/images/gallery/lokal-under-10.webp"
         },
         {
           "filename": "lokal-under-11.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 11,
-          "displayName": "Lokal - Nedre våning 11",
+          "displayName": "Ladan - Nedre våning 11",
           "path": "/images/gallery/lokal-under-11.webp"
         },
         {
           "filename": "lokal-kok-1.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "kok",
           "number": 1,
-          "displayName": "Lokal - Kök 1",
+          "displayName": "Ladan - Kök 1",
           "path": "/images/gallery/lokal-kok-1.webp"
         },
         {
           "filename": "lokal-kok-2.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "kok",
           "number": 2,
-          "displayName": "Lokal - Kök 2",
+          "displayName": "Ladan - Kök 2",
           "path": "/images/gallery/lokal-kok-2.webp"
         },
         {
           "filename": "lokal-kok-3.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "kok",
           "number": 3,
-          "displayName": "Lokal - Kök 3",
+          "displayName": "Ladan - Kök 3",
           "path": "/images/gallery/lokal-kok-3.webp"
         },
         {
           "filename": "lokal-kok-4.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "kok",
           "number": 4,
-          "displayName": "Lokal - Kök 4",
+          "displayName": "Ladan - Kök 4",
           "path": "/images/gallery/lokal-kok-4.webp"
         },
         {
           "filename": "lokal-service-1.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "service",
           "number": 1,
-          "displayName": "Lokal - Serviceområde 1",
+          "displayName": "Ladan - Serviceområde 1",
           "path": "/images/gallery/lokal-service-1.webp"
         },
         {
           "filename": "lokal-service-2.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "service",
           "number": 2,
-          "displayName": "Lokal - Serviceområde 2",
+          "displayName": "Ladan - Serviceområde 2",
           "path": "/images/gallery/lokal-service-2.webp"
         },
         {
           "filename": "lokal-service-3.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "service",
           "number": 3,
-          "displayName": "Lokal - Serviceområde 3",
+          "displayName": "Ladan - Serviceområde 3",
           "path": "/images/gallery/lokal-service-3.webp"
         },
         {
           "filename": "lokal-ute-1.webp",
-          "category": "lokal",
+          "category": "ute",
           "subcategory": "ute",
           "number": 1,
-          "displayName": "Lokal - Utemiljö 1",
+          "displayName": "Övrigt - Utemiljö 1",
           "path": "/images/gallery/lokal-ute-1.webp"
         },
         {
           "filename": "lokal-ute-toa-1.webp",
-          "category": "lokal",
+          "category": "ute",
           "subcategory": "ute-toa",
           "number": 1,
-          "displayName": "Lokal - Toaletter 1",
+          "displayName": "Övrigt - Toaletter 1",
           "path": "/images/gallery/lokal-ute-toa-1.webp"
         },
         {
           "filename": "lokal-ute-toa-2.webp",
-          "category": "lokal",
+          "category": "ute",
           "subcategory": "ute-toa",
           "number": 2,
-          "displayName": "Lokal - Toaletter 2",
+          "displayName": "Övrigt - Toaletter 2",
           "path": "/images/gallery/lokal-ute-toa-2.webp"
         }
       ]
     },
     {
-      "id": "lokal",
-      "name": "Lokal",
-      "description": "Lokalen på Storegården 7",
+      "id": "undervaning",
+      "name": "Ladan",
+      "description": "Nedre våningen, kök och serviceområden",
       "images": [
         {
-          "filename": "lokal-upper-1.webp",
-          "category": "lokal",
-          "subcategory": "upper",
-          "number": 1,
-          "displayName": "Lokal - Övre våning 1",
-          "path": "/images/gallery/lokal-upper-1.webp"
-        },
-        {
-          "filename": "lokal-upper-2.webp",
-          "category": "lokal",
-          "subcategory": "upper",
-          "number": 2,
-          "displayName": "Lokal - Övre våning 2",
-          "path": "/images/gallery/lokal-upper-2.webp"
-        },
-        {
-          "filename": "lokal-upper-3.webp",
-          "category": "lokal",
-          "subcategory": "upper",
-          "number": 3,
-          "displayName": "Lokal - Övre våning 3",
-          "path": "/images/gallery/lokal-upper-3.webp"
-        },
-        {
-          "filename": "lokal-upper-4.webp",
-          "category": "lokal",
-          "subcategory": "upper",
-          "number": 4,
-          "displayName": "Lokal - Övre våning 4",
-          "path": "/images/gallery/lokal-upper-4.webp"
-        },
-        {
-          "filename": "lokal-upper-5.webp",
-          "category": "lokal",
-          "subcategory": "upper",
-          "number": 5,
-          "displayName": "Lokal - Övre våning 5",
-          "path": "/images/gallery/lokal-upper-5.webp"
-        },
-        {
           "filename": "lokal-under-1.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 1,
-          "displayName": "Lokal - Nedre våning 1",
+          "displayName": "Ladan - Nedre våning 1",
           "path": "/images/gallery/lokal-under-1.webp"
         },
         {
           "filename": "lokal-under-2.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 2,
-          "displayName": "Lokal - Nedre våning 2",
+          "displayName": "Ladan - Nedre våning 2",
           "path": "/images/gallery/lokal-under-2.webp"
         },
         {
           "filename": "lokal-under-3.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 3,
-          "displayName": "Lokal - Nedre våning 3",
+          "displayName": "Ladan - Nedre våning 3",
           "path": "/images/gallery/lokal-under-3.webp"
         },
         {
           "filename": "lokal-under-4.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 4,
-          "displayName": "Lokal - Nedre våning 4",
+          "displayName": "Ladan - Nedre våning 4",
           "path": "/images/gallery/lokal-under-4.webp"
         },
         {
           "filename": "lokal-under-5.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 5,
-          "displayName": "Lokal - Nedre våning 5",
+          "displayName": "Ladan - Nedre våning 5",
           "path": "/images/gallery/lokal-under-5.webp"
         },
         {
           "filename": "lokal-under-6.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 6,
-          "displayName": "Lokal - Nedre våning 6",
+          "displayName": "Ladan - Nedre våning 6",
           "path": "/images/gallery/lokal-under-6.webp"
         },
         {
           "filename": "lokal-under-7.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 7,
-          "displayName": "Lokal - Nedre våning 7",
+          "displayName": "Ladan - Nedre våning 7",
           "path": "/images/gallery/lokal-under-7.webp"
         },
         {
           "filename": "lokal-under-8.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 8,
-          "displayName": "Lokal - Nedre våning 8",
+          "displayName": "Ladan - Nedre våning 8",
           "path": "/images/gallery/lokal-under-8.webp"
         },
         {
           "filename": "lokal-under-9.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 9,
-          "displayName": "Lokal - Nedre våning 9",
+          "displayName": "Ladan - Nedre våning 9",
           "path": "/images/gallery/lokal-under-9.webp"
         },
         {
           "filename": "lokal-under-10.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 10,
-          "displayName": "Lokal - Nedre våning 10",
+          "displayName": "Ladan - Nedre våning 10",
           "path": "/images/gallery/lokal-under-10.webp"
         },
         {
           "filename": "lokal-under-11.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "under",
           "number": 11,
-          "displayName": "Lokal - Nedre våning 11",
+          "displayName": "Ladan - Nedre våning 11",
           "path": "/images/gallery/lokal-under-11.webp"
         },
         {
           "filename": "lokal-kok-1.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "kok",
           "number": 1,
-          "displayName": "Lokal - Kök 1",
+          "displayName": "Ladan - Kök 1",
           "path": "/images/gallery/lokal-kok-1.webp"
         },
         {
           "filename": "lokal-kok-2.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "kok",
           "number": 2,
-          "displayName": "Lokal - Kök 2",
+          "displayName": "Ladan - Kök 2",
           "path": "/images/gallery/lokal-kok-2.webp"
         },
         {
           "filename": "lokal-kok-3.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "kok",
           "number": 3,
-          "displayName": "Lokal - Kök 3",
+          "displayName": "Ladan - Kök 3",
           "path": "/images/gallery/lokal-kok-3.webp"
         },
         {
           "filename": "lokal-kok-4.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "kok",
           "number": 4,
-          "displayName": "Lokal - Kök 4",
+          "displayName": "Ladan - Kök 4",
           "path": "/images/gallery/lokal-kok-4.webp"
         },
         {
           "filename": "lokal-service-1.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "service",
           "number": 1,
-          "displayName": "Lokal - Serviceområde 1",
+          "displayName": "Ladan - Serviceområde 1",
           "path": "/images/gallery/lokal-service-1.webp"
         },
         {
           "filename": "lokal-service-2.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "service",
           "number": 2,
-          "displayName": "Lokal - Serviceområde 2",
+          "displayName": "Ladan - Serviceområde 2",
           "path": "/images/gallery/lokal-service-2.webp"
         },
         {
           "filename": "lokal-service-3.webp",
-          "category": "lokal",
+          "category": "undervaning",
           "subcategory": "service",
           "number": 3,
-          "displayName": "Lokal - Serviceområde 3",
+          "displayName": "Ladan - Serviceområde 3",
           "path": "/images/gallery/lokal-service-3.webp"
+        }
+      ]
+    },
+    {
+      "id": "overvaning",
+      "name": "Loftet",
+      "description": "Övre våningen på Storegården 7",
+      "images": [
+        {
+          "filename": "lokal-upper-1.webp",
+          "category": "overvaning",
+          "subcategory": "upper",
+          "number": 1,
+          "displayName": "Loftet - Övre våning 1",
+          "path": "/images/gallery/lokal-upper-1.webp"
         },
         {
+          "filename": "lokal-upper-2.webp",
+          "category": "overvaning",
+          "subcategory": "upper",
+          "number": 2,
+          "displayName": "Loftet - Övre våning 2",
+          "path": "/images/gallery/lokal-upper-2.webp"
+        },
+        {
+          "filename": "lokal-upper-3.webp",
+          "category": "overvaning",
+          "subcategory": "upper",
+          "number": 3,
+          "displayName": "Loftet - Övre våning 3",
+          "path": "/images/gallery/lokal-upper-3.webp"
+        },
+        {
+          "filename": "lokal-upper-4.webp",
+          "category": "overvaning",
+          "subcategory": "upper",
+          "number": 4,
+          "displayName": "Loftet - Övre våning 4",
+          "path": "/images/gallery/lokal-upper-4.webp"
+        },
+        {
+          "filename": "lokal-upper-5.webp",
+          "category": "overvaning",
+          "subcategory": "upper",
+          "number": 5,
+          "displayName": "Loftet - Övre våning 5",
+          "path": "/images/gallery/lokal-upper-5.webp"
+        }
+      ]
+    },
+    {
+      "id": "ute",
+      "name": "Övrigt",
+      "description": "Utemiljö och toaletter",
+      "images": [
+        {
           "filename": "lokal-ute-1.webp",
-          "category": "lokal",
+          "category": "ute",
           "subcategory": "ute",
           "number": 1,
-          "displayName": "Lokal - Utemiljö 1",
+          "displayName": "Övrigt - Utemiljö 1",
           "path": "/images/gallery/lokal-ute-1.webp"
         },
         {
           "filename": "lokal-ute-toa-1.webp",
-          "category": "lokal",
+          "category": "ute",
           "subcategory": "ute-toa",
           "number": 1,
-          "displayName": "Lokal - Toaletter 1",
+          "displayName": "Övrigt - Toaletter 1",
           "path": "/images/gallery/lokal-ute-toa-1.webp"
         },
         {
           "filename": "lokal-ute-toa-2.webp",
-          "category": "lokal",
+          "category": "ute",
           "subcategory": "ute-toa",
           "number": 2,
-          "displayName": "Lokal - Toaletter 2",
+          "displayName": "Övrigt - Toaletter 2",
           "path": "/images/gallery/lokal-ute-toa-2.webp"
         }
       ]
