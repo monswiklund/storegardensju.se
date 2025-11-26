@@ -1,8 +1,10 @@
 .parallax-hero-wrapper {
   position: relative;
   width: 100%;
+  /* Height is now calculated dynamically via JavaScript in useParallaxHeroAnimation.js */
+  /* Fallback height for initial render before JS calculates */
   height: 130vh;
-  min-height: 130vh;
+  min-height: 100vh;
 }
 
 .parallax-hero {
@@ -37,7 +39,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.3)
+  );
   z-index: 2;
   opacity: 0;
 }
@@ -72,7 +78,6 @@
   line-height: 1.4;
 }
 
-
 .scroll-indicator {
   position: absolute;
   bottom: 40px;
@@ -99,7 +104,11 @@
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateX(-50%) translateY(0);
   }
   40% {
@@ -111,18 +120,19 @@
 }
 
 /* Tablet and smaller devices */
+/* Note: Dynamic heights are now calculated via JavaScript */
+/* These CSS rules serve as fallbacks before JS initialization */
 @media (max-width: 1024px) {
   .parallax-hero-wrapper {
     height: 150vh;
-    min-height: 150vh;
   }
 }
 
-/* Mobile responsiveness - GSAP pinning with optimized heights */
+/* Mobile responsiveness - GSAP pinning with dynamic heights */
+/* Heights are calculated via JavaScript for optimal scroll behavior */
 @media (max-width: 768px) and (orientation: portrait) {
   .parallax-hero-wrapper {
     height: 180vh;
-    min-height: 180vh;
   }
 
   .parallax-hero {
@@ -145,7 +155,6 @@
 @media (max-width: 768px) and (orientation: landscape) {
   .parallax-hero-wrapper {
     height: 185vh;
-    min-height: 185vh;
   }
 
   .parallax-hero {
@@ -168,7 +177,6 @@
 @media (max-width: 480px) {
   .parallax-hero-wrapper {
     height: 190vh;
-    min-height: 190vh;
   }
 
   .parallax-hero {

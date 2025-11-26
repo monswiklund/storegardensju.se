@@ -80,16 +80,22 @@
   opacity: 0.95;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   white-space: pre-line;
-
 }
 
 .featured-item .featured-overlay {
   opacity: 1;
 }
 
+/* Animation only runs when container is visible in viewport */
 @media (prefers-reduced-motion: no-preference) {
-  .featured-item img {
+  .featured-gallery-container.is-visible .featured-item img {
     animation: featuredParallax 22s ease-in-out infinite alternate;
+  }
+
+  /* Pause animation when not visible to save GPU resources */
+  .featured-gallery-container:not(.is-visible) .featured-item img {
+    animation: none;
+    transform: scale(1.08);
   }
 
   .featured-item:hover img,
@@ -127,7 +133,11 @@
   display: block;
   margin: 0 auto;
   padding: 16px 40px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-hover)
+  );
   color: white;
   border: none;
   border-radius: 50px;
@@ -139,7 +149,11 @@
 }
 
 .view-all-gallery-btn:hover {
-  background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+  background: linear-gradient(
+    135deg,
+    var(--primary-hover),
+    var(--primary-color)
+  );
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(64, 123, 94, 0.4);
 }

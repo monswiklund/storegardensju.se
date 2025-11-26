@@ -4,6 +4,37 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Responsive multipliers for wrapper height calculation
+const WRAPPER_HEIGHT_MULTIPLIERS = {
+  desktop: 1.3, // 130% of viewport height
+  tablet: 1.5, // 150% for tablets
+  mobileLandscape: 1.85,
+  mobilePortrait: 1.8,
+  smallMobile: 1.9,
+};
+
+const getWrapperHeightMultiplier = () => {
+  const width = window.innerWidth;
+  const isPortrait = window.innerHeight > window.innerWidth;
+
+  if (width <= 480) return WRAPPER_HEIGHT_MULTIPLIERS.smallMobile;
+  if (width <= 768 && isPortrait)
+    return WRAPPER_HEIGHT_MULTIPLIERS.mobilePortrait;
+  if (width <= 768) return WRAPPER_HEIGHT_MULTIPLIERS.mobileLandscape;
+  if (width <= 1024) return WRAPPER_HEIGHT_MULTIPLIERS.tablet;
+  return WRAPPER_HEIGHT_MULTIPLIERS.desktop;
+};
+
+const calculateWrapperHeight = (heroElement) => {
+  const viewportHeight = window.innerHeight;
+  const multiplier = getWrapperHeightMultiplier();
+  // Use viewport height as base, with multiplier for scroll space
+  return Math.max(
+    viewportHeight * multiplier,
+    heroElement.offsetHeight * multiplier
+  );
+};
+
 const createTimeline = ({
   wrapper,
   hero,
@@ -30,7 +61,7 @@ const createTimeline = ({
       content,
       { opacity: 0 },
       { opacity: 1, duration: 0.4, ease: "none" },
-      0,
+      0
     );
   }
 
@@ -39,7 +70,7 @@ const createTimeline = ({
       overlay,
       { opacity: 0 },
       { opacity: 0.6, duration: 0.4, ease: "none" },
-      0,
+      0
     );
   }
 
@@ -48,7 +79,7 @@ const createTimeline = ({
       background,
       { scale: 1 },
       { scale: scaleTarget, duration: 1, ease: "none" },
-      0,
+      0
     );
   }
 
@@ -77,9 +108,20 @@ function useParallaxHeroAnimation({ isEnabled }) {
     const overlay = overlayRef.current;
     const background = backgroundRef.current;
 
-    const mediaMatch = ScrollTrigger.matchMedia();
+    // Calculate and set dynamic wrapper height
+    const updateWrapperHeight = () => {
+      const height = calculateWrapperHeight(hero);
+      wrapper.style.height = `${height}px`;
+      wrapper.style.minHeight = `${height}px`;
+    };
 
-    mediaMatch.add("(min-width: 769px)", () => {
+    updateWrapperHeight();
+
+    // Use modern gsap.matchMedia() instead of deprecated ScrollTrigger.matchMedia()
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 769px)", () => {
+      updateWrapperHeight();
       const timeline = createTimeline({
         wrapper,
         hero,
@@ -95,7 +137,8 @@ function useParallaxHeroAnimation({ isEnabled }) {
       };
     });
 
-    mediaMatch.add("(max-width: 768px)", () => {
+    mm.add("(max-width: 768px)", () => {
+      updateWrapperHeight();
       const timeline = createTimeline({
         wrapper,
         hero,
@@ -111,10 +154,18 @@ function useParallaxHeroAnimation({ isEnabled }) {
       };
     });
 
+    // Handle resize for dynamic height updates
+    const handleResize = () => {
+      updateWrapperHeight();
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener("resize", handleResize, { passive: true });
     ScrollTrigger.refresh();
 
     return () => {
-      mediaMatch.revert();
+      window.removeEventListener("resize", handleResize);
+      mm.revert();
     };
   }, [isEnabled]);
 

@@ -1,46 +1,23 @@
-import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
+import useIntersectionObserver from "../../hooks/useIntersectionObserver";
 import "./FadeInSection.css";
 
-const FadeInSection = ({ children, threshold }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    const node = containerRef.current;
-    if (!node) {
-      return undefined;
-    }
-
-    if (!("IntersectionObserver" in window)) {
-      setIsVisible(true);
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries, observerInstance) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observerInstance.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold,
-        rootMargin: "0px 0px -10% 0px"
-      }
-    );
-
-    observer.observe(node);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [threshold]);
+/**
+ * FadeInSection - Animates children into view when scrolled into viewport.
+ * Uses shared IntersectionObserver for better performance.
+ */
+const FadeInSection = ({ children, threshold, rootMargin }) => {
+  const { ref, isVisible } = useIntersectionObserver({
+    threshold,
+    rootMargin,
+    triggerOnce: true,
+  });
 
   return (
-    <div ref={containerRef} className={`fade-in-section ${isVisible ? "is-visible" : ""}`}>
+    <div
+      ref={ref}
+      className={`fade-in-section ${isVisible ? "is-visible" : ""}`}
+    >
       {children}
     </div>
   );
@@ -48,11 +25,13 @@ const FadeInSection = ({ children, threshold }) => {
 
 FadeInSection.propTypes = {
   children: PropTypes.node.isRequired,
-  threshold: PropTypes.number
+  threshold: PropTypes.number,
+  rootMargin: PropTypes.string,
 };
 
 FadeInSection.defaultProps = {
-  threshold: 0.2
+  threshold: 0.2,
+  rootMargin: "0px 0px -10% 0px",
 };
 
 export default FadeInSection;
