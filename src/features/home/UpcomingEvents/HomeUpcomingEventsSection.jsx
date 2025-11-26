@@ -23,6 +23,7 @@ function HomeUpcomingEventsSection() {
           <div className="events-grid">
             {upcomingEvents.map((event) => (
               <EventCard key={event.title} event={event} />
+
             ))}
           </div>
         ) : (

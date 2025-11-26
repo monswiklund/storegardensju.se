@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { CartContext } from '../components/layout/CartContext/CartContext.jsx';
 import { PageSection } from "../components";
 import { products, getCategories, formatPrice } from "../data/products";
 import './ButikPage.css';
@@ -11,6 +11,7 @@ import './ButikPage.css';
  *
  * Koncept som övas:
  * - useState för filter-state
+ * - useContext för cart management
  * - Array.map() för att rendera produkter
  * - Conditional rendering
  * - Event handlers (onClick)
@@ -19,6 +20,11 @@ import './ButikPage.css';
 function ButikPage() {
     // State för aktiv kategori-filter
     const [activeCategory, setActiveCategory] = useState("alla");
+    // State för att visa feedback när produkt läggs till
+    const [addedToCart, setAddedToCart] = useState(null);
+
+    // Hämta addItem från CartContext
+    const { addItem } = useContext(CartContext);
 
     // Hämta alla kategorier från produktdata
     const categories = getCategories(); // ["alla", "keramik", "konst"]
@@ -26,6 +32,13 @@ function ButikPage() {
     const filteredProducts = activeCategory === "alla"
         ? products
         : products.filter(product => product.category === activeCategory);
+
+    const handleAddToCart = (product) => {
+        addItem(product);
+        setAddedToCart(product.id);
+        // Ta bort feedback efter 2 sekunder
+        setTimeout(() => setAddedToCart(null), 2000);
+    };
 
     return (
         <main role="main" id="main-content">
@@ -55,7 +68,13 @@ function ButikPage() {
                             <h3>{product.name}</h3>
                             <p>{product.description}</p>
                             <p className="price">{formatPrice(product.price)}</p>
-                            <button type="button">Lägg i varukorg</button>
+                            <button
+                                type="button"
+                                onClick={() => handleAddToCart(product)}
+                                className={addedToCart === product.id ? 'added' : ''}
+                            >
+                                {addedToCart === product.id ? 'Tillagd!' : 'Lägg i varukorg'}
+                            </button>
                         </div>
                     ))}
                 </div>

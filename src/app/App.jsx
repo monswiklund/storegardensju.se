@@ -15,6 +15,10 @@ import GalleriPage from '../pages/GalleriPage.jsx';
 import TeamPage from '../pages/TeamPage.jsx';
 import ButikPage from '../pages/ButikPage.jsx';
 import ProductDetailPage from '../pages/ProductDetailPage.jsx';
+import CartPage from '../pages/CartPage.jsx';
+import CheckoutPage from '../pages/CheckoutPage/CheckoutPage.jsx';
+import SuccessPage from '../pages/SuccessPage.jsx';
+import CancelPage from '../pages/CancelPage.jsx';
 import { ContactSection } from '../features/contact';
 
 function App() {
@@ -81,6 +85,10 @@ function App() {
                 <Route path="/galleri" element={<GalleriPage />} />
                 <Route path="/butik" element={<ButikPage />} />
                 <Route path="/butik/:productId" element={<ProductDetailPage />} />
+                <Route path="/varukorg" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/success" element={<SuccessPage />} />
+                <Route path="/cancel" element={<CancelPage />} />
                 <Route path="/om-oss" element={<TeamPage />} />
             </Routes>
             <ContactSection />

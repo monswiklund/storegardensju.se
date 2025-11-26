@@ -22,6 +22,7 @@
   height: 100%;
   box-sizing: border-box;
   position: relative;
+  gap: 1rem;
 }
 
 /* Hamburger Icon */
@@ -155,9 +156,13 @@
     display: none;
   }
 
+  .navbar-container {
+    justify-content: space-between;
+  }
+
   .nav-menu {
     position: static;
-    width: 100%;
+    width: auto;
     max-width: 100%;
     height: auto;
     box-shadow: none;
@@ -168,6 +173,8 @@
     display: flex;
     align-items: center;
     overflow: visible;
+    flex: 1;
+    justify-content: center;
   }
 
   .nav-list {
@@ -219,11 +226,14 @@
 /* Mobile view - ensure hamburger works */
 @media (max-width: 768px) {
   .navbar-container {
-    justify-content: center;
+    justify-content: space-between;
   }
 
   .hamburger {
     display: flex !important;
+    right: auto;
+    position: relative;
+    transform: none;
   }
 
   .nav-menu {

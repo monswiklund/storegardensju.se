@@ -1,0 +1,132 @@
+.success-container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 3rem 1.5rem;
+}
+
+.success-icon {
+    color: #4caf50;
+    margin-bottom: 1.5rem;
+    animation: successPop 0.5s ease-out;
+}
+
+@keyframes successPop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.success-container h1 {
+    color: var(--text-primary, #333);
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.success-message {
+    font-size: 1.1rem;
+    color: var(--text-secondary, #666);
+    margin-bottom: 2rem;
+}
+
+.order-details {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.session-id {
+    font-size: 0.9rem;
+    color: var(--text-secondary, #666);
+    word-break: break-all;
+    margin-bottom: 0.5rem;
+}
+
+.info-text {
+    font-size: 0.9rem;
+    color: var(--text-muted, #999);
+    font-style: italic;
+}
+
+.contact-info {
+    margin-bottom: 2rem;
+    color: var(--text-secondary, #666);
+}
+
+.contact-info a {
+    color: var(--accent-color, #5469d4);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+}
+
+.success-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-primary {
+    background: var(--accent-color, #5469d4);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover, #4154b3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(84, 105, 212, 0.3);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--text-primary, #333);
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+@media (max-width: 480px) {
+    .success-container {
+        padding: 2rem 1rem;
+    }
+
+    .success-container h1 {
+        font-size: 1.5rem;
+    }
+
+    .success-actions {
+        flex-direction: column;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+    }
+}
