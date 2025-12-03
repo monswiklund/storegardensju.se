@@ -75,6 +75,7 @@ main#main-content.event-page {
 .lokalen-features li {
   font-size: clamp(1rem, 0.95rem + 1.2vw, 1.3rem);
   line-height: 1.8;
+  font-family: "Jost", Helvetica, sans-serif;
   color: white;
   margin: 16px 0;
   padding-left: 40px;
@@ -125,6 +126,7 @@ main#main-content.event-page {
   border-radius: 50px;
   font-size: clamp(1rem, 0.95rem + 0.7vw, 1.2rem);
   font-weight: 500;
+  font-family: "Jost", Helvetica, sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 200px;
@@ -181,6 +183,7 @@ main#main-content.event-page {
   gap: 20px;
   color: var(--text-color, #1f1f1f);
   text-align: center;
+  font-family: "Jost", Helvetica, sans-serif;
 }
 
 .event-hero-description__content p {
@@ -188,6 +191,7 @@ main#main-content.event-page {
   font-size: clamp(1.05rem, 0.95rem + 0.8vw, 1.35rem);
   line-height: 1.75;
   font-weight: 300;
+  font-family: "Jost", Helvetica, sans-serif;
 }
 
 .event-hero-description__content p:first-child {

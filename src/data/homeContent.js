@@ -41,7 +41,34 @@ export const services = [
   }
 ];
 
-export const upcomingEvents = [];
+export const upcomingEvents = [{
+    title: 'Julmarknad',
+    date: '13 December 2025',
+    time: '10:00 - 18:00',
+    description: '',
+    artists: '',
+    spots: 'Fri entré',
+    location: 'Storegården 7, Rackeby',
+    links: [
+        {
+            href: 'https://www.facebook.com/groups/3216106561976652/',
+            label: '→ Skapande Hörnan'
+        },
+        {
+            href: 'https://www.instagram.com/annwiklundstudio/',
+            label: '→ Ann Wiklund Studio'
+        },
+        {
+            href: 'https://maps.google.com/?q=Storegården+7+Rackeby+Lidköping',
+            label: 'Hitta hit'
+        }
+    ],
+    image: {
+        src: '/images/evenemang/2025/julmarknad-2025.webp',
+        alt: 'Affisch för Julmarknad på Storegården 7'
+    }
+}
+];
 
 export const pastEvents = [
   {
