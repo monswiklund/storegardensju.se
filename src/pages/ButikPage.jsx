@@ -33,8 +33,8 @@ function ButikPage() {
   // State för att visa feedback när produkt läggs till
   const [addedToCart, setAddedToCart] = useState(null);
 
-  // Hämta addItem från CartContext
-  const { addItem } = useContext(CartContext);
+  // Hämta addItem och isInCart från CartContext
+  const { addItem, isInCart } = useContext(CartContext);
 
   // Hämta produkter från Stripe vid mount
   useEffect(() => {
@@ -136,34 +136,57 @@ function ButikPage() {
         {/* Produktlista med dynamisk grid */}
         {!loading && !error && filteredProducts.length > 0 && (
           <div className={getGridClass(filteredProducts.length)}>
-            {filteredProducts.map((product) => (
-              <article className="product-card" key={product.id}>
-                <div className="product-card-image">
-                  <img src={product.images[0]} alt={product.name} />
-                  <span className="product-category">{product.category}</span>
-                </div>
-                <div className="product-card-content">
-                  <h3>{product.name}</h3>
-                  <p className="description">{product.description}</p>
-                  <p className="price">{formatPrice(product.price)}</p>
-                  <button
-                    type="button"
-                    onClick={() => handleAddToCart(product)}
-                    className={addedToCart === product.id ? "added" : ""}
-                  >
-                    {addedToCart === product.id ? (
-                      <>
-                        <Check size={18} /> Tillagd!
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingCart size={18} /> Lägg i varukorg
-                      </>
-                    )}
-                  </button>
-                </div>
-              </article>
-            ))}
+            {filteredProducts.map((product) => {
+              const alreadyInCart = isInCart(product.id);
+              const justAdded = addedToCart === product.id;
+              const stock = product.stock || 1; // Default 1 för unika produkter
+
+              return (
+                <article className="product-card" key={product.id}>
+                  <div className="product-card-image">
+                    <img src={product.images[0]} alt={product.name} />
+                    <div className="product-badges">
+                      <span className="product-badge">{product.category}</span>
+                      {stock === 1 && (
+                        <span className="product-badge">Unikt exemplar</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="product-card-content">
+                    <h3>{product.name}</h3>
+                    <p className="description">{product.description}</p>
+                    <div className="price-stock">
+                      <p className="price">{formatPrice(product.price)}</p>
+                      {stock > 1 && (
+                        <span className="stock-badge">{stock} i lager</span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => !alreadyInCart && handleAddToCart(product)}
+                      className={
+                        justAdded ? "added" : alreadyInCart ? "in-cart" : ""
+                      }
+                      disabled={alreadyInCart && !justAdded}
+                    >
+                      {justAdded ? (
+                        <>
+                          <Check size={18} /> Tillagd!
+                        </>
+                      ) : alreadyInCart ? (
+                        <>
+                          <Check size={18} /> I varukorgen
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart size={18} /> Lägg i varukorg
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
       </PageSection>

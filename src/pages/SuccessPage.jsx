@@ -60,7 +60,7 @@ export default function SuccessPage() {
               Spara detta ID om du behöver kontakta oss angående din order.
             </p>
             <p className="info-text">
-              Du kommer få en orderbekräftelse via e-post inom kort.
+              Vi återkommer med leveransbesked och uppdatering via e-post.
             </p>
           </div>
 
