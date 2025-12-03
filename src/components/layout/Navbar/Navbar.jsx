@@ -4,8 +4,8 @@ import "./Navbar.css";
 import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
 import { appRoutes } from "../../../config/routes.js";
-// BUTIK - Temporärt utkommenterat
-// import CartBadge from "./CartBadge.jsx";
+// BUTIK
+import CartBadge from "./CartBadge.jsx";
 
 const NAV_ITEMS = appRoutes;
 
@@ -63,19 +63,6 @@ function Navbar() {
   return (
     <nav className="navbar" role="navigation" aria-label="Huvudnavigation">
       <div className="navbar-container">
-        <button
-          ref={triggerRef}
-          className={`hamburger ${isOpen ? "open" : ""}`}
-          onClick={toggle}
-          aria-label="Toggle navigation menu"
-          aria-expanded={isOpen}
-          type="button"
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-
         <div ref={menuRef} className={`nav-menu ${isOpen ? "open" : ""}`}>
           <NavLinks
             items={NAV_ITEMS}
@@ -84,8 +71,22 @@ function Navbar() {
           />
         </div>
 
-        {/* BUTIK - Temporärt utkommenterat */}
-        {/* <CartBadge /> */}
+        {/* BUTIK - Kundvagn till vänster om hamburger */}
+        <div className="navbar-right">
+          <CartBadge />
+          <button
+            ref={triggerRef}
+            className={`hamburger ${isOpen ? "open" : ""}`}
+            onClick={toggle}
+            aria-label="Toggle navigation menu"
+            aria-expanded={isOpen}
+            type="button"
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
       </div>
     </nav>
   );

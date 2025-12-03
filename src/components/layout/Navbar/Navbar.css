@@ -153,11 +153,16 @@
 /* Desktop view */
 @media (min-width: 769px) {
   .hamburger {
-    display: none;
+    display: none !important;
+  }
+
+  .navbar-right {
+    position: absolute;
+    right: 15px;
   }
 
   .navbar-container {
-    justify-content: space-between;
+    justify-content: center;
   }
 
   .nav-menu {
@@ -223,15 +228,28 @@
   }
 }
 
+/* Navbar right section (cart + hamburger) */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: absolute;
+  right: 15px;
+}
+
 /* Mobile view - ensure hamburger works */
 @media (max-width: 768px) {
   .navbar-container {
-    justify-content: space-between;
+    justify-content: flex-start;
+  }
+
+  .navbar-right {
+    position: absolute;
+    right: 15px;
   }
 
   .hamburger {
     display: flex !important;
-    right: auto;
     position: relative;
     transform: none;
   }

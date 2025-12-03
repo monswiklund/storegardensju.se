@@ -1,132 +1,148 @@
 .success-container {
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 3rem 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 3rem 1.5rem;
 }
 
 .success-icon {
-    color: #4caf50;
-    margin-bottom: 1.5rem;
-    animation: successPop 0.5s ease-out;
+  color: #4caf50;
+  margin-bottom: 1.5rem;
+  animation: successPop 0.5s ease-out;
 }
 
 @keyframes successPop {
-    0% {
-        transform: scale(0);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .success-container h1 {
-    color: var(--text-primary, #333);
-    margin-bottom: 1rem;
-    font-size: 2rem;
+  color: var(--text-primary, #333);
+  margin-bottom: 1rem;
+  font-size: 2rem;
 }
 
 .success-message {
-    font-size: 1.1rem;
-    color: var(--text-secondary, #666);
-    margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary, #666);
+  margin-bottom: 2rem;
 }
 
 .order-details {
-    background: #f9f9f9;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .session-id {
-    font-size: 0.9rem;
-    color: var(--text-secondary, #666);
-    word-break: break-all;
-    margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #666);
+  margin-bottom: 0.5rem;
+}
+
+.order-id-value {
+  font-family: monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+  display: block;
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  background: #f0f0f0;
+  border-radius: 4px;
 }
 
 .info-text {
-    font-size: 0.9rem;
-    color: var(--text-muted, #999);
-    font-style: italic;
+  font-size: 0.9rem;
+  color: var(--text-muted, #999);
+  font-style: italic;
+  margin-top: 0.5rem;
 }
 
 .contact-info {
-    margin-bottom: 2rem;
-    color: var(--text-secondary, #666);
+  margin-bottom: 2rem;
+  color: #333 !important;
 }
 
 .contact-info a {
-    color: var(--accent-color, #5469d4);
-    text-decoration: none;
-    font-weight: 500;
+  color: #333 !important;
+  text-decoration: underline;
+  font-weight: 500;
 }
 
 .contact-info a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .success-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.btn-primary, .btn-secondary {
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    transition: all 0.2s;
-    border: none;
+.btn-primary,
+.btn-secondary {
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  transition: all 0.2s;
+  border: none;
 }
 
 .btn-primary {
-    background: var(--accent-color, #5469d4);
-    color: white;
+  background: hsl(160, 32%, 50%) !important;
+  color: white !important;
 }
 
 .btn-primary:hover {
-    background: var(--accent-hover, #4154b3);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(84, 105, 212, 0.3);
+  background: hsl(160, 35%, 42%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 163, 139, 0.3);
 }
 
 .btn-secondary {
-    background: white;
-    color: var(--text-primary, #333);
-    border: 1px solid #ddd;
+  background: white;
+  color: var(--text-primary, #333);
+  border: 1px solid #ddd;
 }
 
 .btn-secondary:hover {
-    background: #f5f5f5;
-    border-color: #ccc;
+  background: #f5f5f5;
+  border-color: #ccc;
 }
 
 @media (max-width: 480px) {
-    .success-container {
-        padding: 2rem 1rem;
-    }
+  .success-container {
+    padding: 2rem 1rem;
+  }
 
-    .success-container h1 {
-        font-size: 1.5rem;
-    }
+  .success-container h1 {
+    font-size: 1.5rem;
+  }
 
-    .success-actions {
-        flex-direction: column;
-    }
+  .success-actions {
+    flex-direction: column;
+  }
 
-    .btn-primary, .btn-secondary {
-        width: 100%;
-    }
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
 }
