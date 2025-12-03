@@ -4,7 +4,8 @@ import "./Navbar.css";
 import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
 import { appRoutes } from "../../../config/routes.js";
-import CartBadge from "./CartBadge.jsx";
+// BUTIK - Temporärt utkommenterat
+// import CartBadge from "./CartBadge.jsx";
 
 const NAV_ITEMS = appRoutes;
 
@@ -21,7 +22,8 @@ function Navbar() {
     const navbarHeight =
       document.querySelector(".navbar")?.getBoundingClientRect()?.height ?? 0;
     const targetRect = target.getBoundingClientRect();
-    const targetCenter = window.scrollY + targetRect.top + targetRect.height / 2;
+    const targetCenter =
+      window.scrollY + targetRect.top + targetRect.height / 2;
     const desiredCenter = (window.innerHeight + navbarHeight) / 2;
     const scrollTarget = targetCenter - desiredCenter;
 
@@ -82,7 +84,8 @@ function Navbar() {
           />
         </div>
 
-        <CartBadge />
+        {/* BUTIK - Temporärt utkommenterat */}
+        {/* <CartBadge /> */}
       </div>
     </nav>
   );
