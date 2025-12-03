@@ -26,7 +26,7 @@ export const products = [
     ],
     category: "keramik",
     stock: 3,
-    artist: "Anna Wiklund"
+    artist: "Ann Wiklund"
   }
 ];
 

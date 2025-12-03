@@ -1,8 +1,12 @@
-import { useState, useContext } from "react";
-import { ShoppingCart, Check } from "lucide-react";
+import { useState, useContext, useEffect } from "react";
+import { ShoppingCart, Check, Loader2 } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { PageSection } from "../components";
-import { products, getCategories, formatPrice } from "../data/products";
+import {
+  getStripeProducts,
+  getCategories,
+  formatPrice,
+} from "../services/stripeService";
 import "./ButikPage.css";
 
 /**
@@ -19,6 +23,11 @@ import "./ButikPage.css";
  */
 
 function ButikPage() {
+  // State för produkter från Stripe
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   // State för aktiv kategori-filter
   const [activeCategory, setActiveCategory] = useState("alla");
   // State för att visa feedback när produkt läggs till
@@ -27,13 +36,41 @@ function ButikPage() {
   // Hämta addItem från CartContext
   const { addItem } = useContext(CartContext);
 
+  // Hämta produkter från Stripe vid mount
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        const stripeProducts = await getStripeProducts();
+        setProducts(stripeProducts);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to fetch products:", err);
+        setError("Kunde inte ladda produkter. Försök igen senare.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
   // Hämta alla kategorier från produktdata
-  const categories = getCategories(); // ["alla", "keramik", "konst"]
+  const categories = getCategories(products);
 
   const filteredProducts =
     activeCategory === "alla"
       ? products
       : products.filter((product) => product.category === activeCategory);
+
+  // Dynamisk grid-klass baserat på antal produkter
+  const getGridClass = (count) => {
+    if (count === 1) return "products-grid products-grid-1";
+    if (count === 2) return "products-grid products-grid-2";
+    if (count === 3) return "products-grid products-grid-3";
+    if (count === 4) return "products-grid products-grid-4";
+    return "products-grid"; // 5+ produkter - standard grid
+  };
 
   const handleAddToCart = (product) => {
     addItem(product);
@@ -51,51 +88,84 @@ function ButikPage() {
           <p>Handgjord konst och keramik från lokala konstnärer</p>
         </div>
 
-        <div className="category-filters">
-          {categories.map((category) => {
-            const label = category.charAt(0).toUpperCase() + category.slice(1);
-            return (
-              <button
-                key={category}
-                className={activeCategory === category ? "active" : ""}
-                onClick={() => setActiveCategory(category)}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="products-grid">
-          {filteredProducts.map((product) => (
-            <article className="product-card" key={product.id}>
-              <div className="product-card-image">
-                <img src={product.images[0]} alt={product.name} />
-                <span className="product-category">{product.category}</span>
-              </div>
-              <div className="product-card-content">
-                <h3>{product.name}</h3>
-                <p className="description">{product.description}</p>
-                <p className="price">{formatPrice(product.price)}</p>
+        {/* Kategorifilter - visa bara om det finns produkter */}
+        {!loading && products.length > 0 && categories.length > 1 && (
+          <div className="category-filters">
+            {categories.map((category) => {
+              const label =
+                category.charAt(0).toUpperCase() + category.slice(1);
+              return (
                 <button
-                  type="button"
-                  onClick={() => handleAddToCart(product)}
-                  className={addedToCart === product.id ? "added" : ""}
+                  key={category}
+                  className={activeCategory === category ? "active" : ""}
+                  onClick={() => setActiveCategory(category)}
                 >
-                  {addedToCart === product.id ? (
-                    <>
-                      <Check size={18} /> Tillagd!
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCart size={18} /> Lägg i varukorg
-                    </>
-                  )}
+                  {label}
                 </button>
-              </div>
-            </article>
-          ))}
-        </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Loading state */}
+        {loading && (
+          <div className="products-loading">
+            <Loader2 className="spinner" size={48} />
+            <p>Laddar produkter...</p>
+          </div>
+        )}
+
+        {/* Error state */}
+        {error && !loading && (
+          <div className="products-error">
+            <p>{error}</p>
+            <button onClick={() => window.location.reload()}>
+              Försök igen
+            </button>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && !error && products.length === 0 && (
+          <div className="products-empty">
+            <p>Inga produkter tillgängliga just nu.</p>
+            <p>Kom tillbaka snart!</p>
+          </div>
+        )}
+
+        {/* Produktlista med dynamisk grid */}
+        {!loading && !error && filteredProducts.length > 0 && (
+          <div className={getGridClass(filteredProducts.length)}>
+            {filteredProducts.map((product) => (
+              <article className="product-card" key={product.id}>
+                <div className="product-card-image">
+                  <img src={product.images[0]} alt={product.name} />
+                  <span className="product-category">{product.category}</span>
+                </div>
+                <div className="product-card-content">
+                  <h3>{product.name}</h3>
+                  <p className="description">{product.description}</p>
+                  <p className="price">{formatPrice(product.price)}</p>
+                  <button
+                    type="button"
+                    onClick={() => handleAddToCart(product)}
+                    className={addedToCart === product.id ? "added" : ""}
+                  >
+                    {addedToCart === product.id ? (
+                      <>
+                        <Check size={18} /> Tillagd!
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingCart size={18} /> Lägg i varukorg
+                      </>
+                    )}
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </PageSection>
     </main>
   );
