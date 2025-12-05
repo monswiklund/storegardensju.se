@@ -73,7 +73,7 @@ function Navbar() {
 
         {/* BUTIK - Kundvagn till vänster om hamburger */}
         <div className="navbar-right">
-          {/* <CartBadge /> */}
+          <CartBadge />
           <button
             ref={triggerRef}
             className={`hamburger ${isOpen ? "open" : ""}`}
