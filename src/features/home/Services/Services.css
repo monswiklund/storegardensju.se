@@ -1,6 +1,6 @@
 .services-section {
-    width: 100%;
-    padding: 40px 20px;
+  width: 100%;
+  padding: 40px 20px;
 }
 
 .services-container {
@@ -25,67 +25,53 @@
   padding: 0;
 }
 .service-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 20px;
-    border: 1px solid rgba(80, 120, 100, 0.15);
-    padding: 36px 28px;
-    text-align: center;
-    text-decoration: none;
-    transition: all 0.35s ease;
-
-    box-shadow: 0 6px 20px rgba(20, 40, 30, 0.08);
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.service-icon {
-    width: 56px;
-    height: 56px;
-    margin: 0 auto 24px;
-    background: linear-gradient(135deg, #467c60, #7fb392);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    box-shadow: 0 4px 8px rgba(60, 100, 80, 0.25);
-    transition: transform 0.3s ease;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.35s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0; /* Reset padding for image to bleed to edges */
 }
 
-
-.service-card:hover .service-icon {
-  transform: scale(1.1) rotate(5deg);
+.service-image-container {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  position: relative;
 }
 
-.service-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--primary-color);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+.service-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
-.service-card:hover::before {
-  transform: scaleX(1);
+.service-card:hover .service-image {
+  transform: scale(1.05);
+}
+
+.service-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .service-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 8px 24px rgba(64, 123, 94, 0.2);
-  border-color: var(--primary-color);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
 }
 
 .service-title {
-  font-size: clamp(1.1rem, 0.95rem + 1vw, 1.45rem);
+  font-size: clamp(1.2rem, 1rem + 1vw, 1.5rem);
   font-weight: 500;
   color: var(--text-color);
   margin: 0 0 8px 0;
@@ -105,15 +91,21 @@
   line-height: 1.6;
   color: var(--text-secondary);
   margin: 0 0 24px 0;
+  flex-grow: 1;
 }
 
 .service-arrow {
-    font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
-    font-weight: 500;
-    color: var(--primary-color, #4a8064);
-    transition: transform 0.3s ease;
+  font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+  font-weight: 500;
+  color: var(--primary-color, #4a8064);
+  transition: transform 0.3s ease;
+  margin-top: auto;
+  display: inline-block;
 }
 
+.service-card:hover .service-arrow {
+  transform: translateX(4px);
+}
 
 @media (max-width: 768px) {
   .services-section {
@@ -125,10 +117,6 @@
     gap: 24px;
     padding: 0;
   }
-
-  .service-card {
-    padding: 32px 24px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -138,15 +126,5 @@
 
   .services-grid {
     gap: 16px;
-  }
-
-  .service-card {
-    padding: 24px 20px;
-  }
-
-  .service-icon {
-    width: 40px;
-    height: 40px;
-    margin: 0 auto 20px;
   }
 }

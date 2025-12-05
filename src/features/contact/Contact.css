@@ -52,7 +52,11 @@
 .contact-icon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-hover)
+  );
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -88,21 +92,17 @@
   word-break: break-word;
 }
 
-
-
-
-
 /* ==========================================================================
    Welcome Text Section
    ========================================================================== */
 .välkomst-text {
-    flex: 1;
-    max-width: 800px;
-    font-weight: 300;
-    width: 100%;
-    text-align: center;
-    padding: 0 15px;
-    box-sizing: border-box;
+  flex: 1;
+  max-width: 800px;
+  font-weight: 300;
+  width: 100%;
+  text-align: center;
+  padding: 0 15px;
+  box-sizing: border-box;
 }
 
 .välkomst-text h2,
@@ -110,53 +110,161 @@
 .välkomst-text h4,
 .services h3,
 .services h4 {
-    font-weight: 300;
-    margin: 1rem 0 0.5rem 0;
-    padding: 0;
-    text-align: center;
-    color: var(--text-secondary);
+  font-weight: 300;
+  margin: 1rem 0 0.5rem 0;
+  padding: 0;
+  text-align: center;
+  color: var(--text-secondary);
 }
 
 .välkomst-text h2 {
-    font-size: clamp(1.6rem, 1.2rem + 2.5vw, 2.2rem);
+  font-size: clamp(1.6rem, 1.2rem + 2.5vw, 2.2rem);
 }
 
 .välkomst-text h3,
 .services h3 {
-    font-size: clamp(1.25rem, 1.05rem + 2vw, 1.7rem);
+  font-size: clamp(1.25rem, 1.05rem + 2vw, 1.7rem);
 }
 
 .välkomst-text h4,
 .services h4 {
-    font-size: clamp(1.05rem, 0.95rem + 1.4vw, 1.4rem);
+  font-size: clamp(1.05rem, 0.95rem + 1.4vw, 1.4rem);
 }
 
 .välkomst-text p,
 .services p {
-    font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
-    line-height: 1.5;
-    margin: 0 0 0.5rem 0;
-    padding: 0;
-    text-align: center;
+  font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
+  line-height: 1.5;
+  margin: 0 0 0.5rem 0;
+  padding: 0;
+  text-align: center;
 }
 
 /* ==========================================================================
    Services Section
    ========================================================================== */
 .services {
-    flex: 1;
-    max-width: 800px;
-    font-weight: 300;
-    width: 100%;
-    padding: 0;
+  flex: 1;
+  max-width: 800px;
+  font-weight: 300;
+  width: 100%;
+  padding: 0;
 }
 
 .services h3:last-child {
-    justify-content: center;
-    text-align: center;
+  justify-content: center;
+  text-align: center;
 }
 
+/* Immersive Contact Section */
+.contact-section-immersive {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 80px 0;
+  color: white;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+}
+
+.contact-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6); /* Dark overlay */
+  z-index: 1;
+}
+
+.contact-content-relative {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+/* Override container styles when inside immersive section */
+.contact-section-immersive .contact-container {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.contact-section-immersive h2 {
+  color: white;
+  font-weight: 600;
+  text-align: center;
+}
+
+.contact-section-immersive .contact-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+}
+
+/* Glassmorphism Cards */
+.contact-section-immersive .contact-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.contact-section-immersive .contact-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3);
+}
+
+.contact-section-immersive .contact-card h3 {
+  color: white;
+  font-weight: 500;
+}
+
+/* Darker text on glass card for better contrast if needed, or keep white */
+.contact-section-immersive .contact-info {
+  color: #ffffff !important;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon updates for dark mode */
+.contact-section-immersive .contact-icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* Services / Collab section in Glass */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(5px);
+  padding: 2.5rem;
+  border-radius: 12px;
+  margin-top: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-section-immersive .services h3 {
+  color: #ffffff;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.contact-section-immersive .services p {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* Responsive adjustments */
 @media (max-width: 640px) {
+  .contact-section-immersive {
+    padding: 60px 0;
+  }
+
   .contact-cards {
     grid-template-columns: 1fr;
   }
@@ -184,5 +292,4 @@
     height: 40px;
     margin-bottom: 6px;
   }
-
 }
