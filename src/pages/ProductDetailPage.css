@@ -8,7 +8,7 @@
   justify-content: center;
   padding: 6rem 2rem;
   color: var(--text-secondary, #666);
-  font-family: "Jost", Helvetica, sans-serif;
+  font-family: var(--font-body);
 }
 
 .product-loading .spinner {
@@ -31,7 +31,7 @@
   margin-bottom: 2rem;
   font-size: 0.9rem;
   color: var(--text-secondary);
-  font-family: "Jost", Helvetica, sans-serif;
+  font-family: var(--font-body);
 }
 
 .breadcrumb a {
@@ -73,7 +73,7 @@
 
 /* Product info section */
 .product-info {
-  font-family: "Jost", Helvetica, sans-serif;
+  font-family: var(--font-body);
 }
 
 .product-info h1 {
@@ -143,7 +143,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: "Jost", Helvetica, sans-serif;
+  font-family: var(--font-body);
 }
 
 .add-to-cart-btn:hover:not(:disabled) {

@@ -41,7 +41,9 @@ const HomeServicesSection = () => {
                   </div>
                   <div className="service-content">
                     <h3 className="service-title">{service.title}</h3>
-                    <p className="service-subtitle">{service.subtitle}</p>
+                    {service.subtitle && (
+                      <p className="service-subtitle">{service.subtitle}</p>
+                    )}
                     <p className="service-description">{service.description}</p>
                     <span className="service-arrow">Läs mer</span>
                   </div>
@@ -67,7 +69,9 @@ const HomeServicesSection = () => {
                 </div>
                 <div className="service-content">
                   <h3 className="service-title">{service.title}</h3>
-                  <p className="service-subtitle">{service.subtitle}</p>
+                  {service.subtitle && (
+                    <p className="service-subtitle">{service.subtitle}</p>
+                  )}
                   <p className="service-description">{service.description}</p>
                   <span className="service-arrow">Läs mer</span>
                 </div>

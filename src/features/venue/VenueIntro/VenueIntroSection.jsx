@@ -10,10 +10,15 @@ function VenueIntroSection() {
         <h2 id="venue-intro-heading">{title}</h2>
         <p>{description}</p>
       </div>
-      <ul className="venue-intro__highlights" aria-label="Vad som gör platsen unik">
+      <ul
+        className="venue-intro__highlights"
+        aria-label="Vad som gör platsen unik"
+      >
         {highlights.map((highlight) => (
           <li key={highlight} className="venue-intro__highlight">
-            <span className="venue-intro__icon" aria-hidden="true">✦</span>
+            <span className="venue-intro__icon" aria-hidden="true">
+              ✦
+            </span>
             <span>{highlight}</span>
           </li>
         ))}

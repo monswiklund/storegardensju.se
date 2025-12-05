@@ -2,22 +2,31 @@ import PropTypes from "prop-types";
 import { forwardRef } from "react";
 
 const HomeHeroContent = forwardRef(function HomeHeroContent(
-  { title, subtitle, paragraphs, primaryCta, secondaryCtas, onPrimaryClick, onRouteClick },
+  {
+    title,
+    subtitle,
+    paragraphs,
+    primaryCta,
+    secondaryCtas,
+    onPrimaryClick,
+    onRouteClick,
+  },
   ref
 ) {
-  const handleRouteCta = to => {
+  const handleRouteCta = (to) => {
     if (!to || typeof onRouteClick !== "function") return;
     onRouteClick(to);
   };
 
   return (
-    <div className="hero-titel" ref={ref}>
+    <div className="hero-content" ref={ref}>
       {title ? <h1>{title}</h1> : null}
       {subtitle ? <h2>{subtitle}</h2> : null}
 
       {Array.isArray(paragraphs)
         ? paragraphs.map((text, index) => {
-            const paragraphText = typeof text === "string" ? text : String(text);
+            const paragraphText =
+              typeof text === "string" ? text : String(text);
             return <p key={`paragraph-${index}`}>{paragraphText}</p>;
           })
         : null}
@@ -35,39 +44,39 @@ const HomeHeroContent = forwardRef(function HomeHeroContent(
             </button>
           ) : null}
 
-          {secondaryCtas && secondaryCtas.length > 0 ? (
-            <div className="hero-cta-secondary-group">
-              {secondaryCtas.map(({ label, ariaLabel, type, href, to }, index) => {
-                if (type === "external") {
+          {secondaryCtas && secondaryCtas.length > 0
+            ? secondaryCtas.map(
+                ({ label, ariaLabel, type, href, to }, index) => {
+                  if (type === "external") {
+                    return (
+                      <a
+                        key={`secondary-cta-${index}`}
+                        className="hero-cta hero-cta-secondary"
+                        href={href}
+                        aria-label={ariaLabel || label}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {label}
+                      </a>
+                    );
+                  }
+
                   return (
-                    <a
+                    <button
                       key={`secondary-cta-${index}`}
+                      type="button"
                       className="hero-cta hero-cta-secondary"
-                      href={href}
+                      onClick={() => handleRouteCta(to)}
                       aria-label={ariaLabel || label}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      disabled={!to || typeof onRouteClick !== "function"}
                     >
                       {label}
-                    </a>
+                    </button>
                   );
                 }
-
-                return (
-                  <button
-                    key={`secondary-cta-${index}`}
-                    type="button"
-                    className="hero-cta hero-cta-secondary"
-                    onClick={() => handleRouteCta(to)}
-                    aria-label={ariaLabel || label}
-                    disabled={!to || typeof onRouteClick !== "function"}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          ) : null}
+              )
+            : null}
         </div>
       )}
     </div>

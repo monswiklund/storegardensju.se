@@ -67,7 +67,7 @@
 /* Force consistent font across all gallery elements */
 .storegarden-gallery *,
 .gallery-model * {
-  font-family: "Jost", Helvetica, sans-serif !important;
+  font-family: var(--font-body) !important;
 }
 
 /* Gallery grid (masonry layout) */
@@ -81,7 +81,8 @@
   text-align: center;
   font-size: clamp(1.9rem, 1.35rem + 2.5vw, 2.6rem);
   font-weight: 400;
-  color: var(--text-color);
+  font-family: var(--font-heading);
+  color: var(--text-main);
   margin: 0 0 48px 0;
   letter-spacing: -0.02em;
 }
@@ -118,17 +119,13 @@
   border-radius: 2px;
   cursor: pointer;
   transition: var(--transition-smooth);
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
   margin-bottom: 12px;
 }
 
 .gallery-thumbnail:hover {
   transform: translateY(-4px);
-  box-shadow:
-    0 10px 20px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .gallery-thumbnail img {
@@ -219,7 +216,8 @@
   -webkit-tap-highlight-color: transparent;
 
   /* Added smooth transitions & performance hint */
-  transition: background-color .25s ease, box-shadow .25s ease, transform .18s ease;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease,
+    transform 0.18s ease;
   will-change: box-shadow, transform;
 }
 
@@ -246,21 +244,26 @@
 .hide-images-button:hover:not(.is-hidden) {
   background: var(--primary-hover);
   /* Keep original centering transform inherited from base (no redefinition) */
-  box-shadow: 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.18);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.18);
 }
 
 /* Accessible focus ring (återinförd) */
-.hide-images-button:focus { outline: none; }
-.hide-images-button:focus:not(:focus-visible) { outline: none; }
+.hide-images-button:focus {
+  outline: none;
+}
+.hide-images-button:focus:not(:focus-visible) {
+  outline: none;
+}
 .hide-images-button:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px; /* separerar lite visuellt */
-box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px rgba(0,0,0,0.18);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.35), 0 6px 18px rgba(0, 0, 0, 0.28),
+    0 2px 6px rgba(0, 0, 0, 0.18);
 }
 
 /* Use a subtle scale instead of vertical snap; no movement */
 .hide-images-button:active {
-  transform: translateX(-50%) scale(.97);
+  transform: translateX(-50%) scale(0.97);
 }
 
 /* Lightbox model */
@@ -431,7 +434,7 @@ box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px r
   width: 80px;
   height: 80px;
   background: rgba(255, 255, 255, 0);
-    border: none;
+  border: none;
   border-radius: 50%;
   color: white;
   font-size: clamp(2.4rem, 1.8rem + 3vw, 3.25rem);
@@ -607,18 +610,42 @@ box-shadow: 0 0 0 4px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.28), 0 2px 6px r
     animation: fadeInUp 0.6s ease-out backwards;
   }
 
-  .gallery-thumbnail:nth-child(1) { animation-delay: 0s; }
-  .gallery-thumbnail:nth-child(2) { animation-delay: 0.05s; }
-  .gallery-thumbnail:nth-child(3) { animation-delay: 0.1s; }
-  .gallery-thumbnail:nth-child(4) { animation-delay: 0.15s; }
-  .gallery-thumbnail:nth-child(5) { animation-delay: 0.2s; }
-  .gallery-thumbnail:nth-child(6) { animation-delay: 0.25s; }
-  .gallery-thumbnail:nth-child(7) { animation-delay: 0.3s; }
-  .gallery-thumbnail:nth-child(8) { animation-delay: 0.35s; }
-  .gallery-thumbnail:nth-child(9) { animation-delay: 0.4s; }
-  .gallery-thumbnail:nth-child(10) { animation-delay: 0.45s; }
-  .gallery-thumbnail:nth-child(11) { animation-delay: 0.5s; }
-  .gallery-thumbnail:nth-child(12) { animation-delay: 0.55s; }
+  .gallery-thumbnail:nth-child(1) {
+    animation-delay: 0s;
+  }
+  .gallery-thumbnail:nth-child(2) {
+    animation-delay: 0.05s;
+  }
+  .gallery-thumbnail:nth-child(3) {
+    animation-delay: 0.1s;
+  }
+  .gallery-thumbnail:nth-child(4) {
+    animation-delay: 0.15s;
+  }
+  .gallery-thumbnail:nth-child(5) {
+    animation-delay: 0.2s;
+  }
+  .gallery-thumbnail:nth-child(6) {
+    animation-delay: 0.25s;
+  }
+  .gallery-thumbnail:nth-child(7) {
+    animation-delay: 0.3s;
+  }
+  .gallery-thumbnail:nth-child(8) {
+    animation-delay: 0.35s;
+  }
+  .gallery-thumbnail:nth-child(9) {
+    animation-delay: 0.4s;
+  }
+  .gallery-thumbnail:nth-child(10) {
+    animation-delay: 0.45s;
+  }
+  .gallery-thumbnail:nth-child(11) {
+    animation-delay: 0.5s;
+  }
+  .gallery-thumbnail:nth-child(12) {
+    animation-delay: 0.55s;
+  }
 
   @keyframes fadeInUp {
     from {

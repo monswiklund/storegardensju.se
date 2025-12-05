@@ -8,6 +8,7 @@ import {
   ScrollToTopButton,
   ScrollToTop,
   BuildInfo,
+  Footer,
 } from "../components";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -99,9 +100,7 @@ function App() {
         <Route path="/om-oss" element={<TeamPage />} />
       </Routes>
       <ContactSection />
-      <footer role="contentinfo" className="site-footer">
-        <BuildInfo />
-      </footer>
+      <Footer />
 
       <ScrollToTopButton />
     </Router>
