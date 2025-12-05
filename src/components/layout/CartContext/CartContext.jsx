@@ -25,12 +25,29 @@ export function CartProvider({ children }) {
     } catch {}
   }, [cart]);
 
+  // Kolla om produkt redan finns i cart
+  const isInCart = useCallback(
+    (productId) => cart.some((p) => p.id === productId),
+    [cart]
+  );
+
   const addItem = useCallback((product, qty = 1) => {
     setCart((prev) => {
       const idx = prev.findIndex((p) => p.id === product.id);
       if (idx > -1) {
+        // Produkt finns redan - för unika produkter, lägg inte till igen
+        // Om produkten har stock > 1, tillåt ökning upp till stock
+        const currentItem = prev[idx];
+        const maxQty = product.stock || 1; // Default 1 för unika produkter
+        const newQty = Math.min(currentItem.quantity + qty, maxQty);
+
+        if (newQty === currentItem.quantity) {
+          // Redan max antal, returnera oförändrat
+          return prev;
+        }
+
         const copy = [...prev];
-        copy[idx] = { ...copy[idx], quantity: copy[idx].quantity + qty };
+        copy[idx] = { ...copy[idx], quantity: newQty };
         return copy;
       }
       return [...prev, { ...product, quantity: qty }];
@@ -82,6 +99,7 @@ export function CartProvider({ children }) {
         clearCart,
         getTotal,
         getItemCount,
+        isInCart,
       }}
     >
       {children}

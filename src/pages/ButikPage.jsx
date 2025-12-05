@@ -1,12 +1,10 @@
-import { useState, useContext, useEffect } from "react";
-import { ShoppingCart, Check, Loader2 } from "lucide-react";
+import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import { ShoppingCart, Check, Loader2, ArrowRight } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
+import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
 import { PageSection } from "../components";
-import {
-  getStripeProducts,
-  getCategories,
-  formatPrice,
-} from "../services/stripeService";
+import { formatPrice } from "../services/stripeService";
 import "./ButikPage.css";
 
 /**
@@ -16,47 +14,24 @@ import "./ButikPage.css";
  *
  * Koncept som övas:
  * - useState för filter-state
- * - useContext för cart management
+ * - useContext för cart management och produkter
  * - Array.map() för att rendera produkter
  * - Conditional rendering
  * - Event handlers (onClick)
  */
 
 function ButikPage() {
-  // State för produkter från Stripe
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Hämta produkter från global ProductContext (prefetchade vid app start)
+  const { products, loading, error, categories, refetch } =
+    useContext(ProductContext);
 
   // State för aktiv kategori-filter
   const [activeCategory, setActiveCategory] = useState("alla");
   // State för att visa feedback när produkt läggs till
   const [addedToCart, setAddedToCart] = useState(null);
 
-  // Hämta addItem från CartContext
-  const { addItem } = useContext(CartContext);
-
-  // Hämta produkter från Stripe vid mount
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        setLoading(true);
-        const stripeProducts = await getStripeProducts();
-        setProducts(stripeProducts);
-        setError(null);
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-        setError("Kunde inte ladda produkter. Försök igen senare.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProducts();
-  }, []);
-
-  // Hämta alla kategorier från produktdata
-  const categories = getCategories(products);
+  // Hämta addItem och isInCart från CartContext
+  const { addItem, isInCart } = useContext(CartContext);
 
   const filteredProducts =
     activeCategory === "alla"
@@ -119,9 +94,7 @@ function ButikPage() {
         {error && !loading && (
           <div className="products-error">
             <p>{error}</p>
-            <button onClick={() => window.location.reload()}>
-              Försök igen
-            </button>
+            <button onClick={refetch}>Försök igen</button>
           </div>
         )}
 
@@ -136,34 +109,62 @@ function ButikPage() {
         {/* Produktlista med dynamisk grid */}
         {!loading && !error && filteredProducts.length > 0 && (
           <div className={getGridClass(filteredProducts.length)}>
-            {filteredProducts.map((product) => (
-              <article className="product-card" key={product.id}>
-                <div className="product-card-image">
-                  <img src={product.images[0]} alt={product.name} />
-                  <span className="product-category">{product.category}</span>
-                </div>
-                <div className="product-card-content">
-                  <h3>{product.name}</h3>
-                  <p className="description">{product.description}</p>
-                  <p className="price">{formatPrice(product.price)}</p>
-                  <button
-                    type="button"
-                    onClick={() => handleAddToCart(product)}
-                    className={addedToCart === product.id ? "added" : ""}
-                  >
-                    {addedToCart === product.id ? (
-                      <>
-                        <Check size={18} /> Tillagd!
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingCart size={18} /> Lägg i varukorg
-                      </>
+            {filteredProducts.map((product) => {
+              const alreadyInCart = isInCart(product.id);
+              const justAdded = addedToCart === product.id;
+              const stock = product.stock || 1; // Default 1 för unika produkter
+
+              return (
+                <article className="product-card" key={product.id}>
+                  <div className="product-card-image">
+                    <img src={product.images[0]} alt={product.name} />
+                    <div className="product-badges">
+                      <span className="product-badge">{product.category}</span>
+                      {stock === 1 && (
+                        <span className="product-badge">Unikt exemplar</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="product-card-content">
+                    <h3>{product.name}</h3>
+                    <p className="description">{product.description}</p>
+                    <div className="price-stock">
+                      <p className="price">{formatPrice(product.price)}</p>
+                      {stock > 1 && (
+                        <span className="stock-badge">{stock} i lager</span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => !alreadyInCart && handleAddToCart(product)}
+                      className={
+                        justAdded ? "added" : alreadyInCart ? "in-cart" : ""
+                      }
+                      disabled={alreadyInCart && !justAdded}
+                    >
+                      {justAdded ? (
+                        <>
+                          <Check size={18} /> Tillagd!
+                        </>
+                      ) : alreadyInCart ? (
+                        <>
+                          <Check size={18} /> I varukorgen
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart size={18} /> Lägg i varukorg
+                        </>
+                      )}
+                    </button>
+                    {alreadyInCart && !justAdded && (
+                      <Link to="/varukorg" className="btn-go-to-cart">
+                        Till varukorgen <ArrowRight size={16} />
+                      </Link>
                     )}
-                  </button>
-                </div>
-              </article>
-            ))}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
       </PageSection>
