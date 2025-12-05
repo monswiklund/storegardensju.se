@@ -359,6 +359,33 @@
   cursor: not-allowed;
 }
 
+/* Go to cart link button */
+.btn-go-to-cart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  background: transparent;
+  color: var(--primary-color, hsl(160, 32%, 50%));
+  border: 2px solid var(--primary-color, hsl(160, 32%, 50%));
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: "Jost", Helvetica, sans-serif;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-go-to-cart:hover {
+  background: var(--primary-color, hsl(160, 32%, 50%));
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 163, 139, 0.3);
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);
