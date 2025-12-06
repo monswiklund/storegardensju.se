@@ -18,7 +18,7 @@ function GalleryShowcase() {
 
   const activeCategoryData = useMemo(
     () => galleryData.categories.find((cat) => cat.id === activeCategory),
-    [activeCategory],
+    [activeCategory]
   );
 
   const images = useMemo(() => {
@@ -43,14 +43,18 @@ function GalleryShowcase() {
       return [];
     }
 
-    const allaCategoryData = galleryData.categories.find((cat) => cat.id === "alla");
+    const allaCategoryData = galleryData.categories.find(
+      (cat) => cat.id === "alla"
+    );
     if (!allaCategoryData) {
       return [];
     }
 
     return galleryOrder.featured
       .map((filename) => {
-        const imageData = allaCategoryData.images.find((img) => img.filename === filename);
+        const imageData = allaCategoryData.images.find(
+          (img) => img.filename === filename
+        );
         if (!imageData) return null;
 
         return {
@@ -78,7 +82,7 @@ function GalleryShowcase() {
     goToPreviousImage: goToFeaturedPreviousImage,
     dialogRef: featuredDialogRef,
     closeButtonRef: featuredCloseButtonRef,
-  } = useGalleryLightbox(featuredImages, 'featured');
+  } = useGalleryLightbox(featuredImages, "featured");
 
   // Main gallery lightbox
   const {
@@ -94,7 +98,11 @@ function GalleryShowcase() {
     closeButtonRef,
   } = useGalleryLightbox(images, activeCategory);
 
-  const { mode: buttonMode, containerRef, buttonRef } = useDockedToggle(showAllImages);
+  const {
+    mode: buttonMode,
+    containerRef,
+    buttonRef,
+  } = useDockedToggle(showAllImages);
 
   const toggleAllImages = useCallback(() => {
     setShowAllImages((prev) => !prev);
@@ -111,7 +119,7 @@ function GalleryShowcase() {
         setIsLoading(false);
       }, 300);
     },
-    [closeLightbox],
+    [closeLightbox]
   );
 
   const categoryName = activeCategoryData?.name || "Alla";
@@ -119,11 +127,7 @@ function GalleryShowcase() {
   return (
     <div className="storegarden-gallery">
       <div className="gallery-logo-container">
-        <img
-          src={logoImage}
-          alt="Storegården 7"
-          className="gallery-logo"
-        />
+        <img src={logoImage} alt="Storegården 7" className="gallery-logo" />
       </div>
 
       <h2 id="gallery-heading">Bildgalleri</h2>
@@ -201,6 +205,9 @@ function GalleryShowcase() {
         onSelectImage={goToImage}
         dialogRef={dialogRef}
         closeButtonRef={closeButtonRef}
+        categories={galleryData.categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
       />
     </div>
   );

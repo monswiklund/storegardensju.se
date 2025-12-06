@@ -2,6 +2,7 @@ import "./Footer.css";
 import { Link } from "react-router-dom";
 import BuildInfo from "../../ui/BuildInfo.jsx";
 import { useEffect, useState } from "react";
+import { appRoutes } from "../../../config/routes.js";
 
 const Footer = () => {
   const [currentYear, setCurrentYear] = useState(2025);
@@ -10,13 +11,9 @@ const Footer = () => {
     setCurrentYear(new Date().getFullYear());
   }, []);
 
-  const navLinks = [
-    { label: "Hem", path: "/" },
-    { label: "Event & Fest", path: "/event" },
-    { label: "Kurser & Skapande", path: "/konst" },
-    { label: "Galleri", path: "/galleri" },
-    { label: "Om Oss", path: "/om-oss" },
-  ];
+  const handleLinkClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <footer className="site-footer" role="contentinfo">
@@ -28,9 +25,13 @@ const Footer = () => {
 
         <nav className="footer-nav" aria-label="Footer Navigation">
           <ul className="footer-links">
-            {navLinks.map((link) => (
+            {appRoutes.map((link) => (
               <li key={link.path}>
-                <Link to={link.path} className="footer-link">
+                <Link
+                  to={link.path}
+                  className="footer-link"
+                  onClick={handleLinkClick}
+                >
                   {link.label}
                 </Link>
               </li>

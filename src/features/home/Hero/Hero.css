@@ -14,6 +14,14 @@
   align-items: center;
   text-align: center;
   padding: 0 20px;
+  /* Counteract global body padding-top from Navbar */
+  margin-top: -60px;
+}
+
+@media (max-width: 480px) {
+  .hero-logo-section {
+    margin-top: -55px;
+  }
 }
 
 /* Logo */
@@ -44,8 +52,8 @@
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  padding: 80px 20px 100px;
-  text-align: center;
+  padding: 80px 20px 60px; /* Reduced bottom padding */
+  text-align: center; /* Center align text */
   opacity: 0;
   transform: translateY(40px);
   transition: opacity 0.8s ease-out, transform 0.8s ease-out;
@@ -60,7 +68,7 @@
 .hero-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* Center align flex items */
   gap: 24px;
 }
 
@@ -90,30 +98,76 @@
   margin: 0;
 }
 
-/* CTA Buttons */
-.hero-cta-group {
+/* CTA Container */
+.hero-cta-container {
   display: flex;
   flex-direction: column;
+  align-items: center; /* Center buttons */
   gap: 16px;
-  margin-top: 32px;
+  margin-top: 12px;
   width: 100%;
-  max-width: 360px;
 }
 
+.hero-cta-primary-row {
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Centered primary */
+}
+
+/* Use Grid for secondary row to ensure EXACTLY equal widths for both buttons */
+.hero-cta-secondary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 16px;
+  width: 100%;
+  max-width: 420px; /* Constrain max width so they don't get too huge */
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 480px) {
+  /* Enforce same max-width for both rows so buttons are identical size */
+  .hero-cta-primary-row,
+  .hero-cta-secondary-row {
+    grid-template-columns: 1fr; /* Stack secondary */
+    max-width: 320px; /* Standard width for all buttons on mobile */
+    width: 100%;
+  }
+
+  /* Remove flex centering for primary on mobile to let it fill width */
+  .hero-cta-primary-row {
+    display: block; /* Helps button fill width if it's block/flex item */
+  }
+}
+
+/* On Desktop/Larger screens - User requested CENTER buttons */
 @media (min-width: 768px) {
-  .hero-cta-group {
-    flex-direction: row;
-    justify-content: center;
-    max-width: none;
+  .hero-cta-container {
+    align-items: center;
+  }
+
+  .hero-cta-secondary-row {
+    /* Grid handles alignment via max-width margin auto if we center the block */
+    margin: 0 auto;
     gap: 20px;
   }
+}
+
+/* FORCE CENTER ALL SCREENS for buttons only */
+.hero-cta-container {
+  align-items: center;
+}
+.hero-cta-primary-row {
+  justify-content: center;
+}
+.hero-cta-secondary-row {
+  justify-content: center;
 }
 
 .hero-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 36px;
+  padding: 14px 32px; /* Slightly adjusted padding */
   border-radius: 999px; /* Pill shape */
   font-weight: 500;
   text-transform: none;
@@ -121,25 +175,58 @@
   text-decoration: none;
   transition: all 0.3s ease;
   font-size: 1rem;
-  min-width: 180px;
+
+  /* CRITICAL: Enforce consistent typography for <a> and <button> */
+  line-height: 1.2;
+  font-family: inherit;
+
+  /* CRITICAL: Fill the available slot (grid cell or container) */
+  width: 100%;
+  max-width: 320px; /* Cap it nicely on desktop if loose */
+
+  /* Keep a reasonable min-width for very small text labels */
+  min-width: unset;
+
   cursor: pointer;
+  gap: 10px; /* Space for icon */
+  box-sizing: border-box; /* padding inside width */
 }
 
-.hero-cta-primary,
-.hero-cta-secondary {
-  background-color: #ffffff;
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.hero-cta-primary:hover,
-.hero-cta-secondary:hover {
+/* SOLID PRIMARY */
+.hero-cta-primary {
   background-color: var(--primary-color);
   color: #ffffff;
-  border-color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 4px 12px rgba(95, 111, 82, 0.2); /* Warmer shadow */
+}
+
+.hero-cta-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(64, 123, 94, 0.3);
+  box-shadow: 0 6px 16px rgba(95, 111, 82, 0.3);
+}
+
+/* OUTLINE SECONDARY */
+.hero-cta-secondary {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  box-shadow: none;
+}
+
+.hero-cta-secondary:hover {
+  background-color: rgba(
+    95,
+    111,
+    82,
+    0.1
+  ); /* Subtle background tint on hover */
+  border-color: var(--primary-hover);
+  color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: none;
 }
 
 /* Scroll Indicator */
@@ -204,5 +291,107 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   Hero Carousel
+   ========================================================================== */
+
+.hero-carousel {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%); /* Break out of container to be full width */
+  margin-right: calc(-50vw + 50%);
+  margin-top: 0px; /* Reduced to minimum */
+  margin-bottom: -10px; /* No bottom margin */
+  overflow: hidden;
+  position: relative;
+  /* Mask gradient for smooth edges */
+
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    white 10%,
+    white 90%,
+    transparent
+  );
+  mask: linear-gradient(90deg, transparent, white 10%, white 90%, transparent);
+}
+
+.hero-carousel-inner {
+  display: flex;
+  gap: 2rem; /* Increased gap for polaroid style */
+  width: max-content;
+  flex-wrap: nowrap;
+  padding: 20px 0; /* Space for shadows */
+}
+
+/* Match .gallery-thumbnail style */
+.hero-carousel-item {
+  width: 200px;
+  height: 300px; /* 2:3 Aspect ratio */
+  flex-shrink: 0;
+
+  /* Gallery Styles */
+  background: white;
+  padding: 12px;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  /* CRITICAL: Remove all interactivity */
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* User requested "remove click", so hover effects are likely unwanted too.
+   Since pointer-events: none is set, this won't trigger anyway on the item. 
+*/
+/*.hero-carousel-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+}*/
+
+.hero-carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0; /* Sharp corners inside padding */
+}
+
+/* Animation */
+.hero-carousel[data-animated="true"] .hero-carousel-inner {
+  animation: scroll 90s linear infinite;
+}
+
+/* Removed pause on hover as requested */
+/* .hero-carousel[data-animated="true"] .hero-carousel-inner:hover {
+  animation-play-state: paused;
+} */
+
+@keyframes scroll {
+  to {
+    transform: translate(calc(-50% - 1rem));
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .hero-carousel-item {
+    width: 160px;
+    height: 240px; /* 2:3 Aspect ratio */
+    padding: 8px; /* Slightly less padding on mobile */
+  }
+
+  .hero-carousel-inner {
+    gap: 1rem;
+  }
+
+  @keyframes scroll {
+    to {
+      transform: translate(calc(-50% - 0.5rem));
+    }
   }
 }

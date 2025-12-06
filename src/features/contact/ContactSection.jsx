@@ -47,8 +47,8 @@ function ContactSection() {
       <div className="contact-container contact-content-relative">
         <h2 id="contact-heading">Kontakta oss</h2>
         <p className="contact-subtitle">
-          Har du frågor eller vill boka in ditt nästa evenemang? Tveka inte att
-          höra av dig!
+          Har du frågor eller vill boka in ditt nästa evenemang? <br />
+          Tveka inte att höra av dig!
         </p>
 
         <div className="contact-cards">

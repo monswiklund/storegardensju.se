@@ -1,5 +1,5 @@
-import ParallaxHero from '../../features/events/ParallaxHero/ParallaxHero.jsx';
-import './EventPage.css';
+import ParallaxHero from "../../features/events/ParallaxHero/ParallaxHero.jsx";
+import "./EventPage.css";
 import { useNavigate } from "react-router-dom";
 
 function SendToGalleryButton() {
@@ -31,6 +31,7 @@ function EventPage() {
         title="Bröllop, Event & Fest"
         subtitle=""
         zIndex={1}
+        delayScrollCue={true}
       />
 
       {/* Sticky Image Section 1 */}
@@ -52,14 +53,37 @@ Mingel 300+`}
       />
       <section className="event-hero-description">
         <div className="event-hero-description__content">
-          <p>Vare sig om det är ett bröllop, 50 års fest eller en afterwork så passar våran gård er!</p>
-          <p>Våran lokal består av ca 360 kvadratmeter inomhus fördelat på två våningar, lada och loft.</p>
-          <p>På loftet kan man sitta över 150 gäster om så önskas, men det passar även fint till de mindre sällskapen.</p>
-          <p>Den nedre delen av ladan är våran umgängesyta. Där finns långbord, soffor, dansgolv, bar, kök samt ett förråd. Toaletter finns intill.</p>
-          <p>Hos oss hittar ni allt ni kan tänkas behöva för ett event. Mat och dryck tar ni med själva.</p>
-          <p>Vi har utrustning som glas, tallrikar, bestick, bord, stolar, ljud och ljus mm.</p>
-          <p>Vi kan även erbjuda erfaren personal som arbetar med servering, bar eller dj.</p>
-          <p>Kontakta oss så hjälper vi gärna till om ni har några funderingar.</p>
+          <p>
+            Vare sig om det är ett bröllop, 50 års fest eller en afterwork så
+            passar våran gård er!
+          </p>
+          <p>
+            Våran lokal består av ca 360 kvadratmeter inomhus fördelat på två
+            våningar, lada och loft.
+          </p>
+          <p>
+            På loftet kan man sitta över 150 gäster om så önskas, men det passar
+            även fint till de mindre sällskapen.
+          </p>
+          <p>
+            Den nedre delen av ladan är våran umgängesyta. Där finns långbord,
+            soffor, dansgolv, bar, kök samt ett förråd. Toaletter finns intill.
+          </p>
+          <p>
+            Hos oss hittar ni allt ni kan tänkas behöva för ett event. Mat och
+            dryck tar ni med själva.
+          </p>
+          <p>
+            Vi har utrustning som glas, tallrikar, bestick, bord, stolar, ljud
+            och ljus mm.
+          </p>
+          <p>
+            Vi kan även erbjuda erfaren personal som arbetar med servering, bar
+            eller dj.
+          </p>
+          <p>
+            Kontakta oss så hjälper vi gärna till om ni har några funderingar.
+          </p>
         </div>
       </section>
       <SendToGalleryButton />

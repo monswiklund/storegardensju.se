@@ -14,7 +14,19 @@ function HomeHeroSection() {
   const contentRef = useRef(null);
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [isScrollIndicatorVisible, setIsScrollIndicatorVisible] =
-    useState(true);
+    useState(false);
+
+  // Reveal scroll indicator after delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Only show if we haven't scrolled down yet
+      if (window.scrollY <= 100) {
+        setIsScrollIndicatorVisible(true);
+      }
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handlePrimaryCta = () => {
     document
@@ -55,6 +67,10 @@ function HomeHeroSection() {
       if (window.scrollY > 100) {
         setIsScrollIndicatorVisible(false);
       } else {
+        // We only want to show it again if we are at the very top
+        // And we don't want to re-trigger the delay, but we can just show it immediately if they scroll back up
+        // or we could decide to keep it hidden once scrolled.
+        // Let's mimic previous behavior: show if at top.
         setIsScrollIndicatorVisible(true);
       }
     };

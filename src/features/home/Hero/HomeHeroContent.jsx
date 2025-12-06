@@ -1,5 +1,26 @@
 import PropTypes from "prop-types";
 import { forwardRef } from "react";
+import { Calendar, Image, MapPin } from "lucide-react";
+import HomeHeroCarousel from "./HomeHeroCarousel";
+
+const getIcon = (label) => {
+  if (!label) return null;
+  const l = label.toLowerCase();
+
+  // Primary: "Boka", "Evenemang"
+  if (l.includes("boka") || l.includes("evenemang"))
+    return <Calendar size={20} style={{ strokeWidth: 2.5 }} />;
+
+  // Secondary: "Galleri", "Bilder"
+  if (l.includes("galleri") || l.includes("se"))
+    return <Image size={20} style={{ strokeWidth: 2.5 }} />;
+
+  // Secondary: "Hitta", "Vägbeskrivning", "Karta"
+  if (l.includes("hitta") || l.includes("karta"))
+    return <MapPin size={20} style={{ strokeWidth: 2.5 }} />;
+
+  return null;
+};
 
 const HomeHeroContent = forwardRef(function HomeHeroContent(
   {
@@ -31,21 +52,29 @@ const HomeHeroContent = forwardRef(function HomeHeroContent(
           })
         : null}
 
-      {(primaryCta || (secondaryCtas && secondaryCtas.length > 0)) && (
-        <div className="hero-cta-group">
-          {primaryCta ? (
-            <button
-              type="button"
-              className="hero-cta hero-cta-primary"
-              onClick={onPrimaryClick}
-              aria-label={primaryCta.ariaLabel || primaryCta.label}
-            >
-              {primaryCta.label}
-            </button>
-          ) : null}
+      <HomeHeroCarousel />
 
-          {secondaryCtas && secondaryCtas.length > 0
-            ? secondaryCtas.map(
+      {(primaryCta || (secondaryCtas && secondaryCtas.length > 0)) && (
+        <div className="hero-cta-container">
+          {/* Primary Row - Centered & Alone */}
+          {primaryCta && (
+            <div className="hero-cta-primary-row">
+              <button
+                type="button"
+                className="hero-cta hero-cta-primary"
+                onClick={onPrimaryClick}
+                aria-label={primaryCta.ariaLabel || primaryCta.label}
+              >
+                {getIcon(primaryCta.label)}
+                <span>{primaryCta.label}</span>
+              </button>
+            </div>
+          )}
+
+          {/* Secondary Row - Centered & Side-by-Side */}
+          {secondaryCtas && secondaryCtas.length > 0 && (
+            <div className="hero-cta-secondary-row">
+              {secondaryCtas.map(
                 ({ label, ariaLabel, type, href, to }, index) => {
                   if (type === "external") {
                     return (
@@ -57,7 +86,8 @@ const HomeHeroContent = forwardRef(function HomeHeroContent(
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {label}
+                        {getIcon(label)}
+                        <span>{label}</span>
                       </a>
                     );
                   }
@@ -71,12 +101,14 @@ const HomeHeroContent = forwardRef(function HomeHeroContent(
                       aria-label={ariaLabel || label}
                       disabled={!to || typeof onRouteClick !== "function"}
                     >
-                      {label}
+                      {getIcon(label)}
+                      <span>{label}</span>
                     </button>
                   );
                 }
-              )
-            : null}
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

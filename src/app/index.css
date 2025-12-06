@@ -12,7 +12,7 @@
   --accent-hover: #a07d5a;
 
   --background-color: hwb(161 27% 38% / 0.059); /* Original bright green tint */
-  --background-alt: hsl(160, 15%, 96%); /* Slightly darker with green */
+  --background-alt: hsl(0, 0%, 100%); /* Slightly darker with green */
   --overlay-dark: rgba(28, 28, 28, 0.4); /* Dark overlay for images */
 
   --text-main: #000000; /* Black */
