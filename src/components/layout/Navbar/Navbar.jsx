@@ -5,7 +5,7 @@ import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
 import { appRoutes } from "../../../config/routes.js";
 // BUTIK
-import CartBadge from "./CartBadge.jsx";
+// import CartBadge from "./CartBadge.jsx";
 
 const NAV_ITEMS = appRoutes;
 
@@ -71,7 +71,7 @@ function Navbar() {
           />
         </div>
 
-        {/* BUTIK - Kundvagn till vänster om hamburger */}
+        {/* BUTIK - Kundvagn disabled */}
         <div className="navbar-right">
           {/* <CartBadge /> */}
           <button

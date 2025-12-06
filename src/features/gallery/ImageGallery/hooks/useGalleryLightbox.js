@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 const focusableSelector = [
-  'a[href]',
-  'area[href]',
-  'button:not([disabled])',
+  "a[href]",
+  "area[href]",
+  "button:not([disabled])",
   'input:not([disabled]):not([type="hidden"])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
+  "select:not([disabled])",
+  "textarea:not([disabled])",
   '[tabindex]:not([tabindex="-1"])',
 ].join(",");
 
@@ -30,21 +30,27 @@ function useGalleryLightbox(images, categoryKey) {
 
   const hasImages = images.length > 0;
 
-  const openLightbox = useCallback((index) => {
-    if (!hasImages) return;
-    previouslyFocusedRef.current = document.activeElement;
-    setCurrentIndex(clampIndex(index, images.length));
-    setIsOpen(true);
-  }, [hasImages, images.length]);
+  const openLightbox = useCallback(
+    (index) => {
+      if (!hasImages) return;
+      previouslyFocusedRef.current = document.activeElement;
+      setCurrentIndex(clampIndex(index, images.length));
+      setIsOpen(true);
+    },
+    [hasImages, images.length]
+  );
 
   const closeLightbox = useCallback(() => {
     setIsOpen(false);
   }, []);
 
-  const goToImage = useCallback((index) => {
-    if (!hasImages) return;
-    setCurrentIndex(clampIndex(index, images.length));
-  }, [hasImages, images.length]);
+  const goToImage = useCallback(
+    (index) => {
+      if (!hasImages) return;
+      setCurrentIndex(clampIndex(index, images.length));
+    },
+    [hasImages, images.length]
+  );
 
   const goToNextImage = useCallback(() => {
     if (!hasImages) return;
@@ -149,7 +155,14 @@ function useGalleryLightbox(images, categoryKey) {
     return () => {
       document.removeEventListener("keydown", handleKeyNavigation);
     };
-  }, [isOpen, hasImages, images.length, goToNextImage, goToPreviousImage, goToImage]);
+  }, [
+    isOpen,
+    hasImages,
+    images.length,
+    goToNextImage,
+    goToPreviousImage,
+    goToImage,
+  ]);
 
   // Trap focus within the lightbox dialog.
   useEffect(() => {
@@ -161,7 +174,7 @@ function useGalleryLightbox(images, categoryKey) {
       if (event.key !== "Tab") return;
 
       const focusableElements = Array.from(
-        dialogNode.querySelectorAll(focusableSelector),
+        dialogNode.querySelectorAll(focusableSelector)
       ).filter((el) => !el.hasAttribute("aria-hidden"));
 
       if (focusableElements.length === 0) {
@@ -189,20 +202,24 @@ function useGalleryLightbox(images, categoryKey) {
     };
   }, [isOpen]);
 
-  const preloadImageAtIndex = useCallback((index) => {
-    if (!hasImages) return;
-    const normalizedIndex = clampIndex(index, images.length);
-    const item = images[normalizedIndex];
-    if (!item?.original) return;
-    if (preloadedSourcesRef.current.has(item.original)) return;
+  const preloadImageAtIndex = useCallback(
+    (index) => {
+      if (!hasImages) return;
+      const normalizedIndex = clampIndex(index, images.length);
+      const item = images[normalizedIndex];
+      if (!item?.original) return;
+      if (preloadedSourcesRef.current.has(item.original)) return;
 
-    const img = new Image();
-    img.src = item.original;
-    preloadedSourcesRef.current.add(item.original);
-  }, [hasImages, images]);
+      const img = new Image();
+      img.src = item.original;
+      preloadedSourcesRef.current.add(item.original);
+    },
+    [hasImages, images]
+  );
 
   useEffect(() => {
     preloadedSourcesRef.current.clear();
+    setCurrentIndex(0); // Reset index when category changes
   }, [categoryKey]);
 
   useEffect(() => {

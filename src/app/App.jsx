@@ -8,6 +8,7 @@ import {
   ScrollToTopButton,
   ScrollToTop,
   BuildInfo,
+  Footer,
 } from "../components";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -90,20 +91,16 @@ function App() {
         <Route path="/konst" element={<ArtPage />} />
         <Route path="/galleri" element={<GalleriPage />} />
         {/* BUTIK */}
-        {/* BUTIK - Disabled for production
         <Route path="/butik" element={<ButikPage />} />
         <Route path="/butik/:productId" element={<ProductDetailPage />} />
         <Route path="/varukorg" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/success" element={<SuccessPage />} />
         <Route path="/cancel" element={<CancelPage />} />
-        */}
         <Route path="/om-oss" element={<TeamPage />} />
       </Routes>
       <ContactSection />
-      <footer role="contentinfo" className="site-footer">
-        <BuildInfo />
-      </footer>
+      <Footer />
 
       <ScrollToTopButton />
     </Router>
