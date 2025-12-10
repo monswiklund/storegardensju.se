@@ -68,3 +68,27 @@ export function getCategories(products) {
 export function formatPrice(price) {
   return `${price.toLocaleString("sv-SE")} kr`;
 }
+
+/**
+ * Verifiera Stripe-session via backend
+ * @param {string} sessionId - Session-ID från Stripe
+ * @returns {Promise<boolean>} Sant om sessionen är giltig och betald
+ */
+export async function verifySession(sessionId) {
+  try {
+    const response = await fetch(
+      `${API_URL}/verify-session?session_id=${sessionId}`
+    );
+
+    if (!response.ok) {
+      console.error(`Verification failed: ${response.status}`);
+      return false;
+    }
+
+    const data = await response.json();
+    return data.valid === true;
+  } catch (error) {
+    console.error("Error verifying session:", error);
+    return false;
+  }
+}

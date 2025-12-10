@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { CheckCircle, ShoppingBag, Home } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { PageSection } from "../components";
+import { verifySession } from "../services/stripeService";
 import "./SuccessPage.css";
 
 export default function SuccessPage() {
@@ -12,11 +13,32 @@ export default function SuccessPage() {
   const hasCleared = useRef(false);
 
   useEffect(() => {
-    // Töm varukorgen efter lyckad beställning (endast en gång)
-    if (sessionId && !hasCleared.current) {
-      hasCleared.current = true;
-      clearCart();
-    }
+    // Verifiera sessionen innan varukorgen töms
+    const verifyAndClear = async () => {
+      if (sessionId && !hasCleared.current) {
+        // Enkel klient-side kontroll först för att undvika onödiga anrop
+        if (sessionId === "undefined" || sessionId === "null") return;
+
+        try {
+          // Importera service dynamiskt eller lägg till import i toppen av filen
+          // För nu antar vi att vi har lagt till importen
+          const isValid = await verifySession(sessionId);
+
+          if (isValid) {
+            hasCleared.current = true;
+            clearCart();
+          } else {
+            console.warn("Ogiltig session, tömmer ej varukorg");
+            // Här kan man redirecta eller visa felmeddelande om man vill
+            // Men vi låter användaren se sidan, bara inte tömma korgen
+          }
+        } catch (error) {
+          console.error("Kunde inte verifiera session", error);
+        }
+      }
+    };
+
+    verifyAndClear();
   }, [sessionId, clearCart]);
 
   // Om ingen session_id finns, visa ett meddelande
