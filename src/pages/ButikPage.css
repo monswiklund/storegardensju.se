@@ -435,3 +435,10 @@
     font-size: 0.9rem;
   }
 }
+
+/* Sold out badge style */
+.badge-sold-out {
+  background: rgba(189, 189, 189, 0.95) !important;
+  color: #333 !important;
+  border: 1px solid #999;
+}

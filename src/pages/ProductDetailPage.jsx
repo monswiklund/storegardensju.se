@@ -133,7 +133,7 @@ function ProductDetailPage() {
                *
                * Använd olika CSS-klasser för olika status
                */}
-              {product && product.stock > 0 ? (
+              {product && product.active && product.stock > 0 ? (
                 <span className="in-stock">I lager ({product.stock} st)</span>
               ) : (
                 <span className="out-of-stock">Slutsåld</span>
@@ -152,9 +152,9 @@ function ProductDetailPage() {
               <button
                 type="button"
                 className="add-to-cart-btn"
-                disabled={product && product.stock === 0}
+                disabled={product && !product.active}
               >
-                {product && product.stock > 0 ? "Lägg i varukorg" : "Slutsåld"}
+                {product && product.active ? "Lägg i varukorg" : "Slutsåld"}
               </button>
             </div>
 

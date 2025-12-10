@@ -120,8 +120,13 @@ function ButikPage() {
                     <img src={product.images[0]} alt={product.name} />
                     <div className="product-badges">
                       <span className="product-badge">{product.category}</span>
-                      {stock === 1 && (
+                      {stock === 1 && product.active && (
                         <span className="product-badge">Unikt exemplar</span>
+                      )}
+                      {!product.active && (
+                        <span className="product-badge badge-sold-out">
+                          Slut i lager
+                        </span>
                       )}
                     </div>
                   </div>
@@ -140,9 +145,13 @@ function ButikPage() {
                       className={
                         justAdded ? "added" : alreadyInCart ? "in-cart" : ""
                       }
-                      disabled={alreadyInCart && !justAdded}
+                      disabled={
+                        !product.active || (alreadyInCart && !justAdded)
+                      }
                     >
-                      {justAdded ? (
+                      {!product.active ? (
+                        <>Slut i lager</>
+                      ) : justAdded ? (
                         <>
                           <Check size={18} /> Tillagd!
                         </>
