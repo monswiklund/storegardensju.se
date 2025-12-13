@@ -442,3 +442,14 @@
   color: #333 !important;
   border: 1px solid #999;
 }
+
+/* Sold out / Archived card style */
+.product-card.sold-out {
+  opacity: 0.85;
+  filter: grayscale(0.8);
+}
+
+.product-card.sold-out:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* No lift on hover */
+}

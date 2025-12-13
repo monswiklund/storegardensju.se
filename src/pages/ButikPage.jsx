@@ -48,6 +48,7 @@ function ButikPage() {
   };
 
   const handleAddToCart = (product) => {
+    if (!product.active) return; // Kan inte köpa inaktiva/slutsålda produkter
     addItem(product);
     setAddedToCart(product.id);
     // Ta bort feedback efter 2 sekunder
@@ -113,19 +114,23 @@ function ButikPage() {
               const alreadyInCart = isInCart(product.id);
               const justAdded = addedToCart === product.id;
               const stock = product.stock || 1; // Default 1 för unika produkter
+              const isSoldOut = !product.active || stock === 0;
 
               return (
-                <article className="product-card" key={product.id}>
+                <article
+                  className={`product-card ${isSoldOut ? "sold-out" : ""}`}
+                  key={product.id}
+                >
                   <div className="product-card-image">
                     <img src={product.images[0]} alt={product.name} />
                     <div className="product-badges">
                       <span className="product-badge">{product.category}</span>
-                      {stock === 1 && product.active && (
+                      {stock === 1 && !isSoldOut && (
                         <span className="product-badge">Unikt exemplar</span>
                       )}
-                      {!product.active && (
+                      {isSoldOut && (
                         <span className="product-badge badge-sold-out">
-                          Slut i lager
+                          SÅLD
                         </span>
                       )}
                     </div>
@@ -135,7 +140,7 @@ function ButikPage() {
                     <p className="description">{product.description}</p>
                     <div className="price-stock">
                       <p className="price">{formatPrice(product.price)}</p>
-                      {stock > 1 && (
+                      {stock > 1 && !isSoldOut && (
                         <span className="stock-badge">{stock} i lager</span>
                       )}
                     </div>
@@ -145,12 +150,10 @@ function ButikPage() {
                       className={
                         justAdded ? "added" : alreadyInCart ? "in-cart" : ""
                       }
-                      disabled={
-                        !product.active || (alreadyInCart && !justAdded)
-                      }
+                      disabled={isSoldOut || (alreadyInCart && !justAdded)}
                     >
-                      {!product.active ? (
-                        <>Slut i lager</>
+                      {isSoldOut ? (
+                        <>SÅLD</>
                       ) : justAdded ? (
                         <>
                           <Check size={18} /> Tillagd!
