@@ -42,336 +42,387 @@
   margin-bottom: 0;
 }
 
+/* ==========================================================================
+   Event Card - Premium Design
+   ========================================================================== */
 
 .event-card {
-  background: white;
-  border: 2px solid var(--background-alt);
-  border-radius: 16px;
-  padding: 32px;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-sm);
-  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-}
-
-.event-image-wrapper {
-  margin: 0;
+  background: white;
+  border-radius: 12px;
   overflow: hidden;
-  border-radius: 12px;
-  background: transparent;
-  width: 100%;
-}
-
-.event-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  margin-bottom: 48px;
+  height: 100%;
 }
 
 .event-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--primary-color);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
-.event-content {
+/* --- Image Section --- */
+.event-card__image-container {
+  width: 100%;
+  height: auto; /* Let image define height */
+  position: relative;
+  overflow: hidden;
+  background-color: var(--background-alt);
+}
+
+.event-card__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain; /* Ensure full image is visible */
+  transition: transform 0.5s ease;
+}
+
+.event-card:hover .event-card__image {
+  transform: scale(1.02);
+}
+
+/* --- Content Section --- */
+.event-card__content {
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-}
-
-.event-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.event-title {
-  font-size: clamp(1.25rem, 1.05rem + 1vw, 1.6rem);
-  font-weight: 500;
-  color: var(--text-color);
-  margin: 0;
   flex: 1;
 }
 
-.event-spots {
-  background: var(--primary-color);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
-  font-weight: 500;
-  white-space: nowrap;
+/* Header */
+.event-card__header {
+  margin-bottom: 0px;
 }
 
-.event-meta {
+.event-card__title-row {
   display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.event-date,
-.event-time {
-  font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1.05rem);
-  color: var(--text-secondary);
-}
-
-.event-description {
-  font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1.1rem);
-  line-height: 1.6;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-.event-artists {
-  font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1.1rem);
-  line-height: 1.6;
-  color: var(--text-secondary);
-  margin: 0;
-  padding: 12px;
-  background: var(--background-alt);
-  border-radius: 8px;
-}
-
-.event-artists strong {
+.event-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
   color: var(--text-color);
+  margin: 0;
+  line-height: 1.2;
 }
 
-.event-location {
-  font-size: clamp(0.85rem, 0.8rem + 0.2vw, 1rem);
+.event-card__badge {
+  background-color: #e8f5e9; /* Light green background */
+  color: #2e7d32; /* Dark green text for contrast */
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.event-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.event-card__separator {
   color: var(--text-muted);
+}
+
+/* Body */
+.event-card__body {
+  flex: 1; /* Pushes footer down */
+  margin-bottom: 24px;
+}
+
+.event-card__description {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0 0 16px 0;
+}
+
+.event-card__artists {
+  font-size: 0.95rem;
+  background-color: var(--background-alt);
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--text-color);
+  margin-bottom: 12px;
+}
+
+.event-card__location {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
   font-style: italic;
 }
 
-.event-link-btn {
-  display: inline-flex;
+/* Footer & Actions */
+.event-card__actions {
+  display: grid;
+  grid-template-columns: 1fr; /* Stack vertically for mobile/clean look, or repeat(auto-fit, minmax(140px, 1fr)) */
+  gap: 12px;
+  width: 100%;
+}
+
+.event-card__button {
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
+  padding: 14px 24px;
+  border: 1px solid var(--text-secondary);
+  border-radius: 8px; /* Slightly less rounded for a "button" feel */
   background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid rgba(64, 123, 94, 0.2);
-  border-radius: 50px;
-  font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
-  font-weight: 400;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  font-weight: 500;
   text-decoration: none;
-  white-space: nowrap;
-  min-height: 40px;
-  text-align: center;
+  transition: all 0.2s ease;
+  width: 100%;
 }
 
-.event-link-btn:hover {
-  background: rgba(64, 123, 94, 0.05);
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+.event-card__button:hover {
+  background: var(--text-color);
+  color: white;
+  border-color: var(--text-color);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 480px) {
+  .event-card__actions {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(180px, 1fr)
+    ); /* Side by side on larger screens */
+  }
+}
+
+/* ==========================================================================
+   Desktop / Landscape Layout
+   ========================================================================== */
+/* ==========================================================================
+   Feed Layout (Instagram Style)
+   ========================================================================== */
+
+/* Main Grid Container - Centered Feed */
+.events-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  width: 100%;
+}
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px; /* Slightly squarer corners for feed feel? Or keep rounded */
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05); /* Softer, flatter shadow */
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 0; /* Handled by gap */
+  width: 100%;
+  max-width: 520px; /* Standard feed width */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(64, 123, 94, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-.event-link-btn:active {
+/* --- Image Section --- */
+.event-card__image-container {
+  width: 100%;
+  height: auto;
+  position: relative;
+  background-color: var(--background-alt);
+}
+
+.event-card__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Remove hover scale for cleaner feed feel, or keep subtle */
+.event-card:hover .event-card__image {
+  transform: none;
+}
+
+/* --- Header Section (Now at top) --- */
+.event-card__header {
+  padding: 16px; /* Reduced from 24px */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  background: white;
+}
+
+.event-card__title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.event-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.event-card__meta {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 0px;
+}
+
+.event-card__location-text {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.event-card__separator {
+  color: var(--text-muted);
+  font-size: 0.8em;
+}
+
+/* --- Content Section (Bottom) --- */
+.event-card__content {
+  padding: 16px; /* Reduced from 24px */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Body */
+.event-card__body {
+  margin-bottom: 16px; /* Tighter gap to buttons */
+}
+
+/* If description is empty/hidden, handle that to avoid double gap?
+   React usually doesn't render empty p tags if code checks,
+   but css empty check is good practice just in case
+*/
+.event-card__description:empty {
+  display: none;
+}
+
+.event-card__description {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0 0 16px 0;
+}
+
+.event-card__artists {
+  font-size: 0.95rem;
+  background-color: var(--background-alt);
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--text-color);
+  margin-bottom: 12px;
+}
+
+/* Footer & Actions */
+.event-card__actions {
+  display: grid !important; /* Force grid in case of conflict */
+  grid-template-columns: 1fr;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.event-card__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border: 1px solid var(--text-secondary);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin: 0;
+}
+
+.event-card__button:hover {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.event-card__button:active {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
   transform: translateY(0);
 }
 
-.konstafton-card {
-  grid-column: 1 / -1;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.event-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-top: 8px;
-}
-
-/* ...existing code... */
-
-.info-box {
-  max-width: 750px;
-  margin: 48px auto;
-  padding: 20px 24px;
-  background: transparent;
-  border: none;
-  border-radius: 10px;
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-
-.info-icon {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  background: transparent;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-}
-
-.info-icon svg {
-  width: 18px;
-  height: 18px;
-}
-
-.info-content {
-  flex: 1;
-}
-
-.info-content h3 {
-  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1rem);
-  font-weight: 500;
-  color: var(--text-color);
-  margin: 0 0 6px 0;
-}
-
-.info-content p {
-  font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
-  line-height: 1.5;
-  color: var(--text-secondary);
-  margin: 0 0 14px 0;
-}
-
-.info-cta-button {
-  padding: 0;
-  background: transparent;
-  color: var(--primary-color);
-  border: none;
-  border-radius: 0;
-  font-size: clamp(0.9rem, 0.85rem + 0.3vw, 0.95rem);
-  font-weight: 400;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-color: transparent;
-}
-
-.info-cta-button:hover {
-  background: transparent;
-  text-decoration-color: var(--primary-color);
-}
-
-.events-footer {
-  text-align: center;
-  padding: 32px;
-  background: var(--background-alt);
-  border-radius: 12px;
-}
-
-.events-footer p {
-  margin: 0;
-  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.2rem);
-  color: var(--text-secondary);
-}
-
-@media (max-width: 768px) {
-  .events-container {
-    padding: 20px 0;
+@media (min-width: 480px) {
+  .event-card__actions {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   }
+}
 
-  .events-container h2 {
-    margin-bottom: 32px;
-  }
+/* ... keep other styles ... */
 
-  .event-grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
+/* Mobile Tweaks */
+@media (max-width: 550px) {
   .event-card {
-    padding: 24px 20px;
-  }
-
-  .event-header {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .event-spots {
-    align-self: flex-start;
-  }
-
-  .event-actions {
-    flex-direction: column;
-    width: 100%;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .event-actions .event-link-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .info-box {
-    flex-direction: column;
-    padding: 18px;
-    gap: 12px;
-  }
-
-  .info-icon {
-    width: 28px;
-    height: 28px;
-  }
-
-  .info-icon svg {
-    width: 16px;
-    height: 16px;
+    border-radius: 0; /* Edge-to-edge feel on small mobile */
+    border-left: none;
+    border-right: none;
+    max-width: 100%;
   }
 }
+
+/* Desktop overrides - REMOVE SIDE-BY-SIDE */
+/* We purposefully do NOT include the previous 'min-width: 768px' block that did row-flex */
 
 @media (max-width: 480px) {
-  .events-container {
-    padding: 20px 1px;
+  .event-card__content {
+    padding: 20px 15px; /* Slight horizontal reduction for mobile */
   }
 
-  .event-card {
-    padding: 20px 15px;
+  .event-card__title {
+    font-size: 1.35rem;
   }
 
-  .info-box {
-    padding: 15px;
-  }
-}
-
-@media (min-width: 769px) {
-  .event-card--with-image {
-    display: grid;
-    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      "image content"
-      "image actions";
-    align-items: start;
-    column-gap: 28px;
-    row-gap: 20px;
-  }
-
-  .event-card--with-image .event-image-wrapper {
-    grid-area: image;
-  }
-
-  .event-card--with-image .event-content {
-    grid-area: content;
-  }
-
-  .event-card--with-image .event-actions {
-    grid-area: actions;
-    margin-top: 0;
-    flex-direction: column;
-    align-items: flex-start;
+  .event-card__button {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    min-height: 40px;
   }
 }
