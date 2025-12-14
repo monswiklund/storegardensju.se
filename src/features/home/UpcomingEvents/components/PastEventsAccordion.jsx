@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 function PastEventsAccordion({ isOpen, onToggle, events }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Close modal on Escape key
   useEffect(() => {
@@ -13,6 +14,13 @@ function PastEventsAccordion({ isOpen, onToggle, events }) {
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
+
+  // Reset image index when event changes
+  useEffect(() => {
+    if (selectedEvent) {
+      setCurrentImageIndex(0);
+    }
+  }, [selectedEvent]);
 
   // Prevent scrolling when modal is open
   useEffect(() => {
@@ -31,6 +39,27 @@ function PastEventsAccordion({ isOpen, onToggle, events }) {
       document.documentElement.classList.remove("lenis-stopped");
     };
   }, [selectedEvent]);
+
+  // Helper to get all images for the selected event
+  const getEventImages = (event) => {
+    if (!event) return [];
+    if (event.images && event.images.length > 0) return event.images;
+    if (event.image?.src) return [event.image];
+    return [];
+  };
+
+  const images = getEventImages(selectedEvent);
+  const showControls = images.length > 1;
+
+  const nextImage = (e) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = (e) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
 
   return (
     <div className="past-events-collapsible" data-section="past-events">
@@ -62,6 +91,9 @@ function PastEventsAccordion({ isOpen, onToggle, events }) {
               ? dateParts[1].substring(0, 3).toUpperCase()
               : "";
 
+            // Use the first available image as thumbnail
+            const thumbImage = event.images?.[0] || event.image;
+
             return (
               <article
                 key={`${event.title}-${index}`}
@@ -81,11 +113,11 @@ function PastEventsAccordion({ isOpen, onToggle, events }) {
                   <span className="date-month">{month}</span>
                 </div>
 
-                {event.image?.src && (
+                {thumbImage?.src && (
                   <div className="past-event-thumbnail">
                     <img
-                      src={event.image.src}
-                      alt={event.image.alt || ""}
+                      src={thumbImage.src}
+                      alt={thumbImage.alt || ""}
                       loading="lazy"
                     />
                   </div>
@@ -144,12 +176,45 @@ function PastEventsAccordion({ isOpen, onToggle, events }) {
               <X size={24} />
             </button>
 
-            {selectedEvent.image?.src && (
+            {images.length > 0 && (
               <div className="past-event-modal-image">
                 <img
-                  src={selectedEvent.image.src}
-                  alt={selectedEvent.image.alt || ""}
+                  src={images[currentImageIndex].src}
+                  alt={images[currentImageIndex].alt || ""}
                 />
+
+                {showControls && (
+                  <>
+                    <button
+                      className="carousel-nav prev"
+                      onClick={prevImage}
+                      aria-label="Föregående bild"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                    <button
+                      className="carousel-nav next"
+                      onClick={nextImage}
+                      aria-label="Nästa bild"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                    <div className="carousel-dots">
+                      {images.map((_, idx) => (
+                        <span
+                          key={idx}
+                          className={`carousel-dot ${
+                            idx === currentImageIndex ? "active" : ""
+                          }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCurrentImageIndex(idx);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             )}
 
@@ -157,15 +222,16 @@ function PastEventsAccordion({ isOpen, onToggle, events }) {
               <span className="past-event-modal-date">
                 {selectedEvent.date}
               </span>
+
+              {selectedEvent.time && (
+                <span className="past-event-modal-time">
+                  {selectedEvent.time}
+                </span>
+              )}
+
               <h2 id="modal-title" className="past-event-modal-title">
                 {selectedEvent.title}
               </h2>
-
-              {selectedEvent.time && (
-                <p className="past-event-modal-meta">
-                  {selectedEvent.time} • {selectedEvent.location}
-                </p>
-              )}
 
               {selectedEvent.description && (
                 <p className="past-event-modal-description">
@@ -175,20 +241,66 @@ function PastEventsAccordion({ isOpen, onToggle, events }) {
 
               {selectedEvent.artists && (
                 <p className="past-event-modal-artists">
-                  <strong>Gäster:</strong> {selectedEvent.artists}
+                  <strong>Konstnärer:</strong> {selectedEvent.artists}
                 </p>
               )}
 
-              {selectedEvent.link && (
-                <a
-                  href={selectedEvent.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="past-event-modal-link"
-                >
-                  {selectedEvent.linkLabel || "Läs mer"} →
-                </a>
+              {selectedEvent.location && (
+                <div className="past-event-modal-meta">
+                  <span className="meta-location">
+                    {selectedEvent.location}
+                  </span>
+                </div>
               )}
+            </div>
+
+            {/* Actions / Links - Moved outside body for Grid placement */}
+            <div className="past-event-modal-actions">
+              {(
+                selectedEvent.links ||
+                (selectedEvent.link
+                  ? [
+                      {
+                        href: selectedEvent.link,
+                        label: selectedEvent.linkLabel || "Läs mer",
+                      },
+                    ]
+                  : [])
+              ).map((linkItem, index) => {
+                const isMapLink = linkItem.href?.includes("maps.google.com");
+
+                // Map Icon SVG
+                const MapIcon = () => (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ marginRight: "6px" }}
+                  >
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                );
+
+                return (
+                  <a
+                    key={index}
+                    href={linkItem.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="past-event-modal-button"
+                  >
+                    {isMapLink && <MapIcon />}
+                    {linkItem.label}{" "}
+                    {!isMapLink && !linkItem.label?.includes("→") && "→"}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
