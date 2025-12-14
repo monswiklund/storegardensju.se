@@ -45,7 +45,7 @@ export default function SuccessPage() {
   if (!sessionId) {
     return (
       <main role="main" id="main-content">
-        <PageSection background="white" spacing="default">
+        <PageSection background="alt" spacing="default">
           <div className="success-container">
             <h1>Ingen aktiv order</h1>
             <p className="success-message">
@@ -65,7 +65,7 @@ export default function SuccessPage() {
 
   return (
     <main role="main" id="main-content">
-      <PageSection background="white" spacing="default">
+      <PageSection background="alt" spacing="default">
         <div className="success-container">
           <CheckCircle size={80} className="success-icon" />
           <h1>Tack för din beställning!</h1>

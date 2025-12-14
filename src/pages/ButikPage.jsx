@@ -57,7 +57,7 @@ function ButikPage() {
 
   return (
     <main role="main" id="main-content">
-      <PageSection background="white" spacing="default">
+      <PageSection background="alt" spacing="default">
         {/* Header */}
         <div className="butik-header">
           <h1>Butik</h1>

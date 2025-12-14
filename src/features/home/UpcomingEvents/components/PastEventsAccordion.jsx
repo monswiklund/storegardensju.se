@@ -2,9 +2,10 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
-function PastEventsAccordion({ isOpen, onToggle, events }) {
+function PastEventsAccordion({ events }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
   // Close modal on Escape key
   useEffect(() => {
@@ -61,98 +62,82 @@ function PastEventsAccordion({ isOpen, onToggle, events }) {
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  const visibleEvents = showAll ? events : events.slice(0, 5);
+
   return (
-    <div className="past-events-collapsible" data-section="past-events">
-      <button
-        type="button"
-        className="collapsible-toggle"
-        aria-expanded={isOpen}
-        aria-controls="past-events-content"
-        onClick={onToggle}
-      >
-        <span className="collapsible-title">Tidigare evenemang</span>
-        <span className={`chevron ${isOpen ? "open" : ""}`} aria-hidden>
-          ▾
-        </span>
-      </button>
-      <div
-        id="past-events-content"
-        className={`collapsible-content ${isOpen ? "open" : ""}`}
-        role="region"
-        aria-label="Tidigare evenemang"
-      >
-        <div className="past-events-list" style={{ marginTop: "28px" }}>
-          {events.map((event, index) => {
-            // Basic date parsing (assuming format "1 November 2025" or similar)
-            // We'll just split by space for a simple "Day Month" badge
-            const dateParts = event.date.split(" ");
-            const day = dateParts[0] || "";
-            const month = dateParts[1]
-              ? dateParts[1].substring(0, 3).toUpperCase()
-              : "";
-
-            // Use the first available image as thumbnail
-            const thumbImage = event.images?.[0] || event.image;
-
-            return (
-              <article
-                key={`${event.title}-${index}`}
-                className="past-event-item"
-                aria-labelledby={`past-event-title-${index}`}
-                onClick={() => setSelectedEvent(event)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    setSelectedEvent(event);
-                  }
-                }}
-              >
-                <div className="past-event-date-badge">
-                  <span className="date-day">{day}</span>
-                  <span className="date-month">{month}</span>
-                </div>
-
-                {thumbImage?.src && (
-                  <div className="past-event-thumbnail">
-                    <img
-                      src={thumbImage.src}
-                      alt={thumbImage.alt || ""}
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-
-                <div className="past-event-info">
-                  <h3
-                    id={`past-event-title-${index}`}
-                    className="past-event-title"
-                  >
-                    {event.title}
-                  </h3>
-                  {event.location && (
-                    <span className="past-event-location">
-                      {event.location}
-                    </span>
-                  )}
-                </div>
-
-                {event.link && (
-                  <a
-                    href={event.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="past-event-link"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    →
-                  </a>
-                )}
-              </article>
-            );
-          })}
-        </div>
+    <div className="past-events-section" data-section="past-events">
+      <div className="past-events-header">
+        <h2 className="past-events-heading">Tidigare evenemang</h2>
       </div>
+
+      <div className="past-events-list">
+        {visibleEvents.map((event, index) => {
+          // Basic date parsing (assuming format "1 November 2025" or similar)
+          // We'll just split by space for a simple "Day Month" badge
+          const dateParts = event.date.split(" ");
+          const day = dateParts[0] || "";
+          const month = dateParts[1]
+            ? dateParts[1].substring(0, 3).toUpperCase()
+            : "";
+
+          // Use the first available image as thumbnail
+          const thumbImage = event.images?.[0] || event.image;
+
+          return (
+            <article
+              key={`${event.title}-${index}`}
+              className="past-event-item"
+              aria-labelledby={`past-event-title-${index}`}
+              onClick={() => setSelectedEvent(event)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setSelectedEvent(event);
+                }
+              }}
+            >
+              <div className="past-event-date-badge">
+                <span className="date-day">{day}</span>
+                <span className="date-month">{month}</span>
+              </div>
+
+              {thumbImage?.src && (
+                <div className="past-event-thumbnail">
+                  <img
+                    src={thumbImage.src}
+                    alt={thumbImage.alt || ""}
+                    loading="lazy"
+                  />
+                </div>
+              )}
+
+              <div className="past-event-info">
+                <h3
+                  id={`past-event-title-${index}`}
+                  className="past-event-title"
+                >
+                  {event.title}
+                </h3>
+                {event.location && (
+                  <span className="past-event-location">{event.location}</span>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      {events.length > 5 && (
+        <div className="past-events-footer">
+          <button
+            className="past-events-show-more-btn"
+            onClick={() => setShowAll(!showAll)}
+          >
+            {showAll ? "Visa färre" : "Visa fler evenemang"}
+          </button>
+        </div>
+      )}
 
       {/* Modal */}
       {selectedEvent && (
@@ -310,14 +295,12 @@ function PastEventsAccordion({ isOpen, onToggle, events }) {
 }
 
 PastEventsAccordion.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onToggle: PropTypes.func.isRequired,
   events: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       date: PropTypes.string.isRequired,
-      time: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
+      time: PropTypes.string,
+      description: PropTypes.string,
       location: PropTypes.string,
     })
   ).isRequired,

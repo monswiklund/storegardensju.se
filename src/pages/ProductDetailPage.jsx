@@ -49,7 +49,7 @@ function ProductDetailPage() {
   if (loading) {
     return (
       <main role="main" id="main-content">
-        <PageSection background="white" spacing="default">
+        <PageSection background="alt" spacing="default">
           <div className="product-loading">
             <Loader2 className="spinner" size={48} />
             <p>Laddar produkt...</p>
@@ -63,7 +63,7 @@ function ProductDetailPage() {
   if (error || !product) {
     return (
       <main role="main" id="main-content">
-        <PageSection background="white" spacing="default">
+        <PageSection background="alt" spacing="default">
           <div className="product-not-found">
             <h1>Produkten hittades inte</h1>
             <p>{error || "Den produkt du söker finns inte längre."}</p>
@@ -76,7 +76,7 @@ function ProductDetailPage() {
 
   return (
     <main role="main" id="main-content">
-      <PageSection background="white" spacing="default">
+      <PageSection background="alt" spacing="default">
         {/* Breadcrumb navigation */}
         <nav className="breadcrumb" aria-label="breadcrumb">
           <Link to="/">Hem</Link>

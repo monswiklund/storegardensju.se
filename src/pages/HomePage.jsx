@@ -19,7 +19,7 @@ function HomePage() {
   return (
     <>
       <header role="banner">
-        <PageSection background="white" spacing="none" ariaLabel="hero-heading">
+        <PageSection background="alt" spacing="none" ariaLabel="hero-heading">
           <HomeHeroSection />
         </PageSection>
       </header>
@@ -38,7 +38,7 @@ function HomePage() {
 
         {/* Featured Images Grid */}
         <PageSection
-          background="white"
+          background="alt"
           spacing="compact"
           ariaLabel="featured-gallery-heading"
         >
@@ -49,7 +49,7 @@ function HomePage() {
 
         {/* Services - Klickbara kort */}
         <PageSection
-          background="white"
+          background="alt"
           spacing="compact"
           ariaLabel="services-heading"
         >

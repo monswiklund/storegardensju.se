@@ -30,7 +30,7 @@
   align-items: center;
   padding-left: max(40px, calc((100vw - 1400px) / 2));
   padding-right: 40px;
-  background: var(--background-color);
+  background: transparent;
 }
 
 /* Swipe indicator - absolute positioned, no layout impact */
@@ -309,7 +309,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background: var(--background-color);
+  background: transparent;
 }
 
 .portfolio-slide img {

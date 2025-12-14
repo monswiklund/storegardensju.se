@@ -3,15 +3,7 @@
    ========================================================================== */
 .events-section {
   width: 100%;
-  /* Subtle warm gradient fading in from top and out at bottom */
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(185, 148, 112, 0.03) 15%,
-    rgba(185, 148, 112, 0.08) 50%,
-    rgba(185, 148, 112, 0.03) 85%,
-    transparent 100%
-  );
+  background-color: transparent !important;
   padding: 48px 0; /* Add some breathing room for the background to be visible */
 }
 

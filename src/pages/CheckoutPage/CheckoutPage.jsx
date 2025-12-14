@@ -16,7 +16,7 @@ export default function CheckoutPage() {
   if (!cart || cart.length === 0) {
     return (
       <main role="main" id="main-content">
-        <PageSection background="white" spacing="default">
+        <PageSection background="alt" spacing="default">
           <div className="checkout-empty">
             <h1>Din varukorg är tom</h1>
             <p>Lägg till produkter innan du går till kassan</p>
@@ -93,7 +93,7 @@ export default function CheckoutPage() {
 
   return (
     <main role="main" id="main-content">
-      <PageSection background="white" spacing="default">
+      <PageSection background="alt" spacing="default">
         <div className="checkout-container">
           <div className="checkout-header">
             <button
