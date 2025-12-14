@@ -122,6 +122,11 @@ function PastEventsAccordion({ events }) {
                 {event.location && (
                   <span className="past-event-location">{event.location}</span>
                 )}
+                {event.description && (
+                  <p className="past-event-description-preview">
+                    {event.description}
+                  </p>
+                )}
               </div>
             </article>
           );

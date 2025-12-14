@@ -144,6 +144,20 @@
   text-decoration: underline; /* Add underline on hover instead of move */
 }
 
+.past-event-description-preview {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 8px 0 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+  max-width: 600px; /* Prevent it from getting too wide on large screens */
+}
+
 @media (max-width: 480px) {
   .past-event-item {
     gap: 16px;
