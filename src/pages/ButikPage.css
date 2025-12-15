@@ -294,10 +294,53 @@
 }
 
 .product-card .price {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--primary-color, hsl(160, 32%, 50%));
-  margin-bottom: 0;
+  margin: 0;
+  font-family: var(--font-body);
+}
+
+/* Price and button row */
+.price-button-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: auto;
+}
+
+.add-btn {
+  width: auto !important;
+  padding: 8px 16px !important;
+  font-size: 0.85rem !important;
+  border-radius: 20px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* Category and unique exemplar text */
+.product-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #666);
+  margin-bottom: 0.75rem;
+  font-family: var(--font-body);
+}
+
+/* Quantity row with stock text on left */
+.quantity-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 0.75rem;
+}
+
+.stock-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #666);
   font-family: var(--font-body);
 }
 

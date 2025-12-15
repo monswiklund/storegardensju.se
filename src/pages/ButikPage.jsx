@@ -143,86 +143,90 @@ function ButikPage() {
                 >
                   <div className="product-card-image">
                     <img src={product.images[0]} alt={product.name} />
-                    <div className="product-badges">
-                      <span className="product-badge">{product.category}</span>
-                      {stock === 1 && !isSoldOut && (
-                        <span className="product-badge">Unikt exemplar</span>
-                      )}
-                      {isSoldOut && (
+                    {/* Endast SÅLD badge visas på bilden */}
+                    {isSoldOut && (
+                      <div className="product-badges">
                         <span className="product-badge badge-sold-out">
                           SÅLD
                         </span>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                   <div className="product-card-content">
                     <h3>{product.name}</h3>
                     <p className="description">{product.description}</p>
-                    <div className="price-stock">
-                      <p className="price">{formatPrice(product.price)}</p>
-                      {stock > 1 && !isSoldOut && (
-                        <span className="stock-badge">{stock} i lager</span>
-                      )}
-                    </div>
 
-                    {/* Quantity selector för produkter med stock > 1 */}
+                    {/* Kategori och Unikt exemplar som text under beskrivning */}
+                    <p className="product-meta">
+                      {product.category}
+                      {stock === 1 && !isSoldOut && " · Unikt exemplar"}
+                    </p>
+
+                    {/* Quantity selector med stock till vänster */}
                     {stock > 1 && !isSoldOut && !alreadyInCart && (
-                      <div className="quantity-selector">
-                        <button
-                          type="button"
-                          className="qty-btn"
-                          onClick={() =>
-                            handleQuantityChange(product.id, stock, -1)
-                          }
-                          disabled={(quantities[product.id] || 1) <= 1}
-                          aria-label="Minska antal"
-                        >
-                          <Minus size={16} />
-                        </button>
-                        <span className="qty-value">
-                          {quantities[product.id] || 1}
-                        </span>
-                        <button
-                          type="button"
-                          className="qty-btn"
-                          onClick={() =>
-                            handleQuantityChange(product.id, stock, 1)
-                          }
-                          disabled={(quantities[product.id] || 1) >= stock}
-                          aria-label="Öka antal"
-                        >
-                          <Plus size={16} />
-                        </button>
+                      <div className="quantity-row">
+                        <span className="stock-text">{stock} i lager</span>
+                        <div className="quantity-selector">
+                          <button
+                            type="button"
+                            className="qty-btn"
+                            onClick={() =>
+                              handleQuantityChange(product.id, stock, -1)
+                            }
+                            disabled={(quantities[product.id] || 1) <= 1}
+                            aria-label="Minska antal"
+                          >
+                            <Minus size={16} />
+                          </button>
+                          <span className="qty-value">
+                            {quantities[product.id] || 1}
+                          </span>
+                          <button
+                            type="button"
+                            className="qty-btn"
+                            onClick={() =>
+                              handleQuantityChange(product.id, stock, 1)
+                            }
+                            disabled={(quantities[product.id] || 1) >= stock}
+                            aria-label="Öka antal"
+                          >
+                            <Plus size={16} />
+                          </button>
+                        </div>
                       </div>
                     )}
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        !alreadyInCart &&
-                        handleAddToCart(product, quantities[product.id] || 1)
-                      }
-                      className={
-                        justAdded ? "added" : alreadyInCart ? "in-cart" : ""
-                      }
-                      disabled={isSoldOut || (alreadyInCart && !justAdded)}
-                    >
-                      {isSoldOut ? (
-                        <>SÅLD</>
-                      ) : justAdded ? (
-                        <>
-                          <Check size={18} /> Tillagd!
-                        </>
-                      ) : alreadyInCart ? (
-                        <>
-                          <Check size={18} /> I varukorgen
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingCart size={18} /> Lägg i varukorg
-                        </>
-                      )}
-                    </button>
+                    {/* Pris och köp-knapp i samma rad */}
+                    <div className="price-button-row">
+                      <p className="price">{formatPrice(product.price)}</p>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          !alreadyInCart &&
+                          handleAddToCart(product, quantities[product.id] || 1)
+                        }
+                        className={`add-btn ${
+                          justAdded ? "added" : alreadyInCart ? "in-cart" : ""
+                        }`}
+                        disabled={isSoldOut || (alreadyInCart && !justAdded)}
+                      >
+                        {isSoldOut ? (
+                          <>SÅLD</>
+                        ) : justAdded ? (
+                          <>
+                            <Check size={14} /> Tillagd!
+                          </>
+                        ) : alreadyInCart ? (
+                          <>
+                            <Check size={14} /> I korgen
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingCart size={14} /> Köp
+                          </>
+                        )}
+                      </button>
+                    </div>
                     {alreadyInCart && !justAdded && (
                       <Link to="/varukorg" className="btn-go-to-cart">
                         Till varukorgen <ArrowRight size={16} />
