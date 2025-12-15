@@ -40,9 +40,13 @@ export default function CheckoutPage() {
 
       // Konvertera pris från SEK till öre (Stripe förväntar sig smallest currency unit)
       // Och säkerställ att bildvägar är absoluta URLs
+      // VIKTIGT: Inkludera priceId så backend kan koppla till rätt produkt i Stripe
       const cartItemsForStripe = cart.map((item) => ({
-        ...item,
+        id: item.id,
+        priceId: item.priceId, // Stripe Price ID (price_xxx) - krävs för lagerhantering
+        name: item.name,
         price: item.price * 100, // 150 SEK -> 15000 öre
+        quantity: item.quantity,
         images: item.images.map((img) =>
           img.startsWith("http") ? img : `${window.location.origin}${img}`
         ),

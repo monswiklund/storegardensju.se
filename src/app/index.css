@@ -13,7 +13,7 @@
 
   /* --background-color: hwb(161 27% 38% / 0.059); Original bright green tint */
   --background-color: #f0fdf4; /* Fallback light green if needed */
-  --background-alt: #fff9f3; /* Soft lighter brown/beige */
+  --background-alt: #ffffff; /* Soft lighter brown/beige */
   --overlay-dark: rgba(28, 28, 28, 0.4); /* Dark overlay for images */
 
   --text-main: #000000; /* Black */
