@@ -1,6 +1,13 @@
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Check, Loader2, ArrowRight } from "lucide-react";
+import {
+  ShoppingCart,
+  Check,
+  Loader2,
+  ArrowRight,
+  Minus,
+  Plus,
+} from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
 import { PageSection } from "../components";
@@ -29,6 +36,8 @@ function ButikPage() {
   const [activeCategory, setActiveCategory] = useState("alla");
   // State för att visa feedback när produkt läggs till
   const [addedToCart, setAddedToCart] = useState(null);
+  // State för valt antal per produkt (för produkter med stock > 1)
+  const [quantities, setQuantities] = useState({});
 
   // Hämta addItem och isInCart från CartContext
   const { addItem, isInCart } = useContext(CartContext);
@@ -47,12 +56,23 @@ function ButikPage() {
     return "products-grid"; // 5+ produkter - standard grid
   };
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product, qty = 1) => {
     if (!product.active) return; // Kan inte köpa inaktiva/slutsålda produkter
-    addItem(product);
+    addItem(product, qty);
     setAddedToCart(product.id);
+    // Återställ antal till 1 efter tillägg
+    setQuantities((prev) => ({ ...prev, [product.id]: 1 }));
     // Ta bort feedback efter 2 sekunder
     setTimeout(() => setAddedToCart(null), 2000);
+  };
+
+  // Hantera +/- för antal
+  const handleQuantityChange = (productId, stock, delta) => {
+    setQuantities((prev) => {
+      const current = prev[productId] || 1;
+      const newQty = Math.max(1, Math.min(stock, current + delta));
+      return { ...prev, [productId]: newQty };
+    });
   };
 
   return (
@@ -144,9 +164,44 @@ function ButikPage() {
                         <span className="stock-badge">{stock} i lager</span>
                       )}
                     </div>
+
+                    {/* Quantity selector för produkter med stock > 1 */}
+                    {stock > 1 && !isSoldOut && !alreadyInCart && (
+                      <div className="quantity-selector">
+                        <button
+                          type="button"
+                          className="qty-btn"
+                          onClick={() =>
+                            handleQuantityChange(product.id, stock, -1)
+                          }
+                          disabled={(quantities[product.id] || 1) <= 1}
+                          aria-label="Minska antal"
+                        >
+                          <Minus size={16} />
+                        </button>
+                        <span className="qty-value">
+                          {quantities[product.id] || 1}
+                        </span>
+                        <button
+                          type="button"
+                          className="qty-btn"
+                          onClick={() =>
+                            handleQuantityChange(product.id, stock, 1)
+                          }
+                          disabled={(quantities[product.id] || 1) >= stock}
+                          aria-label="Öka antal"
+                        >
+                          <Plus size={16} />
+                        </button>
+                      </div>
+                    )}
+
                     <button
                       type="button"
-                      onClick={() => !alreadyInCart && handleAddToCart(product)}
+                      onClick={() =>
+                        !alreadyInCart &&
+                        handleAddToCart(product, quantities[product.id] || 1)
+                      }
                       className={
                         justAdded ? "added" : alreadyInCart ? "in-cart" : ""
                       }

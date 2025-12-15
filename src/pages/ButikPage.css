@@ -311,6 +311,59 @@
   font-family: var(--font-body);
 }
 
+/* Quantity selector for products with stock > 1 */
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 0.75rem;
+}
+
+.product-card .quantity-selector .qty-btn {
+  all: unset;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  max-width: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #ccc;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.product-card .quantity-selector .qty-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: #666;
+}
+
+.product-card .quantity-selector .qty-btn:hover:not(:disabled) {
+  border-color: var(--primary-color, hsl(160, 32%, 50%));
+  background: var(--primary-color, hsl(160, 32%, 50%));
+}
+
+.product-card .quantity-selector .qty-btn:hover:not(:disabled) svg {
+  stroke: white;
+}
+
+.product-card .quantity-selector .qty-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.qty-value {
+  font-size: 1rem;
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+  font-family: var(--font-body);
+}
+
 .product-card button {
   width: 100%;
   padding: 12px 24px;
