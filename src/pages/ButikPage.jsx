@@ -113,7 +113,7 @@ function ButikPage() {
             {filteredProducts.map((product) => {
               const alreadyInCart = isInCart(product.id);
               const justAdded = addedToCart === product.id;
-              const stock = product.stock || 1; // Default 1 för unika produkter
+              const stock = product.stock ?? 1; // Default 1 endast om stock är undefined/null
               const isSoldOut = !product.active || stock === 0;
 
               return (

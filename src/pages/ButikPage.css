@@ -450,13 +450,23 @@
   border: 1px solid #999;
 }
 
-/* Sold out / Archived card style */
+/* Sold out / Archived card style - behåll bild i full färg */
 .product-card.sold-out {
-  opacity: 0.85;
-  filter: grayscale(0.8);
+  /* Ingen grayscale - bilden visas i full färg som ett galleri */
 }
 
 .product-card.sold-out:hover {
+  transform: translateY(-4px); /* Lite hover-effekt ändå */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.product-card.sold-out button {
+  background: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.product-card.sold-out button:hover {
+  background: #9e9e9e;
   transform: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* No lift on hover */
+  box-shadow: none;
 }
