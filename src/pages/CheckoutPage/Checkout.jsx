@@ -28,7 +28,17 @@ const CheckoutButton = () => {
                 throw new Error('Failed to create checkout session');
             }
 
-            const { url } = await response.json();
+            const data = await response.json();
+            if (data?.sessionId && data?.verifyToken) {
+                sessionStorage.setItem(
+                    `checkout_verify_token:${data.sessionId}`,
+                    data.verifyToken
+                );
+            }
+            const url = data?.url;
+            if (!url) {
+                throw new Error('No checkout URL received from backend');
+            }
             window.location.href = url;
         } catch (err) {
             console.error('Checkout error:', err);

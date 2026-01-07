@@ -74,10 +74,15 @@ export function formatPrice(price) {
  * @param {string} sessionId - Session-ID från Stripe
  * @returns {Promise<boolean>} Sant om sessionen är giltig och betald
  */
-export async function verifySession(sessionId) {
+export async function verifySession(sessionId, token) {
   try {
+    const params = new URLSearchParams();
+    params.set("session_id", sessionId);
+    if (token) {
+      params.set("token", token);
+    }
     const response = await fetch(
-      `${API_URL}/verify-session?session_id=${sessionId}`
+      `${API_URL}/verify-session?${params.toString()}`
     );
 
     if (!response.ok) {

@@ -76,6 +76,13 @@ export default function CheckoutPage() {
         throw new Error("No checkout URL received from backend");
       }
 
+      if (data.sessionId && data.verifyToken) {
+        sessionStorage.setItem(
+          `checkout_verify_token:${data.sessionId}`,
+          data.verifyToken
+        );
+      }
+
       // Redirecta till Stripe Checkout
       window.location.href = data.url;
     } catch (err) {

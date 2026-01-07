@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,6 +15,7 @@ import {
   BuildInfo,
   Footer,
 } from "../components";
+import { ToastProvider } from "../contexts/ToastContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +25,7 @@ import EventPage from "../pages/EventPage/EventPage.jsx";
 import ArtPage from "../pages/ArtPage.jsx";
 import GalleriPage from "../pages/GalleriPage.jsx";
 import TeamPage from "../pages/TeamPage.jsx";
+import AdminPage from "../pages/AdminPage/AdminPage.jsx";
 // BUTIK
 import ButikPage from "../pages/ButikPage.jsx";
 import ProductDetailPage from "../pages/ProductDetailPage.jsx";
@@ -83,7 +90,23 @@ function App() {
 
   return (
     <Router>
-      <ScrollToTop />
+      <ToastProvider>
+        <ScrollToTop />
+        <AppContent />
+        <ScrollToTopButton />
+      </ToastProvider>
+    </Router>
+  );
+}
+
+export default App;
+
+function AppContent() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
+  return (
+    <>
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -98,13 +121,10 @@ function App() {
         <Route path="/success" element={<SuccessPage />} />
         <Route path="/cancel" element={<CancelPage />} />
         <Route path="/om-oss" element={<TeamPage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
-      <ContactSection />
-      <Footer />
-
-      <ScrollToTopButton />
-    </Router>
+      {!isAdminRoute && <ContactSection />}
+      {!isAdminRoute && <Footer />}
+    </>
   );
 }
-
-export default App;

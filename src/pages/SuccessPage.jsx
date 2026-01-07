@@ -20,13 +20,19 @@ export default function SuccessPage() {
         if (sessionId === "undefined" || sessionId === "null") return;
 
         try {
+          const token = sessionStorage.getItem(
+            `checkout_verify_token:${sessionId}`
+          );
           // Importera service dynamiskt eller lägg till import i toppen av filen
           // För nu antar vi att vi har lagt till importen
-          const isValid = await verifySession(sessionId);
+          const isValid = await verifySession(sessionId, token);
 
           if (isValid) {
             hasCleared.current = true;
             clearCart();
+            if (token) {
+              sessionStorage.removeItem(`checkout_verify_token:${sessionId}`);
+            }
           } else {
             console.warn("Ogiltig session, tömmer ej varukorg");
             // Här kan man redirecta eller visa felmeddelande om man vill
