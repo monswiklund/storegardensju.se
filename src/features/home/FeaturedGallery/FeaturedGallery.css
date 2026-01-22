@@ -1,6 +1,9 @@
 .featured-gallery-container {
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   box-sizing: border-box;
+  background-color: transparent !important;
 }
 
 .featured-grid {
@@ -12,7 +15,7 @@
 .featured-item {
   position: relative;
   min-height: clamp(460px, 78vh, 820px);
-  border-radius: clamp(20px, 3vw, 32px);
+  border-radius: 0; /* Edge to edge - no rounded corners */
   overflow: hidden;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -70,6 +73,7 @@
   margin: 0 0 16px 0;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
   letter-spacing: -0.02em;
+  color: #ffffff !important;
 }
 
 .featured-subtitle {

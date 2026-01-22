@@ -1,23 +1,40 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Navbar,
+  CartDrawer,
   ScrollToTopButton,
   ScrollToTop,
   BuildInfo,
+  Footer,
 } from "../components";
+import { ToastProvider } from "../contexts/ToastContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Pages
 import HomePage from "../pages/HomePage.jsx";
 import EventPage from "../pages/EventPage/EventPage.jsx";
+import MohippaPage from "../pages/MohippaPage.jsx";
 import ArtPage from "../pages/ArtPage.jsx";
 import GalleriPage from "../pages/GalleriPage.jsx";
 import TeamPage from "../pages/TeamPage.jsx";
+import AdminPage from "../pages/AdminPage/AdminPage.jsx";
+// BUTIK
+import ButikPage from "../pages/ButikPage.jsx";
+import ProductDetailPage from "../pages/ProductDetailPage.jsx";
+import CartPage from "../pages/CartPage.jsx";
+import CheckoutPage from "../pages/CheckoutPage/CheckoutPage.jsx";
+import SuccessPage from "../pages/SuccessPage.jsx";
+import CancelPage from "../pages/CancelPage.jsx";
 import { ContactSection } from "../features/contact";
 
 function App() {
@@ -75,26 +92,46 @@ function App() {
 
   return (
     <Router>
-      <a href="#main-content" className="skip-link">
-        Hoppa till huvudinnehåll
-      </a>
-      <ScrollToTop />
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/event" element={<EventPage />} />
-        <Route path="/konst" element={<ArtPage />} />
-        <Route path="/galleri" element={<GalleriPage />} />
-        <Route path="/om-oss" element={<TeamPage />} />
-      </Routes>
-      <ContactSection />
-      <footer role="contentinfo" className="site-footer">
-        <BuildInfo />
-      </footer>
-
-      <ScrollToTopButton />
+      <ToastProvider>
+        <ScrollToTop />
+        <AppContent />
+        <ScrollToTopButton />
+      </ToastProvider>
     </Router>
   );
 }
 
 export default App;
+
+function AppContent() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  const isHomePage = location.pathname === "/";
+
+  return (
+    <div
+      className={isAdminRoute ? "admin-app" : isHomePage ? "home-app" : "page-app"}
+    >
+      <Navbar />
+      <CartDrawer />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/event" element={<EventPage />} />
+        <Route path="/mohippa" element={<MohippaPage />} />
+        <Route path="/konst" element={<ArtPage />} />
+        <Route path="/galleri" element={<GalleriPage />} />
+        {/* BUTIK */}
+        <Route path="/butik" element={<ButikPage />} />
+        <Route path="/butik/:productId" element={<ProductDetailPage />} />
+        <Route path="/varukorg" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/success" element={<SuccessPage />} />
+        <Route path="/cancel" element={<CancelPage />} />
+        <Route path="/om-oss" element={<TeamPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+      </Routes>
+      {!isAdminRoute && <ContactSection />}
+      {!isAdminRoute && <Footer />}
+    </div>
+  );
+}

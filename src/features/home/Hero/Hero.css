@@ -1,278 +1,399 @@
 /* ==========================================================================
-   Hero Section (Logo & Title)
+   Hero Section (Two-Part Layout)
    ========================================================================== */
 
-/* Expand the shell so the hero can breathe wider than default page sections */
-header[role="banner"] .page-section-content {
-  max-width: min(100%, 1600px);
-  padding-left: clamp(20px, 6vw, 96px);
-  padding-right: clamp(20px, 6vw, 96px);
-}
-
-/* Container: centered layout with full-height intro */
-.hero-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* Logo Section - Full Viewport */
+.hero-logo-section {
   position: relative;
-  width: min(100%, 1320px);
-  margin: 0 auto;
-  padding: clamp(24px, 6vh, 72px) clamp(16px, 5vw, 72px) clamp(32px, 8vh, 96px);
-  text-align: center;
-  overflow: hidden;
-}
-
-.hero-container {
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  width: 100%;
-  min-height: min(100vh, 760px);
-  min-height: min(100dvh, 760px);
-  gap: clamp(16px, 4vh, 56px);
+  align-items: center;
+  background-color: transparent !important;
+  text-align: center;
+  padding: 0 20px;
+  /* Counteract global body padding-top from Navbar */
+  margin-top: -60px;
 }
 
-/* Logo: scale smoothly without overpowering the copy */
+@media (max-width: 480px) {
+  .hero-logo-section {
+    margin-top: -55px;
+  }
+}
+
+/* Logo */
 .hero-logo {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 500px;
-  margin: 0;
-  will-change: transform;
+  max-width: 400px;
+  width: 80%;
+  animation: fadeIn 1s ease-out forwards;
 }
 
 .hero-logo img {
-  width: clamp(300px, 82vw, 800px);
-  max-width: 100%;
+  width: 100%;
   height: auto;
-  object-fit: contain;
 }
 
-.hero-scroll-indicator {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  margin: clamp(6px, 3vh, 24px) 0;
-  border: 1px solid rgba(64, 123, 94, 0.2);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.68);
-  color: var(--text-secondary);
-  font-size: clamp(0.76rem, 0.72rem + 0.18vw, 0.92rem);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Content Section - Below Logo Section */
+.hero-content-section {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 80px 20px 60px; /* Reduced bottom padding */
+  text-align: left;
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.4s ease, transform 0.4s ease, color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-  box-shadow: 0 8px 18px rgba(24, 36, 28, 0.08);
-  pointer-events: none;
-  max-width: min(100%, 280px);
-  text-align: center;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background-color: transparent !important;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
-.hero-scroll-indicator.is-visible {
+.hero-content-section.is-visible {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
 }
 
-.hero-scroll-indicator.is-fading-out {
-  opacity: 0;
-  transform: translateY(-8px);
-  pointer-events: none;
-}
-
-.hero-scroll-indicator:hover,
-.hero-scroll-indicator:focus-visible {
-  color: var(--primary-color);
-  border-color: rgba(64, 123, 94, 0.4);
-  background: rgba(255, 255, 255, 0.85);
-}
-
-.hero-scroll-indicator:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(64, 123, 94, 0.35);
-}
-
-.hero-scroll-indicator-label {
-  white-space: nowrap;
-}
-
-.hero-scroll-indicator-icon {
-  width: 18px;
-  height: 18px;
-  animation: hero-scroll-bounce 2s ease-in-out infinite;
-}
-
-@keyframes hero-scroll-bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(5px);
-  }
-}
-
-/* Copy block: refined vertical rhythm and entrance transition */
-.hero-titel {
+/* Content: Title & Text */
+.hero-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: clamp(12px, 2.2vw, 24px);
-  max-width: 840px;
-  margin: clamp(40px, 8vh, 120px) auto 0;
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  will-change: transform, opacity;
+  align-items: flex-start;
+  gap: 24px;
 }
 
-.hero-titel.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.hero-titel h1 {
+.hero-content h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(3rem, 5vw, 5rem);
+  color: #000000;
   margin: 0;
-  font-size: clamp(2.4rem, 1.7rem + 2.2vw, 3.8rem);
-  font-weight: 300;
   line-height: 1.1;
-  letter-spacing: -0.015em;
-  color: var(--text-color);
 }
 
-.hero-titel h2 {
-  margin: 0;
-  font-size: clamp(1.22rem, 1rem + 1.4vw, 2.05rem);
+.hero-content h2 {
+  font-family: var(--font-body);
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
   font-weight: 300;
-  line-height: 1.3;
-  color: var(--text-secondary);
-}
-
-.hero-titel p {
+  color: #333333;
   margin: 0;
-  font-size: clamp(1.04rem, 0.98rem + 0.35vw, 1.24rem);
-  line-height: 1.64;
-  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.hero-titel p + p {
-  margin-top: clamp(12px, 1.5vw, 20px);
+.hero-content p {
+  font-size: clamp(1rem, 1.2vw, 1.25rem);
+  max-width: 700px;
+  line-height: 1.6;
+  color: #333333;
+  margin: 0;
 }
 
-/* CTA cluster: column stack on small screens */
-.hero-cta-group {
+/* CTA Container */
+.hero-cta-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* Center buttons */
   gap: 16px;
-  margin-top: clamp(20px, 3.2vw, 32px);
+  margin-top: 12px;
   width: 100%;
-  max-width: 420px;
 }
 
-.hero-cta-secondary-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.hero-cta-primary-row {
   width: 100%;
+  display: flex;
+  justify-content: center; /* Centered primary */
+}
+
+/* Use Grid for secondary row to ensure EXACTLY equal widths for both buttons */
+.hero-cta-secondary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 16px;
+  width: 100%;
+  max-width: 420px; /* Constrain max width so they don't get too huge */
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 480px) {
+  /* Enforce same max-width for both rows so buttons are identical size */
+  .hero-cta-primary-row,
+  .hero-cta-secondary-row {
+    grid-template-columns: 1fr; /* Stack secondary */
+    max-width: 320px; /* Standard width for all buttons on mobile */
+    width: 100%;
+  }
+
+  /* Remove flex centering for primary on mobile to let it fill width */
+  .hero-cta-primary-row {
+    display: block; /* Helps button fill width if it's block/flex item */
+  }
+}
+
+/* On Desktop/Larger screens - User requested CENTER buttons */
+@media (min-width: 768px) {
+  .hero-cta-container {
+    align-items: center;
+  }
+
+  .hero-cta-secondary-row {
+    /* Grid handles alignment via max-width margin auto if we center the block */
+    margin: 0 auto;
+    gap: 20px;
+  }
+}
+
+/* FORCE CENTER ALL SCREENS for buttons only */
+.hero-cta-container {
+  align-items: center;
+}
+.hero-cta-primary-row {
+  justify-content: center;
+}
+.hero-cta-secondary-row {
+  justify-content: center;
 }
 
 .hero-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  padding: 14px 28px;
-  border-radius: 999px;
-  border: 2px solid transparent;
-  background: transparent;
-  font-size: clamp(0.96rem, 0.92rem + 0.35vw, 1.08rem);
+  padding: 14px 32px; /* Slightly adjusted padding */
+  border-radius: 999px; /* Pill shape */
   font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
   text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+
+  /* CRITICAL: Enforce consistent typography for <a> and <button> */
+  line-height: 1.2;
+  font-family: inherit;
+
+  /* CRITICAL: Fill the available slot (grid cell or container) */
+  width: 100%;
+  max-width: 320px; /* Cap it nicely on desktop if loose */
+
+  /* Keep a reasonable min-width for very small text labels */
+  min-width: unset;
+
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease,
-    background 0.25s ease, color 0.25s ease;
+  gap: 10px; /* Space for icon */
+  box-sizing: border-box; /* padding inside width */
 }
 
+/* SOLID PRIMARY */
 .hero-cta-primary {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-  color: #fff;
-  box-shadow: 0 12px 32px rgba(64, 123, 94, 0.3);
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 4px 12px rgba(95, 111, 82, 0.2); /* Warmer shadow */
 }
 
 .hero-cta-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 18px 36px rgba(64, 123, 94, 0.35);
+  box-shadow: 0 6px 16px rgba(95, 111, 82, 0.3);
 }
 
+/* OUTLINE SECONDARY */
 .hero-cta-secondary {
+  background-color: transparent;
   color: var(--primary-color);
-  border-color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  box-shadow: none;
 }
 
 .hero-cta-secondary:hover {
-  background: rgba(64, 123, 94, 0.1);
+  background-color: rgba(
+    95,
+    111,
+    82,
+    0.1
+  ); /* Subtle background tint on hover */
+  border-color: var(--primary-hover);
+  color: var(--primary-hover);
   transform: translateY(-2px);
+  box-shadow: none;
 }
 
-.hero-cta:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(64, 123, 94, 0.35);
-}
-
-.hero-cta:disabled,
-.hero-cta[aria-disabled="true"] {
-  cursor: default;
+/* Scroll Indicator */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #666666;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease, opacity 0.3s ease;
+  z-index: 5;
+  padding: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0;
   pointer-events: none;
 }
 
-@media (min-width: 640px) {
-  /* Allow secondary buttons to sit side-by-side */
-  .hero-cta-secondary-group {
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+.hero-scroll-indicator.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  animation: bounce 2s infinite;
+}
 
-  .hero-cta {
-    width: auto;
-    min-width: 180px;
+.hero-scroll-indicator.is-fading-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-scroll-indicator:hover {
+  color: var(--primary-color);
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-wrapper {
-    transition: none;
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
-
-  .hero-titel {
+  to {
     opacity: 1;
-    transform: none;
-    pointer-events: auto;
-    transition: none;
-    visibility: visible;
-    max-height: none;
-    overflow: visible;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   Hero Carousel
+   ========================================================================== */
+
+.hero-carousel {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%); /* Break out of container to be full width */
+  margin-right: calc(-50vw + 50%);
+  margin-top: 0px; /* Reduced to minimum */
+  margin-bottom: -10px; /* No bottom margin */
+  overflow: hidden;
+  position: relative;
+  /* Mask gradient for smooth edges */
+
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    white 10%,
+    white 90%,
+    transparent
+  );
+  mask: linear-gradient(90deg, transparent, white 10%, white 90%, transparent);
+}
+
+.hero-carousel-inner {
+  display: flex;
+  gap: 2rem; /* Increased gap for polaroid style */
+  width: max-content;
+  flex-wrap: nowrap;
+  padding: 20px 0; /* Space for shadows */
+}
+
+/* Match .gallery-thumbnail style */
+.hero-carousel-item {
+  width: 200px;
+  height: 300px; /* 2:3 Aspect ratio */
+  flex-shrink: 0;
+
+  /* Gallery Styles */
+  background: white;
+  padding: 12px;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  /* CRITICAL: Remove all interactivity */
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* User requested "remove click", so hover effects are likely unwanted too.
+   Since pointer-events: none is set, this won't trigger anyway on the item. 
+*/
+/*.hero-carousel-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+}*/
+
+.hero-carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0; /* Sharp corners inside padding */
+}
+
+/* Animation */
+.hero-carousel[data-animated="true"] .hero-carousel-inner {
+  animation: scroll 90s linear infinite;
+}
+
+/* Removed pause on hover as requested */
+/* .hero-carousel[data-animated="true"] .hero-carousel-inner:hover {
+  animation-play-state: paused;
+} */
+
+@keyframes scroll {
+  to {
+    transform: translate(calc(-50% - 1rem));
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .hero-carousel-item {
+    width: 160px;
+    height: 240px; /* 2:3 Aspect ratio */
+    padding: 8px; /* Slightly less padding on mobile */
   }
 
-  .hero-cta:hover {
-    transform: none;
+  .hero-carousel-inner {
+    gap: 1rem;
   }
 
-  .hero-scroll-indicator {
-    transition: none;
-  }
-
-  .hero-scroll-indicator-icon {
-    animation: none;
+  @keyframes scroll {
+    to {
+      transform: translate(calc(-50% - 0.5rem));
+    }
   }
 }

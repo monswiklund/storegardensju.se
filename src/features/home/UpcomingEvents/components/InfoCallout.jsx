@@ -1,30 +1,43 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
+import { Info, X } from "lucide-react";
 
 function InfoCallout({ onContact }) {
-  return (
-    <div className="info-box">
-      <div className="info-icon">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+  const [isOpen, setIsOpen] = useState(false);
+
+  if (!isOpen) {
+    return (
+      <div className="info-toggle-container">
+        <button
+          className="info-toggle-button"
+          onClick={() => setIsOpen(true)}
+          aria-label="Visa information"
         >
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="16" x2="12" y2="12" />
-          <line x1="12" y1="8" x2="12.01" y2="8" />
-        </svg>
+          <Info size={24} />
+          <span className="info-toggle-label">Info angående evenemang</span>
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="info-box open">
+      <button
+        className="info-close-button"
+        onClick={() => setIsOpen(false)}
+        aria-label="Stäng information"
+      >
+        <X size={20} />
+      </button>
+
+      <div className="info-icon">
+        <Info size={24} />
       </div>
       <div className="info-content">
         <p>
           Vi har begränsat antal evenemang och kurstillfällen vi kan genomföra
-          varje år. Ser du inget som passar? Kontakta oss gärna för att anmäla
-          ditt intresse eller boka privata kurser och gruppbokningar.
+          varje år. Ser du inget som passar? <br></br>Kontakta oss gärna för att
+          anmäla ditt intresse eller boka privata kurser och gruppbokningar.
         </p>
         <button className="info-cta-button" onClick={onContact} type="button">
           Kontakta oss

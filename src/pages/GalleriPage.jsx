@@ -15,9 +15,9 @@ function GalleriPage() {
     <main role="main" id="main-content">
       {/* Full Gallery */}
       <PageSection
-        background="white"
+        background="alt"
         spacing="default"
-        ariaLabelledBy="gallery-heading"
+        ariaLabel="gallery-heading"
       >
         <ErrorBoundary>
           <FadeInSection>
@@ -35,7 +35,7 @@ function GalleriPage() {
       <PageSection
         background="alt"
         spacing="compact"
-        ariaLabelledBy="venue-intro-heading"
+        ariaLabel="venue-intro-heading"
       >
         <FadeInSection>
           <VenueIntroSection />
