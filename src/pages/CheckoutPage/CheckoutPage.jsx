@@ -16,7 +16,7 @@ export default function CheckoutPage() {
   if (!cart || cart.length === 0) {
     return (
       <main role="main" id="main-content">
-        <PageSection background="white" spacing="default">
+        <PageSection background="alt" spacing="default">
           <div className="checkout-empty">
             <h1>Din varukorg är tom</h1>
             <p>Lägg till produkter innan du går till kassan</p>
@@ -40,9 +40,13 @@ export default function CheckoutPage() {
 
       // Konvertera pris från SEK till öre (Stripe förväntar sig smallest currency unit)
       // Och säkerställ att bildvägar är absoluta URLs
+      // VIKTIGT: Inkludera priceId så backend kan koppla till rätt produkt i Stripe
       const cartItemsForStripe = cart.map((item) => ({
-        ...item,
+        id: item.id,
+        priceId: item.priceId, // Stripe Price ID (price_xxx) - krävs för lagerhantering
+        name: item.name,
         price: item.price * 100, // 150 SEK -> 15000 öre
+        quantity: item.quantity,
         images: item.images.map((img) =>
           img.startsWith("http") ? img : `${window.location.origin}${img}`
         ),
@@ -72,6 +76,13 @@ export default function CheckoutPage() {
         throw new Error("No checkout URL received from backend");
       }
 
+      if (data.sessionId && data.verifyToken) {
+        sessionStorage.setItem(
+          `checkout_verify_token:${data.sessionId}`,
+          data.verifyToken
+        );
+      }
+
       // Redirecta till Stripe Checkout
       window.location.href = data.url;
     } catch (err) {
@@ -93,7 +104,7 @@ export default function CheckoutPage() {
 
   return (
     <main role="main" id="main-content">
-      <PageSection background="white" spacing="default">
+      <PageSection background="alt" spacing="default">
         <div className="checkout-container">
           <div className="checkout-header">
             <button

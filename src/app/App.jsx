@@ -1,24 +1,33 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Navbar,
+  CartDrawer,
   ScrollToTopButton,
   ScrollToTop,
   BuildInfo,
   Footer,
 } from "../components";
+import { ToastProvider } from "../contexts/ToastContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Pages
 import HomePage from "../pages/HomePage.jsx";
 import EventPage from "../pages/EventPage/EventPage.jsx";
+import MohippaPage from "../pages/MohippaPage.jsx";
 import ArtPage from "../pages/ArtPage.jsx";
 import GalleriPage from "../pages/GalleriPage.jsx";
 import TeamPage from "../pages/TeamPage.jsx";
+import AdminPage from "../pages/AdminPage/AdminPage.jsx";
 // BUTIK
 import ButikPage from "../pages/ButikPage.jsx";
 import ProductDetailPage from "../pages/ProductDetailPage.jsx";
@@ -83,11 +92,32 @@ function App() {
 
   return (
     <Router>
-      <ScrollToTop />
+      <ToastProvider>
+        <ScrollToTop />
+        <AppContent />
+        <ScrollToTopButton />
+      </ToastProvider>
+    </Router>
+  );
+}
+
+export default App;
+
+function AppContent() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  const isHomePage = location.pathname === "/";
+
+  return (
+    <div
+      className={isAdminRoute ? "admin-app" : isHomePage ? "home-app" : "page-app"}
+    >
       <Navbar />
+      <CartDrawer />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/event" element={<EventPage />} />
+        <Route path="/mohippa" element={<MohippaPage />} />
         <Route path="/konst" element={<ArtPage />} />
         <Route path="/galleri" element={<GalleriPage />} />
         {/* BUTIK */}
@@ -98,13 +128,10 @@ function App() {
         <Route path="/success" element={<SuccessPage />} />
         <Route path="/cancel" element={<CancelPage />} />
         <Route path="/om-oss" element={<TeamPage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
-      <ContactSection />
-      <Footer />
-
-      <ScrollToTopButton />
-    </Router>
+      {!isAdminRoute && <ContactSection />}
+      {!isAdminRoute && <Footer />}
+    </div>
   );
 }
-
-export default App;

@@ -44,7 +44,9 @@ export const services = [
   },
 ];
 
-export const upcomingEvents = [
+export const upcomingEvents = [];
+
+export const pastEvents = [
   {
     title: "Julmarknad",
     date: "13 December 2025",
@@ -72,9 +74,6 @@ export const upcomingEvents = [
       alt: "Affisch för Julmarknad på Storegården 7",
     },
   },
-];
-
-export const pastEvents = [
   {
     title: "Konstafton 2025",
     date: "1 November 2025",

@@ -5,7 +5,7 @@
 .services-section {
   width: 100%;
   padding: 80px 20px;
-  background-color: var(--background-alt); /* Slightly distinct background */
+  background-color: transparent !important; /* Slightly distinct background */
 }
 
 .services-container {
@@ -43,7 +43,7 @@
 
 /* Service Card Container */
 .service-card {
-  background: var(--background-color);
+  background: white;
   border: 1px solid rgba(0, 0, 0, 0.05); /* Very subtle border */
   border-radius: 8px; /* Less rounded, more rustic */
   overflow: hidden;

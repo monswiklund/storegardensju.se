@@ -14,7 +14,7 @@ export default function CartPage() {
   if (cart.length === 0) {
     return (
       <main role="main" id="main-content">
-        <PageSection background="white" spacing="default">
+        <PageSection background="alt" spacing="default">
           <div className="cart-empty">
             <ShoppingBag size={64} strokeWidth={1.5} />
             <h1>Din varukorg är tom</h1>
@@ -34,7 +34,7 @@ export default function CartPage() {
 
   return (
     <main role="main" id="main-content">
-      <PageSection background="white" spacing="default">
+      <PageSection background="alt" spacing="default">
         <div className="cart-container">
           <div className="cart-header">
             <h1>Varukorg</h1>

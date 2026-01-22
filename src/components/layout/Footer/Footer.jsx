@@ -1,5 +1,6 @@
 import "./Footer.css";
 import { Link } from "react-router-dom";
+import { Facebook, Instagram } from "lucide-react";
 import BuildInfo from "../../ui/BuildInfo.jsx";
 import { useEffect, useState } from "react";
 import { appRoutes } from "../../../config/routes.js";
@@ -38,6 +39,27 @@ const Footer = () => {
             ))}
           </ul>
         </nav>
+
+        <div className="footer-social">
+          <a
+            href="https://www.facebook.com/profile.php?id=61564642647081"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-social-link"
+            aria-label="Besök oss på Facebook"
+          >
+            <Facebook size={24} />
+          </a>
+          <a
+            href="https://www.instagram.com/storegarden7/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-social-link"
+            aria-label="Besök oss på Instagram"
+          >
+            <Instagram size={24} />
+          </a>
+        </div>
 
         <div className="footer-build-info">
           <BuildInfo />

@@ -49,7 +49,7 @@ function ProductDetailPage() {
   if (loading) {
     return (
       <main role="main" id="main-content">
-        <PageSection background="white" spacing="default">
+        <PageSection background="alt" spacing="default">
           <div className="product-loading">
             <Loader2 className="spinner" size={48} />
             <p>Laddar produkt...</p>
@@ -63,7 +63,7 @@ function ProductDetailPage() {
   if (error || !product) {
     return (
       <main role="main" id="main-content">
-        <PageSection background="white" spacing="default">
+        <PageSection background="alt" spacing="default">
           <div className="product-not-found">
             <h1>Produkten hittades inte</h1>
             <p>{error || "Den produkt du söker finns inte längre."}</p>
@@ -76,7 +76,7 @@ function ProductDetailPage() {
 
   return (
     <main role="main" id="main-content">
-      <PageSection background="white" spacing="default">
+      <PageSection background="alt" spacing="default">
         {/* Breadcrumb navigation */}
         <nav className="breadcrumb" aria-label="breadcrumb">
           <Link to="/">Hem</Link>
@@ -133,7 +133,7 @@ function ProductDetailPage() {
                *
                * Använd olika CSS-klasser för olika status
                */}
-              {product && product.stock > 0 ? (
+              {product && product.active && product.stock > 0 ? (
                 <span className="in-stock">I lager ({product.stock} st)</span>
               ) : (
                 <span className="out-of-stock">Slutsåld</span>
@@ -152,9 +152,9 @@ function ProductDetailPage() {
               <button
                 type="button"
                 className="add-to-cart-btn"
-                disabled={product && product.stock === 0}
+                disabled={product && !product.active}
               >
-                {product && product.stock > 0 ? "Lägg i varukorg" : "Slutsåld"}
+                {product && product.active ? "Lägg i varukorg" : "Slutsåld"}
               </button>
             </div>
 

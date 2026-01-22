@@ -1,6 +1,6 @@
 .value-proposition-section {
   width: 100%;
-  background-color: var(--background-alt);
+  background-color: transparent !important;
   box-sizing: border-box;
 }
 
@@ -47,7 +47,11 @@
   width: 64px;
   height: 64px;
   margin: 0 auto 20px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-hover)
+  );
   border-radius: 50%;
   display: flex;
   align-items: center;

@@ -11,8 +11,9 @@
   --accent-color: #b99470; /* Muted Terracotta/Leather */
   --accent-hover: #a07d5a;
 
-  --background-color: hwb(161 27% 38% / 0.059); /* Original bright green tint */
-  --background-alt: hsl(0, 0%, 100%); /* Slightly darker with green */
+  /* --background-color: hwb(161 27% 38% / 0.059); Original bright green tint */
+  --background-color: #f0fdf4; /* Fallback light green if needed */
+  --background-alt: #ffffff; /* Soft lighter brown/beige */
   --overlay-dark: rgba(28, 28, 28, 0.4); /* Dark overlay for images */
 
   --text-main: #000000; /* Black */
@@ -49,7 +50,9 @@ html {
 }
 
 body {
-  background-color: var(--background-color);
+  background-color: var(
+    --background-alt
+  ) !important; /* Force beige background */
   color: var(--text-main);
   font-family: var(--font-body);
   font-weight: 400;
@@ -68,18 +71,21 @@ h5,
 h6 {
   font-family: var(--font-heading);
   color: var(--text-main);
-  line-height: 1.25;
-  margin-bottom: 1rem;
+  line-height: 1.2;
+  margin: 0 0 0.9rem;
 }
 
 h1 {
-  font-size: 3.5rem;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
 }
 h2 {
-  font-size: 2.5rem;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
 }
 h3 {
-  font-size: 1.75rem;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+}
+h4 {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
 }
 p {
   margin-bottom: 1.2rem;

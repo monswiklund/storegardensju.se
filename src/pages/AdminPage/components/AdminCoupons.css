@@ -1,0 +1,148 @@
+.admin-coupons {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.coupon-create-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.coupon-create-section h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.coupon-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.coupon-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.coupon-form label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.coupon-form input,
+.coupon-form select {
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.create-btn {
+  padding: 0.6rem 1.2rem;
+  background-color: #059669;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.create-btn:disabled {
+  opacity: 0.7;
+}
+
+.create-btn:hover:not(:disabled) {
+  background-color: #047857;
+}
+
+.coupon-list-section {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.coupon-list-section h3 {
+  padding: 1rem;
+  margin: 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.coupon-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.coupon-table th,
+.coupon-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.coupon-table th {
+  background-color: #f9fafb;
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.coupon-table td {
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.status-active {
+  background-color: #d1fae5;
+  color: #065f46;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-archived {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.archived-row {
+  background-color: #fafafa;
+  opacity: 0.6;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-decoration: underline;
+}
+
+.delete-btn:hover {
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .coupon-form {
+    grid-template-columns: 1fr;
+  }
+}

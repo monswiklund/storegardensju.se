@@ -1,6 +1,13 @@
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Check, Loader2, ArrowRight } from "lucide-react";
+import {
+  ShoppingCart,
+  Check,
+  Loader2,
+  ArrowRight,
+  Minus,
+  Plus,
+} from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
 import { PageSection } from "../components";
@@ -29,6 +36,8 @@ function ButikPage() {
   const [activeCategory, setActiveCategory] = useState("alla");
   // State för att visa feedback när produkt läggs till
   const [addedToCart, setAddedToCart] = useState(null);
+  // State för valt antal per produkt (för produkter med stock > 1)
+  const [quantities, setQuantities] = useState({});
 
   // Hämta addItem och isInCart från CartContext
   const { addItem, isInCart } = useContext(CartContext);
@@ -47,16 +56,28 @@ function ButikPage() {
     return "products-grid"; // 5+ produkter - standard grid
   };
 
-  const handleAddToCart = (product) => {
-    addItem(product);
+  const handleAddToCart = (product, qty = 1) => {
+    if (!product.active) return; // Kan inte köpa inaktiva/slutsålda produkter
+    addItem(product, qty);
     setAddedToCart(product.id);
+    // Återställ antal till 1 efter tillägg
+    setQuantities((prev) => ({ ...prev, [product.id]: 1 }));
     // Ta bort feedback efter 2 sekunder
     setTimeout(() => setAddedToCart(null), 2000);
   };
 
+  // Hantera +/- för antal
+  const handleQuantityChange = (productId, stock, delta) => {
+    setQuantities((prev) => {
+      const current = prev[productId] || 1;
+      const newQty = Math.max(1, Math.min(stock, current + delta));
+      return { ...prev, [productId]: newQty };
+    });
+  };
+
   return (
     <main role="main" id="main-content">
-      <PageSection background="white" spacing="default">
+      <PageSection background="alt" spacing="default">
         {/* Header */}
         <div className="butik-header">
           <h1>Butik</h1>
@@ -112,50 +133,100 @@ function ButikPage() {
             {filteredProducts.map((product) => {
               const alreadyInCart = isInCart(product.id);
               const justAdded = addedToCart === product.id;
-              const stock = product.stock || 1; // Default 1 för unika produkter
+              const stock = product.stock ?? 1; // Default 1 endast om stock är undefined/null
+              const isSoldOut = !product.active || stock === 0;
 
               return (
-                <article className="product-card" key={product.id}>
+                <article
+                  className={`product-card ${isSoldOut ? "sold-out" : ""}`}
+                  key={product.id}
+                >
                   <div className="product-card-image">
                     <img src={product.images[0]} alt={product.name} />
-                    <div className="product-badges">
-                      <span className="product-badge">{product.category}</span>
-                      {stock === 1 && (
-                        <span className="product-badge">Unikt exemplar</span>
-                      )}
-                    </div>
+                    {/* Endast SÅLD badge visas på bilden */}
+                    {isSoldOut && (
+                      <div className="product-badges">
+                        <span className="product-badge badge-sold-out">
+                          SÅLD
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="product-card-content">
                     <h3>{product.name}</h3>
                     <p className="description">{product.description}</p>
-                    <div className="price-stock">
+
+                    {/* Kategori och Unikt exemplar som text under beskrivning */}
+                    <p className="product-meta">
+                      {product.category}
+                      {stock === 1 && !isSoldOut && " · Unikt exemplar"}
+                    </p>
+
+                    {/* Quantity selector med stock till vänster */}
+                    {stock > 1 && !isSoldOut && !alreadyInCart && (
+                      <div className="quantity-row">
+                        <span className="stock-text">{stock} i lager</span>
+                        <div className="quantity-selector">
+                          <button
+                            type="button"
+                            className="qty-btn"
+                            onClick={() =>
+                              handleQuantityChange(product.id, stock, -1)
+                            }
+                            disabled={(quantities[product.id] || 1) <= 1}
+                            aria-label="Minska antal"
+                          >
+                            <Minus size={16} />
+                          </button>
+                          <span className="qty-value">
+                            {quantities[product.id] || 1}
+                          </span>
+                          <button
+                            type="button"
+                            className="qty-btn"
+                            onClick={() =>
+                              handleQuantityChange(product.id, stock, 1)
+                            }
+                            disabled={(quantities[product.id] || 1) >= stock}
+                            aria-label="Öka antal"
+                          >
+                            <Plus size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Pris och köp-knapp i samma rad */}
+                    <div className="price-button-row">
                       <p className="price">{formatPrice(product.price)}</p>
-                      {stock > 1 && (
-                        <span className="stock-badge">{stock} i lager</span>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          !alreadyInCart &&
+                          handleAddToCart(product, quantities[product.id] || 1)
+                        }
+                        className={`add-btn ${
+                          justAdded ? "added" : alreadyInCart ? "in-cart" : ""
+                        }`}
+                        disabled={isSoldOut || (alreadyInCart && !justAdded)}
+                      >
+                        {isSoldOut ? (
+                          <>SÅLD</>
+                        ) : justAdded ? (
+                          <>
+                            <Check size={14} /> Tillagd!
+                          </>
+                        ) : alreadyInCart ? (
+                          <>
+                            <Check size={14} /> I korgen
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingCart size={14} /> Köp
+                          </>
+                        )}
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => !alreadyInCart && handleAddToCart(product)}
-                      className={
-                        justAdded ? "added" : alreadyInCart ? "in-cart" : ""
-                      }
-                      disabled={alreadyInCart && !justAdded}
-                    >
-                      {justAdded ? (
-                        <>
-                          <Check size={18} /> Tillagd!
-                        </>
-                      ) : alreadyInCart ? (
-                        <>
-                          <Check size={18} /> I varukorgen
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingCart size={18} /> Lägg i varukorg
-                        </>
-                      )}
-                    </button>
                     {alreadyInCart && !justAdded && (
                       <Link to="/varukorg" className="btn-go-to-cart">
                         Till varukorgen <ArrowRight size={16} />

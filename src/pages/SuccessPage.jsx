@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { CheckCircle, ShoppingBag, Home } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { PageSection } from "../components";
+import { verifySession } from "../services/stripeService";
 import "./SuccessPage.css";
 
 export default function SuccessPage() {
@@ -12,18 +13,45 @@ export default function SuccessPage() {
   const hasCleared = useRef(false);
 
   useEffect(() => {
-    // Töm varukorgen efter lyckad beställning (endast en gång)
-    if (sessionId && !hasCleared.current) {
-      hasCleared.current = true;
-      clearCart();
-    }
+    // Verifiera sessionen innan varukorgen töms
+    const verifyAndClear = async () => {
+      if (sessionId && !hasCleared.current) {
+        // Enkel klient-side kontroll först för att undvika onödiga anrop
+        if (sessionId === "undefined" || sessionId === "null") return;
+
+        try {
+          const token = sessionStorage.getItem(
+            `checkout_verify_token:${sessionId}`
+          );
+          // Importera service dynamiskt eller lägg till import i toppen av filen
+          // För nu antar vi att vi har lagt till importen
+          const isValid = await verifySession(sessionId, token);
+
+          if (isValid) {
+            hasCleared.current = true;
+            clearCart();
+            if (token) {
+              sessionStorage.removeItem(`checkout_verify_token:${sessionId}`);
+            }
+          } else {
+            console.warn("Ogiltig session, tömmer ej varukorg");
+            // Här kan man redirecta eller visa felmeddelande om man vill
+            // Men vi låter användaren se sidan, bara inte tömma korgen
+          }
+        } catch (error) {
+          console.error("Kunde inte verifiera session", error);
+        }
+      }
+    };
+
+    verifyAndClear();
   }, [sessionId, clearCart]);
 
   // Om ingen session_id finns, visa ett meddelande
   if (!sessionId) {
     return (
       <main role="main" id="main-content">
-        <PageSection background="white" spacing="default">
+        <PageSection background="alt" spacing="default">
           <div className="success-container">
             <h1>Ingen aktiv order</h1>
             <p className="success-message">
@@ -43,7 +71,7 @@ export default function SuccessPage() {
 
   return (
     <main role="main" id="main-content">
-      <PageSection background="white" spacing="default">
+      <PageSection background="alt" spacing="default">
         <div className="success-container">
           <CheckCircle size={80} className="success-icon" />
           <h1>Tack för din beställning!</h1>

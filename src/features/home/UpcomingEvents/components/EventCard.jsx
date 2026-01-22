@@ -16,7 +16,8 @@ function EventCard({ event }) {
   } = event;
 
   // Support both single link (legacy) and multiple links
-  const eventLinks = links || (link ? [{ href: link, label: linkLabel ?? "Läs mer" }] : []);
+  const eventLinks =
+    links || (link ? [{ href: link, label: linkLabel ?? "Läs mer" }] : []);
 
   // Map icon SVG component
   const MapIcon = () => (
@@ -37,58 +38,78 @@ function EventCard({ event }) {
   );
 
   return (
-    <div
+    <article
       className={`event-card ${
         eventLinks.length > 0 ? "konstafton-card" : ""
-      } ${image?.src ? "event-card--with-image" : ""}`}
+      } ${image?.src ? "event-card--has-image" : ""}`}
     >
-      <div className="event-content">
-        <div className="event-header">
-          <h3 className="event-title">{title}</h3>
-          <span className="event-spots">{spots}</span>
+      {/* 1. Header: Title, Date, Time, Location */}
+      <header className="event-card__header">
+        <div className="event-card__title-row">
+          <h3 className="event-card__title">{title}</h3>
+          {spots && <span className="event-card__badge">{spots}</span>}
         </div>
-        <div className="event-meta">
-          <span className="event-date">{date}</span>
-          <span className="event-time">{time}</span>
+
+        <div className="event-card__meta">
+          {location && (
+            <span className="event-card__location-text">{location}</span>
+          )}
+          {(date || time) && location && (
+            <span className="event-card__separator">•</span>
+          )}
+          <span className="event-card__date">{date}</span>
+          {time && <span className="event-card__separator">•</span>}
+          <span className="event-card__time">{time}</span>
         </div>
-        <p className="event-description">{description}</p>
-        {artists && (
-          <p className="event-artists">
-            <strong>Konstnärer:</strong> {artists}
-          </p>
-        )}
-        {location && <p className="event-location">{location}</p>}
-      </div>
+      </header>
+
+      {/* 2. Image */}
       {image?.src && (
-        <figure className="event-image-wrapper">
+        <div className="event-card__image-container">
           <img
-            className="event-image"
+            className="event-card__image"
             src={image.src}
             alt={image.alt ?? ""}
             loading="lazy"
           />
-        </figure>
-      )}
-      {eventLinks.length > 0 && (
-        <div className="event-actions">
-          {eventLinks.map((linkItem, index) => {
-            const isMapLink = linkItem.href?.includes("maps.google.com");
-            return (
-              <a
-                key={index}
-                href={linkItem.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="event-link-btn"
-              >
-                {isMapLink && <MapIcon />}
-                {linkItem.label ?? "Läs mer"}
-              </a>
-            );
-          })}
         </div>
       )}
-    </div>
+
+      {/* 3. Body: Description, Artists, Actions */}
+      <div className="event-card__content">
+        <div className="event-card__body">
+          <p className="event-card__description">{description}</p>
+
+          {artists && (
+            <div className="event-card__artists">
+              <strong>Gäster:</strong> {artists}
+            </div>
+          )}
+        </div>
+
+        {eventLinks.length > 0 && (
+          <footer className="event-card__footer">
+            <div className="event-card__actions">
+              {eventLinks.map((linkItem, index) => {
+                const isMapLink = linkItem.href?.includes("maps.google.com");
+                return (
+                  <a
+                    key={index}
+                    href={linkItem.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="event-card__button"
+                  >
+                    {isMapLink && <MapIcon />}
+                    {linkItem.label ?? "Läs mer"}
+                  </a>
+                );
+              })}
+            </div>
+          </footer>
+        )}
+      </div>
+    </article>
   );
 }
 

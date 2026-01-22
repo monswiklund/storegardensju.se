@@ -1,0 +1,150 @@
+.admin-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fffaf5;
+  border-bottom: 1px solid rgba(185, 148, 112, 0.25);
+}
+
+.admin-navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-navbar-brand {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.admin-navbar-title {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #2f2418;
+}
+
+.admin-navbar-subtitle {
+  font-size: 0.75rem;
+  color: #7a5a3e;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-navbar-back {
+  border: 1px solid rgba(185, 148, 112, 0.35);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6b4f36;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.admin-navbar-back:hover {
+  border-color: #b99470;
+  color: #2f2418;
+}
+
+.admin-hamburger {
+  width: 42px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(185, 148, 112, 0.4);
+  background: #fffaf5;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-hamburger span {
+  width: 18px;
+  height: 2px;
+  background: #5f4630;
+  border-radius: 999px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.admin-hamburger.open span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.admin-hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.admin-hamburger.open span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.admin-nav-menu {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: none;
+}
+
+.admin-nav-menu.open {
+  display: block;
+}
+
+.admin-nav-links {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.75rem 0 1rem;
+}
+
+.admin-nav-link {
+  text-decoration: none;
+  color: #2f2418;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(185, 148, 112, 0.2);
+  transition: all 0.2s ease;
+}
+
+.admin-nav-link:hover {
+  border-color: #b99470;
+  background: #fff5ec;
+}
+
+.admin-nav-link.active {
+  border-color: #b99470;
+  background: #fff5ec;
+}
+
+.admin-nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #6b4f36;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding-bottom: 0.75rem;
+}
+
+@media (max-width: 900px) {
+  .admin-navbar-container {
+    padding: 0.6rem 1rem;
+  }
+
+  .admin-navbar-back {
+    display: none;
+  }
+}
