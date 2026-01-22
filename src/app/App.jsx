@@ -10,6 +10,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Navbar,
+  CartDrawer,
   ScrollToTopButton,
   ScrollToTop,
   BuildInfo,
@@ -22,6 +23,7 @@ gsap.registerPlugin(ScrollTrigger);
 // Pages
 import HomePage from "../pages/HomePage.jsx";
 import EventPage from "../pages/EventPage/EventPage.jsx";
+import MohippaPage from "../pages/MohippaPage.jsx";
 import ArtPage from "../pages/ArtPage.jsx";
 import GalleriPage from "../pages/GalleriPage.jsx";
 import TeamPage from "../pages/TeamPage.jsx";
@@ -104,13 +106,18 @@ export default App;
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const isHomePage = location.pathname === "/";
 
   return (
-    <>
+    <div
+      className={isAdminRoute ? "admin-app" : isHomePage ? "home-app" : "page-app"}
+    >
       <Navbar />
+      <CartDrawer />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/event" element={<EventPage />} />
+        <Route path="/mohippa" element={<MohippaPage />} />
         <Route path="/konst" element={<ArtPage />} />
         <Route path="/galleri" element={<GalleriPage />} />
         {/* BUTIK */}
@@ -125,6 +132,6 @@ function AppContent() {
       </Routes>
       {!isAdminRoute && <ContactSection />}
       {!isAdminRoute && <Footer />}
-    </>
+    </div>
   );
 }

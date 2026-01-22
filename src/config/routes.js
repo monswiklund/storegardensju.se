@@ -1,6 +1,7 @@
 export const appRoutes = [
   { path: "/", label: "Hem" },
   { path: "/event", label: "Event" },
+  { path: "/mohippa", label: "Möhippa" },
   { path: "/konst", label: "Konst" },
   { path: "/galleri", label: "Galleri" },
   { path: "/butik", label: "Butik" },
