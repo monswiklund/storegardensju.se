@@ -10,13 +10,27 @@ function OrderLineItems({ order, onCopy, copiedField }) {
         : "https://dashboard.stripe.com/test"
       : "";
 
+  const items = order.lineItems || [];
+  const totalItems = items.reduce(
+    (sum, item) => sum + (item.quantity || 0),
+    0
+  );
+  const totalAmount = items.reduce((sum, item) => {
+    const total = item.amountTotal || item.unitAmount * item.quantity;
+    return sum + (total || 0);
+  }, 0);
+
   return (
     <div className="admin-card">
       <div className="admin-card-header">
         <h3>Varor</h3>
+        <div className="admin-card-meta">
+          <span className="admin-count-badge">{totalItems} st</span>
+          <span className="admin-meta-pill">{formatAmount(totalAmount)}</span>
+        </div>
       </div>
       <div className="admin-lineitems-list">
-        {order.lineItems.map((item, index) => {
+        {items.map((item, index) => {
           const total = item.amountTotal || item.unitAmount * item.quantity;
           return (
             <div

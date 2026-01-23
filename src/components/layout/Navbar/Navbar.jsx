@@ -6,7 +6,7 @@ import useNavbarToggle from "./useNavbarToggle";
 import { appRoutes } from "../../../config/routes.js";
 import CartBadge from "./CartBadge.jsx";
 
-const NAV_ITEMS = appRoutes;
+const NAV_ITEMS = appRoutes.filter(route => !route.hidden);
 
 function Navbar() {
   const location = useLocation();

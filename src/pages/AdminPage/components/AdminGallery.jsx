@@ -392,6 +392,7 @@ function AdminGallery({ adminKey }) {
           alt: title,
           storageKey: uploadInfo?.storageKey || uploadInfo?.key,
           url: uploadInfo?.publicUrl || uploadInfo?.cdnUrl || uploadInfo?.assetUrl,
+          originalFilename: file.name,
           published: true,
         });
 
@@ -415,7 +416,7 @@ function AdminGallery({ adminKey }) {
       <div className="admin-panel admin-gallery-panel">
         <div className="admin-panel-header">
           <div>
-            <h2>Galleri</h2>
+          <h3>Galleriöversikt</h3>
             <p>Hantera kategorier och bilder som visas på /galleri.</p>
           </div>
           <div className="admin-panel-actions">

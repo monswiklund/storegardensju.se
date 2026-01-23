@@ -29,6 +29,7 @@ function AdminOrderDetail({
   viewMode,
   setViewMode,
   onRefund,
+  onCustomerFilter,
 }) {
   const isHidden = isMobile && viewMode !== "detail";
 
@@ -49,7 +50,12 @@ function AdminOrderDetail({
       id="admin-details"
     >
       <div className="admin-panel-header">
-        <h2>Orderdetaljer</h2>
+        <h3>Orderdetaljer</h3>
+        {saveStatus.loading && (
+          <span className="admin-save-indicator">
+            <LoadingSpinner size="small" text="" /> Sparar...
+          </span>
+        )}
       </div>
 
       {error && <p className="admin-error">{error}</p>}
@@ -105,69 +111,52 @@ function AdminOrderDetail({
             setViewMode={setViewMode}
           />
 
-          <CustomerCard
-            order={order}
-            customerHistory={customerHistory}
-            onCopy={onCopy}
-            copiedField={copiedField}
-          />
+          <div className="admin-detail-stack">
+            <CustomerCard
+              order={order}
+              customerHistory={customerHistory}
+              onCopy={onCopy}
+              copiedField={copiedField}
+              onCustomerFilter={onCustomerFilter}
+            />
 
-          <OrderStatusCard
-            order={order}
-            latestEvent={latestEvent}
-            onCopy={onCopy}
-            copiedField={copiedField}
-          />
+            <OrderStatusCard
+              order={order}
+              latestEvent={latestEvent}
+              onCopy={onCopy}
+              copiedField={copiedField}
+            />
 
-          <OrderLineItems
-            order={order}
-            onCopy={onCopy}
-            copiedField={copiedField}
-          />
+            <OrderLineItems
+              order={order}
+              onCopy={onCopy}
+              copiedField={copiedField}
+            />
 
-          <OrderEvents order={order} />
+            <OrderEvents order={order} />
 
-          <OrderForm
-            order={order}
-            editState={editState}
-            saveStatus={saveStatus}
-            hasChanges={hasChanges}
-            isBackwardStatus={isBackwardStatus}
-            onSave={onSave}
-            onReset={onReset}
-          />
+            <OrderForm
+              order={order}
+              editState={editState}
+              saveStatus={saveStatus}
+              hasChanges={hasChanges}
+              isBackwardStatus={isBackwardStatus}
+              onSave={onSave}
+              onReset={onReset}
+            />
 
-          <OrderMeta order={order} onCopy={onCopy} copiedField={copiedField} />
+            <OrderMeta order={order} onCopy={onCopy} copiedField={copiedField} />
 
-          <div
-            style={{
-              marginTop: "2rem",
-              borderTop: "1px solid #e5e7eb",
-              paddingTop: "2rem",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "1.1rem",
-                marginBottom: "1rem",
-                color: "#374151",
-              }}
-            >
-              Hantera betalning
-            </h3>
-            <button
-              type="button"
-              className="cancel-button" // Use existing class or new one
-              onClick={onRefund}
-              style={{
-                backgroundColor: "#fee2e2",
-                color: "#991b1b",
-                border: "1px solid #fecaca",
-                width: "100%",
-              }}
-            >
-              Återbetala...
-            </button>
+            <div className="admin-refund-card">
+              <h3>Hantera betalning</h3>
+              <button
+                type="button"
+                className="admin-btn-secondary admin-btn-block admin-refund-btn"
+                onClick={onRefund}
+              >
+                Återbetala...
+              </button>
+            </div>
           </div>
         </div>
       )}

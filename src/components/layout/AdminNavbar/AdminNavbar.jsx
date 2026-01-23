@@ -6,6 +6,7 @@ const ADMIN_LINKS = [
   { href: "/admin?view=overview", label: "Översikt", view: "overview" },
   { href: "/admin?view=stats", label: "Statistik", view: "stats" },
   { href: "/admin?view=orders", label: "Ordrar", view: "orders" },
+  { href: "/admin?view=gallery", label: "Galleri", view: "gallery" },
 ];
 
 function AdminNavbar() {

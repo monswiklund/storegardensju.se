@@ -1,4 +1,4 @@
-// src/services/AdminService.js
+// src/services/adminService.js
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4242";
 
@@ -6,6 +6,22 @@ const getHeaders = (key) => ({
   "Content-Type": "application/json",
   Authorization: `Bearer ${key}`,
 });
+
+const handleResponse = async (res, defaultMessage) => {
+  if (!res.ok) {
+    let message = defaultMessage;
+    try {
+      const errorData = await res.json();
+      message = errorData.error || defaultMessage;
+    } catch {
+      // Not JSON
+    }
+    const error = new Error(message);
+    error.status = res.status;
+    throw error;
+  }
+  return res;
+};
 
 export const AdminService = {
   // Orders
@@ -17,7 +33,7 @@ export const AdminService = {
         headers: getHeaders(key),
       }
     );
-    if (!res.ok) throw new Error("Failed to fetch orders");
+    await handleResponse(res, "Failed to fetch orders");
     return res.json();
   },
 
@@ -25,7 +41,7 @@ export const AdminService = {
     const res = await fetch(`${API_URL}/admin/orders/${id}`, {
       headers: getHeaders(key),
     });
-    if (!res.ok) throw new Error("Failed to fetch order");
+    await handleResponse(res, "Failed to fetch order");
     return res.json();
   },
 
@@ -35,7 +51,7 @@ export const AdminService = {
       headers: getHeaders(key),
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Failed to update fulfillment");
+    await handleResponse(res, "Failed to update fulfillment");
     return res.json();
   },
 
@@ -45,36 +61,53 @@ export const AdminService = {
       headers: getHeaders(key),
       body: JSON.stringify({ amount }),
     });
-    if (!res.ok) throw new Error("Refund failed");
+    await handleResponse(res, "Refund failed");
     return res.json();
   },
 
   // Products
-  getProducts: async (key) => {
-    const res = await fetch(`${API_URL}/admin/products`, {
+  getProducts: async (key, params = {}) => {
+    const searchParams = new URLSearchParams(params);
+    const query = searchParams.toString();
+    const res = await fetch(
+      `${API_URL}/admin/products${query ? `?${query}` : ""}`,
+      {
       headers: getHeaders(key),
-    });
-    if (!res.ok) throw new Error("Failed to fetch products");
+      }
+    );
+    await handleResponse(res, "Failed to fetch products");
     return res.json();
   },
 
   createProduct: async (key, data) => {
+    const isFormData = data instanceof FormData;
+    const headers = getHeaders(key);
+    if (isFormData) {
+      delete headers["Content-Type"];
+    }
+
     const res = await fetch(`${API_URL}/admin/products`, {
       method: "POST",
-      headers: getHeaders(key),
-      body: JSON.stringify(data),
+      headers,
+      body: isFormData ? data : JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Failed to create product");
+    await handleResponse(res, "Failed to create product");
     return res.json();
   },
 
   updateProduct: async (key, id, data) => {
+    const isFormData = data instanceof FormData;
+    const headers = getHeaders(key);
+    if (isFormData) {
+      delete headers["Content-Type"];
+    }
+
     const res = await fetch(`${API_URL}/admin/products/${id}`, {
       method: "PUT",
-      headers: getHeaders(key),
-      body: JSON.stringify(data),
+      headers,
+      body: isFormData ? data : JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Failed to update product");
+    await handleResponse(res, "Failed to update product");
     return res.json();
   },
 
@@ -83,7 +116,7 @@ export const AdminService = {
       method: "DELETE",
       headers: getHeaders(key),
     });
-    if (!res.ok) throw new Error("Failed to archive product");
+    await handleResponse(res, "Failed to archive product");
     return res.json();
   },
 
@@ -92,7 +125,7 @@ export const AdminService = {
     const res = await fetch(`${API_URL}/admin/coupons`, {
       headers: getHeaders(key),
     });
-    if (!res.ok) throw new Error("Failed to fetch coupons");
+    await handleResponse(res, "Failed to fetch coupons");
     return res.json();
   },
 
@@ -102,7 +135,7 @@ export const AdminService = {
       headers: getHeaders(key),
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Failed to create coupon");
+    await handleResponse(res, "Failed to create coupon");
     return res.json();
   },
 
@@ -111,7 +144,7 @@ export const AdminService = {
       method: "DELETE",
       headers: getHeaders(key),
     });
-    if (!res.ok) throw new Error("Failed to archive coupon");
+    await handleResponse(res, "Failed to archive coupon");
     return res.json();
   },
 
@@ -120,7 +153,96 @@ export const AdminService = {
     const res = await fetch(`${API_URL}/admin/stats?range=${range}`, {
       headers: getHeaders(key),
     });
-    if (!res.ok) throw new Error("Failed to fetch stats");
+    await handleResponse(res, "Failed to fetch stats");
+    return res.json();
+  },
+
+  exportOrders: async (key, params) => {
+    const searchParams = new URLSearchParams(params);
+    const res = await fetch(
+      `${API_URL}/admin/orders/export?${searchParams.toString()}`,
+      {
+        headers: getHeaders(key),
+      }
+    );
+    await handleResponse(res, "Failed to export orders");
+    return res.blob();
+  },
+
+  // Gallery
+  getGallery: async (key) => {
+    const res = await fetch(`${API_URL}/admin/gallery`, {
+      headers: getHeaders(key),
+    });
+    await handleResponse(res, "Failed to fetch gallery");
+    return res.json();
+  },
+
+  createGalleryCategory: async (key, data) => {
+    const res = await fetch(`${API_URL}/admin/gallery/categories`, {
+      method: "POST",
+      headers: getHeaders(key),
+      body: JSON.stringify(data),
+    });
+    await handleResponse(res, "Failed to create category");
+    return res.json();
+  },
+
+  updateGalleryCategory: async (key, id, data) => {
+    const res = await fetch(`${API_URL}/admin/gallery/categories/${id}`, {
+      method: "PUT",
+      headers: getHeaders(key),
+      body: JSON.stringify(data),
+    });
+    await handleResponse(res, "Failed to update category");
+    return res.json();
+  },
+
+  deleteGalleryCategory: async (key, id) => {
+    const res = await fetch(`${API_URL}/admin/gallery/categories/${id}`, {
+      method: "DELETE",
+      headers: getHeaders(key),
+    });
+    await handleResponse(res, "Failed to delete category");
+    return res.json();
+  },
+
+  createGalleryUpload: async (key, data) => {
+    const res = await fetch(`${API_URL}/admin/gallery/uploads`, {
+      method: "POST",
+      headers: getHeaders(key),
+      body: JSON.stringify(data),
+    });
+    await handleResponse(res, "Failed to create upload");
+    return res.json();
+  },
+
+  createGalleryImage: async (key, data) => {
+    const res = await fetch(`${API_URL}/admin/gallery/images`, {
+      method: "POST",
+      headers: getHeaders(key),
+      body: JSON.stringify(data),
+    });
+    await handleResponse(res, "Failed to create image");
+    return res.json();
+  },
+
+  updateGalleryImage: async (key, id, data) => {
+    const res = await fetch(`${API_URL}/admin/gallery/images/${id}`, {
+      method: "PUT",
+      headers: getHeaders(key),
+      body: JSON.stringify(data),
+    });
+    await handleResponse(res, "Failed to update image");
+    return res.json();
+  },
+
+  deleteGalleryImage: async (key, id) => {
+    const res = await fetch(`${API_URL}/admin/gallery/images/${id}`, {
+      method: "DELETE",
+      headers: getHeaders(key),
+    });
+    await handleResponse(res, "Failed to delete image");
     return res.json();
   },
 };

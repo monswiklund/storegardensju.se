@@ -7,13 +7,12 @@
   align-items: center;
   justify-content: center;
   padding: 6rem 2rem;
-  color: var(--text-secondary, #666);
-  font-family: var(--font-body);
+  color: var(--text-secondary);
 }
 
 .product-loading .spinner {
   animation: spin 1s linear infinite;
-  color: var(--accent-color, #8b7355);
+  color: var(--primary-color);
   margin-bottom: 1rem;
 }
 
@@ -31,11 +30,10 @@
   margin-bottom: 2rem;
   font-size: 0.9rem;
   color: var(--text-secondary);
-  font-family: var(--font-body);
 }
 
 .breadcrumb a {
-  color: var(--accent-color, #8b7355);
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -44,7 +42,7 @@
 }
 
 .breadcrumb span[aria-current="page"] {
-  color: var(--text-primary);
+  color: var(--text-main);
 }
 
 /* Product detail layout */
@@ -73,13 +71,13 @@
 
 /* Product info section */
 .product-info {
-  font-family: var(--font-body);
 }
 
 .product-info h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  color: var(--text-main);
+  font-family: var(--font-heading);
 }
 
 .product-info .artist {
@@ -92,13 +90,13 @@
 .product-info .price {
   font-size: 2rem;
   font-weight: 600;
-  color: var(--accent-color, #8b7355);
+  color: var(--primary-color);
   margin-bottom: 2rem;
 }
 
 .description {
   line-height: 1.8;
-  color: var(--text-primary);
+  color: var(--text-main);
   margin-bottom: 2rem;
   padding: 1.5rem;
   background: #f9f9f9;
@@ -135,7 +133,7 @@
 .add-to-cart-btn {
   width: 100%;
   padding: 1rem 2rem;
-  background: var(--accent-color, #8b7355);
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 8px;
@@ -143,12 +141,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: var(--font-body);
 }
 
 .add-to-cart-btn:hover:not(:disabled) {
-  background: var(--accent-color-dark, #6d5a43);
-  transform: translateY(-2px);
+  background: var(--primary-hover);
+  transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -182,7 +179,7 @@
 }
 
 .back-link {
-  color: var(--accent-color, #8b7355);
+  color: var(--primary-color);
   text-decoration: none;
   font-size: 1rem;
   font-weight: 500;
@@ -190,7 +187,7 @@
 }
 
 .back-link:hover {
-  color: var(--accent-color-dark, #6d5a43);
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
@@ -203,7 +200,8 @@
 .product-not-found h1 {
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: var(--text-primary);
+  color: var(--text-main);
+  font-family: var(--font-heading);
 }
 
 .product-not-found p {
@@ -215,7 +213,7 @@
 .product-not-found a {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  background: var(--accent-color, #8b7355);
+  background: var(--primary-color);
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -223,7 +221,7 @@
 }
 
 .product-not-found a:hover {
-  background: var(--accent-color-dark, #6d5a43);
+  background: var(--primary-hover);
 }
 
 /* Responsive */

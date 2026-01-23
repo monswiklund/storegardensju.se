@@ -102,6 +102,9 @@ function MohippaPage() {
                   Ni får tillgång till vår lokal, både ladan och loftet samt tillhörande uteplatser. 
                   Ni har tillgång 10:00 – 22:00.
                 </p>
+                <p className="package-price-text">
+                  <strong>Pris:</strong> 500 kr / person
+                </p>
                 <div className="mohippa-base-grid">
                   {BASE_FEATURES.map((feature, idx) => (
                     <div key={idx} className="base-feature-item">
@@ -113,10 +116,6 @@ function MohippaPage() {
                       </div>
                     </div>
                   ))}
-                </div>
-                <div className="package-price-box">
-                  <span className="price-label">Pris:</span>
-                  <span className="price-value">500 kr / person</span>
                 </div>
               </div>
               <div className="mohippa-base-details">
@@ -164,9 +163,9 @@ function MohippaPage() {
                         <strong>Tips:</strong> {activity.tip}
                       </div>
                     )}
-                  </div>
-                  <div className="activity-list-price">
-                    <span className="price-amount">{activity.price}</span>
+                    <div className="activity-list-price">
+                      <span className="price-amount">{activity.price}</span>
+                    </div>
                   </div>
                 </div>
               ))}

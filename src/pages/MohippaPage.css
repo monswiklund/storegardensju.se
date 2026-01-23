@@ -175,36 +175,22 @@
   font-size: 1.15rem;
   line-height: 1.6;
   color: var(--text-main);
-  margin-bottom: 2.5rem;
+  margin-bottom: 1rem;
   max-width: 600px;
   font-weight: 500;
+}
+
+.package-price-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #777777;
+  margin-bottom: 2.5rem;
 }
 
 .mohippa-base-info h3 {
   font-size: 2rem;
   font-family: var(--font-heading);
   margin: 0;
-}
-
-.package-price-box {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #eee;
-}
-
-.price-label {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  font-weight: 400;
-}
-
-.price-value {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-main);
 }
 
 .mohippa-base-grid {
@@ -283,10 +269,7 @@
 /* Activities Refined Without Icons */
 .activity-list-item {
   padding: 2.5rem 0;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2.5rem;
-  align-items: flex-start;
+  display: block;
   transition: all 0.3s ease;
   border-bottom: 1px solid rgba(0,0,0,0.06);
 }
@@ -301,7 +284,7 @@
 .activity-list-content {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .activity-list-header {
@@ -336,7 +319,7 @@
   color: var(--text-secondary);
   font-size: 1.1rem;
   line-height: 1.7;
-  max-width: 650px;
+  max-width: 800px;
 }
 
 .activity-list-tip {
@@ -345,19 +328,16 @@
   background: #f0fdf4;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  margin-top: 0.5rem;
   display: inline-block;
   width: fit-content;
 }
 
 .activity-list-price {
-  min-width: 120px;
-  text-align: right;
-  padding-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .price-amount {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--primary-color);
 }

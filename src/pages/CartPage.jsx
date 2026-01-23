@@ -113,28 +113,24 @@ export default function CartPage() {
             ))}
           </div>
 
-          <div className="cart-summary">
-            <div className="cart-summary-row">
-              <span>Delsumma:</span>
-              <span>{formatPrice(getTotal())}</span>
-            </div>
-            <div className="cart-summary-row">
-              <span>Frakt:</span>
-              <span>Beräknas vid kassan</span>
-            </div>
-            <div className="cart-summary-row cart-total">
-              <span>Totalt:</span>
-              <span>{formatPrice(getTotal())}</span>
-            </div>
-
-            <button onClick={handleCheckout} className="btn-primary btn-large">
-              Gå till kassan
-            </button>
-
-            <Link to="/butik" className="btn-secondary">
-              Fortsätt handla
-            </Link>
+        <div className="cart-summary">
+          <div className="cart-summary-row">
+            <span>Antal produkter:</span>
+            <span>{getItemCount()} st</span>
           </div>
+          <div className="cart-summary-row cart-total">
+            <span>Totalt att betala:</span>
+            <span>{formatPrice(getTotal())}</span>
+          </div>
+          
+          <Link to="/checkout" className="btn btn-primary checkout-btn">
+            Gå till kassan
+          </Link>
+          
+          <Link to="/butik" className="btn btn-secondary" style={{ marginTop: '1rem' }}>
+            Fortsätt handla
+          </Link>
+        </div>
         </div>
       </PageSection>
     </main>

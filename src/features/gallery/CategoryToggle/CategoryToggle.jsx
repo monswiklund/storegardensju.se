@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import PropTypes from "prop-types";
 import "./CategoryToggle.css";
 
@@ -6,14 +6,31 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const containerRef = useRef(null);
     const buttonRefs = useRef([]);
+    const sortedCategories = useMemo(() => {
+        const next = [...categories];
+        next.sort((a, b) => {
+            const orderA = Number.isFinite(Number(a.order)) ? Number(a.order) : 0;
+            const orderB = Number.isFinite(Number(b.order)) ? Number(b.order) : 0;
+            if (orderA === orderB) {
+                return (a.name || "").localeCompare(b.name || "", "sv");
+            }
+            return orderA - orderB;
+        });
+        const allaIndex = next.findIndex((cat) => cat.id === "alla");
+        if (allaIndex > 0) {
+            const [alla] = next.splice(allaIndex, 1);
+            next.unshift(alla);
+        }
+        return next;
+    }, [categories]);
 
     // Update selected index when active category changes
     useEffect(() => {
-        const index = categories.findIndex(cat => cat.id === activeCategory);
+        const index = sortedCategories.findIndex(cat => cat.id === activeCategory);
         if (index !== -1) {
             setSelectedIndex(index);
         }
-    }, [activeCategory, categories]);
+    }, [activeCategory, sortedCategories]);
 
     // Scroll to active button on mobile
     useEffect(() => {
@@ -41,15 +58,44 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
         onCategoryChange(category.id);
     };
 
+    const handleKeyDown = (event, index) => {
+        if (!sortedCategories.length) return;
+        let nextIndex = index;
+        if (event.key === "ArrowRight") {
+            nextIndex = (index + 1) % sortedCategories.length;
+        } else if (event.key === "ArrowLeft") {
+            nextIndex = (index - 1 + sortedCategories.length) % sortedCategories.length;
+        } else if (event.key === "Home") {
+            nextIndex = 0;
+        } else if (event.key === "End") {
+            nextIndex = sortedCategories.length - 1;
+        } else {
+            return;
+        }
+        event.preventDefault();
+        const nextCategory = sortedCategories[nextIndex];
+        if (nextCategory) {
+            setSelectedIndex(nextIndex);
+            onCategoryChange(nextCategory.id);
+            if (buttonRefs.current[nextIndex]) {
+                buttonRefs.current[nextIndex].focus();
+            }
+        }
+    };
+
     return (
         <div className="category-toggle">
             <div className="category-toggle-container" ref={containerRef}>
-                {categories.map((category, index) => (
+                {sortedCategories.map((category, index) => (
                     <button
                         key={category.id}
                         ref={el => buttonRefs.current[index] = el}
                         className={`category-button ${index === selectedIndex ? 'active' : ''}`}
+                        type="button"
                         onClick={() => handleCategoryClick(category, index)}
+                        onKeyDown={(event) => handleKeyDown(event, index)}
+                        aria-pressed={index === selectedIndex}
+                        aria-current={index === selectedIndex ? "true" : "false"}
                         aria-label={`Visa ${category.name} (${category.images.length} bilder)`}
                     >
                         <span className="category-name">{category.name}</span>

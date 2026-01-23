@@ -95,23 +95,27 @@ const HomeHeroCarousel = () => {
 
   useEffect(() => {
     addAnimation();
-  }, []);
+  }, [slides.length]);
 
   function addAnimation() {
     const scroller = scrollerRef.current;
-    if (scroller && !scroller.getAttribute("data-animated")) {
-      scroller.setAttribute("data-animated", true);
+    if (!scroller) return;
+    const scrollerInner = scroller.querySelector(".hero-carousel-inner");
+    if (!scrollerInner) return;
 
-      // We need to duplicate the content to create the infinite scrolling effect
-      const scrollerInner = scroller.querySelector(".hero-carousel-inner");
-      const scrollerContent = Array.from(scrollerInner.children);
+    scrollerInner
+      .querySelectorAll('[aria-hidden="true"]')
+      .forEach((node) => node.remove());
 
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        duplicatedItem.setAttribute("aria-hidden", true);
-        scrollerInner.appendChild(duplicatedItem);
-      });
-    }
+    scroller.removeAttribute("data-animated");
+    scroller.setAttribute("data-animated", true);
+
+    const scrollerContent = Array.from(scrollerInner.children);
+    scrollerContent.forEach((item) => {
+      const duplicatedItem = item.cloneNode(true);
+      duplicatedItem.setAttribute("aria-hidden", true);
+      scrollerInner.appendChild(duplicatedItem);
+    });
   }
 
   return (

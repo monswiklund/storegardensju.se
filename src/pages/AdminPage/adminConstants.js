@@ -87,6 +87,7 @@ export const ADMIN_VIEW_OPTIONS = [
   { value: "orders", label: "Ordrar" },
   { value: "customers", label: "Kunder" },
   { value: "products", label: "Produkter" },
+  { value: "gallery", label: "Galleri" },
   { value: "coupons", label: "Rabatter" },
 ];
 

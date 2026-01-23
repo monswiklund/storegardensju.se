@@ -1,14 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { formatAmount } from "./adminUtils";
-import { AdminService } from "../../services/AdminService";
-import {
-  STATS_RANGE_OPTIONS,
-  getAdminStats,
-  listAdminOrders,
-  updateAdminOrderFulfillment,
-  exportAdminOrders,
-} from "../../services/adminService";
+import { AdminService } from "../../services/adminService";
 import "./AdminPage.css";
 import {
   ADMIN_VIEW_OPTIONS,
@@ -16,10 +8,9 @@ import {
   DEFAULT_STATS_RANGE,
   DEMO_ORDERS,
   DEMO_DETAILS,
+  FULFILLMENT_LABELS,
   FULFILLMENT_RANK,
   SORT_STORAGE_KEY,
-  DATE_FILTER_OPTIONS,
-  AMOUNT_FILTER_OPTIONS,
   buildDemoStats,
 } from "./adminConstants";
 import { useDebounce } from "../../hooks/useDebounce";
@@ -34,8 +25,9 @@ import AdminPackingSlip from "./components/AdminPackingSlip";
 import AdminCoupons from "./components/AdminCoupons";
 import AdminCreateProduct from "./components/AdminCreateProduct";
 import AdminProductList from "./components/AdminProductList";
-
-const IS_DEV = import.meta.env.DEV;
+import AdminGallery from "./components/AdminGallery";
+import AdminSidebar from "./components/AdminSidebar";
+import { PageSection } from "../../components";
 
 function AdminPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,6 +39,9 @@ function AdminPage() {
 
   const [adminKey, setAdminKey] = useState(
     () => sessionStorage.getItem("adminKey") || ""
+  );
+  const [adminUser, setAdminUser] = useState(
+    () => sessionStorage.getItem("adminUser") || ""
   );
   const [keyInput, setKeyInput] = useState("");
   const [keyError, setKeyError] = useState("");
@@ -117,6 +112,39 @@ function AdminPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (adminUser) {
+      setKeyError("");
+    }
+  }, [adminUser]);
+
+  const handleLogout = useCallback(() => {
+    sessionStorage.removeItem("adminKey");
+    sessionStorage.removeItem("adminUser");
+    setAdminKey("");
+    setAdminUser("");
+    setPreviewMode(false);
+    setOrders([]);
+    setSelectedId("");
+    setSelectedOrder(null);
+    setStatsData(null);
+    setStatsError("");
+    setStatsLoading(false);
+  }, []);
+
+  const handleApiError = useCallback(
+    (err, context = "") => {
+      const msg = err?.message || "Ett fel uppstod";
+      if (err?.status === 401 || err?.status === 403) {
+        error(`Sessionen har löpt ut eller ogiltig nyckel. Loggar ut...`);
+        handleLogout();
+        return;
+      }
+      error(`${context ? context + ": " : ""}${msg}`);
+    },
+    [error, handleLogout]
+  );
+
   const loadOrders = useCallback(
     async (reset = true) => {
       if (!adminKey && !isPreview) return;
@@ -129,14 +157,11 @@ function AdminPage() {
         } else {
           const limit = 50;
           const startingAfter = reset ? null : lastOrderCursor;
-          const data = await listAdminOrders(
-            {
-              limit,
-              status: "complete", // Fetch all completed orders
-              startingAfter,
-            },
-            adminKey
-          );
+          const data = await AdminService.getOrders(adminKey, {
+            limit,
+            status: "complete", // Fetch all completed orders
+            startingAfter,
+          });
 
           const newOrders = data?.data || [];
           if (reset) {
@@ -150,14 +175,14 @@ function AdminPage() {
             setLastOrderCursor(newOrders[newOrders.length - 1].id);
           }
         }
-      } catch (error) {
-        setListError(error?.message || "Kunde inte hämta ordrar. Försök igen.");
-        error("Misslyckades att hämta ordrar");
+      } catch (err) {
+        setListError(err?.message || "Kunde inte hämta ordrar. Försök igen.");
+        handleApiError(err, "Misslyckades att hämta ordrar");
       } finally {
         setListLoading(false);
       }
     },
-    [adminKey, isPreview, lastOrderCursor, error]
+    [adminKey, isPreview, lastOrderCursor, handleApiError]
   );
 
   const loadStats = useCallback(async () => {
@@ -168,15 +193,16 @@ function AdminPage() {
       if (isPreview) {
         setStatsData(demoStats);
       } else {
-        const data = await getAdminStats(statsRange, adminKey);
+        const data = await AdminService.getStats(adminKey, statsRange);
         setStatsData(data);
       }
     } catch (err) {
       setStatsError(err?.message || "Kunde inte hämta statistik. Försök igen.");
+      handleApiError(err, "Statistikfel");
     } finally {
       setStatsLoading(false);
     }
-  }, [adminKey, demoStats, isPreview, statsRange]);
+  }, [adminKey, demoStats, isPreview, statsRange, handleApiError]);
 
   const loadOrder = useCallback(
     async (orderId) => {
@@ -196,19 +222,19 @@ function AdminPage() {
         }
       } catch (err) {
         setDetailError(err?.message || "Kunde inte hämta orderdetaljer.");
-        error("Kunde inte hämta orderdetaljer");
+        handleApiError(err, "Orderdetaljer");
       } finally {
         setDetailLoading(false);
       }
     },
-    [adminKey, isPreview, error]
+    [adminKey, isPreview, handleApiError]
   );
 
   useEffect(() => {
     if (adminKey || isPreview) {
       loadOrders(true);
     }
-  }, [adminKey, isPreview]);
+  }, [adminKey, isPreview, loadOrders]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -274,32 +300,24 @@ function AdminPage() {
       setSaveLoading(true);
       setSaveError("");
       try {
-        await updateAdminOrderFulfillment(
-          selectedId,
-          { status, note, trackingNumber, trackingCarrier },
-          adminKey
-        );
+        await AdminService.updateFulfillment(adminKey, selectedId, {
+          status,
+          note,
+          trackingNumber,
+          trackingCarrier,
+        });
         await Promise.all([loadOrders(true), loadOrder(selectedId)]);
         if (message) {
           success(message);
         }
       } catch (err) {
         setSaveError(err?.message || "Kunde inte spara. Försök igen.");
-        error("Misslyckades att spara ändringar");
+        handleApiError(err, "Spara-fel");
       } finally {
         setSaveLoading(false);
       }
     },
-    [
-      adminKey,
-      isPreview,
-      loadOrder,
-      selectedId,
-      loadOrders,
-      success,
-      error,
-      info,
-    ]
+    [adminKey, isPreview, loadOrder, selectedId, loadOrders, success, info, handleApiError]
   );
 
   useEffect(() => {
@@ -413,6 +431,7 @@ function AdminPage() {
   const showOrdersSection = adminView === "overview" || adminView === "orders";
   const showCustomersSection = adminView === "customers";
   const showProductsSection = adminView === "products";
+  const showGallerySection = adminView === "gallery";
 
   const showCouponsSection = adminView === "coupons";
 
@@ -554,37 +573,49 @@ function AdminPage() {
 
   const handleLogin = (event) => {
     event.preventDefault();
+    if (!adminUser) {
+      setKeyError("Välj användare.");
+      return;
+    }
     const trimmed = keyInput.trim();
     if (!trimmed) {
       setKeyError("Skriv in admin-nyckeln.");
       return;
     }
     sessionStorage.setItem("adminKey", trimmed);
+    sessionStorage.setItem("adminUser", adminUser);
     setAdminKey(trimmed);
     setPreviewMode(false);
     setKeyInput("");
     setKeyError("");
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("adminKey");
-    setAdminKey("");
-    setPreviewMode(false);
-    setOrders([]);
-    setSelectedId("");
-    setSelectedOrder(null);
-    setStatsData(null);
-    setStatsError("");
-    setStatsLoading(false);
-  };
-
   const handleRefresh = async () => {
     info("Uppdaterar...");
-    await loadOrders(true);
-    if (selectedId) {
-      await loadOrder(selectedId);
+    try {
+      await loadOrders(true);
+      if (selectedId) {
+        await loadOrder(selectedId);
+      }
+      success("Uppdaterad");
+    } catch (err) {
+      handleApiError(err, "Uppdatering misslyckades");
     }
-    success("Uppdaterad");
+  };
+
+  const handleClearFilters = () => {
+    setFulfillmentFilter("all");
+    setDateFilter("all");
+    setAmountFilter("all");
+    setSearchQuery("");
+  };
+
+  const handleCustomerFilter = (email) => {
+    setFulfillmentFilter("all");
+    setDateFilter("all");
+    setAmountFilter("all");
+    setSearchQuery(email);
+    setViewMode("list");
   };
 
   const handleExport = async () => {
@@ -594,14 +625,11 @@ function AdminPage() {
     }
     if (!adminKey) return;
     try {
-      const blob = await exportAdminOrders(
-        {
-          limit: 500,
-          status: "complete",
-          fulfillment: fulfillmentFilter !== "all" ? fulfillmentFilter : "",
-        },
-        adminKey
-      );
+      const blob = await AdminService.exportOrders(adminKey, {
+        limit: 500,
+        status: "complete",
+        fulfillment: fulfillmentFilter !== "all" ? fulfillmentFilter : "",
+      });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -613,19 +641,34 @@ function AdminPage() {
       success("Export klar");
     } catch (err) {
       setListError(err?.message || "Kunde inte exportera ordrar. Försök igen.");
-      error("Export misslyckades");
+      handleApiError(err, "Export misslyckades");
     }
   };
 
   const handleSave = async (event) => {
     event.preventDefault();
     if (!selectedId || !hasChanges) return;
+    const changes = [];
+    if (hasStatusChange) {
+      const currentLabel = FULFILLMENT_LABELS[currentStatus] || currentStatus;
+      const nextLabel = FULFILLMENT_LABELS[editStatus] || editStatus;
+      changes.push(`status: ${currentLabel} → ${nextLabel}`);
+    }
+    if (hasTrackingChange) {
+      changes.push(editTracking ? "spårning uppdaterad" : "spårning borttagen");
+    }
+    if (hasTrackingCarrierChange) {
+      changes.push("transportör uppdaterad");
+    }
+    if (hasNoteChange) {
+      changes.push("notering uppdaterad");
+    }
     await runSave({
       status: editStatus,
       note: editNote,
       trackingNumber: editTracking,
       trackingCarrier: editTrackingCarrier,
-      message: "Sparat!",
+      message: `Order uppdaterad${changes.length ? ` (${changes.join(", ")})` : ""}`,
     });
   };
 
@@ -640,7 +683,7 @@ function AdminPage() {
     setQuickActionId(orderId);
     setListError("");
     try {
-      await updateAdminOrderFulfillment(orderId, { status }, adminKey);
+      await AdminService.updateFulfillment(adminKey, orderId, { status });
       await loadOrders(true);
       if (selectedId === orderId) {
         await loadOrder(orderId);
@@ -650,7 +693,7 @@ function AdminPage() {
       setListError(
         err?.message || "Kunde inte uppdatera statusen. Försök igen."
       );
-      error("Misslyckades att uppdatera order");
+      handleApiError(err, "Statusändring misslyckades");
     } finally {
       setQuickActionId("");
     }
@@ -681,14 +724,13 @@ function AdminPage() {
 
     try {
       // Amount in öre
-      const payload = { amount: amount * 100 };
-      await AdminService.refundOrder(adminKey, selectedId, payload);
+      await AdminService.refundOrder(adminKey, selectedId, amount * 100);
 
       success(`Återbetalat ${amount} kr`);
       // Reload order
       await loadOrder(selectedId);
     } catch (err) {
-      error(err.message || "Kunde inte genomföra återbetalning");
+      handleApiError(err, "Återbetalning misslyckades");
     }
   };
 
@@ -727,7 +769,7 @@ function AdminPage() {
     setBulkActionLoading(true);
     try {
       const promises = Array.from(selectedOrderIds).map((id) =>
-        updateAdminOrderFulfillment(id, { status }, adminKey)
+        AdminService.updateFulfillment(adminKey, id, { status })
       );
       await Promise.all(promises);
 
@@ -735,7 +777,7 @@ function AdminPage() {
       setSelectedOrderIds(new Set());
       success("Massuppdatering klar");
     } catch (err) {
-      error("Fel vid massuppdatering");
+      handleApiError(err, "Massuppdatering misslyckades");
     } finally {
       setBulkActionLoading(false);
     }
@@ -823,7 +865,7 @@ function AdminPage() {
         clearTimeout(copyTimerRef.current);
       }
       copyTimerRef.current = window.setTimeout(() => setCopiedField(""), 2000);
-    } catch (err) {
+    } catch {
       setCopiedField("");
     }
   };
@@ -862,6 +904,8 @@ function AdminPage() {
         onLogin={handleLogin}
         error={keyError || listError}
         onPreview={() => setPreviewMode(true)}
+        selectedUser={adminUser}
+        setSelectedUser={setAdminUser}
       />
     );
   }
@@ -869,194 +913,243 @@ function AdminPage() {
   return (
     <main role="main" id="main-content">
       <PageSection background="alt" spacing="default">
-        <div className="admin-container">
-          <AdminHeader
-            isPreview={isPreview}
-            listLoading={listLoading}
-            onRefresh={handleRefresh}
-            onLogout={handleLogout}
-            adminView={adminView}
-            onViewChange={handleAdminViewChange}
-          />
-
-          <AdminPackingSlip order={selectedOrder} />
-
-          {showStatsSection && (
-            <AdminStats
-              statsRange={statsRange}
-              setStatsRange={setStatsRange}
-              statsExpanded={statsExpanded}
-              setStatsExpanded={setStatsExpanded}
-              statsLoading={statsLoading}
-              statsError={statsError}
-              statsSummary={statsSummary}
-              categoryExpanded={categoryExpanded}
-              setCategoryExpanded={setCategoryExpanded}
+        <div className="admin-layout">
+          <AdminSidebar adminView={adminView} onViewChange={handleAdminViewChange} />
+          <div className="admin-container">
+            <AdminHeader
+              isPreview={isPreview}
+              listLoading={listLoading}
+              onRefresh={handleRefresh}
+              onLogout={handleLogout}
+              adminView={adminView}
+              onViewChange={handleAdminViewChange}
             />
-          )}
 
-          {showCustomersSection && (
-            <AdminCustomers orders={orders} loading={listLoading} />
-          )}
+            <AdminPackingSlip order={selectedOrder} />
 
-          {showProductsSection && (
-            <>
-              {productViewMode === "list" && (
-                <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
-                  <div
-                    style={{
-                      marginBottom: "1rem",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <button
-                      onClick={() => {
-                        setEditingProduct(null);
-                        setProductViewMode("create");
-                      }}
-                      style={{
-                        padding: "0.75rem 1.5rem",
-                        backgroundColor: "#059669",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "6px",
-                        fontWeight: "600",
-                        cursor: "pointer",
-                      }}
-                    >
-                      + Skapa ny produkt
-                    </button>
+            {showStatsSection && (
+              <AdminStats
+                statsRange={statsRange}
+                setStatsRange={setStatsRange}
+                statsExpanded={statsExpanded}
+                setStatsExpanded={setStatsExpanded}
+                statsLoading={statsLoading}
+                statsError={statsError}
+                statsSummary={statsSummary}
+                categoryExpanded={categoryExpanded}
+                setCategoryExpanded={setCategoryExpanded}
+              />
+            )}
+
+            {showCustomersSection && (
+              <AdminCustomers orders={orders} loading={listLoading} />
+            )}
+
+            {showProductsSection && (
+              <>
+                {isPreview && (
+                  <div className="admin-panel">
+                    <div className="admin-empty">
+                      <p>Demo-läge: logga in för att hantera produkter.</p>
+                      <button
+                        type="button"
+                        className="admin-btn-secondary"
+                        onClick={handleLogout}
+                      >
+                        Logga in
+                      </button>
+                    </div>
                   </div>
-                  <AdminProductList
-                    adminKey={adminKey}
-                    onEdit={(product) => {
-                      setEditingProduct(product);
-                      setProductViewMode("edit");
-                    }}
-                  />
-                </div>
-              )}
+                )}
 
-              {(productViewMode === "create" || productViewMode === "edit") && (
-                <AdminCreateProduct
-                  adminKey={adminKey}
-                  initialData={
-                    productViewMode === "edit" ? editingProduct : null
-                  }
-                  onCancel={() => {
-                    setEditingProduct(null);
-                    setProductViewMode("list");
-                  }}
-                  onSuccess={() => {
-                    setEditingProduct(null);
-                    setProductViewMode("list");
-                  }}
+                {!isPreview && productViewMode === "list" && (
+                  <div className="admin-section">
+                    <div className="admin-section-actions">
+                      <button
+                        type="button"
+                        className="admin-btn-primary"
+                        onClick={() => {
+                          setEditingProduct(null);
+                          setProductViewMode("create");
+                        }}
+                      >
+                        + Skapa ny produkt
+                      </button>
+                    </div>
+                    <AdminProductList
+                      adminKey={adminKey}
+                      onEdit={(product) => {
+                        setEditingProduct(product);
+                        setProductViewMode("edit");
+                      }}
+                    />
+                  </div>
+                )}
+
+                {!isPreview &&
+                  (productViewMode === "create" || productViewMode === "edit") && (
+                    <AdminCreateProduct
+                      adminKey={adminKey}
+                      initialData={
+                        productViewMode === "edit" ? editingProduct : null
+                      }
+                      onCancel={() => {
+                        setEditingProduct(null);
+                        setProductViewMode("list");
+                      }}
+                      onSuccess={() => {
+                        setEditingProduct(null);
+                        setProductViewMode("list");
+                      }}
+                    />
+                  )}
+              </>
+            )}
+
+            {showGallerySection && (
+              <>
+                {isPreview ? (
+                  <div className="admin-panel">
+                    <div className="admin-empty">
+                      <p>Demo-läge: logga in för att hantera galleriet.</p>
+                      <button
+                        type="button"
+                        className="admin-btn-secondary"
+                        onClick={handleLogout}
+                      >
+                        Logga in
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <AdminGallery adminKey={adminKey} />
+                )}
+              </>
+            )}
+
+            {showCouponsSection && (
+              <>
+                {isPreview ? (
+                  <div className="admin-panel">
+                    <div className="admin-empty">
+                      <p>Demo-läge: logga in för att hantera rabatter.</p>
+                      <button
+                        type="button"
+                        className="admin-btn-secondary"
+                        onClick={handleLogout}
+                      >
+                        Logga in
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <AdminCoupons adminKey={adminKey} />
+                )}
+              </>
+            )}
+
+            {showOrdersSection && isMobile && (
+              <div className="admin-mobile-tabs">
+                <button
+                  type="button"
+                  className={`admin-tab-btn ${
+                    viewMode === "list" ? "active" : ""
+                  }`}
+                  onClick={() => setViewMode("list")}
+                >
+                  Ordrar
+                </button>
+                <button
+                  type="button"
+                  className={`admin-tab-btn ${
+                    viewMode === "detail" ? "active" : ""
+                  }`}
+                  onClick={() => setViewMode("detail")}
+                  disabled={!selectedId}
+                >
+                  Detaljer
+                </button>
+              </div>
+            )}
+
+            {showOrdersSection && (
+              <div className="admin-panels">
+                <AdminOrderList
+                  filteredOrders={filteredOrders}
+                  selectedId={selectedId}
+                  onSelectOrder={handleSelectOrder}
+                  onExport={handleExport}
+                  sortMode={sortMode}
+                  setSortMode={setSortMode}
+                  listLoading={listLoading}
+                  listError={listError}
+                  fulfillmentFilter={fulfillmentFilter}
+                  setFulfillmentFilter={setFulfillmentFilter}
+                  dateFilter={dateFilter}
+                  setDateFilter={setDateFilter}
+                  amountFilter={amountFilter}
+                  setAmountFilter={setAmountFilter}
+                  counts={counts}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  searchFocused={searchFocused}
+                  setSearchFocused={setSearchFocused}
+                  handleSearchKeyDown={handleSearchKeyDown}
+                  searchSuggestions={searchSuggestions}
+                  onSuggestionClick={handleSuggestionClick}
+                  highlightedSuggestion={highlightedSuggestion}
+                  handleQuickStatus={handleQuickStatus}
+                  quickActionId={quickActionId}
+                  isMobile={isMobile}
+                  viewMode={viewMode}
+                  ordersCount={orders.length}
+                  // Pagination
+                  hasMore={hasMore}
+                  onLoadMore={() => loadOrders(false)}
+                  // Bulk Actions
+                  selectedOrderIds={selectedOrderIds}
+                  onToggleSelect={handleToggleSelect}
+                  onSelectAll={handleSelectAll}
+                  onBulkAction={handleBulkAction}
+                  bulkActionLoading={bulkActionLoading}
+                  onClearFilters={handleClearFilters}
+                  onCopy={handleCopyText}
                 />
-              )}
-            </>
-          )}
 
-          {showCouponsSection && <AdminCoupons adminKey={adminKey} />}
-
-          {showOrdersSection && isMobile && (
-            <div className="admin-mobile-tabs">
-              <button
-                type="button"
-                className={`admin-tab-btn ${
-                  viewMode === "list" ? "active" : ""
-                }`}
-                onClick={() => setViewMode("list")}
-              >
-                Ordrar
-              </button>
-              <button
-                type="button"
-                className={`admin-tab-btn ${
-                  viewMode === "detail" ? "active" : ""
-                }`}
-                onClick={() => setViewMode("detail")}
-                disabled={!selectedId}
-              >
-                Detaljer
-              </button>
-            </div>
-          )}
-
-          {showOrdersSection && (
-            <div className="admin-panels">
-              <AdminOrderList
-                filteredOrders={filteredOrders}
-                selectedId={selectedId}
-                onSelectOrder={handleSelectOrder}
-                onExport={handleExport}
-                sortMode={sortMode}
-                setSortMode={setSortMode}
-                listLoading={listLoading}
-                listError={listError}
-                fulfillmentFilter={fulfillmentFilter}
-                setFulfillmentFilter={setFulfillmentFilter}
-                dateFilter={dateFilter}
-                setDateFilter={setDateFilter}
-                amountFilter={amountFilter}
-                setAmountFilter={setAmountFilter}
-                counts={counts}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                searchFocused={searchFocused}
-                setSearchFocused={setSearchFocused}
-                handleSearchKeyDown={handleSearchKeyDown}
-                searchSuggestions={searchSuggestions}
-                onSuggestionClick={handleSuggestionClick}
-                highlightedSuggestion={highlightedSuggestion}
-                handleQuickStatus={handleQuickStatus}
-                quickActionId={quickActionId}
-                isMobile={isMobile}
-                viewMode={viewMode}
-                ordersCount={orders.length}
-                // Pagination
-                hasMore={hasMore}
-                onLoadMore={() => loadOrders(false)}
-                // Bulk Actions
-                selectedOrderIds={selectedOrderIds}
-                onToggleSelect={handleToggleSelect}
-                onSelectAll={handleSelectAll}
-                onBulkAction={handleBulkAction}
-                bulkActionLoading={bulkActionLoading}
-              />
-
-              <AdminOrderDetail
-                order={selectedOrder}
-                loading={detailLoading}
-                error={detailError}
-                customerHistory={customerHistory}
-                onCopy={handleCopyText}
-                copiedField={copiedField}
-                editState={{
-                  status: editStatus,
-                  note: editNote,
-                  tracking: editTracking,
-                  trackingCarrier: editTrackingCarrier,
-                  setStatus: setEditStatus,
-                  setNote: setEditNote,
-                  setTracking: setEditTracking,
-                  setTrackingCarrier: setEditTrackingCarrier,
-                }}
-                onSave={handleSave}
-                onReset={handleReset}
-                onRefund={handleRefund}
-                hasChanges={hasChanges}
-                isBackwardStatus={isBackwardStatus}
-                saveStatus={{
-                  loading: saveLoading,
-                  error: saveError,
-                }}
-                isMobile={isMobile}
-                viewMode={viewMode}
-                setViewMode={setViewMode}
-              />
-            </div>
-          )}
+                <AdminOrderDetail
+                  order={selectedOrder}
+                  loading={detailLoading}
+                  error={detailError}
+                  customerHistory={customerHistory}
+                  onCopy={handleCopyText}
+                  copiedField={copiedField}
+                  editState={{
+                    status: editStatus,
+                    note: editNote,
+                    tracking: editTracking,
+                    trackingCarrier: editTrackingCarrier,
+                    setStatus: setEditStatus,
+                    setNote: setEditNote,
+                    setTracking: setEditTracking,
+                    setTrackingCarrier: setEditTrackingCarrier,
+                  }}
+                  onSave={handleSave}
+                  onReset={handleReset}
+                  onRefund={handleRefund}
+                  hasChanges={hasChanges}
+                  isBackwardStatus={isBackwardStatus}
+                  saveStatus={{
+                    loading: saveLoading,
+                    error: saveError,
+                  }}
+                  isMobile={isMobile}
+                  viewMode={viewMode}
+                  setViewMode={setViewMode}
+                  onCustomerFilter={handleCustomerFilter}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </PageSection>
     </main>

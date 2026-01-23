@@ -26,17 +26,19 @@ const Footer = () => {
 
         <nav className="footer-nav" aria-label="Footer Navigation">
           <ul className="footer-links">
-            {appRoutes.map((link) => (
-              <li key={link.path}>
-                <Link
-                  to={link.path}
-                  className="footer-link"
-                  onClick={handleLinkClick}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {appRoutes
+              .filter((link) => !link.hidden)
+              .map((link) => (
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
+                    className="footer-link"
+                    onClick={handleLinkClick}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </nav>
 

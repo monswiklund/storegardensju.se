@@ -1,7 +1,7 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import "./Gallery.css";
 import CategoryToggle from "../CategoryToggle/CategoryToggle";
-import galleryData from "../../../data/galleryCategories.json";
+import staticGalleryData from "../../../data/galleryCategories.json";
 import galleryOrder from "../../../data/gallery-order.json";
 import GalleryGrid from "./components/GalleryGrid";
 import ExpandedGallery from "./components/ExpandedGallery";
@@ -10,15 +10,99 @@ import FeaturedGallery from "../FeaturedGallery/FeaturedGallery";
 import useGalleryLightbox from "./hooks/useGalleryLightbox";
 import useDockedToggle from "./hooks/useDockedToggle";
 import logoImage from "../../../assets/logoTransp_cropped.png";
+import { fetchGalleryCategories } from "../../../services/galleryService";
+
+const normalizeGalleryData = (data) => {
+  const raw = data?.categories ? data : staticGalleryData;
+  let categories = (raw?.categories || []).map((category) => ({
+    ...category,
+    images: (category.images || []).map((image) => ({
+      ...image,
+      path:
+        image.path ||
+        image.url ||
+        image.publicUrl ||
+        image.storageUrl ||
+        image.src ||
+        "",
+      displayName:
+        image.displayName ||
+        image.title ||
+        image.alt ||
+        image.filename ||
+        image.id ||
+        "Bild",
+    })),
+  }));
+
+  categories.sort((a, b) => {
+    const orderA = Number.isFinite(Number(a.order)) ? Number(a.order) : 0;
+    const orderB = Number.isFinite(Number(b.order)) ? Number(b.order) : 0;
+    if (orderA === orderB) {
+      return (a.name || "").localeCompare(b.name || "", "sv");
+    }
+    return orderA - orderB;
+  });
+
+  const hasAllCategory = categories.some((category) => category.id === "alla");
+  if (!hasAllCategory && categories.length > 0) {
+    const allImages = categories.flatMap((category) =>
+      (category.images || []).map((image) => ({
+        ...image,
+        categoryId: category.id,
+      }))
+    );
+    categories = [
+      {
+        id: "alla",
+        name: "Alla bilder",
+        description: "Alla bilder från Storegården 7",
+        images: allImages,
+        order: -1,
+      },
+      ...categories,
+    ];
+  }
+
+  return {
+    categories,
+    featured: data?.featured || raw?.featured || null,
+  };
+};
 
 function GalleryShowcase() {
   const [activeCategory, setActiveCategory] = useState("alla");
   const [isLoading, setIsLoading] = useState(false);
   const [showAllImages, setShowAllImages] = useState(false);
+  const [galleryData, setGalleryData] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchGalleryCategories()
+      .then((data) => {
+        if (isMounted) {
+          setGalleryData(data);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setGalleryData(null);
+        }
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const normalizedGallery = useMemo(
+    () => normalizeGalleryData(galleryData),
+    [galleryData]
+  );
 
   const activeCategoryData = useMemo(
-    () => galleryData.categories.find((cat) => cat.id === activeCategory),
-    [activeCategory]
+    () =>
+      normalizedGallery.categories.find((cat) => cat.id === activeCategory),
+    [activeCategory, normalizedGallery]
   );
 
   const images = useMemo(() => {
@@ -39,21 +123,29 @@ function GalleryShowcase() {
 
   // Featured images - lookup from "alla" category based on featured list
   const featuredImages = useMemo(() => {
-    if (!galleryOrder?.featured || galleryOrder.featured.length === 0) {
+    const featuredList =
+      normalizedGallery.featured ||
+      galleryOrder?.featured ||
+      [];
+
+    if (!featuredList || featuredList.length === 0) {
       return [];
     }
 
-    const allaCategoryData = galleryData.categories.find(
+    const allaCategoryData = normalizedGallery.categories.find(
       (cat) => cat.id === "alla"
     );
     if (!allaCategoryData) {
       return [];
     }
 
-    return galleryOrder.featured
-      .map((filename) => {
+    return featuredList
+      .map((featuredId) => {
         const imageData = allaCategoryData.images.find(
-          (img) => img.filename === filename
+          (img) =>
+            img.filename === featuredId ||
+            img.id === featuredId ||
+            img.storageKey === featuredId
         );
         if (!imageData) return null;
 
@@ -68,7 +160,7 @@ function GalleryShowcase() {
         };
       })
       .filter(Boolean);
-  }, []);
+  }, [normalizedGallery]);
 
   // Separate lightbox for featured gallery
   const {
@@ -141,7 +233,7 @@ function GalleryShowcase() {
       )}
 
       <CategoryToggle
-        categories={galleryData.categories}
+        categories={normalizedGallery.categories}
         activeCategory={activeCategory}
         onCategoryChange={handleCategoryChange}
       />
@@ -205,7 +297,7 @@ function GalleryShowcase() {
         onSelectImage={goToImage}
         dialogRef={dialogRef}
         closeButtonRef={closeButtonRef}
-        categories={galleryData.categories}
+        categories={normalizedGallery.categories}
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
       />
