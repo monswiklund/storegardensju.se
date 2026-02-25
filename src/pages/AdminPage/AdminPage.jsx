@@ -151,11 +151,14 @@ function AdminPage() {
         } else {
           const limit = 50;
           const startingAfter = reset ? null : lastOrderCursor;
-          const data = await AdminService.getOrders(adminKey, {
+          const params = {
             limit,
             status: "complete", // Fetch all completed orders
-            startingAfter,
-          });
+          };
+          if (startingAfter) {
+            params.startingAfter = startingAfter;
+          }
+          const data = await AdminService.getOrders(adminKey, params);
 
           const newOrders = data?.data || [];
           if (reset) {

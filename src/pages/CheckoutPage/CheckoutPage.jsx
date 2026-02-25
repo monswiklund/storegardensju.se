@@ -4,9 +4,11 @@ import { ArrowLeft, Lock } from "lucide-react";
 import { CartContext } from "../../components/layout/CartContext/CartContext.jsx";
 import { PageSection } from "../../components";
 import { formatPrice } from "../../data/products";
+import { getApiBaseUrl } from "../../config/apiBaseUrl";
 import "./CheckoutPage.css";
 
 export default function CheckoutPage() {
+  const API_URL = getApiBaseUrl();
   const { cart, getTotal } = useContext(CartContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -34,7 +36,6 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4242";
       console.log("Calling API:", `${API_URL}/create-checkout-session`);
       console.log("Cart items:", cart);
 

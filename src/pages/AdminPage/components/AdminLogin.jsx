@@ -37,6 +37,7 @@ function AdminLogin({
                 className="admin-input"
                 value={selectedUser}
                 onChange={(event) => setSelectedUser(event.target.value)}
+                autoComplete="username"
               >
                 <option value="">Välj...</option>
                 {userOptions.map((option) => (
@@ -56,6 +57,25 @@ function AdminLogin({
                 onChange={(event) => setKeyInput(event.target.value)}
                 placeholder="Klistra in nyckeln"
                 autoComplete="current-password"
+              />
+              <input
+                type="text"
+                name="username"
+                value={selectedUser}
+                readOnly
+                autoComplete="username"
+                tabIndex={-1}
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  width: 1,
+                  height: 1,
+                  margin: -1,
+                  padding: 0,
+                  border: 0,
+                  clip: "rect(0 0 0 0)",
+                  overflow: "hidden",
+                }}
               />
               {(error || keyError) && (
                 <p className="admin-error">{error || keyError}</p>

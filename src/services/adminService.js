@@ -1,6 +1,16 @@
 // src/services/adminService.js
+import { getApiBaseUrl } from "../config/apiBaseUrl";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4242";
+const API_URL = getApiBaseUrl();
+
+const toQueryString = (params = {}) => {
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+    searchParams.set(key, String(value));
+  });
+  return searchParams.toString();
+};
 
 const getHeaders = (key) => ({
   "Content-Type": "application/json",
@@ -26,9 +36,9 @@ const handleResponse = async (res, defaultMessage) => {
 export const AdminService = {
   // Orders
   getOrders: async (key, params) => {
-    const searchParams = new URLSearchParams(params);
+    const query = toQueryString(params);
     const res = await fetch(
-      `${API_URL}/admin/orders?${searchParams.toString()}`,
+      `${API_URL}/admin/orders${query ? `?${query}` : ""}`,
       {
         headers: getHeaders(key),
       }
@@ -67,12 +77,11 @@ export const AdminService = {
 
   // Products
   getProducts: async (key, params = {}) => {
-    const searchParams = new URLSearchParams(params);
-    const query = searchParams.toString();
+    const query = toQueryString(params);
     const res = await fetch(
       `${API_URL}/admin/products${query ? `?${query}` : ""}`,
       {
-      headers: getHeaders(key),
+        headers: getHeaders(key),
       }
     );
     await handleResponse(res, "Failed to fetch products");
@@ -158,9 +167,9 @@ export const AdminService = {
   },
 
   exportOrders: async (key, params) => {
-    const searchParams = new URLSearchParams(params);
+    const query = toQueryString(params);
     const res = await fetch(
-      `${API_URL}/admin/orders/export?${searchParams.toString()}`,
+      `${API_URL}/admin/orders/export${query ? `?${query}` : ""}`,
       {
         headers: getHeaders(key),
       }
