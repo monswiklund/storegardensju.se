@@ -7,7 +7,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-  const [statusFilter, setStatusFilter] = useState("active");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [query, setQuery] = useState("");
   const [sortMode, setSortMode] = useState("name");

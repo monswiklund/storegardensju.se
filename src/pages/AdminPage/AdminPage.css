@@ -1,19 +1,24 @@
 .admin-container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
 .admin-layout {
-  max-width: 1600px;
+  max-width: 2200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 2rem;
 }
 
 .admin-layout .admin-container {
   max-width: none;
   margin: 0;
+}
+
+.admin-app .page-section-content {
+  max-width: min(2200px, 100%);
+  padding-inline: clamp(16px, 2vw, 36px);
 }
 
 .admin-header {
@@ -166,7 +171,7 @@
 
 .admin-panels {
   display: grid;
-  grid-template-columns: minmax(240px, 0.6fr) minmax(0, 1.4fr);
+  grid-template-columns: minmax(340px, 0.85fr) minmax(0, 1.75fr);
   gap: 2.25rem;
   width: 100%;
   max-width: 100%;
@@ -174,7 +179,7 @@
 }
 
 .admin-panel-list {
-  max-width: 360px;
+  max-width: 520px;
 }
 
 .admin-panel-list .admin-controls {
@@ -2069,7 +2074,7 @@
 
 @media (max-width: 1400px) {
   .admin-panels {
-    grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.2fr);
+    grid-template-columns: minmax(300px, 1fr) minmax(0, 1.45fr);
   }
 }
 
@@ -2224,8 +2229,40 @@
 /* Gallery */
 .admin-gallery-layout {
   display: grid;
-  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  gap: 1.75rem;
+}
+
+.admin-gallery-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-gallery-overview-card {
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 0.75rem 0.9rem;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.admin-gallery-overview-card strong {
+  font-size: 1.1rem;
+}
+
+.admin-gallery-overview-card small {
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+.admin-gallery-overview-label {
+  color: #6b7280;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .admin-gallery-sidebar,
@@ -2258,7 +2295,7 @@
 .admin-gallery-category-select {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   background: none;
   border: none;
   padding: 0;
@@ -2266,6 +2303,18 @@
   font-size: 0.95rem;
   color: var(--text-main);
   cursor: pointer;
+}
+
+.admin-gallery-category-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.admin-gallery-category-slug {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
 }
 
 .admin-badge {
@@ -2304,6 +2353,14 @@
   border-radius: 12px;
   padding: 1rem;
   background: #fafafa;
+  flex-wrap: wrap;
+}
+
+.admin-gallery-content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
@@ -2400,6 +2457,18 @@
   justify-content: center;
 }
 
+.admin-gallery-image-position {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(17, 24, 39, 0.8);
+}
+
 .admin-gallery-image-toolbar {
   display: flex;
   justify-content: space-between;
@@ -2416,6 +2485,42 @@
   flex-wrap: wrap;
 }
 
+.admin-gallery-unsaved {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+}
+
+.admin-gallery-feedback {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #065f46;
+  background: #d1fae5;
+  border: 1px solid #6ee7b7;
+  animation: adminFeedbackPop 180ms ease;
+}
+
+@keyframes adminFeedbackPop {
+  from {
+    transform: scale(0.97);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .admin-gallery-image-form {
   padding: 0.75rem;
   display: grid;
@@ -2424,8 +2529,22 @@
 
 .admin-gallery-image-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.6rem;
+}
+
+.admin-gallery-category-checklist {
+  margin-top: 0.35rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.35rem 0.5rem;
+}
+
+.admin-gallery-category-checkbox {
+  background: #f8f8f8;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.35rem 0.45rem;
 }
 
 .admin-gallery-image-toggles {
@@ -2693,4 +2812,12 @@
 
 .chart-bar-container:hover .chart-tooltip {
   display: block;
+}
+
+.admin-btn-move {
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  border-width: 2px;
+  min-height: 36px;
 }

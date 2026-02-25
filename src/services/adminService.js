@@ -28,6 +28,10 @@ const handleResponse = async (res, defaultMessage) => {
     }
     const error = new Error(message);
     error.status = res.status;
+    const retryAfter = Number(res.headers.get("Retry-After"));
+    if (Number.isFinite(retryAfter) && retryAfter > 0) {
+      error.retryAfter = retryAfter;
+    }
     throw error;
   }
   return res;
