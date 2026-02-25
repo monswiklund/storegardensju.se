@@ -4,8 +4,9 @@
  * Denna service kommunicerar med Go-backend som i sin tur
  * hämtar produkter från Stripe API.
  */
+import { getApiBaseUrl } from "../config/apiBaseUrl";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4242";
+const API_URL = getApiBaseUrl();
 
 /**
  * Hämta alla aktiva produkter från Stripe

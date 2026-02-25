@@ -34,7 +34,7 @@ function GalleryGrid({ images, isLoading, onImageSelect, categoryName }) {
     >
       {images.slice(0, 6).map((image, index) => (
         <div
-          key={index}
+          key={image.filename || image.original || index}
           className="gallery-thumbnail"
           onClick={() => onImageSelect(index)}
           role="button"
@@ -47,11 +47,7 @@ function GalleryGrid({ images, isLoading, onImageSelect, categoryName }) {
             }
           }}
         >
-          <img
-            src={image.thumbnail}
-            alt={image.thumbnailAlt}
-            loading="eager"
-          />
+          <img src={image.thumbnail} alt={image.thumbnailAlt} loading="eager" />
         </div>
       ))}
     </Masonry>
@@ -63,7 +59,9 @@ GalleryGrid.propTypes = {
     PropTypes.shape({
       thumbnail: PropTypes.string,
       thumbnailAlt: PropTypes.string,
-    }),
+      filename: PropTypes.string,
+      original: PropTypes.string,
+    })
   ).isRequired,
   isLoading: PropTypes.bool.isRequired,
   onImageSelect: PropTypes.func.isRequired,

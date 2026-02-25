@@ -90,9 +90,16 @@
   opacity: 1;
 }
 
+/* Animation only runs when container is visible in viewport */
 @media (prefers-reduced-motion: no-preference) {
-  .featured-item img {
+  .featured-gallery-container.is-visible .featured-item img {
     animation: featuredParallax 22s ease-in-out infinite alternate;
+  }
+
+  /* Pause animation when not visible to save GPU resources */
+  .featured-gallery-container:not(.is-visible) .featured-item img {
+    animation: none;
+    transform: scale(1.08);
   }
 
   .featured-item:hover img,

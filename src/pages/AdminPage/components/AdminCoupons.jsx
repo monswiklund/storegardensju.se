@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "../../../contexts/ToastContext";
+import { AdminService } from "../../../services/adminService";
 import "./AdminCoupons.css";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4242";
 
 export default function AdminCoupons({ adminKey }) {
   const { success, error } = useToast();
@@ -15,57 +14,53 @@ export default function AdminCoupons({ adminKey }) {
   const [discountType, setDiscountType] = useState("percent"); // percent or fixed
   const [discountValue, setDiscountValue] = useState("");
 
-  const fetchCoupons = async () => {
+  const fetchCoupons = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/admin/coupons`, {
-        headers: { Authorization: `Bearer ${adminKey}` },
-      });
-      if (!res.ok) throw new Error("Kunde inte hämta rabattkoder");
-      const data = await res.json();
+      const data = await AdminService.getCoupons(adminKey);
       setCoupons(data || []);
     } catch (err) {
-      console.error(err);
-      error("Misslyckades hämta koder");
+      error(err.message || "Misslyckades hämta koder");
     } finally {
       setLoading(false);
     }
-  };
+  }, [adminKey, error]);
 
   useEffect(() => {
     if (adminKey) fetchCoupons();
-  }, [adminKey]);
+  }, [adminKey, fetchCoupons]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    const val = parseFloat(discountValue);
+    if (isNaN(val) || val <= 0) {
+      error("Ange ett giltigt värde");
+      return;
+    }
+    
+    if (discountType === "percent" && val > 100) {
+      error("Procent kan inte vara över 100");
+      return;
+    }
+
     setCreating(true);
 
     try {
       const payload = {
-        code: newCode,
-        percentOff: discountType === "percent" ? parseFloat(discountValue) : 0,
-        amountOff: discountType === "fixed" ? parseInt(discountValue, 10) : 0,
+        code: newCode.trim().toUpperCase(),
+        percentOff: discountType === "percent" ? val : 0,
+        amountOff: discountType === "fixed" ? Math.round(val * 100) : 0, // Convert to öre
       };
 
-      const res = await fetch(`${API_URL}/admin/coupons`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${adminKey}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok)
-        throw new Error("Kunde inte skapa kod (kanske finns redan?)");
-
-      await res.json();
-      success(`Koden "${newCode}" skapad!`);
+      await AdminService.createCoupon(adminKey, payload);
+      success(`Koden "${payload.code}" skapad!`);
       setNewCode("");
       setDiscountValue("");
       fetchCoupons();
     } catch (err) {
-      error(err.message);
+      error(err.message || "Kunde inte skapa kod");
     } finally {
       setCreating(false);
     }
@@ -77,15 +72,11 @@ export default function AdminCoupons({ adminKey }) {
     )
       return;
     try {
-      const res = await fetch(`${API_URL}/admin/coupons/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${adminKey}` },
-      });
-      if (!res.ok) throw new Error("Kunde inte ta bort kod");
+      await AdminService.archiveCoupon(adminKey, id);
       success("Kod avaktiverad");
       fetchCoupons();
     } catch (err) {
-      error(err.message);
+      error(err.message || "Kunde inte ta bort kod");
     }
   };
 

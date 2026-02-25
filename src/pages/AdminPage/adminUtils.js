@@ -32,6 +32,8 @@ export const formatEventLabel = (event) => {
       return "Spårningsnummer uppdaterat";
     case "tracking_carrier":
       return "Transportör uppdaterad";
+    case "refund":
+      return "Återbetalning gjord";
     default:
       return "Händelse";
   }
@@ -56,6 +58,8 @@ export const formatListEventLabel = (event) => {
       return "Spårning";
     case "tracking_carrier":
       return "Transportör";
+    case "refund":
+      return "Återbet.";
     default:
       return "Händelse";
   }

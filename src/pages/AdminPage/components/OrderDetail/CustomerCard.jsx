@@ -2,7 +2,7 @@ import React from "react";
 import { formatAmount } from "../../adminUtils";
 import { CopyIcon, CheckIcon } from "../AdminIcons";
 
-function CustomerCard({ order, customerHistory, onCopy, copiedField }) {
+function CustomerCard({ order, customerHistory, onCopy, copiedField, onCustomerFilter }) {
   const customerName = order?.customerName || "";
   const customerEmail = order?.customerEmail || "";
   const customerPhone = order?.customerPhone || "";
@@ -28,13 +28,18 @@ function CustomerCard({ order, customerHistory, onCopy, copiedField }) {
           )}
         </div>
         {customerHistory && (
-          <span className="admin-customer-chip">
+          <button
+            type="button"
+            className="admin-customer-chip"
+            onClick={() => onCustomerFilter(customerEmail)}
+            title="Visa alla ordrar från denna kund"
+          >
             {customerHistory.count === 0
               ? "Första ordern"
               : `${customerHistory.count} tidigare · ${formatAmount(
                   customerHistory.total
                 )}`}
-          </span>
+          </button>
         )}
       </div>
       <div className="admin-customer-grid">

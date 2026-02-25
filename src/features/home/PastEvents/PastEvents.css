@@ -2,7 +2,7 @@
   width: 100%;
   background-color: transparent;
   box-sizing: border-box;
-  padding: 80px 20px;
+  padding: 48px 0 0;
 }
 
 /* Optional: tighter spacing below toggle when collapsed */
@@ -269,8 +269,8 @@
 }
 
 @media (max-width: 480px) {
-  .tidigare-evenemang-section {
-    padding: 40px 10px;
+  .past-events-section {
+    padding: 32px 0 0;
   }
 
   .past-event-card {

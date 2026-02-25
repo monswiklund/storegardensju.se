@@ -3,17 +3,12 @@ import {
   ORDER_SORT_OPTIONS,
   FULFILLMENT_LABELS,
   PAYMENT_LABELS,
-  FULFILLMENT_OPTIONS,
   DATE_FILTER_OPTIONS,
   AMOUNT_FILTER_OPTIONS,
 } from "../adminConstants";
-import LoadingSpinner from "../../../components/ui/LoadingSpinner.jsx";
 import Skeleton from "../../../components/ui/Skeleton.jsx";
-import {
-  formatAmount,
-  formatDateTime,
-  formatListEventLabel,
-} from "../adminUtils";
+import { formatAmount, formatDateTime, formatListEventLabel } from "../adminUtils";
+import { CopyIcon } from "./AdminIcons";
 
 function AdminOrderList({
   filteredOrders,
@@ -51,12 +46,20 @@ function AdminOrderList({
   onSelectAll,
   onBulkAction,
   bulkActionLoading,
+  onClearFilters,
+  onCopy,
 }) {
   const isHidden = isMobile && viewMode !== "list";
   const allSelected =
     filteredOrders.length > 0 &&
     filteredOrders.every((o) => selectedOrderIds.has(o.id));
   const someSelected = selectedOrderIds.size > 0;
+
+  const hasActiveFilters =
+    fulfillmentFilter !== "all" ||
+    dateFilter !== "all" ||
+    amountFilter !== "all" ||
+    searchQuery.trim() !== "";
 
   return (
     <section
@@ -65,11 +68,10 @@ function AdminOrderList({
     >
       <div className="admin-panel-header">
         <div className="admin-header-title">
-          <h2>Ordrar</h2>
+          <h3>Orderlista</h3>
           <span className="admin-count-badge">{ordersCount} st</span>
         </div>
         <div className="admin-panel-actions">
-          {/* Export moved here or kept here? Kept here for global actions */}
           <button
             type="button"
             className="admin-btn-secondary admin-btn-sm"
@@ -92,7 +94,7 @@ function AdminOrderList({
             onBlur={() => {
               window.setTimeout(() => setSearchFocused(false), 150);
             }}
-            placeholder="Sök order..."
+            placeholder="Sök email eller order-id..."
             role="combobox"
             aria-expanded={searchFocused && searchSuggestions.length > 0}
             aria-controls="admin-search-suggestions"
@@ -176,24 +178,33 @@ function AdminOrderList({
           </select>
         </div>
       </div>
-
-      <div className="admin-tabs-row">
-        <div className="admin-tabs">
+      <div className="admin-fulfillment-filter">
+        <select
+          className="admin-select admin-select-sm admin-select-full"
+          value={fulfillmentFilter}
+          onChange={(event) => setFulfillmentFilter(event.target.value)}
+          aria-label="Filtrera status"
+        >
           {FULFILLMENT_FILTERS.map((filter) => (
-            <button
-              key={filter.value}
-              type="button"
-              className={`admin-tab-link ${
-                fulfillmentFilter === filter.value ? "active" : ""
-              }`}
-              onClick={() => setFulfillmentFilter(filter.value)}
-            >
-              {filter.label}
-              <span className="admin-tab-count">
-                {counts[filter.value] ?? 0}
-              </span>
-            </button>
+            <option key={filter.value} value={filter.value}>
+              {filter.label} ({counts[filter.value] ?? 0})
+            </option>
           ))}
+        </select>
+      </div>
+
+      <div className="admin-results-info">
+        <div className="admin-results-stats">
+          Visar <strong>{filteredOrders.length}</strong> ordrar
+          {hasActiveFilters && (
+            <button
+              type="button"
+              className="admin-clear-btn"
+              onClick={onClearFilters}
+            >
+              Rensa filter
+            </button>
+          )}
         </div>
       </div>
 
@@ -281,7 +292,17 @@ function AdminOrderList({
 
       {!listLoading && filteredOrders.length === 0 && (
         <div className="admin-empty">
-          <p>Inga ordrar i denna vy.</p>
+          <p>Inga ordrar matchar filtren.</p>
+          {hasActiveFilters && (
+            <button
+              type="button"
+              className="admin-btn-secondary admin-btn-sm"
+              onClick={onClearFilters}
+              style={{ marginTop: "1rem" }}
+            >
+              Visa alla ordrar
+            </button>
+          )}
         </div>
       )}
 
@@ -294,8 +315,6 @@ function AdminOrderList({
             PAYMENT_LABELS[order.paymentStatus] || order.paymentStatus;
           const isSelected = order.id === selectedId;
           const isChecked = selectedOrderIds.has(order.id);
-          const isQuickLoading = quickActionId === order.id;
-          const currentStatus = fulfillmentValue;
           const lastEventType = order.lastEventType || "";
           const lastEventAt = order.lastEventAt || 0;
           const lastEventValue = order.lastEventValue || "";
@@ -326,6 +345,11 @@ function AdminOrderList({
               role="button"
               tabIndex={0}
               aria-pressed={isSelected}
+              title={
+                listEventLabel
+                  ? `Senaste: ${listEventLabel}`
+                  : "Visa orderdetaljer"
+              }
             >
               <div className="admin-order-top-row">
                 <div
@@ -338,15 +362,33 @@ function AdminOrderList({
                   <input
                     type="checkbox"
                     checked={isChecked}
-                    onChange={() => {}} // Handled by div click
-                    tabIndex={-1}
+                    onChange={(event) => {
+                      event.stopPropagation();
+                      onToggleSelect(order.id);
+                    }}
+                    onClick={(event) => event.stopPropagation()}
+                    tabIndex={0}
+                    aria-label={`Välj order ${order.id}`}
                   />
                 </div>
 
                 <div className="admin-order-content">
                   <div className="admin-order-main">
                     <div className="admin-order-header">
-                      <span className="admin-order-id">{order.id}</span>
+                      <div className="admin-order-id-group">
+                        <span className="admin-order-id">#{order.id.slice(-6)}</span>
+                        <button
+                          type="button"
+                          className="admin-id-copy-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onCopy(order.id, "orderId");
+                          }}
+                          title="Kopiera hela Order-ID"
+                        >
+                          <CopyIcon size={12} />
+                        </button>
+                      </div>
                       <span className="admin-order-date">
                         {formatDateTime(order.created)}
                       </span>
@@ -356,29 +398,29 @@ function AdminOrderList({
                         {order.customerEmail || "Okänd email"}
                       </span>
                     </div>
+                    <div className="admin-order-amount-inline">
+                      {formatAmount(order.amountTotal)}
+                    </div>
                   </div>
 
-                  <div className="admin-order-end">
-                    <span className="admin-order-amount">
-                      {formatAmount(order.amountTotal)}
-                    </span>
-                  </div>
                 </div>
               </div>
 
               <div className="admin-order-footer">
-                <span className={`admin-chip admin-chip-${fulfillmentValue}`}>
-                  {fulfillmentLabel}
-                </span>
-                <span
-                  className={`admin-chip ${
-                    order.paymentStatus === "paid"
-                      ? "admin-chip-paid"
-                      : "admin-chip-payment"
-                  }`}
-                >
-                  {paymentLabel}
-                </span>
+                <div className="admin-order-chips">
+                  <span className={`admin-chip admin-chip-${fulfillmentValue}`}>
+                    {fulfillmentLabel}
+                  </span>
+                  <span
+                    className={`admin-chip ${
+                      order.paymentStatus === "paid"
+                        ? "admin-chip-paid"
+                        : "admin-chip-payment"
+                    }`}
+                  >
+                    {paymentLabel}
+                  </span>
+                </div>
               </div>
             </div>
           );

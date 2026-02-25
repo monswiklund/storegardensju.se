@@ -19,6 +19,11 @@ export function CartProvider({ children }) {
     }
   });
 
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const openCart = useCallback(() => setIsCartOpen(true), []);
+  const closeCart = useCallback(() => setIsCartOpen(false), []);
+
   useEffect(() => {
     try {
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -52,6 +57,7 @@ export function CartProvider({ children }) {
       }
       return [...prev, { ...product, quantity: qty }];
     });
+    setIsCartOpen(true);
   }, []);
 
   const removeItem = useCallback(
@@ -100,6 +106,9 @@ export function CartProvider({ children }) {
         getTotal,
         getItemCount,
         isInCart,
+        isCartOpen,
+        openCart,
+        closeCart,
       }}
     >
       {children}

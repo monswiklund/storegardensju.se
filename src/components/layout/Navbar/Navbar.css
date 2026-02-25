@@ -98,6 +98,12 @@
   border-bottom: 1px solid #eee;
 }
 
+.nav-item-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .nav-link {
   display: block;
   width: 100%;
@@ -113,6 +119,10 @@
   font-weight: 400;
 }
 
+.nav-item-row .nav-link {
+  flex: 1;
+}
+
 .nav-link:hover {
   background: var(--background-alt);
   color: var(--primary-color);
@@ -126,6 +136,70 @@
 .nav-link.active:hover {
   background: var(--background-alt);
   color: var(--primary-color);
+}
+
+.nav-submenu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  min-width: 52px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.nav-submenu-toggle:hover {
+  color: var(--primary-color);
+}
+
+.nav-submenu-caret {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.nav-item.submenu-open .nav-submenu-caret {
+  transform: rotate(-135deg);
+}
+
+.nav-submenu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+}
+
+.nav-item.submenu-open > .nav-submenu {
+  display: block;
+}
+
+.nav-submenu-item {
+  border-bottom: 1px solid #eee;
+}
+
+.nav-sublink {
+  display: block;
+  padding: 14px 20px 14px 36px;
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-sublink:hover {
+  background: var(--background-alt);
+  color: var(--primary-color);
+}
+
+.nav-sublink.active {
+  color: var(--primary-color);
+  font-weight: 500;
 }
 
 /* Overlay */
@@ -223,9 +297,73 @@
     background: var(--background-alt);
   }
 
+  .nav-submenu {
+    display: none;
+  }
+
+  .nav-item.submenu-open > .nav-submenu {
+    display: none;
+  }
+
+  .nav-submenu-toggle {
+    display: none;
+  }
+
   .nav-overlay {
     display: none;
   }
+}
+
+.event-subnav {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: white;
+  border-bottom: 1px solid #eee;
+  z-index: 999;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+
+.event-subnav.active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.event-subnav-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 0 15px;
+}
+
+.event-subnav-link {
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.event-subnav-link:hover {
+  background: var(--background-alt);
+  color: var(--primary-color);
+}
+
+.event-subnav-link.active {
+  background: var(--background-alt);
+  color: var(--primary-color);
+  font-weight: 500;
 }
 
 /* Navbar right section (cart + hamburger) */
@@ -263,6 +401,21 @@
   .nav-menu.open {
     right: 0;
   }
+
+  .nav-submenu {
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: max-height 0.25s ease, opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .nav-item.submenu-open > .nav-submenu {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Extra small mobile devices */
@@ -297,10 +450,43 @@
 /* Adjust body padding for fixed navbar */
 body {
   padding-top: 60px;
+  transition: padding-top 0.25s ease;
+}
+
+body.event-subnav-active {
+  padding-top: 108px;
+}
+
+@media (max-width: 768px) {
+  .event-subnav {
+    display: none;
+  }
+
+  body.event-subnav-active {
+    padding-top: 60px;
+  }
 }
 
 @media (max-width: 480px) {
   body {
     padding-top: 55px;
+  }
+
+  body.event-subnav-active {
+    padding-top: 55px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .event-subnav {
+    transition: none;
+  }
+
+  body {
+    transition: none;
+  }
+
+  .nav-submenu {
+    transition: none;
   }
 }

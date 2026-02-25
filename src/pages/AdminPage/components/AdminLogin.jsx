@@ -1,6 +1,10 @@
 import { PageSection } from "../../../components";
 
 const IS_DEV = import.meta.env.DEV;
+const ADMIN_USER_OPTIONS = (import.meta.env.VITE_ADMIN_USERS || "")
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
 
 function AdminLogin({
   keyInput,
@@ -9,7 +13,14 @@ function AdminLogin({
   error,
   onPreview,
   keyError,
+  selectedUser,
+  setSelectedUser,
 }) {
+  const userOptions =
+    ADMIN_USER_OPTIONS.length > 0
+      ? ADMIN_USER_OPTIONS
+      : ["Ann", "Carl", "Lina", "Måns"];
+
   return (
     <main role="main" id="main-content">
       <PageSection background="alt" spacing="default">
@@ -18,6 +29,23 @@ function AdminLogin({
             <h1>Admin</h1>
             <p>Logga in med din admin-nyckel.</p>
             <form className="admin-login-form" onSubmit={onLogin}>
+              <label className="admin-label" htmlFor="admin-user">
+                Välj användare
+              </label>
+              <select
+                id="admin-user"
+                className="admin-input"
+                value={selectedUser}
+                onChange={(event) => setSelectedUser(event.target.value)}
+                autoComplete="username"
+              >
+                <option value="">Välj...</option>
+                {userOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
               <label className="admin-label" htmlFor="admin-key">
                 Admin-nyckel
               </label>
@@ -29,6 +57,25 @@ function AdminLogin({
                 onChange={(event) => setKeyInput(event.target.value)}
                 placeholder="Klistra in nyckeln"
                 autoComplete="current-password"
+              />
+              <input
+                type="text"
+                name="username"
+                value={selectedUser}
+                readOnly
+                autoComplete="username"
+                tabIndex={-1}
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  width: 1,
+                  height: 1,
+                  margin: -1,
+                  padding: 0,
+                  border: 0,
+                  clip: "rect(0 0 0 0)",
+                  overflow: "hidden",
+                }}
               />
               {(error || keyError) && (
                 <p className="admin-error">{error || keyError}</p>

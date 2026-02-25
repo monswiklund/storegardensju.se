@@ -16,6 +16,15 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const footerLinks = appRoutes
+    .filter((link) => !link.hidden)
+    .flatMap((link) => {
+      const children = (link.children ?? []).filter(
+        (child) => !child.hidden,
+      );
+      return [link, ...children];
+    });
+
   return (
     <footer className="site-footer" role="contentinfo">
       <div className="footer-content">
@@ -26,7 +35,7 @@ const Footer = () => {
 
         <nav className="footer-nav" aria-label="Footer Navigation">
           <ul className="footer-links">
-            {appRoutes.map((link) => (
+            {footerLinks.map((link) => (
               <li key={link.path}>
                 <Link
                   to={link.path}

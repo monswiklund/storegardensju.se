@@ -8,12 +8,92 @@
 .apl-header {
   padding: 1rem;
   border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .apl-header h3 {
   margin: 0;
   font-size: 1.1rem;
   color: #111827;
+}
+
+.apl-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.apl-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.apl-search {
+  min-width: 220px;
+  flex: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.apl-select,
+.apl-input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.85rem;
+  background: #fff;
+}
+
+.apl-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.apl-bulk-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  background: #f9fafb;
+  flex-wrap: wrap;
+}
+
+.apl-bulk-actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.apl-btn-apply {
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #059669;
+  background: #059669;
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.apl-btn-apply:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.apl-selected-count {
+  font-size: 0.8rem;
+  color: #6b7280;
 }
 
 .apl-table {
@@ -96,6 +176,7 @@
 .apl-actions {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .apl-btn-edit {
@@ -125,4 +206,73 @@
 .apl-btn-archive:hover {
   text-decoration: underline;
   color: #dc2626;
+}
+
+.apl-btn-inline {
+  padding: 0.4rem 0.8rem;
+  border: 1px dashed #9ca3af;
+  background: #fff;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #374151;
+}
+
+.apl-btn-restore {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #059669;
+  background: #ecfdf5;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #065f46;
+}
+
+.apl-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.apl-edit-row td {
+  background: #f9fafb;
+}
+
+.apl-edit-panel {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.apl-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 160px;
+}
+
+.apl-edit-field input,
+.apl-edit-field select {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.apl-edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+@media (max-width: 960px) {
+  .apl-table {
+    font-size: 0.85rem;
+  }
+  .apl-table th,
+  .apl-table td {
+    padding: 0.75rem;
+  }
 }

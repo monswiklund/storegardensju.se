@@ -17,12 +17,9 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "@playwright/mcp": "^0.0.36",
-    "@playwright/test": "^1.55.0",
     "gsap": "^3.13.0",
     "lenis": "^1.3.11",
     "lucide-react": "^0.454.0",
-    "playwright": "^1.55.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-masonry-css": "^1.0.16",
@@ -30,6 +27,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@playwright/mcp": "^0.0.36",
+    "@playwright/test": "^1.55.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
@@ -39,6 +38,7 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "gh-pages": "^6.3.0",
     "globals": "^15.9.0",
+    "playwright": "^1.55.0",
     "rollup-plugin-visualizer": "^6.0.3",
     "vite": "^6.2.3"
   }

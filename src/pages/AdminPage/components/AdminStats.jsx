@@ -24,7 +24,7 @@ function AdminStats({
     <>
       <div className="admin-stats-header" id="admin-stats">
         <div className="admin-stats-title">
-          <h2>Statistik</h2>
+          <h3>Statistiköversikt</h3>
           <p className="admin-muted">Period: {statsRangeLabel.toLowerCase()}</p>
         </div>
         <div className="admin-stats-actions">

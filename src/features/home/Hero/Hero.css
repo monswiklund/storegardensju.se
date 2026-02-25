@@ -17,24 +17,33 @@
   padding: 0 20px;
   /* Counteract global body padding-top from Navbar */
   margin-top: -60px;
+  --hero-logo-offset: 0px;
 }
 
 @media (max-width: 480px) {
   .hero-logo-section {
     margin-top: -55px;
+    --hero-logo-offset: 0px;
   }
 }
 
 /* Logo */
 .hero-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   max-width: 400px;
   width: 80%;
-  animation: fadeIn 1s ease-out forwards;
 }
 
 .hero-logo img {
   width: 100%;
   height: auto;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+  animation: fadeInOpacity 0.8s ease-out forwards;
 }
 
 @keyframes fadeIn {
@@ -45,6 +54,15 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes fadeInOpacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
