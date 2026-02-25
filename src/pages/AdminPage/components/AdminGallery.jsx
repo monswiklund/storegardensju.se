@@ -84,31 +84,34 @@ function AdminGallery({ adminKey }) {
     });
   }, [activeImages]);
 
+  const selectableImageIds = useMemo(
+    () => sortedActiveImages.map((image) => image.id).filter(Boolean),
+    [sortedActiveImages]
+  );
+
   const loadGallery = useCallback(async () => {
     if (!adminKey) return;
     setLoading(true);
     try {
       const data = await AdminService.getGallery(adminKey);
       setGalleryData(data || { categories: [] });
-      if (!activeCategoryId && data?.categories?.length) {
-        setActiveCategoryId(data.categories[0].id);
-      }
+      setActiveCategoryId((prev) => {
+        if (!data?.categories?.length) return "";
+        if (prev && data.categories.some((category) => category.id === prev)) {
+          return prev;
+        }
+        return data.categories[0].id;
+      });
     } catch (err) {
       error(err?.message || "Kunde inte hämta galleri.");
     } finally {
       setLoading(false);
     }
-  }, [adminKey, activeCategoryId, error]);
+  }, [adminKey, error]);
 
   useEffect(() => {
     loadGallery();
   }, [loadGallery]);
-
-  useEffect(() => {
-    if (!activeCategoryId && categories.length) {
-      setActiveCategoryId(categories[0].id);
-    }
-  }, [activeCategoryId, categories]);
 
   useEffect(() => {
     setSelectedImageIds(new Set());
@@ -262,14 +265,11 @@ function AdminGallery({ adminKey }) {
   };
 
   const handleToggleSelectAll = () => {
-    if (selectedImageIds.size === sortedActiveImages.length) {
+    if (selectedImageIds.size === selectableImageIds.length) {
       setSelectedImageIds(new Set());
       return;
     }
-    const next = new Set(
-      sortedActiveImages.map((image) => image.id).filter(Boolean)
-    );
-    setSelectedImageIds(next);
+    setSelectedImageIds(new Set(selectableImageIds));
   };
 
   const handleBulkPublish = async (published) => {
@@ -305,33 +305,27 @@ function AdminGallery({ adminKey }) {
     }
     remaining.splice(insertIndex, 0, dragged);
 
-    const prev = remaining[insertIndex - 1];
-    const next = remaining[insertIndex + 1];
-    const prevOrder = prev
-      ? Number.isFinite(Number(prev.order))
-        ? Number(prev.order)
-        : insertIndex * 10
-      : 0;
-    const nextOrder = next
-      ? Number.isFinite(Number(next.order))
-        ? Number(next.order)
-        : (insertIndex + 1) * 10
-      : prevOrder + 10;
-
-    let newOrder = 10;
-    if (prev && next) {
-      newOrder = (prevOrder + nextOrder) / 2;
-    } else if (prev) {
-      newOrder = prevOrder + 10;
-    } else if (next) {
-      newOrder = nextOrder - 10;
-    }
+    const normalizedOrders = remaining.map((image, index) => ({
+      id: image.id,
+      order: (index + 1) * 10,
+    }));
+    const updates = normalizedOrders.filter((item, index) => {
+      if (!item.id) return false;
+      const currentOrder = Number.isFinite(Number(remaining[index]?.order))
+        ? Number(remaining[index]?.order)
+        : null;
+      return currentOrder !== item.order;
+    });
 
     setSaving(true);
     try {
-      await AdminService.updateGalleryImage(adminKey, draggingId, {
-        order: newOrder,
-      });
+      await Promise.all(
+        updates.map((item) =>
+          AdminService.updateGalleryImage(adminKey, item.id, {
+            order: item.order,
+          })
+        )
+      );
       success("Ordning uppdaterad.");
       await loadGallery();
     } catch (err) {
@@ -372,21 +366,12 @@ function AdminGallery({ adminKey }) {
           headers["Content-Type"] = file.type;
         }
 
-        const uploadResponse = await fetch(uploadUrl, {
-          method: uploadInfo?.method || "PUT",
-          headers,
-          body: file,
-        });
-        if (!uploadResponse.ok) {
-          throw new Error("Uppladdning misslyckades.");
-        }
-
         const title = file.name
           .replace(/\.[^/.]+$/, "")
           .replace(/[-_]+/g, " ")
           .trim();
 
-        await AdminService.createGalleryImage(adminKey, {
+        const createdImage = await AdminService.createGalleryImage(adminKey, {
           categoryId: activeCategoryId,
           title,
           alt: title,
@@ -395,6 +380,22 @@ function AdminGallery({ adminKey }) {
           originalFilename: file.name,
           published: true,
         });
+
+        const uploadResponse = await fetch(uploadUrl, {
+          method: uploadInfo?.method || "PUT",
+          headers,
+          body: file,
+        });
+        if (!uploadResponse.ok) {
+          if (createdImage?.id) {
+            try {
+              await AdminService.deleteGalleryImage(adminKey, createdImage.id);
+            } catch (cleanupError) {
+              console.warn("Misslyckades att städa upp bild:", cleanupError);
+            }
+          }
+          throw new Error("Uppladdning misslyckades.");
+        }
 
         completed += 1;
         setUploadProgress(Math.round((completed / files.length) * 100));
@@ -627,9 +628,10 @@ function AdminGallery({ adminKey }) {
                   <label className="admin-checkbox">
                     <input
                       type="checkbox"
+                      disabled={selectableImageIds.length === 0}
                       checked={
-                        selectedImageIds.size > 0 &&
-                        selectedImageIds.size === sortedActiveImages.length
+                        selectableImageIds.length > 0 &&
+                        selectedImageIds.size === selectableImageIds.length
                       }
                       onChange={handleToggleSelectAll}
                     />

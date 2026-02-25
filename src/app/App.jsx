@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -16,7 +16,10 @@ import {
   BuildInfo,
   Footer,
 } from "../components";
+import FadeInSection from "../components/ui/FadeInSection.jsx";
+import EventSubnav from "../components/layout/Navbar/EventSubnav.jsx";
 import { ToastProvider } from "../contexts/ToastContext";
+import { appRoutes } from "../config/routes.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -107,12 +110,29 @@ function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isHomePage = location.pathname === "/";
+  const eventRoute = appRoutes.find((route) => route.path === "/event");
+  const eventPaths = eventRoute
+    ? [
+        eventRoute.path,
+        ...(eventRoute.children ?? []).map((child) => child.path),
+      ]
+    : [];
+  const isEventSection = eventPaths.includes(location.pathname);
+
+  useLayoutEffect(() => {
+    if (isEventSection && !isAdminRoute) {
+      document.body.classList.add("event-subnav-active");
+    } else {
+      document.body.classList.remove("event-subnav-active");
+    }
+  }, [isEventSection, isAdminRoute]);
 
   return (
     <div
       className={isAdminRoute ? "admin-app" : isHomePage ? "home-app" : "page-app"}
     >
       <Navbar />
+      {!isAdminRoute && <EventSubnav isActive={isEventSection} />}
       <CartDrawer />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -130,7 +150,11 @@ function AppContent() {
         <Route path="/om-oss" element={<TeamPage />} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
-      {!isAdminRoute && <ContactSection />}
+      {!isAdminRoute && (
+        <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
+          <ContactSection />
+        </FadeInSection>
+      )}
       {!isAdminRoute && <Footer />}
     </div>
   );

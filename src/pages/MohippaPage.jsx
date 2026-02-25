@@ -117,58 +117,52 @@ function MohippaPage() {
                     </div>
                   ))}
                 </div>
-              </div>
-              <div className="mohippa-base-details">
-                <div className="details-refined">
-                  <h4>Bra att veta</h4>
-                  <ul className="details-list">
-                    <li>Möjlighet att lämna mat och dryck för kylning dagen innan.</li>
-                    <li>Vi finns på plats under dagen för att hjälpa till med allt det praktiska.</li>
-                    <li>Vi tar hand om disk och städning så att ni kan fokusera helt på bruden.</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </FadeInSection>
-        </PageSection>
-
-        {/* Activities */}
-        <PageSection
-          background="alt"
-          spacing="default"
-          className="mohippa-activities-section"
-        >
-          <FadeInSection>
-            <div className="activities-intro">
-              <h2 id="mohippa-aktiviteter">Tillval & aktiviteter</h2>
-              <p>Gör dagen ännu mer minnesvärd med våra kreativa workshops</p>
-            </div>
-            
-            <div className="mohippa-activities-list">
-              {ACTIVITIES.map((activity, index) => (
-                <div key={index} className="activity-list-item">
-                  <div className="activity-list-content">
-                    <div className="activity-list-header">
-                      <h3>{activity.title}</h3>
-                      {activity.duration && (
-                        <span className="activity-duration-badge">
-                          <Clock size={12} />
-                          {activity.duration}
-                        </span>
-                      )}
-                    </div>
-                    <p>{activity.description}</p>
-                    {activity.tip && (
-                      <div className="activity-list-tip">
-                        <strong>Tips:</strong> {activity.tip}
-                      </div>
-                    )}
-                    <div className="activity-list-price">
-                      <span className="price-amount">{activity.price}</span>
-                    </div>
+                <div className="mohippa-base-details">
+                  <div className="details-refined">
+                    <h4>Bra att veta</h4>
+                    <ul className="details-list">
+                      <li>Möjlighet att lämna mat och dryck för kylning dagen innan.</li>
+                      <li>Vi finns på plats under dagen för att hjälpa till med allt det praktiska.</li>
+                      <li>Vi tar hand om disk och städning så att ni kan fokusera helt på bruden.</li>
+                    </ul>
                   </div>
                 </div>
-              ))}
+              </div>
+              <div className="mohippa-activities-panel" id="mohippa-aktiviteter">
+                <div className="activities-intro">
+                  <h2>Tillval & aktiviteter</h2>
+                  <p>Gör dagen ännu mer minnesvärd med våra kreativa workshops</p>
+                </div>
+                <div className="mohippa-activities-list">
+                  {ACTIVITIES.map((activity, index) => (
+                    <div
+                      key={index}
+                      className="activity-list-item activity-list-item-compact"
+                    >
+                      <div className="activity-list-content">
+                        <div className="activity-list-header">
+                          <h3>{activity.title}</h3>
+                          {activity.duration && (
+                            <span className="activity-duration-badge">
+                              <Clock size={12} />
+                              {activity.duration}
+                            </span>
+                          )}
+                        </div>
+                        <p>{activity.description}</p>
+                        {activity.tip && (
+                          <div className="activity-list-tip">
+                            <strong>Tips:</strong> {activity.tip}
+                          </div>
+                        )}
+                        <div className="activity-list-price">
+                          <span className="price-amount">{activity.price}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </FadeInSection>
         </PageSection>

@@ -37,12 +37,8 @@ function AdminPage() {
   const copyTimerRef = useRef(null);
   const { success, error, info } = useToast();
 
-  const [adminKey, setAdminKey] = useState(
-    () => sessionStorage.getItem("adminKey") || ""
-  );
-  const [adminUser, setAdminUser] = useState(
-    () => sessionStorage.getItem("adminUser") || ""
-  );
+  const [adminKey, setAdminKey] = useState("");
+  const [adminUser, setAdminUser] = useState("");
   const [keyInput, setKeyInput] = useState("");
   const [keyError, setKeyError] = useState("");
   const [previewMode, setPreviewMode] = useState(false);
@@ -119,8 +115,6 @@ function AdminPage() {
   }, [adminUser]);
 
   const handleLogout = useCallback(() => {
-    sessionStorage.removeItem("adminKey");
-    sessionStorage.removeItem("adminUser");
     setAdminKey("");
     setAdminUser("");
     setPreviewMode(false);
@@ -173,6 +167,8 @@ function AdminPage() {
           setHasMore(data?.has_more || false);
           if (newOrders.length > 0) {
             setLastOrderCursor(newOrders[newOrders.length - 1].id);
+          } else if (reset) {
+            setLastOrderCursor(null);
           }
         }
       } catch (err) {
@@ -582,8 +578,6 @@ function AdminPage() {
       setKeyError("Skriv in admin-nyckeln.");
       return;
     }
-    sessionStorage.setItem("adminKey", trimmed);
-    sessionStorage.setItem("adminUser", adminUser);
     setAdminKey(trimmed);
     setPreviewMode(false);
     setKeyInput("");

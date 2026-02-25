@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import {
   HomeHeroSection,
-  HomeFeaturedGallery,
   HomeServicesSection,
   HomeUpcomingEventsSection,
 } from "../features/home";
@@ -33,17 +32,6 @@ function HomePage() {
         >
           <FadeInSection>
             <HomeUpcomingEventsSection />
-          </FadeInSection>
-        </PageSection>
-
-        {/* Featured Images Grid */}
-        <PageSection
-          background="alt"
-          spacing="compact"
-          ariaLabel="featured-gallery-heading"
-        >
-          <FadeInSection>
-            <HomeFeaturedGallery onViewAll={scrollToGallery} />
           </FadeInSection>
         </PageSection>
 
