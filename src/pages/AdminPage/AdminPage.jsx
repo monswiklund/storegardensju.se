@@ -29,6 +29,9 @@ import AdminGallery from "./components/AdminGallery";
 import AdminSidebar from "./components/AdminSidebar";
 import { PageSection } from "../../components";
 
+const ADMIN_KEY_STORAGE_KEY = "sg7_admin_key";
+const ADMIN_USER_STORAGE_KEY = "sg7_admin_user";
+
 function AdminPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -37,8 +40,14 @@ function AdminPage() {
   const copyTimerRef = useRef(null);
   const { success, error, info } = useToast();
 
-  const [adminKey, setAdminKey] = useState("");
-  const [adminUser, setAdminUser] = useState("");
+  const [adminKey, setAdminKey] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem(ADMIN_KEY_STORAGE_KEY) || "";
+  });
+  const [adminUser, setAdminUser] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem(ADMIN_USER_STORAGE_KEY) || "";
+  });
   const [keyInput, setKeyInput] = useState("");
   const [keyError, setKeyError] = useState("");
   const [previewMode, setPreviewMode] = useState(false);
@@ -115,6 +124,10 @@ function AdminPage() {
   }, [adminUser]);
 
   const handleLogout = useCallback(() => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(ADMIN_KEY_STORAGE_KEY);
+      localStorage.removeItem(ADMIN_USER_STORAGE_KEY);
+    }
     setAdminKey("");
     setAdminUser("");
     setPreviewMode(false);
@@ -582,6 +595,10 @@ function AdminPage() {
       return;
     }
     setAdminKey(trimmed);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(ADMIN_KEY_STORAGE_KEY, trimmed);
+      localStorage.setItem(ADMIN_USER_STORAGE_KEY, adminUser);
+    }
     setPreviewMode(false);
     setKeyInput("");
     setKeyError("");

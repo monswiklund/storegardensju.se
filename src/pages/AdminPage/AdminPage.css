@@ -2444,17 +2444,29 @@
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  border: none;
-  background: rgba(15, 23, 42, 0.8);
-  color: #fff;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  background: rgba(15, 23, 42, 0.45);
+  color: #ffffff;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.12s ease, background-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.admin-gallery-image-select:hover {
+  transform: scale(1.04);
+}
+
+.admin-gallery-image-select.is-selected {
+  background: #10b981;
+  border-color: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
 }
 
 .admin-gallery-image-position {

@@ -1028,7 +1028,7 @@ function AdminGallery({ adminKey }) {
                       }
                       onChange={handleToggleSelectAll}
                     />
-                    Markera alla
+                    Markera alla bilder
                   </label>
                   <div className="admin-gallery-bulk-actions">
                     <button
@@ -1037,7 +1037,7 @@ function AdminGallery({ adminKey }) {
                       onClick={handleSaveAllImageChanges}
                       disabled={saving || pendingImageChangesCount === 0}
                     >
-                      Spara ändringar
+                      Spara ordning
                     </button>
                     <button
                       type="button"
@@ -1045,39 +1045,7 @@ function AdminGallery({ adminKey }) {
                       onClick={() => handleBulkPublish(true)}
                       disabled={saving || selectedImageIds.size === 0}
                     >
-                      Publicera
-                    </button>
-                    <button
-                      type="button"
-                      className="admin-btn-tertiary admin-btn-sm"
-                      onClick={() => handleBulkPublish(false)}
-                      disabled={saving || selectedImageIds.size === 0}
-                    >
-                      Avpublicera
-                    </button>
-                    <button
-                      type="button"
-                      className="admin-btn-secondary admin-btn-sm"
-                      onClick={handleNormalizeOrder}
-                      disabled={
-                        saving ||
-                        sortedActiveImages.length === 0 ||
-                        !activeCategoryIsAssignable
-                      }
-                    >
-                      Normalisera ordning
-                    </button>
-                    <button
-                      type="button"
-                      className="admin-btn-secondary admin-btn-sm"
-                      onClick={handleUndoLastMove}
-                      disabled={
-                        saving ||
-                        !lastMoveAction ||
-                        lastMoveAction.categoryId !== activeCategoryId
-                      }
-                    >
-                      Ångra senaste flytt
+                      Publicera markerade
                     </button>
                     <span className="admin-muted">
                       {selectedImageIds.size} valda
@@ -1151,7 +1119,9 @@ function AdminGallery({ adminKey }) {
                         {image.id && (
                           <button
                             type="button"
-                            className="admin-gallery-image-select"
+                            className={`admin-gallery-image-select ${
+                              isSelected ? "is-selected" : ""
+                            }`}
                             onClick={(event) => {
                               event.stopPropagation();
                               handleToggleImageSelect(image.id);
@@ -1163,7 +1133,9 @@ function AdminGallery({ adminKey }) {
                                 : "Markera bild"
                             }
                           >
-                            {isSelected ? "✓" : "+"}
+                            <span aria-hidden="true">
+                              {isSelected ? "✓" : ""}
+                            </span>
                           </button>
                         )}
                         <span className="admin-gallery-image-position">
