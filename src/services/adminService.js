@@ -12,10 +12,16 @@ const toQueryString = (params = {}) => {
   return searchParams.toString();
 };
 
-const getHeaders = (key) => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${key}`,
-});
+const getHeaders = (key, { includeJsonContentType = true } = {}) => {
+  const headers = {};
+  if (includeJsonContentType) {
+    headers["Content-Type"] = "application/json";
+  }
+  if (key && key !== "session") {
+    headers.Authorization = `Bearer ${key}`;
+  }
+  return headers;
+};
 
 const handleResponse = async (res, defaultMessage) => {
   if (!res.ok) {
@@ -45,6 +51,7 @@ export const AdminService = {
       `${API_URL}/admin/orders${query ? `?${query}` : ""}`,
       {
         headers: getHeaders(key),
+        credentials: "include",
       }
     );
     await handleResponse(res, "Failed to fetch orders");
@@ -54,6 +61,7 @@ export const AdminService = {
   getOrder: async (key, id) => {
     const res = await fetch(`${API_URL}/admin/orders/${id}`, {
       headers: getHeaders(key),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to fetch order");
     return res.json();
@@ -64,6 +72,7 @@ export const AdminService = {
       method: "POST",
       headers: getHeaders(key),
       body: JSON.stringify(data),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to update fulfillment");
     return res.json();
@@ -74,6 +83,7 @@ export const AdminService = {
       method: "POST",
       headers: getHeaders(key),
       body: JSON.stringify({ amount }),
+      credentials: "include",
     });
     await handleResponse(res, "Refund failed");
     return res.json();
@@ -86,6 +96,7 @@ export const AdminService = {
       `${API_URL}/admin/products${query ? `?${query}` : ""}`,
       {
         headers: getHeaders(key),
+        credentials: "include",
       }
     );
     await handleResponse(res, "Failed to fetch products");
@@ -94,7 +105,7 @@ export const AdminService = {
 
   createProduct: async (key, data) => {
     const isFormData = data instanceof FormData;
-    const headers = getHeaders(key);
+    const headers = getHeaders(key, { includeJsonContentType: !isFormData });
     if (isFormData) {
       delete headers["Content-Type"];
     }
@@ -103,6 +114,7 @@ export const AdminService = {
       method: "POST",
       headers,
       body: isFormData ? data : JSON.stringify(data),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to create product");
     return res.json();
@@ -110,7 +122,7 @@ export const AdminService = {
 
   updateProduct: async (key, id, data) => {
     const isFormData = data instanceof FormData;
-    const headers = getHeaders(key);
+    const headers = getHeaders(key, { includeJsonContentType: !isFormData });
     if (isFormData) {
       delete headers["Content-Type"];
     }
@@ -119,6 +131,7 @@ export const AdminService = {
       method: "PUT",
       headers,
       body: isFormData ? data : JSON.stringify(data),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to update product");
     return res.json();
@@ -128,6 +141,7 @@ export const AdminService = {
     const res = await fetch(`${API_URL}/admin/products/${id}`, {
       method: "DELETE",
       headers: getHeaders(key),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to archive product");
     return res.json();
@@ -137,6 +151,7 @@ export const AdminService = {
   getCoupons: async (key) => {
     const res = await fetch(`${API_URL}/admin/coupons`, {
       headers: getHeaders(key),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to fetch coupons");
     return res.json();
@@ -147,6 +162,7 @@ export const AdminService = {
       method: "POST",
       headers: getHeaders(key),
       body: JSON.stringify(data),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to create coupon");
     return res.json();
@@ -156,6 +172,7 @@ export const AdminService = {
     const res = await fetch(`${API_URL}/admin/coupons/${id}`, {
       method: "DELETE",
       headers: getHeaders(key),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to archive coupon");
     return res.json();
@@ -165,6 +182,7 @@ export const AdminService = {
   getStats: async (key, range) => {
     const res = await fetch(`${API_URL}/admin/stats?range=${range}`, {
       headers: getHeaders(key),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to fetch stats");
     return res.json();
@@ -176,6 +194,7 @@ export const AdminService = {
       `${API_URL}/admin/orders/export${query ? `?${query}` : ""}`,
       {
         headers: getHeaders(key),
+        credentials: "include",
       }
     );
     await handleResponse(res, "Failed to export orders");
@@ -186,6 +205,7 @@ export const AdminService = {
   getGallery: async (key) => {
     const res = await fetch(`${API_URL}/admin/gallery`, {
       headers: getHeaders(key),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to fetch gallery");
     return res.json();
@@ -196,6 +216,7 @@ export const AdminService = {
       method: "POST",
       headers: getHeaders(key),
       body: JSON.stringify(data),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to create category");
     return res.json();
@@ -206,6 +227,7 @@ export const AdminService = {
       method: "PUT",
       headers: getHeaders(key),
       body: JSON.stringify(data),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to update category");
     return res.json();
@@ -215,6 +237,7 @@ export const AdminService = {
     const res = await fetch(`${API_URL}/admin/gallery/categories/${id}`, {
       method: "DELETE",
       headers: getHeaders(key),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to delete category");
     return res.json();
@@ -225,6 +248,7 @@ export const AdminService = {
       method: "POST",
       headers: getHeaders(key),
       body: JSON.stringify(data),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to create upload");
     return res.json();
@@ -235,6 +259,7 @@ export const AdminService = {
       method: "POST",
       headers: getHeaders(key),
       body: JSON.stringify(data),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to create image");
     return res.json();
@@ -245,6 +270,7 @@ export const AdminService = {
       method: "PUT",
       headers: getHeaders(key),
       body: JSON.stringify(data),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to update image");
     return res.json();
@@ -254,6 +280,7 @@ export const AdminService = {
     const res = await fetch(`${API_URL}/admin/gallery/images/${id}`, {
       method: "DELETE",
       headers: getHeaders(key),
+      credentials: "include",
     });
     await handleResponse(res, "Failed to delete image");
     return res.json();

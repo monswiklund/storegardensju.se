@@ -29,9 +29,6 @@ import AdminGallery from "./components/AdminGallery";
 import AdminSidebar from "./components/AdminSidebar";
 import { PageSection } from "../../components";
 
-const ADMIN_KEY_STORAGE_KEY = "sg7_admin_key";
-const ADMIN_USER_STORAGE_KEY = "sg7_admin_user";
-
 function AdminPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -40,16 +37,7 @@ function AdminPage() {
   const copyTimerRef = useRef(null);
   const { success, error, info } = useToast();
 
-  const [adminKey, setAdminKey] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem(ADMIN_KEY_STORAGE_KEY) || "";
-  });
-  const [adminUser, setAdminUser] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem(ADMIN_USER_STORAGE_KEY) || "";
-  });
-  const [keyInput, setKeyInput] = useState("");
-  const [keyError, setKeyError] = useState("");
+  const [adminKey, setAdminKey] = useState("session");
   const [previewMode, setPreviewMode] = useState(false);
 
   // States for Order List
@@ -117,19 +105,8 @@ function AdminPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (adminUser) {
-      setKeyError("");
-    }
-  }, [adminUser]);
-
   const handleLogout = useCallback(() => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(ADMIN_KEY_STORAGE_KEY);
-      localStorage.removeItem(ADMIN_USER_STORAGE_KEY);
-    }
     setAdminKey("");
-    setAdminUser("");
     setPreviewMode(false);
     setOrders([]);
     setSelectedId("");
@@ -143,7 +120,7 @@ function AdminPage() {
     (err, context = "") => {
       const msg = err?.message || "Ett fel uppstod";
       if (err?.status === 401 || err?.status === 403) {
-        error(`Sessionen har löpt ut eller ogiltig nyckel. Loggar ut...`);
+        error("Sessionen har löpt ut eller saknar behörighet. Loggar ut...");
         handleLogout();
         return;
       }
@@ -583,27 +560,6 @@ function AdminPage() {
     }
   }, [filteredOrders, selectedId, isMobile, searchQuery]);
 
-  const handleLogin = (event) => {
-    event.preventDefault();
-    if (!adminUser) {
-      setKeyError("Välj användare.");
-      return;
-    }
-    const trimmed = keyInput.trim();
-    if (!trimmed) {
-      setKeyError("Skriv in admin-nyckeln.");
-      return;
-    }
-    setAdminKey(trimmed);
-    if (typeof window !== "undefined") {
-      localStorage.setItem(ADMIN_KEY_STORAGE_KEY, trimmed);
-      localStorage.setItem(ADMIN_USER_STORAGE_KEY, adminUser);
-    }
-    setPreviewMode(false);
-    setKeyInput("");
-    setKeyError("");
-  };
-
   const handleRefresh = async () => {
     info("Uppdaterar...");
     try {
@@ -913,13 +869,9 @@ function AdminPage() {
   if (!adminKey && !previewMode) {
     return (
       <AdminLogin
-        keyInput={keyInput}
-        setKeyInput={setKeyInput}
-        onLogin={handleLogin}
-        error={keyError || listError}
+        error={listError}
+        onRetry={() => setAdminKey("session")}
         onPreview={() => setPreviewMode(true)}
-        selectedUser={adminUser}
-        setSelectedUser={setAdminUser}
       />
     );
   }

@@ -334,7 +334,7 @@ export default function AdminCreateProduct({
               onChange={handleChange}
               disabled={loading}
               rows="4"
-              placeholder="Beskriv känslan, materialet och storleken..."
+              placeholder=""
               aria-describedby="product-description-help"
             />
             <small id="product-description-help" className="help-text">

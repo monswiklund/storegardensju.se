@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import {
   FULFILLMENT_FILTERS,
   ORDER_SORT_OPTIONS,
@@ -49,6 +50,23 @@ function AdminOrderList({
   onClearFilters,
   onCopy,
 }) {
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (
+        e.key === "/" &&
+        document.activeElement.tagName !== "INPUT" &&
+        document.activeElement.tagName !== "TEXTAREA"
+      ) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const isHidden = isMobile && viewMode !== "list";
   const allSelected =
     filteredOrders.length > 0 &&
@@ -85,6 +103,7 @@ function AdminOrderList({
       <div className="admin-controls">
         <div className="admin-search-wrapper">
           <input
+            ref={searchInputRef}
             type="search"
             className="admin-input admin-search-input"
             value={searchQuery}
@@ -94,7 +113,7 @@ function AdminOrderList({
             onBlur={() => {
               window.setTimeout(() => setSearchFocused(false), 150);
             }}
-            placeholder="Sök email eller order-id..."
+            placeholder="Sök (tryck '/' för att fokusera)..."
             role="combobox"
             aria-expanded={searchFocused && searchSuggestions.length > 0}
             aria-controls="admin-search-suggestions"
