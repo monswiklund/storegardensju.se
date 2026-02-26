@@ -36,7 +36,7 @@ function AdminHeader({
   listLoading,
 
   onRefresh,
-  onLogout,
+  onSwitchAccount,
   adminView,
   onViewChange,
 }) {
@@ -67,9 +67,9 @@ function AdminHeader({
           <button
             type="button"
             className="admin-btn-tertiary"
-            onClick={onLogout}
+            onClick={onSwitchAccount}
           >
-            Byt admin-nyckel
+            Byt konto
           </button>
         </div>
       </div>

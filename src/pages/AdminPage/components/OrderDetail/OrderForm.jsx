@@ -75,7 +75,7 @@ function OrderForm({
 
         <div className="admin-form-row">
           <label className="admin-label" htmlFor="status">
-            Fulfillment
+            Orderstatus
           </label>
           <select
             id="status"
@@ -105,39 +105,44 @@ function OrderForm({
           </div>
         </div>
 
-        <div className="admin-form-row">
-          <label className="admin-label" htmlFor="tracking">
-            Spårningsnummer
-          </label>
-          <input
-            id="tracking"
-            type="text"
-            className="admin-input"
-            value={tracking}
-            onChange={(event) => setTracking(event.target.value)}
-            placeholder="T.ex. SE123456789"
-          />
-        </div>
+        {(status === "ship" || status === "completed" || tracking) && (
+          <div className="admin-form-group-box">
+            <h4 style={{ margin: "0 0 0.5rem 0", fontSize: "0.9rem" }}>Frakt & Spårning</h4>
+            <div className="admin-form-row">
+              <label className="admin-label" htmlFor="tracking">
+                Spårningsnummer
+              </label>
+              <input
+                id="tracking"
+                type="text"
+                className="admin-input"
+                value={tracking}
+                onChange={(event) => setTracking(event.target.value)}
+                placeholder="T.ex. SE123456789"
+              />
+            </div>
 
-        <div className="admin-form-row">
-          <label className="admin-label" htmlFor="carrier">
-            Transportör
-          </label>
-          <select
-            id="carrier"
-            className="admin-select"
-            value={trackingCarrier}
-            onChange={(event) => setTrackingCarrier(event.target.value)}
-          >
-            {TRACKING_CARRIER_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className="admin-form-row">
+              <label className="admin-label" htmlFor="carrier">
+                Transportör
+              </label>
+              <select
+                id="carrier"
+                className="admin-select"
+                value={trackingCarrier}
+                onChange={(event) => setTrackingCarrier(event.target.value)}
+              >
+                {TRACKING_CARRIER_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
 
-        <div className="admin-form-row">
+        <div className="admin-form-row" style={{ marginTop: "1rem" }}>
           <label className="admin-label" htmlFor="note">
             Intern anteckning
           </label>
@@ -159,8 +164,16 @@ function OrderForm({
             rows={4}
             value={note}
             onChange={(event) => setNote(event.target.value)}
+            onKeyDown={(event) => {
+              if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+                event.preventDefault();
+                if (hasChanges && !saveLoading) {
+                  onSave(event);
+                }
+              }
+            }}
             maxLength={NOTE_MAX_LENGTH}
-            placeholder="Skriv en anteckning..."
+            placeholder="Skriv en anteckning (Cmd/Ctrl + Enter för att spara)..."
           />
           <p className="admin-hint">Max {NOTE_MAX_LENGTH} tecken.</p>
         </div>

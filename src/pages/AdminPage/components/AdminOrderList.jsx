@@ -353,7 +353,7 @@ function AdminOrderList({
               key={order.id}
               className={`admin-order-card ${isSelected ? "selected" : ""} ${
                 isChecked ? "checked" : ""
-              }`}
+              } ${fulfillmentValue === "new" ? "is-new" : ""}`}
               onClick={() => onSelectOrder(order.id)}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {

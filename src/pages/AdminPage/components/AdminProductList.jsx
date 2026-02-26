@@ -51,7 +51,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
     if (!adminKey) {
       setLoading(false);
       setProducts([]);
-      setErrorMsg("Saknar admin-nyckel. Logga in igen.");
+      setErrorMsg("Saknar aktiv adminsession. Logga in igen.");
       return;
     }
     fetchProducts();
@@ -305,6 +305,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
               selectedIds.size === filteredProducts.length
             }
             onChange={handleSelectAll}
+            disabled={filteredProducts.length === 0}
           />
           Markera alla
         </label>
@@ -313,6 +314,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
             className="apl-select"
             value={bulkCategory}
             onChange={(event) => setBulkCategory(event.target.value)}
+            disabled={selectedIds.size === 0}
           >
             <option value="">Bulk: kategori</option>
             {categories.map((cat) => (
@@ -328,6 +330,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
             placeholder="Bulk: lager"
             value={bulkStock}
             onChange={(event) => setBulkStock(event.target.value)}
+            disabled={selectedIds.size === 0}
           />
           <button
             type="button"
@@ -350,20 +353,27 @@ export default function AdminProductList({ adminKey, onEdit }) {
           </span>
         </div>
       </div>
-      <table className="apl-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Bild</th>
-            <th>Namn</th>
-            <th>Lager</th>
-            <th>Pris</th>
-            <th>Status</th>
-            <th>Åtgärder</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredProducts.map((p) => (
+
+      {products.length === 0 ? (
+        <div className="admin-empty">
+          <h3 style={{ marginBottom: "0.5rem" }}>Inga produkter ännu</h3>
+          <p>Det verkar som att du inte har lagt till några produkter i butiken än.</p>
+        </div>
+      ) : (
+        <table className="apl-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Bild</th>
+              <th>Namn</th>
+              <th>Lager</th>
+              <th>Pris</th>
+              <th>Status</th>
+              <th>Åtgärder</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredProducts.map((p) => (
             <Fragment key={p.id}>
               <tr key={p.id} className={!p.active ? "archived-row" : ""}>
                 <td>
@@ -373,20 +383,20 @@ export default function AdminProductList({ adminKey, onEdit }) {
                     onChange={() => handleToggleSelect(p.id)}
                   />
                 </td>
-                <td>
+                <td data-label="Bild">
                   {p.image ? (
                     <img src={p.image} alt={p.name} className="apl-thumb" />
                   ) : (
                     <div className="apl-no-img">Ingen bild</div>
                   )}
                 </td>
-                <td className="apl-name-cell">
+                <td data-label="Namn" className="apl-name-cell">
                   <strong>{p.name}</strong>
                   <span className="apl-category">{p.category}</span>
                 </td>
-                <td>{p.stock || "0"}</td>
-                <td>{(((p.price || 0) / 100) || 0).toFixed(0)} kr</td>
-                <td>
+                <td data-label="Lager">{p.stock || "0"}</td>
+                <td data-label="Pris">{(((p.price || 0) / 100) || 0).toFixed(0)} kr</td>
+                <td data-label="Status">
                   {p.active ? (
                     <span className="status-active">Aktiv</span>
                   ) : (
@@ -524,6 +534,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
           )}
         </tbody>
       </table>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AdminService } from "../../services/adminService";
+import { getApiBaseUrl } from "../../config/apiBaseUrl";
 import "./AdminPage.css";
 import {
   ADMIN_VIEW_OPTIONS,
@@ -38,6 +39,7 @@ function AdminPage() {
   const { success, error, info } = useToast();
 
   const [adminKey, setAdminKey] = useState("session");
+  const [requiresAccessLogin, setRequiresAccessLogin] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
 
   // States for Order List
@@ -105,8 +107,31 @@ function AdminPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleGlobalEsc = (e) => {
+      if (e.key === "Escape") {
+        if (
+          document.activeElement.tagName === "INPUT" ||
+          document.activeElement.tagName === "TEXTAREA"
+        ) {
+          document.activeElement.blur();
+          return;
+        }
+        if (selectedId) {
+          setSelectedId("");
+          if (isMobile) {
+            setViewMode("list");
+          }
+        }
+      }
+    };
+    window.addEventListener("keydown", handleGlobalEsc);
+    return () => window.removeEventListener("keydown", handleGlobalEsc);
+  }, [selectedId, isMobile]);
+
   const handleLogout = useCallback(() => {
     setAdminKey("");
+    setRequiresAccessLogin(false);
     setPreviewMode(false);
     setOrders([]);
     setSelectedId("");
@@ -124,10 +149,30 @@ function AdminPage() {
         handleLogout();
         return;
       }
+      if (!err?.status && msg.toLowerCase().includes("failed to fetch")) {
+        setRequiresAccessLogin(true);
+        setAdminKey("");
+        setPreviewMode(false);
+        error(
+          "Inloggning via Cloudflare Access krävs. Öppna Access-login och försök igen."
+        );
+        return;
+      }
       error(`${context ? context + ": " : ""}${msg}`);
     },
     [error, handleLogout]
   );
+
+  const handleOpenAccessLogin = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const apiBaseUrl = getApiBaseUrl();
+    window.location.assign(`${apiBaseUrl}/admin/access-login`);
+  }, []);
+
+  const handleSwitchAccount = useCallback(() => {
+    handleLogout();
+    handleOpenAccessLogin();
+  }, [handleLogout, handleOpenAccessLogin]);
 
   const loadOrders = useCallback(
     async (reset = true) => {
@@ -869,8 +914,17 @@ function AdminPage() {
   if (!adminKey && !previewMode) {
     return (
       <AdminLogin
-        error={listError}
-        onRetry={() => setAdminKey("session")}
+        error={
+          listError ||
+          (requiresAccessLogin
+            ? "Cloudflare Access-session saknas. Logga in via Access och försök igen."
+            : "")
+        }
+        onRetry={() => {
+          setRequiresAccessLogin(false);
+          setAdminKey("session");
+        }}
+        onOpenAccess={handleOpenAccessLogin}
         onPreview={() => setPreviewMode(true)}
       />
     );
@@ -886,7 +940,7 @@ function AdminPage() {
               isPreview={isPreview}
               listLoading={listLoading}
               onRefresh={handleRefresh}
-              onLogout={handleLogout}
+              onSwitchAccount={handleSwitchAccount}
               adminView={adminView}
               onViewChange={handleAdminViewChange}
             />

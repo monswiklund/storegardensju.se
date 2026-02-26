@@ -110,7 +110,7 @@ function AdminGallery({ adminKey }) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedImageIds, setSelectedImageIds] = useState(() => new Set());
   const [draggingId, setDraggingId] = useState("");
-  const [categoryQuery, setCategoryQuery] = useState("");
+  const [showCreateCategoryModal, setShowCreateCategoryModal] = useState(false);
   const [lastActionMessage, setLastActionMessage] = useState("");
   const [lastMoveAction, setLastMoveAction] = useState(null);
   const feedbackTimerRef = useRef(null);
@@ -201,16 +201,6 @@ function AdminGallery({ adminKey }) {
     }, 2400);
   }, []);
 
-  const filteredCategories = useMemo(() => {
-    const query = categoryQuery.trim().toLowerCase();
-    if (!query) return categories;
-    return categories.filter((category) => {
-      const name = (category.name || "").toLowerCase();
-      const slug = (category.slug || "").toLowerCase();
-      return name.includes(query) || slug.includes(query);
-    });
-  }, [categories, categoryQuery]);
-
   const galleryOverview = useMemo(() => {
     const totalCategories = categories.length;
     const totalImages = categories.reduce(
@@ -283,6 +273,7 @@ function AdminGallery({ adminKey }) {
       const payload = buildCategoryPayload(categoryForm);
       await AdminService.createGalleryCategory(adminKey, payload);
       setCategoryForm({ name: "", slug: "", order: "" });
+      setShowCreateCategoryModal(false);
       success("Kategorin skapad.");
       await loadGallery();
     } catch (err) {
@@ -794,22 +785,21 @@ function AdminGallery({ adminKey }) {
 
         <div className="admin-gallery-layout">
           <div className="admin-gallery-sidebar">
-            <h3>Kategorier</h3>
-            <input
-              className="admin-input"
-              type="search"
-              placeholder="Sök kategori..."
-              value={categoryQuery}
-              onChange={(event) => setCategoryQuery(event.target.value)}
-            />
+            <div className="admin-gallery-sidebar-header">
+              <h3>Kategorier</h3>
+              <button
+                type="button"
+                className="admin-btn-secondary admin-btn-sm"
+                onClick={() => setShowCreateCategoryModal(true)}
+              >
+                + Ny kategori
+              </button>
+            </div>
             {categories.length === 0 && !loading && (
               <p className="admin-muted">Inga kategorier ännu.</p>
             )}
-            {categories.length > 0 && filteredCategories.length === 0 && (
-              <p className="admin-muted">Ingen kategori matchar sökningen.</p>
-            )}
             <div className="admin-gallery-categories">
-              {filteredCategories.map((category) => {
+              {categories.map((category) => {
                 const edits = categoryEdits[category.id] || {};
                 const nameValue = edits.name ?? category.name ?? "";
                 const slugValue = edits.slug ?? category.slug ?? "";
@@ -872,6 +862,10 @@ function AdminGallery({ adminKey }) {
                               )
                             }
                           />
+                          <small className="admin-field-help">
+                            Del av länken till kategorin, t.ex. /galleri/keramik.
+                            Använd små bokstäver och bindestreck.
+                          </small>
                         </label>
                         <label className="admin-label">
                           Ordning
@@ -912,60 +906,6 @@ function AdminGallery({ adminKey }) {
                 );
               })}
             </div>
-
-            <form
-              className="admin-gallery-create"
-              onSubmit={handleCreateCategory}
-            >
-              <h4>Ny kategori</h4>
-              <label className="admin-label">
-                Namn
-                <input
-                  className="admin-input"
-                  value={categoryForm.name}
-                  onChange={(event) =>
-                    setCategoryForm((prev) => ({
-                      ...prev,
-                      name: event.target.value,
-                    }))
-                  }
-                />
-              </label>
-              <label className="admin-label">
-                Slug
-                <input
-                  className="admin-input"
-                  value={categoryForm.slug}
-                  onChange={(event) =>
-                    setCategoryForm((prev) => ({
-                      ...prev,
-                      slug: event.target.value,
-                    }))
-                  }
-                />
-              </label>
-              <label className="admin-label">
-                Ordning
-                <input
-                  className="admin-input"
-                  type="number"
-                  value={categoryForm.order}
-                  onChange={(event) =>
-                    setCategoryForm((prev) => ({
-                      ...prev,
-                      order: event.target.value,
-                    }))
-                  }
-                />
-              </label>
-              <button
-                type="submit"
-                className="admin-btn-primary admin-btn-block"
-                disabled={saving}
-              >
-                Skapa kategori
-              </button>
-            </form>
           </div>
 
           <div className="admin-gallery-content">
@@ -1014,7 +954,10 @@ function AdminGallery({ adminKey }) {
             <div className="admin-gallery-images">
               <h3>Bilder</h3>
               {sortedActiveImages.length === 0 && !loading && (
-                <p className="admin-muted">Inga bilder i kategorin.</p>
+                <div className="admin-empty" style={{ margin: "2rem 0", padding: "3rem 1rem", backgroundColor: "#f9fafb", borderRadius: "12px", border: "2px dashed #e5e7eb" }}>
+                  <h4 style={{ marginBottom: "0.5rem" }}>Kategorin är tom</h4>
+                  <p className="admin-muted">Dra in filer här eller klicka på &quot;Välj bilder&quot; ovan för att börja ladda upp.</p>
+                </div>
               )}
               {sortedActiveImages.length > 0 && (
                 <div className="admin-gallery-image-toolbar">
@@ -1293,6 +1236,88 @@ function AdminGallery({ adminKey }) {
           </div>
         </div>
       </div>
+      {showCreateCategoryModal && (
+        <div
+          className="admin-gallery-modal-backdrop"
+          role="presentation"
+          onClick={() => {
+            if (!saving) setShowCreateCategoryModal(false);
+          }}
+        >
+          <div
+            className="admin-gallery-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-gallery-create-category-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <form className="admin-gallery-create" onSubmit={handleCreateCategory}>
+              <div className="admin-gallery-modal-header">
+                <h4 id="admin-gallery-create-category-title">Ny kategori</h4>
+                <button
+                  type="button"
+                  className="admin-btn-tertiary admin-btn-sm"
+                  onClick={() => setShowCreateCategoryModal(false)}
+                  disabled={saving}
+                >
+                  Stäng
+                </button>
+              </div>
+              <label className="admin-label">
+                Namn
+                <input
+                  className="admin-input"
+                  value={categoryForm.name}
+                  onChange={(event) =>
+                    setCategoryForm((prev) => ({
+                      ...prev,
+                      name: event.target.value,
+                    }))
+                  }
+                />
+              </label>
+              <label className="admin-label">
+                Slug
+                <input
+                  className="admin-input"
+                  value={categoryForm.slug}
+                  onChange={(event) =>
+                    setCategoryForm((prev) => ({
+                      ...prev,
+                      slug: event.target.value,
+                    }))
+                  }
+                />
+                <small className="admin-field-help">
+                  Del av länken till kategorin, t.ex. /galleri/keramik. Använd
+                  små bokstäver och bindestreck.
+                </small>
+              </label>
+              <label className="admin-label">
+                Ordning
+                <input
+                  className="admin-input"
+                  type="number"
+                  value={categoryForm.order}
+                  onChange={(event) =>
+                    setCategoryForm((prev) => ({
+                      ...prev,
+                      order: event.target.value,
+                    }))
+                  }
+                />
+              </label>
+              <button
+                type="submit"
+                className="admin-btn-primary admin-btn-block"
+                disabled={saving}
+              >
+                Skapa kategori
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
