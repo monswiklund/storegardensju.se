@@ -27,6 +27,7 @@ import AdminCoupons from "./components/AdminCoupons";
 import AdminCreateProduct from "./components/AdminCreateProduct";
 import AdminProductList from "./components/AdminProductList";
 import AdminGallery from "./components/AdminGallery";
+import AdminEvents from "./components/AdminEvents";
 import AdminSidebar from "./components/AdminSidebar";
 import { PageSection } from "../../components";
 
@@ -166,7 +167,15 @@ function AdminPage() {
   const handleOpenAccessLogin = useCallback(() => {
     if (typeof window === "undefined") return;
     const apiBaseUrl = getApiBaseUrl();
-    window.location.assign(`${apiBaseUrl}/admin/access-login`);
+    const returnTo = encodeURIComponent(`${window.location.origin}/admin`);
+    const loginUrl = `${apiBaseUrl}/admin/access-login?redirect=${returnTo}`;
+    const host = window.location.hostname;
+    const isLocalHost = host === "localhost" || host === "127.0.0.1";
+    if (isLocalHost) {
+      window.open(loginUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+    window.location.assign(loginUrl);
   }, []);
 
   const handleSwitchAccount = useCallback(() => {
@@ -465,6 +474,7 @@ function AdminPage() {
   const showOrdersSection = adminView === "overview" || adminView === "orders";
   const showCustomersSection = adminView === "customers";
   const showProductsSection = adminView === "products";
+  const showEventsSection = adminView === "events";
   const showGallerySection = adminView === "gallery";
 
   const showCouponsSection = adminView === "coupons";
@@ -1043,6 +1053,27 @@ function AdminPage() {
                   </div>
                 ) : (
                   <AdminGallery adminKey={adminKey} />
+                )}
+              </>
+            )}
+
+            {showEventsSection && (
+              <>
+                {isPreview ? (
+                  <div className="admin-panel">
+                    <div className="admin-empty">
+                      <p>Demo-läge: logga in för att hantera evenemang.</p>
+                      <button
+                        type="button"
+                        className="admin-btn-secondary"
+                        onClick={handleLogout}
+                      >
+                        Logga in
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <AdminEvents adminKey={adminKey} />
                 )}
               </>
             )}

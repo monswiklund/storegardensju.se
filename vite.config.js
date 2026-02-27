@@ -53,6 +53,14 @@ export default defineConfig({
     hmr: {
       overlay: false
     },
+    proxy: {
+      '/__api': {
+        target: process.env.VITE_DEV_PROXY_TARGET || 'https://api.storegardensju.se',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/__api/, ''),
+      },
+    },
     // Support client-side routing
     historyApiFallback: true
   }

@@ -12,7 +12,7 @@ const toQueryString = (params = {}) => {
   return searchParams.toString();
 };
 
-const getHeaders = (key, { includeJsonContentType = true } = {}) => {
+const getHeaders = (key, { includeJsonContentType = false } = {}) => {
   const headers = {};
   if (includeJsonContentType) {
     headers["Content-Type"] = "application/json";
@@ -70,7 +70,7 @@ export const AdminService = {
   updateFulfillment: async (key, id, data) => {
     const res = await fetch(`${API_URL}/admin/orders/${id}/fulfillment`, {
       method: "POST",
-      headers: getHeaders(key),
+      headers: getHeaders(key, { includeJsonContentType: true }),
       body: JSON.stringify(data),
       credentials: "include",
     });
@@ -81,7 +81,7 @@ export const AdminService = {
   refundOrder: async (key, id, amount) => {
     const res = await fetch(`${API_URL}/admin/orders/${id}/refund`, {
       method: "POST",
-      headers: getHeaders(key),
+      headers: getHeaders(key, { includeJsonContentType: true }),
       body: JSON.stringify({ amount }),
       credentials: "include",
     });
@@ -160,7 +160,7 @@ export const AdminService = {
   createCoupon: async (key, data) => {
     const res = await fetch(`${API_URL}/admin/coupons`, {
       method: "POST",
-      headers: getHeaders(key),
+      headers: getHeaders(key, { includeJsonContentType: true }),
       body: JSON.stringify(data),
       credentials: "include",
     });
@@ -214,7 +214,7 @@ export const AdminService = {
   createGalleryCategory: async (key, data) => {
     const res = await fetch(`${API_URL}/admin/gallery/categories`, {
       method: "POST",
-      headers: getHeaders(key),
+      headers: getHeaders(key, { includeJsonContentType: true }),
       body: JSON.stringify(data),
       credentials: "include",
     });
@@ -225,7 +225,7 @@ export const AdminService = {
   updateGalleryCategory: async (key, id, data) => {
     const res = await fetch(`${API_URL}/admin/gallery/categories/${id}`, {
       method: "PUT",
-      headers: getHeaders(key),
+      headers: getHeaders(key, { includeJsonContentType: true }),
       body: JSON.stringify(data),
       credentials: "include",
     });
@@ -243,11 +243,13 @@ export const AdminService = {
     return res.json();
   },
 
-  createGalleryUpload: async (key, data) => {
+  createGalleryUpload: async (key, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
     const res = await fetch(`${API_URL}/admin/gallery/uploads`, {
       method: "POST",
-      headers: getHeaders(key),
-      body: JSON.stringify(data),
+      headers: getHeaders(key, { includeJsonContentType: false }),
+      body: formData,
       credentials: "include",
     });
     await handleResponse(res, "Failed to create upload");
@@ -257,7 +259,7 @@ export const AdminService = {
   createGalleryImage: async (key, data) => {
     const res = await fetch(`${API_URL}/admin/gallery/images`, {
       method: "POST",
-      headers: getHeaders(key),
+      headers: getHeaders(key, { includeJsonContentType: true }),
       body: JSON.stringify(data),
       credentials: "include",
     });
@@ -268,7 +270,7 @@ export const AdminService = {
   updateGalleryImage: async (key, id, data) => {
     const res = await fetch(`${API_URL}/admin/gallery/images/${id}`, {
       method: "PUT",
-      headers: getHeaders(key),
+      headers: getHeaders(key, { includeJsonContentType: true }),
       body: JSON.stringify(data),
       credentials: "include",
     });
@@ -283,6 +285,61 @@ export const AdminService = {
       credentials: "include",
     });
     await handleResponse(res, "Failed to delete image");
+    return res.json();
+  },
+
+  // Events
+  getEvents: async (key) => {
+    const res = await fetch(`${API_URL}/admin/events`, {
+      headers: getHeaders(key),
+      credentials: "include",
+    });
+    await handleResponse(res, "Failed to fetch events");
+    return res.json();
+  },
+
+  createEvent: async (key, data) => {
+    const res = await fetch(`${API_URL}/admin/events`, {
+      method: "POST",
+      headers: getHeaders(key, { includeJsonContentType: true }),
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
+    await handleResponse(res, "Failed to create event");
+    return res.json();
+  },
+
+  updateEvent: async (key, id, data) => {
+    const res = await fetch(`${API_URL}/admin/events/${id}`, {
+      method: "PUT",
+      headers: getHeaders(key, { includeJsonContentType: true }),
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
+    await handleResponse(res, "Failed to update event");
+    return res.json();
+  },
+
+  deleteEvent: async (key, id) => {
+    const res = await fetch(`${API_URL}/admin/events/${id}`, {
+      method: "DELETE",
+      headers: getHeaders(key),
+      credentials: "include",
+    });
+    await handleResponse(res, "Failed to delete event");
+    return res.json();
+  },
+
+  createEventUpload: async (key, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch(`${API_URL}/admin/events/uploads`, {
+      method: "POST",
+      headers: getHeaders(key, { includeJsonContentType: false }),
+      body: formData,
+      credentials: "include",
+    });
+    await handleResponse(res, "Failed to create event upload");
     return res.json();
   },
 };

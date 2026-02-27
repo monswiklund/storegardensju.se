@@ -677,6 +677,16 @@
   color: var(--text-main);
 }
 
+.admin-btn-danger {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.admin-btn-danger:hover:not(:disabled) {
+  background: #fecaca;
+}
+
 /* Modern Control Bar */
 .admin-controls {
   display: flex;
@@ -1712,6 +1722,131 @@
   pointer-events: none;
   transition: opacity 0.15s ease, transform 0.15s ease;
   z-index: 2;
+}
+
+.admin-events-manager {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.admin-events-list-panel,
+.admin-events-form-panel {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.admin-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-field-label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.admin-events-manager-list {
+  display: grid;
+  gap: 0.5rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.admin-events-manager-list-item {
+  text-align: left;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.admin-events-manager-list-item p {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.admin-events-manager-list-item.active {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.admin-events-manager-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.admin-field--full {
+  grid-column: 1 / -1;
+}
+
+.admin-events-manager-subsection {
+  display: grid;
+  gap: 0.6rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 0.8rem;
+}
+
+.admin-events-manager-subsection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.admin-events-manager-subsection-header h4 {
+  margin: 0;
+}
+
+.admin-events-manager-inline-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 220px) auto;
+  gap: 0.5rem;
+}
+
+.admin-events-manager-upload-btn {
+  cursor: pointer;
+}
+
+.admin-events-manager-image-row {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: start;
+}
+
+.admin-events-manager-image-row img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.admin-events-manager-image-fields {
+  display: grid;
+  gap: 0.5rem;
+}
+
+@media (max-width: 1100px) {
+  .admin-events-manager {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-events-manager-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-events-manager-inline-row,
+  .admin-events-manager-image-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 .admin-copy-btn-icon[data-tooltip]:hover::after,

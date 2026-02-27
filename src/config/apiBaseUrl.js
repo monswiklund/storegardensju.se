@@ -4,10 +4,24 @@ const LEGACY_API_HOSTS = new Set([
 
 export function getApiBaseUrl() {
   const raw = (import.meta.env.VITE_API_URL || "").trim();
+  const devProxyEnabled =
+    String(import.meta.env.VITE_DEV_USE_ACCESS_PROXY || "false").toLowerCase() !==
+    "false";
 
   if (raw) {
     try {
       const parsed = new URL(raw);
+      if (
+        import.meta.env.DEV &&
+        typeof window !== "undefined" &&
+        (window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1") &&
+        devProxyEnabled &&
+        parsed.protocol.startsWith("http")
+      ) {
+        // In local dev, proxy through Vite to avoid CORS and share Access session.
+        return "/__api";
+      }
       if (LEGACY_API_HOSTS.has(parsed.host)) {
         return "https://api.storegardensju.se";
       }
@@ -19,6 +33,13 @@ export function getApiBaseUrl() {
 
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
+    if (
+      import.meta.env.DEV &&
+      devProxyEnabled &&
+      (host === "localhost" || host === "127.0.0.1")
+    ) {
+      return "/__api";
+    }
     if (host === "storegardensju.se" || host === "www.storegardensju.se") {
       return "https://api.storegardensju.se";
     }
@@ -26,4 +47,3 @@ export function getApiBaseUrl() {
 
   return "http://localhost:4242";
 }
-

@@ -89,7 +89,6 @@ const SUPPORTED_GALLERY_MIME_TYPES = new Set([
   "image/jpeg",
   "image/png",
   "image/webp",
-  "image/avif",
   "image/gif",
 ]);
 
@@ -670,7 +669,7 @@ function AdminGallery({ adminKey }) {
         return true;
       }
       error(
-        `${file.name}: filformat stöds inte i galleriet (använd JPG, PNG, WEBP, AVIF eller GIF).`
+        `${file.name}: filformat stöds inte i galleriet (använd JPG, PNG, WEBP eller GIF).`
       );
       return false;
     });
@@ -684,36 +683,12 @@ function AdminGallery({ adminKey }) {
     try {
       let completed = 0;
       for (const file of validFiles) {
-        const uploadInfo = await AdminService.createGalleryUpload(adminKey, {
-          filename: file.name,
-          contentType: file.type,
-        });
-
-        const uploadUrl = uploadInfo?.uploadUrl || uploadInfo?.url;
-        if (!uploadUrl) {
-          throw new Error("Upload URL saknas från servern.");
-        }
-
-        const headers = {
-          ...(uploadInfo?.headers || {}),
-        };
-        if (!headers["Content-Type"] && file.type) {
-          headers["Content-Type"] = file.type;
-        }
+        const uploadInfo = await AdminService.createGalleryUpload(adminKey, file);
 
         const title = file.name
           .replace(/\.[^/.]+$/, "")
           .replace(/[-_]+/g, " ")
           .trim();
-
-        const uploadResponse = await fetch(uploadUrl, {
-          method: uploadInfo?.method || "PUT",
-          headers,
-          body: file,
-        });
-        if (!uploadResponse.ok) {
-          throw new Error("Uppladdning misslyckades.");
-        }
 
         const publicUrl =
           uploadInfo?.publicUrl || uploadInfo?.cdnUrl || uploadInfo?.assetUrl;
@@ -724,6 +699,7 @@ function AdminGallery({ adminKey }) {
           alt: title,
           storageKey: uploadInfo?.storageKey || uploadInfo?.key,
           url: publicUrl,
+          filename: uploadInfo?.filename || "",
           originalFilename: file.name,
           published: false,
         });
@@ -925,7 +901,7 @@ function AdminGallery({ adminKey }) {
               <div>
                 <h3>Uppladdning</h3>
                 <p className="admin-muted">
-                  Ladda upp bilder till vald kategori.
+                  Ladda upp bilder till vald kategori. Bilder optimeras automatiskt till WebP (max 800x1063).
                 </p>
               </div>
               <div className="admin-gallery-upload-actions">
@@ -933,7 +909,7 @@ function AdminGallery({ adminKey }) {
                   <input
                     type="file"
                     multiple
-                    accept=".jpg,.jpeg,.png,.webp,.avif,.gif,image/jpeg,image/png,image/webp,image/avif,image/gif"
+                    accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif"
                     onChange={handleUpload}
                     disabled={
                       uploading || !activeCategoryId || !activeCategoryIsAssignable
