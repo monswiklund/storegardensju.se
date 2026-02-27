@@ -39,6 +39,11 @@ const toUiEvent = (item) => {
   const startTime = formatTime(startAt);
   const endTime = formatTime(endAt);
 
+  const mappedImages = (Array.isArray(item?.images) ? item.images : []).map(img => ({
+    ...img,
+    src: img.url || img.src || ""
+  }));
+
   return {
     title: item?.title || "",
     spots: item?.spots || "",
@@ -48,8 +53,8 @@ const toUiEvent = (item) => {
     artists: item?.artists || "",
     location: item?.location || "",
     links: Array.isArray(item?.links) ? item.links : [],
-    image: Array.isArray(item?.images) && item.images.length > 0 ? item.images[0] : null,
-    images: Array.isArray(item?.images) ? item.images : [],
+    image: mappedImages.length > 0 ? mappedImages[0] : null,
+    images: mappedImages,
   };
 };
 
@@ -88,12 +93,16 @@ function HomeUpcomingEventsSection() {
   }, []);
 
   const upcomingEvents = useMemo(
-    () => eventsData.upcoming.map(toUiEvent),
+    () => eventsData.upcoming
+      .sort((a, b) => new Date(a.startAt || 0) - new Date(b.startAt || 0))
+      .map(toUiEvent),
     [eventsData.upcoming]
   );
 
   const pastEvents = useMemo(
-    () => eventsData.past.map(toUiEvent),
+    () => eventsData.past
+      .sort((a, b) => new Date(b.startAt || 0) - new Date(a.startAt || 0))
+      .map(toUiEvent),
     [eventsData.past]
   );
 

@@ -4,6 +4,9 @@ const LEGACY_API_HOSTS = new Set([
 
 export function getApiBaseUrl() {
   const raw = (import.meta.env.VITE_API_URL || "").trim();
+  const forceLocalApi =
+    String(import.meta.env.VITE_FORCE_LOCAL_API || "false").toLowerCase() ===
+    "true";
   const devProxyEnabled =
     String(import.meta.env.VITE_DEV_USE_ACCESS_PROXY || "false").toLowerCase() !==
     "false";
@@ -33,6 +36,13 @@ export function getApiBaseUrl() {
 
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
+    if (
+      import.meta.env.DEV &&
+      forceLocalApi &&
+      (host === "localhost" || host === "127.0.0.1")
+    ) {
+      return "http://localhost:4242";
+    }
     if (
       import.meta.env.DEV &&
       devProxyEnabled &&

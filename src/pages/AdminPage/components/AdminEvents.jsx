@@ -2,16 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { AdminService } from "../../../services/adminService";
 import { useToast } from "../../../contexts/ToastContext";
+import EventCard from "../../../features/home/UpcomingEvents/components/EventCard";
 
 const EVENT_STATUS_OPTIONS = [
   { value: "draft", label: "Draft" },
   { value: "published", label: "Publicerad" },
-];
-
-const BUCKET_OVERRIDE_OPTIONS = [
-  { value: "none", label: "Automatisk" },
-  { value: "upcoming", label: "Tvinga kommande" },
-  { value: "past", label: "Tvinga tidigare" },
 ];
 
 const FILTER_OPTIONS = [
@@ -31,11 +26,34 @@ const emptyEventForm = () => ({
   startAt: "",
   endAt: "",
   status: "draft",
-  bucketOverride: "none",
-  sortOrder: "",
   links: [],
   images: [],
 });
+
+const formatDate = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const formatted = date.toLocaleDateString("sv-SE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const [day, month, year] = formatted.split(" ");
+  if (!day || !month || !year) return formatted;
+  return `${day} ${month.charAt(0).toUpperCase()}${month.slice(1)} ${year}`;
+};
+
+const formatTime = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleTimeString("sv-SE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+};
 
 const toLocalDateTimeInput = (value) => {
   if (!value) return "";
@@ -59,13 +77,11 @@ const mapEventToForm = (item) => ({
   startAt: toLocalDateTimeInput(item.startAt),
   endAt: toLocalDateTimeInput(item.endAt),
   status: item.status || "draft",
-  bucketOverride: item.bucketOverride || "none",
-  sortOrder: item.sortOrder != null ? String(item.sortOrder) : "",
   links: Array.isArray(item.links) ? item.links : [],
   images: Array.isArray(item.images) ? item.images : [],
 });
 
-function AdminEvents({ adminKey }) {
+function AdminEvents({ adminKey = "" }) {
   const { success, error } = useToast();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -74,6 +90,33 @@ function AdminEvents({ adminKey }) {
   const [selectedId, setSelectedId] = useState("");
   const [filter, setFilter] = useState("all");
   const [form, setForm] = useState(emptyEventForm());
+  const [formView, setFormView] = useState("edit"); // "edit" or "preview"
+
+  const previewEvent = useMemo(() => {
+    const startAt = form.startAt || "";
+    const endAt = form.endAt || "";
+    const date = formatDate(startAt);
+    const startTime = formatTime(startAt);
+    const endTime = formatTime(endAt);
+
+    const mappedImages = (form.images || []).map(img => ({
+      ...img,
+      src: img.url || img.src || ""
+    }));
+
+    return {
+      title: form.title || "Titel saknas",
+      spots: form.spots || "",
+      date,
+      time: startTime && endTime ? `${startTime} - ${endTime}` : "",
+      description: form.description || "Ingen beskrivning angiven.",
+      artists: form.artists || "",
+      location: form.location || "",
+      links: form.links || [],
+      image: mappedImages.length > 0 ? mappedImages[0] : null,
+      images: mappedImages,
+    };
+  }, [form]);
 
   const loadEvents = useCallback(async () => {
     if (!adminKey) return;
@@ -107,23 +150,31 @@ function AdminEvents({ adminKey }) {
   }, [events, selectedId]);
 
   const filteredEvents = useMemo(() => {
-    return events.filter((item) => {
-      if (filter === "all") return true;
-      if (filter === "upcoming" || filter === "past") {
-        return item.computedBucket === filter;
-      }
-      return item.status === filter;
-    });
+    return events
+      .filter((item) => {
+        if (filter === "all") return true;
+        if (filter === "upcoming" || filter === "past") {
+          return item.computedBucket === filter;
+        }
+        return item.status === filter;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.startAt || 0).getTime();
+        const dateB = new Date(b.startAt || 0).getTime();
+        return dateB - dateA; // Senaste datumet först
+      });
   }, [events, filter]);
 
   const handleCreateNew = () => {
     setSelectedId("");
     setForm(emptyEventForm());
+    setFormView("edit");
   };
 
   const handleSelect = (item) => {
     setSelectedId(item.id);
     setForm(mapEventToForm(item));
+    setFormView("edit");
   };
 
   const setField = (name, value) => {
@@ -195,15 +246,13 @@ function AdminEvents({ adminKey }) {
       startAt: form.startAt,
       endAt: form.endAt,
       status: form.status,
-      bucketOverride: form.bucketOverride,
-      sortOrder: Number(form.sortOrder || 0),
       links,
       images,
     };
   };
 
   const handleSave = async (event) => {
-    event.preventDefault();
+    if (event) event.preventDefault();
     setSaving(true);
     try {
       const payload = buildPayload();
@@ -278,33 +327,23 @@ function AdminEvents({ adminKey }) {
     <div className="admin-events-manager">
       <div className="admin-panel admin-events-list-panel">
         <div className="admin-panel-header">
-          <div>
-            <h3>Events</h3>
-            <p>Hantera kommande och tidigare evenemang.</p>
+          <div className="admin-header-title">
+            <h3 style={{ margin: 0 }}>Evenemangslista</h3>
           </div>
           <div className="admin-panel-actions">
             <button
               type="button"
-              className="admin-btn-primary"
+              className="admin-btn-primary admin-btn-sm"
               onClick={handleCreateNew}
             >
-              + Nytt event
-            </button>
-            <button
-              type="button"
-              className="admin-btn-secondary"
-              onClick={loadEvents}
-              disabled={loading}
-            >
-              Uppdatera
+              + Nytt
             </button>
           </div>
         </div>
 
-        <label className="admin-field">
-          <span className="admin-field-label">Filter</span>
+        <div className="admin-controls" style={{ marginBottom: "1rem" }}>
           <select
-            className="admin-select"
+            className="admin-select admin-select-sm admin-select-full"
             value={filter}
             onChange={(event) => setFilter(event.target.value)}
           >
@@ -314,7 +353,7 @@ function AdminEvents({ adminKey }) {
               </option>
             ))}
           </select>
-        </label>
+        </div>
 
         <div className="admin-events-manager-list">
           {filteredEvents.map((item) => (
@@ -326,260 +365,262 @@ function AdminEvents({ adminKey }) {
               }`}
               onClick={() => handleSelect(item)}
             >
-              <div>
+              <div className="admin-event-item-content">
                 <strong>{item.title}</strong>
-                <p>
-                  {item.status} • {item.computedBucket}
-                </p>
+                <div className="admin-order-chips" style={{ marginTop: '4px' }}>
+                  <span className={`admin-chip admin-chip-${item.status === 'published' ? 'paid' : 'new'}`}>
+                    {item.status === 'published' ? 'Publicerad' : 'Utkast'}
+                  </span>
+                  <span className="admin-chip" style={{ background: '#f3f4f6', color: '#6b7280' }}>
+                    {item.computedBucket === 'upcoming' ? 'Kommande' : 'Tidigare'}
+                  </span>
+                </div>
               </div>
             </button>
           ))}
         </div>
       </div>
 
-      <form className="admin-panel admin-events-form-panel" onSubmit={handleSave}>
+      <div className="admin-panel admin-events-form-panel">
         <div className="admin-panel-header">
-          <div>
-            <h3>{selectedId ? "Redigera event" : "Skapa event"}</h3>
-            <p>
-              {selectedId
-                ? "Uppdatera metadata, publicering, länkar och bilder."
-                : "Skapa ett nytt event i draft och publicera när det är klart."}
-            </p>
+          <div className="admin-header-title">
+            <div className="admin-mobile-tabs" style={{ marginBottom: 0 }}>
+              <button
+                type="button"
+                className={`admin-tab-link ${formView === 'edit' ? 'active' : ''}`}
+                onClick={() => setFormView('edit')}
+              >
+                Redigera
+              </button>
+              <button
+                type="button"
+                className={`admin-tab-link ${formView === 'preview' ? 'active' : ''}`}
+                onClick={() => setFormView('preview')}
+              >
+                Förhandsgranska
+              </button>
+            </div>
           </div>
           <div className="admin-panel-actions">
             {selectedId && (
               <button
                 type="button"
-                className="admin-btn-danger"
+                className="admin-btn-danger admin-btn-sm"
                 onClick={handleDelete}
                 disabled={saving}
               >
                 Ta bort
               </button>
             )}
-            <button type="submit" className="admin-btn-primary" disabled={saving}>
-              {saving ? "Sparar..." : "Spara"}
+            <button 
+              type="button" 
+              className="admin-btn-primary admin-btn-sm" 
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? "Sparar..." : "Spara händelse"}
             </button>
           </div>
         </div>
 
-        <div className="admin-events-manager-grid">
-          <label className="admin-field">
-            <span className="admin-field-label">Titel</span>
-            <input
-              className="admin-input"
-              value={form.title}
-              onChange={(event) => setField("title", event.target.value)}
-              required
-            />
-          </label>
+        {formView === 'edit' ? (
+          <form onSubmit={handleSave}>
+            <div className="admin-events-manager-grid">
+              <label className="admin-field">
+                <span className="admin-field-label">Titel</span>
+                <input
+                  className="admin-input"
+                  value={form.title}
+                  onChange={(event) => setField("title", event.target.value)}
+                  required
+                />
+              </label>
 
-          <label className="admin-field">
-            <span className="admin-field-label">Plats</span>
-            <input
-              className="admin-input"
-              value={form.location}
-              onChange={(event) => setField("location", event.target.value)}
-            />
-          </label>
+              <label className="admin-field">
+                <span className="admin-field-label">Plats</span>
+                <input
+                  className="admin-input"
+                  value={form.location}
+                  onChange={(event) => setField("location", event.target.value)}
+                />
+              </label>
 
-          <label className="admin-field">
-            <span className="admin-field-label">Start</span>
-            <input
-              type="datetime-local"
-              className="admin-input"
-              value={form.startAt}
-              onChange={(event) => setField("startAt", event.target.value)}
-              required
-            />
-          </label>
+              <label className="admin-field">
+                <span className="admin-field-label">Start</span>
+                <input
+                  type="datetime-local"
+                  className="admin-input"
+                  value={form.startAt}
+                  onChange={(event) => setField("startAt", event.target.value)}
+                  required
+                />
+              </label>
 
-          <label className="admin-field">
-            <span className="admin-field-label">Slut</span>
-            <input
-              type="datetime-local"
-              className="admin-input"
-              value={form.endAt}
-              onChange={(event) => setField("endAt", event.target.value)}
-              required
-            />
-          </label>
+              <label className="admin-field">
+                <span className="admin-field-label">Slut</span>
+                <input
+                  type="datetime-local"
+                  className="admin-input"
+                  value={form.endAt}
+                  onChange={(event) => setField("endAt", event.target.value)}
+                  required
+                />
+              </label>
 
-          <label className="admin-field">
-            <span className="admin-field-label">Status</span>
-            <select
-              className="admin-select"
-              value={form.status}
-              onChange={(event) => setField("status", event.target.value)}
-            >
-              {EVENT_STATUS_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+              <label className="admin-field">
+                <span className="admin-field-label">Status</span>
+                <select
+                  className="admin-select"
+                  value={form.status}
+                  onChange={(event) => setField("status", event.target.value)}
+                >
+                  {EVENT_STATUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-          <label className="admin-field">
-            <span className="admin-field-label">Bucket override</span>
-            <select
-              className="admin-select"
-              value={form.bucketOverride}
-              onChange={(event) => setField("bucketOverride", event.target.value)}
-            >
-              {BUCKET_OVERRIDE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+              <label className="admin-field">
+                <span className="admin-field-label">Gäster/Konstnärer</span>
+                <input
+                  className="admin-input"
+                  value={form.artists}
+                  onChange={(event) => setField("artists", event.target.value)}
+                />
+              </label>
 
-          <label className="admin-field">
-            <span className="admin-field-label">Sortering</span>
-            <input
-              type="number"
-              className="admin-input"
-              value={form.sortOrder}
-              onChange={(event) => setField("sortOrder", event.target.value)}
-            />
-          </label>
+              <label className="admin-field admin-field--full">
+                <span className="admin-field-label">Beskrivning</span>
+                <textarea
+                  className="admin-input"
+                  rows={4}
+                  value={form.description}
+                  onChange={(event) => setField("description", event.target.value)}
+                />
+              </label>
 
-          <label className="admin-field">
-            <span className="admin-field-label">Gäster/Konstnärer</span>
-            <input
-              className="admin-input"
-              value={form.artists}
-              onChange={(event) => setField("artists", event.target.value)}
-            />
-          </label>
-
-          <label className="admin-field admin-field--full">
-            <span className="admin-field-label">Beskrivning</span>
-            <textarea
-              className="admin-input"
-              rows={4}
-              value={form.description}
-              onChange={(event) => setField("description", event.target.value)}
-            />
-          </label>
-
-          <label className="admin-field admin-field--full">
-            <span className="admin-field-label">Badge/platser</span>
-            <input
-              className="admin-input"
-              value={form.spots}
-              onChange={(event) => setField("spots", event.target.value)}
-            />
-          </label>
-        </div>
-
-        <div className="admin-events-manager-subsection">
-          <div className="admin-events-manager-subsection-header">
-            <h4>Länkar</h4>
-            <button type="button" className="admin-btn-secondary" onClick={addLink}>
-              + Lägg till länk
-            </button>
-          </div>
-          {form.links.map((link, index) => (
-            <div key={`link-${index}`} className="admin-events-manager-inline-row">
-              <input
-                className="admin-input"
-                placeholder="https://..."
-                value={link.href || ""}
-                onChange={(event) =>
-                  handleLinkChange(index, "href", event.target.value)
-                }
-              />
-              <input
-                className="admin-input"
-                placeholder="Länktext"
-                value={link.label || ""}
-                onChange={(event) =>
-                  handleLinkChange(index, "label", event.target.value)
-                }
-              />
-              <button
-                type="button"
-                className="admin-btn-danger"
-                onClick={() => removeLink(index)}
-              >
-                Ta bort
-              </button>
+              <label className="admin-field admin-field--full">
+                <span className="admin-field-label">Badge/platser</span>
+                <input
+                  className="admin-input"
+                  value={form.spots}
+                  onChange={(event) => setField("spots", event.target.value)}
+                />
+              </label>
             </div>
-          ))}
-        </div>
 
-        <div className="admin-events-manager-subsection">
-          <div className="admin-events-manager-subsection-header">
-            <h4>Bilder</h4>
-            <label className="admin-btn-secondary admin-events-manager-upload-btn">
-              {uploading ? "Laddar upp..." : "Ladda upp bild"}
-              <input
-                type="file"
-                accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif"
-                multiple
-                onChange={handleUploadImages}
-                disabled={uploading}
-                hidden
-              />
-            </label>
-          </div>
-          <p className="admin-muted">
-            Bilder optimeras automatiskt till WebP (max 800x1063).
-          </p>
-
-          {form.images.map((image, index) => (
-            <div key={image.id || `img-${index}`} className="admin-events-manager-image-row">
-              <img src={image.url} alt={image.alt || ""} />
-              <div className="admin-events-manager-image-fields">
-                <input
-                  className="admin-input"
-                  value={image.url || ""}
-                  onChange={(event) =>
-                    handleImageChange(index, "url", event.target.value)
-                  }
-                />
-                <input
-                  className="admin-input"
-                  placeholder="Alt-text"
-                  value={image.alt || ""}
-                  onChange={(event) =>
-                    handleImageChange(index, "alt", event.target.value)
-                  }
-                />
-                <input
-                  type="number"
-                  className="admin-input"
-                  placeholder="Ordning"
-                  value={image.order || ""}
-                  onChange={(event) =>
-                    handleImageChange(index, "order", event.target.value)
-                  }
-                />
+            <div className="admin-events-manager-subsection">
+              <div className="admin-events-manager-subsection-header">
+                <h4>Länkar</h4>
+                <button type="button" className="admin-btn-secondary" onClick={addLink}>
+                  + Lägg till länk
+                </button>
               </div>
-              <button
-                type="button"
-                className="admin-btn-danger"
-                onClick={() => removeImage(index)}
-              >
-                Ta bort
-              </button>
+              {form.links.map((link, index) => (
+                <div key={`link-${index}`} className="admin-events-manager-inline-row">
+                  <input
+                    className="admin-input"
+                    placeholder="https://..."
+                    value={link.href || ""}
+                    onChange={(event) =>
+                      handleLinkChange(index, "href", event.target.value)
+                    }
+                  />
+                  <input
+                    className="admin-input"
+                    placeholder="Länktext"
+                    value={link.label || ""}
+                    onChange={(event) =>
+                      handleLinkChange(index, "label", event.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="admin-btn-danger"
+                    onClick={() => removeLink(index)}
+                  >
+                    Ta bort
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </form>
+
+            <div className="admin-events-manager-subsection">
+              <div className="admin-events-manager-subsection-header">
+                <h4>Bilder</h4>
+                <label className="admin-btn-secondary admin-events-manager-upload-btn">
+                  {uploading ? "Laddar upp..." : "Ladda upp bild"}
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif"
+                    multiple
+                    onChange={handleUploadImages}
+                    disabled={uploading}
+                    hidden
+                  />
+                </label>
+              </div>
+              <p className="admin-muted">
+                Bilder optimeras automatiskt till WebP (max 800x1063).
+              </p>
+
+              {form.images.map((image, index) => (
+                <div key={image.id || `img-${index}`} className="admin-events-manager-image-row">
+                  <img src={image.url} alt={image.alt || ""} />
+                  <div className="admin-events-manager-image-fields">
+                    <input
+                      className="admin-input"
+                      placeholder="Beskrivande text (alt-text)"
+                      value={image.alt || ""}
+                      onChange={(event) =>
+                        handleImageChange(index, "alt", event.target.value)
+                      }
+                    />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                      <input
+                        type="number"
+                        className="admin-input"
+                        placeholder="Ordning"
+                        value={image.order || ""}
+                        onChange={(event) =>
+                          handleImageChange(index, "order", event.target.value)
+                        }
+                      />
+                      <div className="admin-muted" style={{ fontSize: '0.7rem', alignSelf: 'center', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {image.url.split('/').pop()}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="admin-btn-danger"
+                    onClick={() => removeImage(index)}
+                  >
+                    Ta bort
+                  </button>
+                </div>
+              ))}
+            </div>
+          </form>
+        ) : (
+          <div className="admin-events-preview-container">
+            <p className="admin-muted" style={{ marginBottom: '2rem', textAlign: 'center' }}>
+              Så här kommer evenemanget att se ut på hemsidan:
+            </p>
+            <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+              <EventCard event={previewEvent} />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
 AdminEvents.propTypes = {
   adminKey: PropTypes.string,
-};
-
-AdminEvents.defaultProps = {
-  adminKey: "",
 };
 
 export default AdminEvents;

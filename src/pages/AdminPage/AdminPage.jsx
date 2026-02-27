@@ -33,15 +33,23 @@ import { PageSection } from "../../components";
 
 function AdminPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const isLocalDev =
+    typeof window !== "undefined" &&
+    import.meta.env.DEV &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1");
+  const devAdminKey = (import.meta.env.VITE_ADMIN_DEV_KEY || "").trim();
+  const initialAdminKey = isLocalDev && devAdminKey ? devAdminKey : "session";
 
   const lastSyncedOrderRef = useRef("");
   const autoSaveTimerRef = useRef(null);
   const copyTimerRef = useRef(null);
   const { success, error, info } = useToast();
 
-  const [adminKey, setAdminKey] = useState("session");
+  const [adminKey, setAdminKey] = useState(initialAdminKey);
   const [requiresAccessLogin, setRequiresAccessLogin] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // States for Order List
   const [orders, setOrders] = useState([]);
@@ -483,6 +491,7 @@ function AdminPage() {
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set("view", view);
     setSearchParams(nextParams, { replace: true });
+    setIsSidebarOpen(false);
   };
 
   const sortedOrders = useMemo(() => {
@@ -942,9 +951,27 @@ function AdminPage() {
 
   return (
     <main role="main" id="main-content">
+      {!isSidebarOpen && (
+        <button 
+          className="admin-fixed-hamburger" 
+          onClick={() => setIsSidebarOpen(true)}
+          aria-label="Öppna admin-meny"
+        >
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      )}
       <PageSection background="alt" spacing="default">
         <div className="admin-layout">
-          <AdminSidebar adminView={adminView} onViewChange={handleAdminViewChange} />
+          <AdminSidebar 
+            adminView={adminView} 
+            onViewChange={handleAdminViewChange}
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
           <div className="admin-container">
             <AdminHeader
               isPreview={isPreview}
@@ -953,12 +980,14 @@ function AdminPage() {
               onSwitchAccount={handleSwitchAccount}
               adminView={adminView}
               onViewChange={handleAdminViewChange}
+              onToggleSidebar={() => setIsSidebarOpen(true)}
             />
 
             <AdminPackingSlip order={selectedOrder} />
 
             {showStatsSection && (
               <AdminStats
+                adminView={adminView}
                 statsRange={statsRange}
                 setStatsRange={setStatsRange}
                 statsExpanded={statsExpanded}
@@ -1124,8 +1153,9 @@ function AdminPage() {
             )}
 
             {showOrdersSection && (
-              <div className="admin-panels">
+              <div className={`admin-panels ${adminView === 'overview' ? 'overview-mode' : ''}`}>
                 <AdminOrderList
+                  adminView={adminView}
                   filteredOrders={filteredOrders}
                   selectedId={selectedId}
                   onSelectOrder={handleSelectOrder}

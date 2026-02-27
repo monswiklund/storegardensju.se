@@ -109,19 +109,19 @@ function OrderStatusCard({ order, latestEvent, onCopy, copiedField }) {
 
   return (
     <div className="admin-card">
-      <div className="admin-detail-header-row">
+      <div className="admin-card-header">
         <h3>Status & Leverans</h3>
       </div>
       <div className="admin-detail-list">
         <div className="admin-detail-row">
           <span className="admin-detail-label">Totalt</span>
-          <span className="admin-detail-value admin-strong">
+          <span className="admin-order-total" style={{ fontSize: '1.25rem' }}>
             {formatAmount(order.amountTotal)}
           </span>
         </div>
-        <div className="admin-detail-row">
+        <div className="admin-detail-row" style={{ alignItems: 'flex-start', paddingTop: '0.75rem' }}>
           <span className="admin-detail-label">Status</span>
-          <div className="admin-detail-value admin-detail-value-stack">
+          <div className="admin-detail-value admin-detail-value-stack" style={{ alignItems: 'flex-end' }}>
             <div className="admin-detail-chip-row">
               <span
                 className={`admin-chip admin-chip-${
@@ -146,76 +146,48 @@ function OrderStatusCard({ order, latestEvent, onCopy, copiedField }) {
                   {shippingChipLabel}
                 </span>
               )}
-              {isHighValueOrder && (
-                <span className="admin-chip admin-chip-warning">Hög order</span>
-              )}
-              {isUnpaid && (
-                <span className="admin-chip admin-chip-warning">Följ upp</span>
-              )}
             </div>
             {latestEvent && (
-              <p className="admin-detail-meta-text">
-                Senaste: {formatListEventLabel(latestEvent)} ·{" "}
-                {formatDateTime(latestEvent.timestamp)}
+              <p className="admin-muted" style={{ fontSize: '0.75rem', marginTop: '0.5rem' }}>
+                Senaste händelse: {formatDateTime(latestEvent.timestamp)}
               </p>
             )}
           </div>
         </div>
         <div className="admin-detail-row">
-          <span className="admin-detail-label">Skapad</span>
+          <span className="admin-detail-label">Beställd</span>
           <span className="admin-detail-value">
             {formatDateTime(order.created)}
           </span>
         </div>
         <div className="admin-detail-row">
-          <span className="admin-detail-label">Leverans</span>
+          <span className="admin-detail-label">Fraktmetod</span>
           <span className="admin-detail-value">
-            {order.shippingRate || "Fraktval saknas"}
+            {order.shippingRate || "Hämtas i butik"}
           </span>
         </div>
         <div className="admin-detail-row">
           <span className="admin-detail-label">Spårning</span>
           <div className="admin-detail-value">
             {order.trackingNumber ? (
-              <div className="admin-detail-inline">
-                <span className="admin-detail-strong">
+              <div className="admin-detail-inline" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <span style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>
                   {order.trackingNumber}
                 </span>
-                <span className="admin-chip admin-chip-tracking">
-                  {trackingCarrierLabel}
-                </span>
-                <button
-                  type="button"
-                  className="admin-copy-btn admin-copy-btn-icon"
-                  onClick={() => onCopy(order.trackingNumber, "tracking")}
-                  aria-label="Kopiera spårningsnummer"
-                  title="Kopiera spårningsnummer"
-                  data-tooltip={
-                    copiedField === "tracking"
-                      ? "Kopierat!"
-                      : "Kopiera spårningsnummer"
-                  }
-                  data-tooltip-active={copiedField === "tracking"}
-                >
-                  {copiedField === "tracking" ? (
-                    <CheckIcon title="Kopierat" />
-                  ) : (
-                    <CopyIcon title="Kopiera" />
-                  )}
-                </button>
                 {trackingInfo && (
                   <a
-                    className="admin-detail-link admin-detail-link-muted"
+                    className="admin-link-btn"
                     href={trackingInfo.url}
                     target="_blank"
                     rel="noreferrer"
+                    style={{ fontSize: '0.75rem' }}
                   >
-                    Spåra hos {trackingInfo.label}
+                    Spåra ({trackingInfo.label})
                   </a>
                 )}
               </div>
             ) : (
-              <span>—</span>
+              <span className="admin-muted">—</span>
             )}
           </div>
         </div>

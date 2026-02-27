@@ -5,7 +5,11 @@
   "type": "module",
   "homepage": "https://storegardensju.se",
   "scripts": {
-    "dev": "vite",
+    "dev": "bash ./scripts/dev-with-backend.sh",
+    "dev:frontend": "vite",
+    "dev:backend:up": "../storegardensju-backend/scripts/dev_docker.sh up",
+    "dev:backend:logs": "../storegardensju-backend/scripts/dev_docker.sh logs",
+    "dev:backend:down": "../storegardensju-backend/scripts/dev_docker.sh down",
     "build": "npm run build:gallery && npm run build:version && vite build",
     "build:gallery": "node scripts/generate-gallery-categories.js",
     "build:version": "node -e \"const fs=require('fs');const pkg=JSON.parse(fs.readFileSync('package.json'));const build={version:pkg.version,buildTime:new Date().toISOString(),buildNumber:Date.now()};fs.writeFileSync('src/build.json',JSON.stringify(build,null,2));\"",

@@ -9,10 +9,10 @@ import "./PageSection.css";
  */
 function PageSection({
   children,
-  background,
-  spacing,
-  ariaLabel,
-  ariaLabelledBy,
+  background = "white",
+  spacing = "default",
+  ariaLabel = "",
+  ariaLabelledBy = "",
 }) {
   const sectionClasses = `page-section ${
     background ? `bg-${background}` : ""
@@ -41,13 +41,6 @@ PageSection.propTypes = {
   ariaLabel: PropTypes.string,
   /** ID of the heading element that labels this section */
   ariaLabelledBy: PropTypes.string,
-};
-
-PageSection.defaultProps = {
-  background: "white",
-  spacing: "default",
-  ariaLabel: "",
-  ariaLabelledBy: "",
 };
 
 export default PageSection;

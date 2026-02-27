@@ -192,7 +192,10 @@ function AdminCustomers({ orders, loading }) {
             <div className="admin-customer-stats-row">
               <div className="admin-customer-stat">
                 <span className="admin-customer-stat-label">Ordrar</span>
-                <span className="admin-customer-stat-value">{c.orderCount}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span className="admin-customer-stat-value">{c.orderCount}</span>
+                  {c.orderCount > 1 && <span className="admin-badge" style={{ fontSize: '10px', padding: '1px 5px' }}>Återkommande</span>}
+                </div>
               </div>
               <div className="admin-customer-stat">
                 <span className="admin-customer-stat-label">Totalt köpt</span>

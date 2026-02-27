@@ -45,7 +45,7 @@ function AdminLogin({ error, onRetry, onOpenAccess, onPreview }) {
                 <p className="admin-muted">Eller testa layouten direkt.</p>
                 <button
                   type="button"
-                  className="admin-btn-secondary"
+                  className="admin-btn-tertiary"
                   onClick={onPreview}
                 >
                   Förhandsgranska (dev)

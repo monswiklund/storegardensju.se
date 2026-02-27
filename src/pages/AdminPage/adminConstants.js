@@ -81,16 +81,28 @@ export const AMOUNT_FILTER_OPTIONS = [
   { value: "very_high_value", label: "Över 5000 kr" },
 ];
 
-export const ADMIN_VIEW_OPTIONS = [
-  { value: "overview", label: "Översikt" },
-  { value: "stats", label: "Statistik" },
-  { value: "orders", label: "Ordrar" },
-  { value: "customers", label: "Kunder" },
-  { value: "products", label: "Produkter" },
-  { value: "events", label: "Evenemang" },
-  { value: "gallery", label: "Galleri" },
-  { value: "coupons", label: "Rabatter" },
+export const ADMIN_VIEW_GROUPS = [
+  {
+    title: "Innehåll",
+    options: [
+      { value: "events", label: "Evenemang" },
+      { value: "gallery", label: "Galleri" },
+    ]
+  },
+  {
+    title: "Butik & Försäljning",
+    options: [
+      { value: "overview", label: "Översikt" },
+      { value: "orders", label: "Ordrar" },
+      { value: "customers", label: "Kunder" },
+      { value: "products", label: "Produkter" },
+      { value: "coupons", label: "Rabatter" },
+      { value: "stats", label: "Statistik" },
+    ]
+  }
 ];
+
+export const ADMIN_VIEW_OPTIONS = ADMIN_VIEW_GROUPS.flatMap(group => group.options);
 
 export const ORDER_SORT_OPTIONS = [
   { value: "created", label: "Senast skapad" },

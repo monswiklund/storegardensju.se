@@ -114,10 +114,28 @@ function AdminGallery({ adminKey }) {
   const [lastMoveAction, setLastMoveAction] = useState(null);
   const feedbackTimerRef = useRef(null);
 
-  const categories = useMemo(
-    () => galleryData?.categories || [],
-    [galleryData]
-  );
+  const categories = useMemo(() => {
+    const raw = galleryData?.categories || [];
+    const next = [...raw];
+    
+    next.sort((a, b) => {
+      const orderA = Number.isFinite(Number(a.order)) ? Number(a.order) : 0;
+      const orderB = Number.isFinite(Number(b.order)) ? Number(b.order) : 0;
+      if (orderA === orderB) {
+        return (a.name || "").localeCompare(b.name || "", "sv");
+      }
+      return orderA - orderB;
+    });
+
+    // Ensure "Alla bilder" (or similar) is always at the top
+    const allaIndex = next.findIndex(isAllImagesCategory);
+    if (allaIndex > 0) {
+      const [alla] = next.splice(allaIndex, 1);
+      next.unshift(alla);
+    }
+    
+    return next;
+  }, [galleryData]);
 
   const activeCategory = useMemo(() => {
     if (!categories.length) return null;

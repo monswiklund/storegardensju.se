@@ -12,6 +12,7 @@ import { formatAmount, formatDateTime, formatListEventLabel } from "../adminUtil
 import { CopyIcon } from "./AdminIcons";
 
 function AdminOrderList({
+  adminView,
   filteredOrders,
   selectedId,
   onSelectOrder,
@@ -68,6 +69,7 @@ function AdminOrderList({
   }, []);
 
   const isHidden = isMobile && viewMode !== "list";
+  const isOverview = adminView === "overview";
   const allSelected =
     filteredOrders.length > 0 &&
     filteredOrders.every((o) => selectedOrderIds.has(o.id));
@@ -79,6 +81,8 @@ function AdminOrderList({
     amountFilter !== "all" ||
     searchQuery.trim() !== "";
 
+  const displayOrders = isOverview ? filteredOrders.slice(0, 10) : filteredOrders;
+
   return (
     <section
       className={`admin-panel admin-panel-list ${isHidden ? "is-hidden" : ""}`}
@@ -86,170 +90,177 @@ function AdminOrderList({
     >
       <div className="admin-panel-header">
         <div className="admin-header-title">
-          <h3>Orderlista</h3>
-          <span className="admin-count-badge">{ordersCount} st</span>
+          <h3>{isOverview ? "Senaste Ordrar" : "Orderlista"}</h3>
+          {!isOverview && <span className="admin-count-badge">{ordersCount} st</span>}
         </div>
-        <div className="admin-panel-actions">
-          <button
-            type="button"
-            className="admin-btn-secondary admin-btn-sm"
-            onClick={onExport}
-          >
-            Export CSV
-          </button>
-        </div>
-      </div>
-
-      <div className="admin-controls">
-        <div className="admin-search-wrapper">
-          <input
-            ref={searchInputRef}
-            type="search"
-            className="admin-input admin-search-input"
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            onFocus={() => setSearchFocused(true)}
-            onKeyDown={handleSearchKeyDown}
-            onBlur={() => {
-              window.setTimeout(() => setSearchFocused(false), 150);
-            }}
-            placeholder="Sök (tryck '/' för att fokusera)..."
-            role="combobox"
-            aria-expanded={searchFocused && searchSuggestions.length > 0}
-            aria-controls="admin-search-suggestions"
-            aria-activedescendant={
-              highlightedSuggestion >= 0
-                ? `admin-suggestion-${highlightedSuggestion}`
-                : undefined
-            }
-          />
-          {searchFocused && searchSuggestions.length > 0 && (
-            <div
-              id="admin-search-suggestions"
-              className="admin-search-suggestions"
-              role="listbox"
-            >
-              {searchSuggestions.map((order, index) => (
-                <button
-                  type="button"
-                  key={order.id}
-                  id={`admin-suggestion-${index}`}
-                  className={`admin-suggestion ${
-                    highlightedSuggestion === index ? "active" : ""
-                  }`}
-                  onClick={() => onSuggestionClick(order.id)}
-                  role="option"
-                  aria-selected={highlightedSuggestion === index}
-                >
-                  <div>
-                    <p className="admin-suggestion-title">
-                      {order.customerEmail || "Okänd email"}
-                    </p>
-                    <p className="admin-suggestion-subtitle">{order.id}</p>
-                  </div>
-                  <div className="admin-suggestion-meta">
-                    <span>{formatAmount(order.amountTotal)}</span>
-                    <span>{formatDateTime(order.created)}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="admin-filters-group">
-          <select
-            className="admin-select admin-select-sm"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            aria-label="Filtrera på datum"
-          >
-            {DATE_FILTER_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <select
-            className="admin-select admin-select-sm"
-            value={amountFilter}
-            onChange={(e) => setAmountFilter(e.target.value)}
-            aria-label="Filtrera på belopp"
-          >
-            {AMOUNT_FILTER_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <select
-            id="order-sort"
-            className="admin-select admin-select-sm"
-            value={sortMode}
-            onChange={(event) => setSortMode(event.target.value)}
-            aria-label="Sortera"
-          >
-            {ORDER_SORT_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <div className="admin-fulfillment-filter">
-        <select
-          className="admin-select admin-select-sm admin-select-full"
-          value={fulfillmentFilter}
-          onChange={(event) => setFulfillmentFilter(event.target.value)}
-          aria-label="Filtrera status"
-        >
-          {FULFILLMENT_FILTERS.map((filter) => (
-            <option key={filter.value} value={filter.value}>
-              {filter.label} ({counts[filter.value] ?? 0})
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="admin-results-info">
-        <div className="admin-results-stats">
-          Visar <strong>{filteredOrders.length}</strong> ordrar
-          {hasActiveFilters && (
+        {!isOverview && (
+          <div className="admin-panel-actions">
             <button
               type="button"
-              className="admin-clear-btn"
-              onClick={onClearFilters}
+              className="admin-btn-secondary admin-btn-sm"
+              onClick={onExport}
             >
-              Rensa filter
+              Export CSV
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
-      {filteredOrders.length > 0 && (
-        <div className="admin-list-actions">
-          <label className="admin-checkbox-label">
+      {!isOverview && (
+        <div className="admin-controls">
+          <div className="admin-search-wrapper">
             <input
-              type="checkbox"
-              checked={allSelected}
-              onChange={() => onSelectAll(allSelected)}
+              ref={searchInputRef}
+              type="search"
+              className="admin-input admin-search-input"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onKeyDown={handleSearchKeyDown}
+              onBlur={() => {
+                window.setTimeout(() => setSearchFocused(false), 150);
+              }}
+              placeholder="Sök (tryck '/' för att fokusera)..."
+              role="combobox"
+              aria-expanded={searchFocused && searchSuggestions.length > 0}
+              aria-controls="admin-search-suggestions"
+              aria-activedescendant={
+                highlightedSuggestion >= 0
+                  ? `admin-suggestion-${highlightedSuggestion}`
+                  : undefined
+              }
             />
-            <span>Markera alla</span>
-          </label>
+            {searchFocused && searchSuggestions.length > 0 && (
+              <div
+                id="admin-search-suggestions"
+                className="admin-search-suggestions"
+                role="listbox"
+              >
+                {searchSuggestions.map((order, index) => (
+                  <button
+                    type="button"
+                    key={order.id}
+                    id={`admin-suggestion-${index}`}
+                    className={`admin-suggestion ${
+                      highlightedSuggestion === index ? "active" : ""
+                    }`}
+                    onClick={() => onSuggestionClick(order.id)}
+                    role="option"
+                    aria-selected={highlightedSuggestion === index}
+                  >
+                    <div>
+                      <p className="admin-suggestion-title">
+                        {order.customerEmail || "Okänd email"}
+                      </p>
+                      <p className="admin-suggestion-subtitle">{order.id}</p>
+                    </div>
+                    <div className="admin-suggestion-meta">
+                      <span>{formatAmount(order.amountTotal)}</span>
+                      <span>{formatDateTime(order.created)}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="admin-filters-group">
+            <select
+              className="admin-select admin-select-sm"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              aria-label="Filtrera på datum"
+            >
+              {DATE_FILTER_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <select
+              className="admin-select admin-select-sm"
+              value={amountFilter}
+              onChange={(e) => setAmountFilter(e.target.value)}
+              aria-label="Filtrera på belopp"
+            >
+              {AMOUNT_FILTER_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <select
+              id="order-sort"
+              className="admin-select admin-select-sm"
+              value={sortMode}
+              onChange={(event) => setSortMode(event.target.value)}
+              aria-label="Sortera"
+            >
+              {ORDER_SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       )}
 
-      {someSelected && (
-        <div className="admin-bulk-actions fade-in">
-          <div className="admin-bulk-info">
-            <span>{selectedOrderIds.size} valda</span>
-            <button
-              type="button"
-              className="admin-link-btn"
-              onClick={() => onSelectAll(true)}
+      {!isOverview && (
+        <>
+          <div className="admin-fulfillment-filter">
+            <select
+              className="admin-select admin-select-sm admin-select-full"
+              value={fulfillmentFilter}
+              onChange={(event) => setFulfillmentFilter(event.target.value)}
+              aria-label="Filtrera status"
             >
-              Avbryt
+              {FULFILLMENT_FILTERS.map((filter) => (
+                <option key={filter.value} value={filter.value}>
+                  {filter.label} ({counts[filter.value] ?? 0})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="admin-results-info">
+            <div className="admin-results-stats">
+              Visar <strong>{filteredOrders.length}</strong> ordrar
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  className="admin-clear-btn"
+                  onClick={onClearFilters}
+                >
+                  Rensa filter
+                </button>
+              )}
+            </div>
+          </div>
+
+          {filteredOrders.length > 0 && (
+            <div className="admin-list-actions">
+              <label className="admin-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={() => onSelectAll(allSelected)}
+                />
+                <span>Markera alla</span>
+              </label>
+            </div>
+          )}
+
+          {someSelected && (
+            <div className="admin-bulk-actions fade-in">
+              <div className="admin-bulk-info">
+                <span>{selectedOrderIds.size} valda</span>
+                <button
+                  type="button"
+                  className="admin-link-btn"
+                  onClick={() => onSelectAll(true)}
+                >
+                  Avbryt
             </button>
           </div>
           <div className="admin-bulk-controls">
@@ -275,6 +286,8 @@ function AdminOrderList({
             )}
           </div>
         </div>
+      )}
+      </>
       )}
 
       {listError && <p className="admin-error">{listError}</p>}
@@ -326,7 +339,7 @@ function AdminOrderList({
       )}
 
       <div className="admin-order-list">
-        {filteredOrders.map((order) => {
+        {(isOverview ? displayOrders : filteredOrders).map((order) => {
           const fulfillmentValue = order.fulfillment || "new";
           const fulfillmentLabel =
             FULFILLMENT_LABELS[fulfillmentValue] || fulfillmentValue;
@@ -353,7 +366,7 @@ function AdminOrderList({
               key={order.id}
               className={`admin-order-card ${isSelected ? "selected" : ""} ${
                 isChecked ? "checked" : ""
-              } ${fulfillmentValue === "new" ? "is-new" : ""}`}
+              } ${fulfillmentValue === "new" ? "is-new" : ""} ${isOverview ? "overview-card" : ""}`}
               onClick={() => onSelectOrder(order.id)}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
@@ -371,74 +384,84 @@ function AdminOrderList({
               }
             >
               <div className="admin-order-top-row">
-                <div
-                  className="admin-order-checkbox"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onToggleSelect(order.id);
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={(event) => {
-                      event.stopPropagation();
+                {!isOverview && (
+                  <div
+                    className="admin-order-checkbox"
+                    onClick={(e) => {
+                      e.stopPropagation();
                       onToggleSelect(order.id);
                     }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(event) => {
+                        event.stopPropagation();
+                        onToggleSelect(order.id);
+                      }}
                     onClick={(event) => event.stopPropagation()}
                     tabIndex={0}
                     aria-label={`Välj order ${order.id}`}
                   />
                 </div>
+                )}
 
                 <div className="admin-order-content">
                   <div className="admin-order-main">
                     <div className="admin-order-header">
                       <div className="admin-order-id-group">
                         <span className="admin-order-id">#{order.id.slice(-6)}</span>
-                        <button
-                          type="button"
-                          className="admin-id-copy-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onCopy(order.id, "orderId");
-                          }}
-                          title="Kopiera hela Order-ID"
-                        >
-                          <CopyIcon size={12} />
-                        </button>
+                        {!isOverview && (
+                          <button
+                            type="button"
+                            className="admin-id-copy-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onCopy(order.id, "orderId");
+                            }}
+                            title="Kopiera hela Order-ID"
+                          >
+                            <CopyIcon size={12} />
+                          </button>
+                        )}
+                        <span className="admin-order-date">
+                          {formatDateTime(order.created)}
+                        </span>
                       </div>
-                      <span className="admin-order-date">
-                        {formatDateTime(order.created)}
-                      </span>
+                      
+                      <div className="admin-order-amount-inline">
+                        {formatAmount(order.amountTotal)}
+                      </div>
                     </div>
-                    <div className="admin-order-customer">
-                      <span className="admin-order-email">
-                        {order.customerEmail || "Okänd email"}
-                      </span>
-                    </div>
-                    <div className="admin-order-amount-inline">
-                      {formatAmount(order.amountTotal)}
+                    
+                    <div className="admin-order-details-row">
+                      <div className="admin-order-customer">
+                        <span className="admin-order-email">
+                          {order.customerEmail || "Okänd email"}
+                        </span>
+                      </div>
+                      
+                      <div className="admin-order-chips">
+                        <span className={`admin-chip admin-chip-${fulfillmentValue}`}>
+                          {fulfillmentLabel}
+                        </span>
+                        <span
+                          className={`admin-chip ${
+                            order.paymentStatus === "paid"
+                              ? "admin-chip-paid"
+                              : "admin-chip-payment"
+                          }`}
+                        >
+                          {paymentLabel}
+                        </span>
+                        {listEventLabel && !isOverview && (
+                          <span className="admin-order-last-admin">
+                            {listEventLabel}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-
-                </div>
-              </div>
-
-              <div className="admin-order-footer">
-                <div className="admin-order-chips">
-                  <span className={`admin-chip admin-chip-${fulfillmentValue}`}>
-                    {fulfillmentLabel}
-                  </span>
-                  <span
-                    className={`admin-chip ${
-                      order.paymentStatus === "paid"
-                        ? "admin-chip-paid"
-                        : "admin-chip-payment"
-                    }`}
-                  >
-                    {paymentLabel}
-                  </span>
                 </div>
               </div>
             </div>
@@ -446,7 +469,7 @@ function AdminOrderList({
         })}
       </div>
 
-      {hasMore && (
+      {!isOverview && hasMore && (
         <div className="admin-load-more">
           <button
             type="button"

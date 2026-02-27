@@ -25,12 +25,15 @@ const ADMIN_VIEW_COPY = {
     title: "Galleri",
     subtitle: "Ladda upp och organisera galleri-bilder.",
   },
+  events: {
+    title: "Evenemang",
+    subtitle: "Hantera kommande och tidigare händelser.",
+  },
   coupons: {
     title: "Rabatter",
     subtitle: "Skapa och arkivera rabattkoder.",
   },
 };
-
 function AdminHeader({
   isPreview,
   listLoading,
@@ -39,6 +42,7 @@ function AdminHeader({
   onSwitchAccount,
   adminView,
   onViewChange,
+  onToggleSidebar,
 }) {
   const copy = ADMIN_VIEW_COPY[adminView] || ADMIN_VIEW_COPY.overview;
   return (
@@ -50,9 +54,11 @@ function AdminHeader({
         </div>
       )}
       <div className="admin-header">
-        <div>
-          <h1>{copy.title}</h1>
-          <p>{copy.subtitle}</p>
+        <div className="admin-header-title-group">
+          <div>
+            <h1>{copy.title}</h1>
+            <p>{copy.subtitle}</p>
+          </div>
         </div>
         <div className="admin-actions">
           <button

@@ -13,46 +13,33 @@ function OrderHeader({ order, isMobile, setViewMode }) {
 
   return (
     <div className="admin-detail-header">
-      <div className="admin-order-summary">
-        <div className="admin-order-summary-main">
-          {/* Mobile Back Button */}
-          {isMobile && (
-            <button
-              type="button"
-              className="admin-btn-tertiary admin-back-btn-mobile"
-              onClick={() => setViewMode("list")}
-              style={{ marginRight: "0.5rem", padding: "4px 8px" }}
-            >
-              ←
-            </button>
-          )}
-          <span className="admin-order-label">Ordernummer</span>
-          <div className="admin-order-id-row">
-            <span className="admin-detail-order-id">{order.id}</span>
-          </div>
-        </div>
+      <div className="admin-detail-meta">
+        {/* Mobile Back Button */}
+        {isMobile && (
+          <button
+            type="button"
+            className="admin-btn-tertiary admin-back-btn-mobile"
+            onClick={() => setViewMode("list")}
+            style={{ marginBottom: "0.5rem", width: 'fit-content' }}
+          >
+            ← Tillbaka till listan
+          </button>
+        )}
+        <span className="admin-detail-label">Ordernummer</span>
+        <div className="admin-order-id-display">{order.id}</div>
       </div>
 
       <div className="admin-order-actions-row">
-        {isMobile && !order && (
-          <button
-            type="button"
-            className="admin-btn-secondary admin-back-btn"
-            onClick={() => setViewMode("list")}
-          >
-            Tillbaka
-          </button>
-        )}
         <button
           type="button"
-          className="admin-btn-secondary"
+          className="admin-btn-secondary admin-btn-sm"
           onClick={() => window.print()}
         >
           Följesedel
         </button>
         {stripeSessionUrl && (
           <a
-            className="admin-btn-secondary"
+            className="admin-btn-secondary admin-btn-sm"
             href={stripeSessionUrl}
             target="_blank"
             rel="noreferrer"
@@ -62,12 +49,12 @@ function OrderHeader({ order, isMobile, setViewMode }) {
         )}
         {order.stripeUrl && (
           <a
-            className="admin-btn-secondary"
+            className="admin-btn-secondary admin-btn-sm"
             href={order.stripeUrl}
             target="_blank"
             rel="noreferrer"
           >
-            Betalning
+            Betalningslänk
           </a>
         )}
       </div>

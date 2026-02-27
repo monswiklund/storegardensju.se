@@ -9,7 +9,7 @@ function CustomerCard({ order, customerHistory, onCopy, copiedField, onCustomerF
   const shippingAddress = order?.shippingAddress || "";
 
   return (
-    <div className="admin-card admin-customer-card">
+    <div className="admin-card">
       <div className="admin-card-header">
         <div style={{ display: "flex", gap: "1rem", alignItems: "baseline" }}>
           <h3>Kund</h3>
@@ -30,15 +30,14 @@ function CustomerCard({ order, customerHistory, onCopy, copiedField, onCustomerF
         {customerHistory && (
           <button
             type="button"
-            className="admin-customer-chip"
+            className="admin-badge"
             onClick={() => onCustomerFilter(customerEmail)}
             title="Visa alla ordrar från denna kund"
+            style={{ cursor: 'pointer', border: 'none' }}
           >
             {customerHistory.count === 0
-              ? "Första ordern"
-              : `${customerHistory.count} tidigare · ${formatAmount(
-                  customerHistory.total
-                )}`}
+              ? "Första köpet"
+              : `${customerHistory.count} tidigare · ${formatAmount(customerHistory.total)}`}
           </button>
         )}
       </div>
@@ -50,10 +49,10 @@ function CustomerCard({ order, customerHistory, onCopy, copiedField, onCustomerF
           </span>
         </div>
         <div className="admin-customer-field">
-          <span className="admin-customer-label">Email</span>
-          <span className="admin-customer-value">
+          <span className="admin-customer-label">E-post</span>
+          <div className="admin-customer-value">
             {customerEmail ? (
-              <span className="admin-detail-inline">
+              <div className="admin-detail-inline">
                 <a
                   className="admin-detail-link"
                   href={`mailto:${customerEmail}`}
@@ -64,59 +63,49 @@ function CustomerCard({ order, customerHistory, onCopy, copiedField, onCustomerF
                   type="button"
                   className="admin-copy-btn admin-copy-btn-icon"
                   onClick={() => onCopy(customerEmail, "email")}
-                  aria-label="Kopiera email"
-                  title="Kopiera email"
-                  data-tooltip={
-                    copiedField === "email" ? "Kopierat!" : "Kopiera email"
-                  }
-                  data-tooltip-active={copiedField === "email"}
+                  title="Kopiera e-post"
                 >
                   {copiedField === "email" ? (
-                    <CheckIcon title="Kopierat" />
+                    <CheckIcon size={14} />
                   ) : (
-                    <CopyIcon title="Kopiera" />
+                    <CopyIcon size={14} />
                   )}
                 </button>
-              </span>
+              </div>
             ) : (
               "—"
             )}
-          </span>
+          </div>
         </div>
         <div className="admin-customer-field">
-          <span className="admin-customer-label">Adress</span>
-          <span className="admin-customer-value">
+          <span className="admin-customer-label">Leveransadress</span>
+          <div className="admin-customer-value">
             {shippingAddress ? (
-              <span className="admin-detail-inline">
+              <div className="admin-detail-inline">
                 <span className="admin-customer-text">{shippingAddress}</span>
                 <button
                   type="button"
                   className="admin-copy-btn admin-copy-btn-icon"
                   onClick={() => onCopy(shippingAddress, "address")}
-                  aria-label="Kopiera adress"
                   title="Kopiera adress"
-                  data-tooltip={
-                    copiedField === "address" ? "Kopierat!" : "Kopiera adress"
-                  }
-                  data-tooltip-active={copiedField === "address"}
                 >
                   {copiedField === "address" ? (
-                    <CheckIcon title="Kopierat" />
+                    <CheckIcon size={14} />
                   ) : (
-                    <CopyIcon title="Kopiera" />
+                    <CopyIcon size={14} />
                   )}
                 </button>
-              </span>
+              </div>
             ) : (
               "—"
             )}
-          </span>
+          </div>
         </div>
         <div className="admin-customer-field">
           <span className="admin-customer-label">Telefon</span>
-          <span className="admin-customer-value">
+          <div className="admin-customer-value">
             {customerPhone ? (
-              <span className="admin-detail-inline">
+              <div className="admin-detail-inline">
                 <a className="admin-detail-link" href={`tel:${customerPhone}`}>
                   {customerPhone}
                 </a>
@@ -124,58 +113,28 @@ function CustomerCard({ order, customerHistory, onCopy, copiedField, onCustomerF
                   type="button"
                   className="admin-copy-btn admin-copy-btn-icon"
                   onClick={() => onCopy(customerPhone, "phone")}
-                  aria-label="Kopiera telefon"
                   title="Kopiera telefon"
-                  data-tooltip={
-                    copiedField === "phone" ? "Kopierat!" : "Kopiera telefon"
-                  }
-                  data-tooltip-active={copiedField === "phone"}
                 >
                   {copiedField === "phone" ? (
-                    <CheckIcon title="Kopierat" />
+                    <CheckIcon size={14} />
                   ) : (
-                    <CopyIcon title="Kopiera" />
+                    <CopyIcon size={14} />
                   )}
                 </button>
-              </span>
+              </div>
             ) : (
               "—"
             )}
-          </span>
+          </div>
         </div>
-        <div className="admin-customer-field admin-customer-field-wide">
-          <span className="admin-customer-label">Meddelande</span>
-          <span className="admin-customer-value">
-            {order.customerMessage ? (
-              <span className="admin-detail-inline">
-                <span className="admin-customer-text">
-                  {order.customerMessage}
-                </span>
-                <button
-                  type="button"
-                  className="admin-copy-btn admin-copy-btn-icon"
-                  onClick={() => onCopy(order.customerMessage, "message")}
-                  aria-label="Kopiera meddelande"
-                  title="Kopiera meddelande"
-                  data-tooltip={
-                    copiedField === "message"
-                      ? "Kopierat!"
-                      : "Kopiera meddelande"
-                  }
-                  data-tooltip-active={copiedField === "message"}
-                >
-                  {copiedField === "message" ? (
-                    <CheckIcon title="Kopierat" />
-                  ) : (
-                    <CopyIcon title="Kopiera" />
-                  )}
-                </button>
-              </span>
-            ) : (
-              "—"
-            )}
-          </span>
-        </div>
+        {order.customerMessage && (
+          <div className="admin-customer-field admin-customer-field-wide">
+            <span className="admin-customer-label">Meddelande från kund</span>
+            <div className="admin-customer-text" style={{ fontStyle: 'italic', borderLeft: '3px solid #e5e7eb', paddingLeft: '1rem', marginTop: '0.5rem' }}>
+              &quot;{order.customerMessage}&quot;
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import LoadingSpinner from "../../../components/ui/LoadingSpinner.jsx";
 import { formatPrice } from "../../../services/stripeService";
 
 function AdminStats({
+  adminView,
   statsRange,
   setStatsRange,
   statsExpanded,
@@ -13,6 +14,7 @@ function AdminStats({
   categoryExpanded,
   setCategoryExpanded,
 }) {
+  const isOverview = adminView === "overview";
   const statsRangeLabel =
     STATS_RANGE_OPTIONS.find((o) => o.value === statsRange)?.label || "Alla";
 
@@ -146,75 +148,77 @@ function AdminStats({
         </>
       )}
 
-      <div className="admin-category-panel" id="admin-categories">
-        <div className="admin-category-header">
-          <div>
-            <h3>Kategori-mix</h3>
-            <p className="admin-muted">Andel av omsättning</p>
+      {!isOverview && (
+        <div className="admin-category-panel" id="admin-categories">
+          <div className="admin-category-header">
+            <div>
+              <h3>Kategori-mix</h3>
+              <p className="admin-muted">Andel av omsättning</p>
+            </div>
+            <button
+              type="button"
+              className="admin-collapse-btn"
+              onClick={() => setCategoryExpanded((prev) => !prev)}
+              aria-expanded={categoryExpanded}
+            >
+              {categoryExpanded ? "Dölj" : "Visa"}
+              <span
+                className={`admin-collapse-icon ${
+                  categoryExpanded ? "" : "collapsed"
+                }`}
+                aria-hidden="true"
+              />
+            </button>
           </div>
-          <button
-            type="button"
-            className="admin-collapse-btn"
-            onClick={() => setCategoryExpanded((prev) => !prev)}
-            aria-expanded={categoryExpanded}
-          >
-            {categoryExpanded ? "Dölj" : "Visa"}
-            <span
-              className={`admin-collapse-icon ${
-                categoryExpanded ? "" : "collapsed"
-              }`}
-              aria-hidden="true"
-            />
-          </button>
-        </div>
-        {categoryExpanded && (
-          <>
-            {statsSummary.categories.length > 0 && (
-              <div className="admin-category-legend">
-                {statsSummary.categories.slice(0, 5).map((category) => (
-                  <div
-                    className="admin-category-legend-item"
-                    key={category.category}
-                  >
-                    <span className="admin-category-dot" />
-                    <span>{category.category}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-            {!statsLoading &&
-              !statsError &&
-              statsSummary.categories.length === 0 && (
-                <div className="admin-empty">
-                  <p>Ingen statistik att visa ännu.</p>
+          {categoryExpanded && (
+            <>
+              {statsSummary.categories.length > 0 && (
+                <div className="admin-category-legend">
+                  {statsSummary.categories.slice(0, 5).map((category) => (
+                    <div
+                      className="admin-category-legend-item"
+                      key={category.category}
+                    >
+                      <span className="admin-category-dot" />
+                      <span>{category.category}</span>
+                    </div>
+                  ))}
                 </div>
               )}
-            {statsSummary.categories.length > 0 && (
-              <div className="admin-category-list">
-                {statsSummary.categories.map((category) => {
-                  const share = Math.round((category.shareRevenue || 0) * 100);
-                  return (
-                    <div className="admin-category-row" key={category.category}>
-                      <div className="admin-category-info">
-                        <p className="admin-category-name">
-                          {category.category}
-                        </p>
-                        <p className="admin-category-meta">
-                          {formatAmount(category.revenue)} · {category.count} st
-                        </p>
+              {!statsLoading &&
+                !statsError &&
+                statsSummary.categories.length === 0 && (
+                  <div className="admin-empty">
+                    <p>Ingen statistik att visa ännu.</p>
+                  </div>
+                )}
+              {statsSummary.categories.length > 0 && (
+                <div className="admin-category-list">
+                  {statsSummary.categories.map((category) => {
+                    const share = Math.round((category.shareRevenue || 0) * 100);
+                    return (
+                      <div className="admin-category-row" key={category.category}>
+                        <div className="admin-category-info">
+                          <p className="admin-category-name">
+                            {category.category}
+                          </p>
+                          <p className="admin-category-meta">
+                            {formatAmount(category.revenue)} · {category.count} st
+                          </p>
+                        </div>
+                        <div className="admin-category-bar">
+                          <span style={{ width: `${share}%` }} />
+                        </div>
+                        <span className="admin-category-share">{share}%</span>
                       </div>
-                      <div className="admin-category-bar">
-                        <span style={{ width: `${share}%` }} />
-                      </div>
-                      <span className="admin-category-share">{share}%</span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </>
-        )}
-      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </>
   );
 }
