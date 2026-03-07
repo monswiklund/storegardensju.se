@@ -1,6 +1,11 @@
 import { getApiBaseUrl } from "../config/apiBaseUrl";
 
 const API_URL = getApiBaseUrl();
+const isSessionAuth = (key) => key === "session";
+const shouldAvoidPreflight = (key) =>
+  isSessionAuth(key) &&
+  typeof API_URL === "string" &&
+  API_URL.startsWith("https://");
 
 const toQueryString = (params = {}) => {
   const searchParams = new URLSearchParams();
@@ -33,6 +38,13 @@ const getHeaders = (
     requestId = createRequestId(),
   } = {}
 ) => {
+  if (shouldAvoidPreflight(key)) {
+    const headers = {};
+    if (key && key !== "session") {
+      headers.Authorization = `Bearer ${key}`;
+    }
+    return headers;
+  }
   const headers = {
     "X-Request-Id": requestId,
   };
@@ -47,6 +59,8 @@ const getHeaders = (
   }
   return headers;
 };
+
+const jsonRequestBody = (key, data) => JSON.stringify(data);
 
 const parseJSONSafely = async (res) => {
   try {
@@ -214,7 +228,7 @@ export const AdminService = {
         includeJsonContentType: true,
         idempotencyKey: createIdempotencyKey(),
       }),
-      body: JSON.stringify(data),
+      body: jsonRequestBody(key, data),
       credentials: "include",
     });
     return handleJSONResponse(res, "Failed to update fulfillment");
@@ -227,7 +241,7 @@ export const AdminService = {
         includeJsonContentType: true,
         idempotencyKey: createIdempotencyKey(),
       }),
-      body: JSON.stringify({ amount }),
+      body: jsonRequestBody(key, { amount }),
       credentials: "include",
     });
     return handleJSONResponse(res, "Refund failed");
@@ -256,7 +270,7 @@ export const AdminService = {
     const res = await fetch(`${API_URL}/admin/products`, {
       method: "POST",
       headers,
-      body: isFormData ? data : JSON.stringify(data),
+      body: isFormData ? data : jsonRequestBody(key, data),
       credentials: "include",
     });
     return handleJSONResponse(res, "Failed to create product");
@@ -307,7 +321,7 @@ export const AdminService = {
         includeJsonContentType: true,
         idempotencyKey: createIdempotencyKey(),
       }),
-      body: JSON.stringify(data),
+      body: jsonRequestBody(key, data),
       credentials: "include",
     });
     return handleJSONResponse(res, "Failed to create coupon");
@@ -354,7 +368,7 @@ export const AdminService = {
         includeJsonContentType: true,
         idempotencyKey: createIdempotencyKey(),
       }),
-      body: JSON.stringify(data),
+      body: jsonRequestBody(key, data),
       credentials: "include",
     });
     return handleJSONResponse(res, "Failed to create category");
