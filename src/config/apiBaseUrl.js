@@ -14,6 +14,11 @@ export function getApiBaseUrl() {
   if (raw) {
     try {
       const parsed = new URL(raw);
+      const isLoopbackHost =
+        parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1";
+      if (import.meta.env.PROD && isLoopbackHost) {
+        // Never ship a localhost API target in production builds.
+      } else {
       if (
         import.meta.env.DEV &&
         typeof window !== "undefined" &&
@@ -29,6 +34,7 @@ export function getApiBaseUrl() {
         return "https://api.storegardensju.se";
       }
       return raw.replace(/\/+$/, "");
+      }
     } catch {
       // Fall back to runtime defaults below if VITE_API_URL is malformed.
     }
