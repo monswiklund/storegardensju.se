@@ -715,6 +715,7 @@ function AdminGallery({ adminKey }) {
           categoryIds: [activeCategoryId],
           title,
           alt: title,
+          uploadId: uploadInfo?.uploadId || "",
           storageKey: uploadInfo?.storageKey || uploadInfo?.key,
           url: publicUrl,
           filename: uploadInfo?.filename || "",

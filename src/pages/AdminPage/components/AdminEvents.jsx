@@ -229,6 +229,7 @@ function AdminEvents({ adminKey = "" }) {
     const images = form.images
       .map((image, idx) => ({
         id: image?.id || `img-${Date.now()}-${idx}`,
+        uploadId: String(image?.uploadId || "").trim(),
         storageKey: String(image?.storageKey || "").trim(),
         url: String(image?.url || "").trim(),
         alt: String(image?.alt || "").trim(),
@@ -302,6 +303,7 @@ function AdminEvents({ adminKey = "" }) {
 
         uploadedImages.push({
           id: `img-${Date.now()}-${idx}`,
+          uploadId: uploadInfo?.uploadId || "",
           storageKey: uploadInfo?.storageKey || "",
           url: uploadInfo?.publicUrl || "",
           alt: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]+/g, " "),

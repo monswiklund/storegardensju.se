@@ -8,6 +8,7 @@ export default function AdminCoupons({ adminKey }) {
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("all");
 
   // New Coupon Form
   const [newCode, setNewCode] = useState("");
@@ -17,14 +18,18 @@ export default function AdminCoupons({ adminKey }) {
   const fetchCoupons = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await AdminService.getCoupons(adminKey);
+      const params =
+        statusFilter === "all"
+          ? {}
+          : { active: statusFilter === "active" ? "true" : "false" };
+      const data = await AdminService.getCoupons(adminKey, params);
       setCoupons(data || []);
     } catch (err) {
       error(err.message || "Misslyckades hämta koder");
     } finally {
       setLoading(false);
     }
-  }, [adminKey, error]);
+  }, [adminKey, error, statusFilter]);
 
   useEffect(() => {
     if (adminKey) fetchCoupons();
@@ -125,6 +130,17 @@ export default function AdminCoupons({ adminKey }) {
 
       <div className="coupon-list-section">
         <h3>Aktiva koder</h3>
+        <div className="form-group" style={{ maxWidth: "220px", marginBottom: "1rem" }}>
+          <label>Visa</label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">Alla</option>
+            <option value="active">Aktiva</option>
+            <option value="inactive">Inaktiva</option>
+          </select>
+        </div>
         {loading ? (
           <p>Laddar...</p>
         ) : (

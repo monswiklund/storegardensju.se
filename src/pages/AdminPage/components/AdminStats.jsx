@@ -17,6 +17,10 @@ function AdminStats({
   const isOverview = adminView === "overview";
   const statsRangeLabel =
     STATS_RANGE_OPTIONS.find((o) => o.value === statsRange)?.label || "Alla";
+  const generatedAtLabel =
+    statsSummary.generatedAt > 0
+      ? new Date(statsSummary.generatedAt * 1000).toLocaleString("sv-SE")
+      : "";
 
   const topCategory = statsSummary.categories[0];
 
@@ -28,6 +32,11 @@ function AdminStats({
         <div className="admin-stats-title">
           <h3>Statistiköversikt</h3>
           <p className="admin-muted">Period: {statsRangeLabel.toLowerCase()}</p>
+          {generatedAtLabel && (
+            <p className="admin-muted">
+              {statsSummary.cached ? "Cachead" : "Uppdaterad"}: {generatedAtLabel}
+            </p>
+          )}
         </div>
         <div className="admin-stats-actions">
           <div className="admin-stats-control">

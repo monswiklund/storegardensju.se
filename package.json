@@ -15,6 +15,9 @@
     "build:version": "node -e \"const fs=require('fs');const pkg=JSON.parse(fs.readFileSync('package.json'));const build={version:pkg.version,buildTime:new Date().toISOString(),buildNumber:Date.now()};fs.writeFileSync('src/build.json',JSON.stringify(build,null,2));\"",
     "gallery:generate-order": "node scripts/generate-order-template.js",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "optimize-images": "node scripts/optimize-images.js",
     "preview": "vite preview",
     "predeploy": "npm run build",
@@ -33,6 +36,8 @@
     "@eslint/js": "^9.9.0",
     "@playwright/mcp": "^0.0.36",
     "@playwright/test": "^1.55.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
@@ -42,8 +47,10 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "gh-pages": "^6.3.0",
     "globals": "^15.9.0",
+    "jsdom": "^28.1.0",
     "playwright": "^1.55.0",
     "rollup-plugin-visualizer": "^6.0.3",
-    "vite": "^6.2.3"
+    "vite": "^6.2.3",
+    "vitest": "^4.0.18"
   }
 }

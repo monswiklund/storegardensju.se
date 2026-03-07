@@ -63,5 +63,11 @@ export default defineConfig({
     },
     // Support client-side routing
     historyApiFallback: true
+  },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/test/setupTests.js',
+    include: ['src/**/*.{test,spec}.{js,jsx,ts,tsx}'],
   }
 })

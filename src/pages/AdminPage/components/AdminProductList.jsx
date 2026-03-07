@@ -134,14 +134,30 @@ export default function AdminProductList({ adminKey, onEdit }) {
     if (selectedIds.size === 0) return;
     if (!window.confirm(`Arkivera ${selectedIds.size} produkter?`)) return;
     try {
-      await Promise.all(
-        Array.from(selectedIds).map((id) =>
-          AdminService.archiveProduct(adminKey, id)
-        )
+      const ids = Array.from(selectedIds);
+      const results = await Promise.allSettled(
+        ids.map((id) => AdminService.archiveProduct(adminKey, id))
       );
-      success(`${selectedIds.size} produkter arkiverade`);
-      setSelectedIds(new Set());
-      fetchProducts();
+      const failedIds = results
+        .map((result, index) => ({ result, id: ids[index] }))
+        .filter((entry) => entry.result.status === "rejected")
+        .map((entry) => entry.id);
+      const succeeded = ids.length - failedIds.length;
+
+      if (succeeded > 0) {
+        await fetchProducts();
+      }
+      if (failedIds.length === 0) {
+        success(`${ids.length} produkter arkiverade`);
+        setSelectedIds(new Set());
+      } else if (succeeded === 0) {
+        error("Kunde inte arkivera valda produkter");
+      } else {
+        setSelectedIds(new Set(failedIds));
+        error(
+          `Arkivering delvis klar: ${succeeded} lyckades, ${failedIds.length} misslyckades.`
+        );
+      }
     } catch (err) {
       error(err.message || "Kunde inte arkivera produkter");
     }
@@ -151,26 +167,43 @@ export default function AdminProductList({ adminKey, onEdit }) {
     if (selectedIds.size === 0) return;
     if (!bulkCategory && bulkStock === "") return;
     try {
-      await Promise.all(
-        Array.from(selectedIds).map((id) => {
+      const ids = Array.from(selectedIds);
+      const results = await Promise.allSettled(
+        ids.map((id) => {
           const data = new FormData();
           if (bulkCategory) data.append("category", bulkCategory);
           if (bulkStock !== "") data.append("stock", String(bulkStock));
           return AdminService.updateProduct(adminKey, id, data);
         })
       );
+      const failedIds = results
+        .map((result, index) => ({ result, id: ids[index] }))
+        .filter((entry) => entry.result.status === "rejected")
+        .map((entry) => entry.id);
+      const succeeded = ids.length - failedIds.length;
       const changes = [];
       if (bulkCategory) changes.push(`kategori: ${bulkCategory}`);
       if (bulkStock !== "") changes.push(`lager: ${bulkStock}`);
-      success(
-        `${selectedIds.size} produkter uppdaterade${
-          changes.length ? ` (${changes.join(", ")})` : ""
-        }`
-      );
-      setSelectedIds(new Set());
+      if (succeeded > 0) {
+        await fetchProducts();
+      }
+      if (failedIds.length === 0) {
+        success(
+          `${ids.length} produkter uppdaterade${
+            changes.length ? ` (${changes.join(", ")})` : ""
+          }`
+        );
+        setSelectedIds(new Set());
+      } else if (succeeded === 0) {
+        error("Kunde inte uppdatera valda produkter");
+      } else {
+        setSelectedIds(new Set(failedIds));
+        error(
+          `Bulk-uppdatering delvis klar: ${succeeded} lyckades, ${failedIds.length} misslyckades.`
+        );
+      }
       setBulkCategory("");
       setBulkStock("");
-      fetchProducts();
     } catch (err) {
       error(err.message || "Kunde inte uppdatera produkter");
     }
