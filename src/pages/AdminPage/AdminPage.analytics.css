@@ -1,0 +1,234 @@
+/* Bulk Actions Bar */
+.admin-bulk-actions {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 100;
+  max-width: 90vw;
+  width: auto;
+}
+
+.admin-bulk-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.admin-link-btn {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.admin-link-btn:hover {
+  color: #fff;
+}
+
+.admin-bulk-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-btn-sm {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  background: #444;
+  border-color: #555;
+  color: #fff;
+}
+
+.admin-btn-sm:hover:not(:disabled) {
+  background: #555;
+  border-color: #666;
+  color: #fff;
+  transform: none;
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Load More */
+.admin-load-more {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.admin-btn-block {
+  width: 100%;
+  justify-content: center;
+  padding: 12px;
+}
+
+@media (max-width: 600px) {
+  .admin-bulk-actions {
+    bottom: 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 12px;
+    width: calc(100% - 2rem);
+  }
+
+  .admin-bulk-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-btn-sm {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* Admin Order Detail Layout */
+.admin-detail-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Card Visuals */
+.admin-meta-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.admin-meta-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #555;
+  transition: background 0.2s ease;
+}
+
+.admin-meta-toggle:hover {
+  background: #f9f9f9;
+  color: var(--primary-color);
+}
+
+.admin-tech-block-content {
+  padding: 0 1.25rem 1.25rem;
+  border-top: 1px solid #f0f0f0;
+  margin-top: -1px;
+  background: #fcfcfc;
+}
+
+.admin-chevron {
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+}
+
+.admin-chevron.up {
+  transform: rotate(180deg);
+}
+/* CSS Verified */
+/* Admin Chart */
+.admin-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 200px;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  border-bottom: 1px solid #eee;
+}
+
+.chart-bar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.chart-bar {
+  width: 80%;
+  background-color: #059669; /* Using primary color directly or var */
+  opacity: 0.6;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.2s;
+  min-height: 2px;
+}
+
+.chart-bar:hover {
+  opacity: 1;
+  transform: scaleY(1.05);
+}
+
+.chart-label {
+  font-size: 0.65rem;
+  margin-top: 4px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+}
+
+.chart-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.chart-bar-container:hover .chart-tooltip {
+  display: block;
+}
+
+.admin-btn-move {
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  border-width: 2px;
+  min-height: 36px;
+}

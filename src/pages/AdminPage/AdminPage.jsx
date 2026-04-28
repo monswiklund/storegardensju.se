@@ -9,6 +9,7 @@ import {
   buildDemoStats,
 } from "./adminConstants";
 import { useToast } from "../../contexts/ToastContext";
+import { SESSION_AUTH_KEY, isLoopbackHost } from "./adminAuthConstants";
 import AdminLogin from "./components/AdminLogin";
 import AdminHeader from "./components/AdminHeader";
 import AdminStats from "./components/AdminStats";
@@ -24,16 +25,16 @@ import { useAdminShell } from "./hooks/useAdminShell";
 import { useAdminClipboard } from "./hooks/useAdminClipboard";
 import { useAdminOrderInteractions } from "./hooks/useAdminOrderInteractions";
 import { useAdminApiErrorHandler } from "./hooks/useAdminApiErrorHandler";
+import { useAdminInactivityTimeout } from "./hooks/useAdminInactivityTimeout";
 
 function AdminPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const isLocalDev =
     typeof window !== "undefined" &&
     import.meta.env.DEV &&
-    (window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1");
+    isLoopbackHost(window.location.hostname);
   const devAdminKey = (import.meta.env.VITE_ADMIN_DEV_KEY || "").trim();
-  const initialAdminKey = isLocalDev && devAdminKey ? devAdminKey : "session";
+  const initialAdminKey = isLocalDev && devAdminKey ? devAdminKey : SESSION_AUTH_KEY;
 
   const { success, error, info } = useToast();
 
@@ -173,6 +174,16 @@ function AdminPage() {
     resetDetailState();
   }, [resetDetailState, resetOrdersState, resetShellState, resetStatsState]);
 
+  const handleInactivityLogout = useCallback(() => {
+    handleLogout();
+    info("Utloggad pga inaktivitet.");
+  }, [handleLogout, info]);
+
+  useAdminInactivityTimeout({
+    active: Boolean(adminKey) && !isPreview,
+    onTimeout: handleInactivityLogout,
+  });
+
   useEffect(() => {
     if (!adminKey && !previewMode) {
       resetOrdersState();
@@ -253,7 +264,7 @@ function AdminPage() {
         }
         onRetry={() => {
           setRequiresAccessLogin(false);
-          setAdminKey("session");
+          setAdminKey(SESSION_AUTH_KEY);
         }}
         onOpenAccess={handleOpenAccessLogin}
         onPreview={() => setPreviewMode(true)}
@@ -262,7 +273,7 @@ function AdminPage() {
   }
 
   return (
-    <main role="main" id="main-content">
+    <main role="main" id="main-content" className="admin-app">
       {!isSidebarOpen && (
         <button 
           className="admin-fixed-hamburger" 

@@ -86,13 +86,27 @@ export default function AdminCoupons({ adminKey }) {
   };
 
   return (
-    <div className="admin-coupons">
-      <div className="coupon-create-section">
-        <h3>Skapa ny rabattkod</h3>
+    <div className="admin-workspace admin-coupons">
+      <div className="admin-workspace-header">
+        <div>
+          <p className="admin-workspace-kicker">Försäljning</p>
+          <h2>Rabatter</h2>
+          <p>Skapa och följ upp rabattkoder.</p>
+        </div>
+      </div>
+
+      <div className="admin-section-card coupon-create-section">
+        <div className="admin-section-card-header">
+          <div>
+            <h3>Skapa ny rabattkod</h3>
+            <p>Koden aktiveras direkt när den skapas.</p>
+          </div>
+        </div>
         <form onSubmit={handleCreate} className="coupon-form">
           <div className="form-group">
             <label>Kod (t.ex. SOMMAR20)</label>
             <input
+              className="admin-input"
               type="text"
               value={newCode}
               onChange={(e) => setNewCode(e.target.value.toUpperCase())}
@@ -104,6 +118,7 @@ export default function AdminCoupons({ adminKey }) {
           <div className="form-group">
             <label>Typ av rabatt</label>
             <select
+              className="admin-select"
               value={discountType}
               onChange={(e) => setDiscountType(e.target.value)}
             >
@@ -114,6 +129,7 @@ export default function AdminCoupons({ adminKey }) {
           <div className="form-group">
             <label>Värde</label>
             <input
+              className="admin-input"
               type="number"
               value={discountValue}
               onChange={(e) => setDiscountValue(e.target.value)}
@@ -122,17 +138,23 @@ export default function AdminCoupons({ adminKey }) {
               min="1"
             />
           </div>
-          <button type="submit" className="create-btn" disabled={creating}>
+          <button type="submit" className="admin-btn-primary create-btn" disabled={creating}>
             {creating ? "Skapar..." : "Skapa Kod"}
           </button>
         </form>
       </div>
 
-      <div className="coupon-list-section">
-        <h3>Aktiva koder</h3>
-        <div className="form-group" style={{ maxWidth: "220px", marginBottom: "1rem" }}>
+      <div className="admin-section-card coupon-list-section">
+        <div className="admin-section-card-header">
+          <div>
+            <h3>Rabattkoder</h3>
+            <p>{coupons.length} koder i listan.</p>
+          </div>
+        </div>
+        <div className="form-group coupon-filter">
           <label>Visa</label>
           <select
+            className="admin-select"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -142,7 +164,7 @@ export default function AdminCoupons({ adminKey }) {
           </select>
         </div>
         {loading ? (
-          <p>Laddar...</p>
+          <p className="admin-muted">Laddar...</p>
         ) : (
           <table className="coupon-table">
             <thead>
@@ -182,7 +204,7 @@ export default function AdminCoupons({ adminKey }) {
                     {c.active && (
                       <button
                         onClick={() => handleDelete(c.id)}
-                        className="delete-btn"
+                        className="admin-btn-danger delete-btn"
                       >
                         Avaktivera
                       </button>

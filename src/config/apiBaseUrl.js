@@ -1,3 +1,5 @@
+import { isLoopbackHost } from "../pages/AdminPage/adminAuthConstants";
+
 const LEGACY_API_HOSTS = new Set([
   "storegardensju-se-backend.onrender.com",
 ]);
@@ -14,16 +16,14 @@ export function getApiBaseUrl() {
   if (raw) {
     try {
       const parsed = new URL(raw);
-      const isLoopbackHost =
-        parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1";
-      if (import.meta.env.PROD && isLoopbackHost) {
+      const isLoopback = isLoopbackHost(parsed.hostname);
+      if (import.meta.env.PROD && isLoopback) {
         // Never ship a localhost API target in production builds.
       } else {
       if (
         import.meta.env.DEV &&
         typeof window !== "undefined" &&
-        (window.location.hostname === "localhost" ||
-          window.location.hostname === "127.0.0.1") &&
+        isLoopbackHost(window.location.hostname) &&
         devProxyEnabled &&
         parsed.protocol.startsWith("http")
       ) {
@@ -42,23 +42,21 @@ export function getApiBaseUrl() {
 
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    if (
-      import.meta.env.DEV &&
-      forceLocalApi &&
-      (host === "localhost" || host === "127.0.0.1")
-    ) {
+    if (import.meta.env.DEV && forceLocalApi && isLoopbackHost(host)) {
       return "http://localhost:4242";
     }
-    if (
-      import.meta.env.DEV &&
-      devProxyEnabled &&
-      (host === "localhost" || host === "127.0.0.1")
-    ) {
+    if (import.meta.env.DEV && devProxyEnabled && isLoopbackHost(host)) {
       return "/__api";
     }
     if (host === "storegardensju.se" || host === "www.storegardensju.se") {
       return "https://api.storegardensju.se";
     }
+  }
+
+  if (import.meta.env.PROD) {
+    throw new Error(
+      "VITE_API_URL must be set for production builds (no safe fallback)."
+    );
   }
 
   return "http://localhost:4242";

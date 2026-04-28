@@ -273,24 +273,24 @@ export default function AdminProductList({ adminKey, onEdit }) {
   if (errorMsg) return <div className="error-message">{errorMsg}</div>;
 
   return (
-    <div className="admin-product-list">
-      <div className="apl-header">
+    <div className="admin-section-card admin-product-list">
+      <div className="admin-section-card-header apl-header">
         <div>
           <h3>Produktlista</h3>
           <p className="apl-subtitle">
             {filteredProducts.length} av {products.length} produkter
           </p>
         </div>
-        <div className="apl-controls">
+        <div className="admin-toolbar-card apl-controls">
           <input
             type="search"
-            className="apl-search"
+            className="admin-input apl-search"
             placeholder="Sök namn, kategori eller konstnär"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
           <select
-            className="apl-select"
+            className="admin-select apl-select"
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
           >
@@ -299,7 +299,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
             <option value="all">Alla</option>
           </select>
           <select
-            className="apl-select"
+            className="admin-select apl-select"
             value={categoryFilter}
             onChange={(event) => setCategoryFilter(event.target.value)}
           >
@@ -319,7 +319,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
             Lågt lager
           </label>
           <select
-            className="apl-select"
+            className="admin-select apl-select"
             value={sortMode}
             onChange={(event) => setSortMode(event.target.value)}
           >
@@ -329,7 +329,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
           </select>
         </div>
       </div>
-      <div className="apl-bulk-bar">
+      <div className="admin-toolbar-card apl-bulk-bar">
         <label className="apl-checkbox">
           <input
             type="checkbox"
@@ -344,7 +344,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
         </label>
         <div className="apl-bulk-actions">
           <select
-            className="apl-select"
+            className="admin-select apl-select"
             value={bulkCategory}
             onChange={(event) => setBulkCategory(event.target.value)}
             disabled={selectedIds.size === 0}
@@ -357,7 +357,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
             ))}
           </select>
           <input
-            className="apl-input"
+            className="admin-input apl-input"
             type="number"
             min="0"
             placeholder="Bulk: lager"
@@ -367,7 +367,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
           />
           <button
             type="button"
-            className="apl-btn-apply"
+            className="admin-btn-secondary apl-btn-apply"
             onClick={handleBulkUpdate}
             disabled={selectedIds.size === 0}
           >
@@ -375,7 +375,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
           </button>
           <button
             type="button"
-            className="apl-btn-archive"
+            className="admin-btn-danger apl-btn-archive"
             onClick={handleBulkArchive}
             disabled={selectedIds.size === 0}
           >
@@ -388,7 +388,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
       </div>
 
       {products.length === 0 ? (
-        <div className="admin-empty">
+        <div className="admin-soft-empty">
           <h3 style={{ marginBottom: "0.5rem" }}>Inga produkter ännu</h3>
           <p>Det verkar som att du inte har lagt till några produkter i butiken än.</p>
         </div>
@@ -420,7 +420,9 @@ export default function AdminProductList({ adminKey, onEdit }) {
                   {p.image ? (
                     <img src={p.image} alt={p.name} className="apl-thumb" />
                   ) : (
-                    <div className="apl-no-img">Ingen bild</div>
+                    <div className="apl-no-img">
+                      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    </div>
                   )}
                 </td>
                 <td data-label="Namn" className="apl-name-cell">

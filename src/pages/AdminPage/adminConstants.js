@@ -111,7 +111,9 @@ export const ORDER_SORT_OPTIONS = [
 
 export const SORT_STORAGE_KEY = "adminOrderSort";
 
-export const DEMO_ORDERS = [
+export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+
+export const DEMO_ORDERS = import.meta.env.DEV ? [
   {
     id: "cs_demo_1",
     created: 1734600000,
@@ -141,9 +143,9 @@ export const DEMO_ORDERS = [
     lastEventValue: "pickup_ready",
     stripeUrl: "",
   },
-];
+] : [];
 
-export const DEMO_DETAILS = {
+export const DEMO_DETAILS = import.meta.env.DEV ? {
   cs_demo_1: {
     id: "cs_demo_1",
     created: 1734600000,
@@ -234,9 +236,9 @@ export const DEMO_DETAILS = {
       { type: "fulfillment", timestamp: 1734510000, value: "pickup_ready" },
     ],
   },
-};
+} : {};
 
-export const buildDemoStats = (range) => {
+export const buildDemoStats = !import.meta.env.DEV ? () => null : (range) => {
   const categories = [
     { category: "Keramik", count: 2, revenue: 124900 },
     { category: "Skulptur", count: 1, revenue: 329000 },

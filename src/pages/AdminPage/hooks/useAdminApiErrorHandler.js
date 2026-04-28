@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { mapErrorToUserMessage } from "../utils/adminErrorMessages";
 
 export function useAdminApiErrorHandler({
   error,
@@ -9,13 +10,17 @@ export function useAdminApiErrorHandler({
 }) {
   return useCallback(
     (err, context = "") => {
-      const msg = err?.message || "Ett fel uppstod";
+      if (err) {
+        // Raw error to devtools; UI receives mapped message only.
+        console.error("[admin]", context || "api error", err);
+      }
       if (err?.status === 401 || err?.status === 403) {
         error("Sessionen har löpt ut eller saknar behörighet. Loggar ut...");
         resetShellState();
         return;
       }
-      if (!err?.status && msg.toLowerCase().includes("failed to fetch")) {
+      const rawMsg = String(err?.message || "").toLowerCase();
+      if (!err?.status && rawMsg.includes("failed to fetch")) {
         setRequiresAccessLogin(true);
         setAdminKey("");
         setPreviewMode(false);
@@ -24,7 +29,8 @@ export function useAdminApiErrorHandler({
         );
         return;
       }
-      error(`${context ? context + ": " : ""}${msg}`);
+      const userMessage = mapErrorToUserMessage(err);
+      error(`${context ? context + ": " : ""}${userMessage}`);
     },
     [error, resetShellState, setAdminKey, setPreviewMode, setRequiresAccessLogin]
   );

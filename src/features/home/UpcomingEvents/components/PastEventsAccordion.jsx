@@ -1,6 +1,13 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  MapPin,
+  X,
+} from "lucide-react";
 
 function PastEventsAccordion({ events }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -50,7 +57,18 @@ function PastEventsAccordion({ events }) {
   };
 
   const images = getEventImages(selectedEvent);
+  const hasImages = images.length > 0;
   const showControls = images.length > 1;
+  const selectedEventLinks =
+    selectedEvent?.links ||
+    (selectedEvent?.link
+      ? [
+          {
+            href: selectedEvent.link,
+            label: selectedEvent.linkLabel || "Läs mer",
+          },
+        ]
+      : []);
 
   const nextImage = (e) => {
     e.stopPropagation();
@@ -65,12 +83,23 @@ function PastEventsAccordion({ events }) {
   const visibleEvents = showAll ? events : events.slice(0, 5);
 
   return (
-    <div className="past-events-section" data-section="past-events">
+    <div id="past-events" className="past-events-section" data-section="past-events">
       <div className="past-events-header">
+        <span className="past-events-eyebrow">Arkiv från gården</span>
         <h2 className="past-events-heading">Tidigare evenemang</h2>
+        <p className="past-events-intro">
+          Ett urval av kurser, öppna ateljékvällar och samarbeten som redan har
+          fyllt huset.
+        </p>
       </div>
 
       <div className="past-events-list">
+        {visibleEvents.length === 0 && (
+          <div className="past-events-empty">
+            <p>Inga tidigare evenemang att visa just nu.</p>
+          </div>
+        )}
+
         {visibleEvents.map((event, index) => {
           // Basic date parsing (assuming format "1 November 2025" or similar)
           // We'll just split by space for a simple "Day Month" badge
@@ -79,6 +108,7 @@ function PastEventsAccordion({ events }) {
           const month = dateParts[1]
             ? dateParts[1].substring(0, 3).toUpperCase()
             : "";
+          const year = dateParts[2] || "";
 
           // Use the first available image as thumbnail
           const thumbImage = event.images?.[0] || event.image;
@@ -86,13 +116,16 @@ function PastEventsAccordion({ events }) {
           return (
             <article
               key={`${event.title}-${index}`}
-              className="past-event-item"
+              className={`past-event-item ${
+                thumbImage?.src ? "" : "past-event-item--no-image"
+              }`}
               aria-labelledby={`past-event-title-${index}`}
               onClick={() => setSelectedEvent(event)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
                   setSelectedEvent(event);
                 }
               }}
@@ -100,6 +133,7 @@ function PastEventsAccordion({ events }) {
               <div className="past-event-date-badge">
                 <span className="date-day">{day}</span>
                 <span className="date-month">{month}</span>
+                {year && <span className="date-year">{year}</span>}
               </div>
 
               {thumbImage?.src && (
@@ -113,6 +147,9 @@ function PastEventsAccordion({ events }) {
               )}
 
               <div className="past-event-info">
+                <span className="past-event-kicker">
+                  {event.time || "Genomfört evenemang"}
+                </span>
                 <h3
                   id={`past-event-title-${index}`}
                   className="past-event-title"
@@ -128,6 +165,9 @@ function PastEventsAccordion({ events }) {
                   </p>
                 )}
               </div>
+              <span className="past-event-open">
+                Öppna <ArrowUpRight size={16} aria-hidden="true" />
+              </span>
             </article>
           );
         })}
@@ -151,7 +191,11 @@ function PastEventsAccordion({ events }) {
           onClick={() => setSelectedEvent(null)}
         >
           <div
-            className="past-event-modal-content"
+            className={`past-event-modal-content ${
+              hasImages
+                ? "past-event-modal-content--with-image"
+                : "past-event-modal-content--text-only"
+            }`}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -166,7 +210,7 @@ function PastEventsAccordion({ events }) {
               <X size={24} />
             </button>
 
-            {images.length > 0 && (
+            {hasImages && (
               <div className="past-event-modal-image">
                 <img
                   src={images[currentImageIndex].src}
@@ -189,9 +233,10 @@ function PastEventsAccordion({ events }) {
                     >
                       <ChevronRight size={24} />
                     </button>
-                    <div className="carousel-dots">
+                    <div className="carousel-dots" aria-label="Bildval">
                       {images.map((_, idx) => (
-                        <span
+                        <button
+                          type="button"
                           key={idx}
                           className={`carousel-dot ${
                             idx === currentImageIndex ? "active" : ""
@@ -200,6 +245,8 @@ function PastEventsAccordion({ events }) {
                             e.stopPropagation();
                             setCurrentImageIndex(idx);
                           }}
+                          aria-label={`Visa bild ${idx + 1}`}
+                          aria-current={idx === currentImageIndex}
                         />
                       ))}
                     </div>
@@ -209,15 +256,26 @@ function PastEventsAccordion({ events }) {
             )}
 
             <div className="past-event-modal-body">
-              <span className="past-event-modal-date">
-                {selectedEvent.date}
-              </span>
-
-              {selectedEvent.time && (
-                <span className="past-event-modal-time">
-                  {selectedEvent.time}
-                </span>
-              )}
+              <div className="past-event-modal-meta-grid">
+                <div className="past-event-modal-date-card">
+                  <span>Datum</span>
+                  <strong>{selectedEvent.date}</strong>
+                </div>
+                <div className="past-event-modal-facts">
+                  {selectedEvent.time && (
+                    <span className="past-event-modal-fact">
+                      <strong>Tid</strong>
+                      {selectedEvent.time}
+                    </span>
+                  )}
+                  {selectedEvent.location && (
+                    <span className="past-event-modal-fact">
+                      <strong>Plats</strong>
+                      {selectedEvent.location}
+                    </span>
+                  )}
+                </div>
+              </div>
 
               <h2 id="modal-title" className="past-event-modal-title">
                 {selectedEvent.title}
@@ -234,64 +292,33 @@ function PastEventsAccordion({ events }) {
                   <strong>Konstnärer:</strong> {selectedEvent.artists}
                 </p>
               )}
-
-              {selectedEvent.location && (
-                <div className="past-event-modal-meta">
-                  <span className="meta-location">
-                    {selectedEvent.location}
-                  </span>
-                </div>
-              )}
             </div>
 
-            {/* Actions / Links - Moved outside body for Grid placement */}
-            <div className="past-event-modal-actions">
-              {(
-                selectedEvent.links ||
-                (selectedEvent.link
-                  ? [
-                      {
-                        href: selectedEvent.link,
-                        label: selectedEvent.linkLabel || "Läs mer",
-                      },
-                    ]
-                  : [])
-              ).map((linkItem, index) => {
-                const isMapLink = linkItem.href?.includes("maps.google.com");
+            {selectedEventLinks.length > 0 && (
+              <div className="past-event-modal-actions">
+                {selectedEventLinks.map((linkItem, index) => {
+                  const isMapLink = linkItem.href?.includes("maps.google.com");
 
-                // Map Icon SVG
-                const MapIcon = () => (
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    style={{ marginRight: "6px" }}
-                  >
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                );
-
-                return (
-                  <a
-                    key={index}
-                    href={linkItem.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="past-event-modal-button"
-                  >
-                    {isMapLink && <MapIcon />}
-                    {linkItem.label}{" "}
-                    {!isMapLink && !linkItem.label?.includes("→") && "→"}
-                  </a>
-                );
-              })}
-            </div>
+                  return (
+                    <a
+                      key={index}
+                      href={linkItem.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="past-event-modal-button"
+                    >
+                      {isMapLink ? (
+                        <MapPin size={16} aria-hidden="true" />
+                      ) : (
+                        <ExternalLink size={16} aria-hidden="true" />
+                      )}
+                      {linkItem.label}{" "}
+                      {!isMapLink && !linkItem.label?.includes("→") && "→"}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -307,6 +334,25 @@ PastEventsAccordion.propTypes = {
       time: PropTypes.string,
       description: PropTypes.string,
       location: PropTypes.string,
+      artists: PropTypes.string,
+      link: PropTypes.string,
+      linkLabel: PropTypes.string,
+      links: PropTypes.arrayOf(
+        PropTypes.shape({
+          href: PropTypes.string.isRequired,
+          label: PropTypes.string,
+        })
+      ),
+      image: PropTypes.shape({
+        src: PropTypes.string,
+        alt: PropTypes.string,
+      }),
+      images: PropTypes.arrayOf(
+        PropTypes.shape({
+          src: PropTypes.string,
+          alt: PropTypes.string,
+        })
+      ),
     })
   ).isRequired,
 };

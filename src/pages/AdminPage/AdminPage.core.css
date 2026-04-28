@@ -1,0 +1,148 @@
+/* Modern Control Bar */
+.admin-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  align-items: center;
+  background: #fbfcfa;
+  border: 1px solid var(--admin-border);
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.admin-search-wrapper {
+  flex: 1;
+  min-width: 260px;
+  position: relative;
+}
+
+.admin-search-input {
+  width: 100%;
+  border: 1px solid var(--admin-border);
+  background: #ffffff;
+  padding: 0.55rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.admin-search-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(84, 105, 212, 0.15);
+}
+
+.admin-filters-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-select-sm {
+  padding: 0.4rem 2rem 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  height: 36px;
+}
+
+/* Modern Tabs */
+.admin-tabs-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  padding: 0 0.5rem;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar Firefox */
+}
+
+.admin-tabs::-webkit-scrollbar {
+  display: none; /* Hide scrollbar Chrome */
+}
+
+.admin-tab-link {
+  background: none;
+  border: none;
+  padding: 0.8rem 0.2rem;
+  font-size: 0.95rem;
+  color: var(--admin-muted);
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-tab-link:hover {
+  color: var(--primary-color);
+}
+
+.admin-tab-link.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+  font-weight: 600;
+}
+
+.admin-tab-count {
+  font-size: 0.75rem;
+  background: var(--admin-primary-soft);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: var(--admin-primary-strong);
+  min-width: 20px;
+  text-align: center;
+}
+
+.admin-tab-link.active .admin-tab-count {
+  background: rgba(84, 105, 212, 0.1);
+  color: var(--primary-color);
+}
+
+.admin-list-actions {
+  margin-bottom: 0.75rem;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.admin-list-actions .admin-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.admin-list-actions .admin-checkbox-label span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+}
+
+/* Header Tweaks */
+.admin-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.admin-count-badge {
+  background: var(--admin-primary-soft);
+  border: 1px solid rgba(71, 100, 79, 0.22);
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  color: var(--admin-primary-strong);
+  font-weight: 600;
+}

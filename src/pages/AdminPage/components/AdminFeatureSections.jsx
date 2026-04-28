@@ -38,8 +38,13 @@ export default function AdminFeatureSections({
           )}
 
           {!isPreview && productViewMode === "list" && (
-            <div className="admin-section">
-              <div className="admin-section-actions">
+            <div className="admin-workspace admin-products-workspace">
+              <div className="admin-workspace-header">
+                <div>
+                  <p className="admin-workspace-kicker">Butik</p>
+                  <h2>Produkter</h2>
+                  <p>Hantera sortiment, lager och publicering.</p>
+                </div>
                 <button
                   type="button"
                   className="admin-btn-primary"

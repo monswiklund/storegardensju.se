@@ -1,86 +1,106 @@
 import { useEffect } from "react";
+import {
+  ArrowDown,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Heart,
+  Mail,
+  Music,
+  Sparkles,
+  Utensils,
+} from "lucide-react";
 import { PageSection } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
-import { 
-  Heart, 
-  Clock, 
-  MapPin, 
-  Coffee, 
-  Music, 
-  Utensils, 
-  Sparkles, 
-  PartyPopper,
-  CheckCircle2,
-  Calendar
-} from "lucide-react";
 import "./MohippaPage.css";
 
-const ACTIVITIES = [
-  {
-    title: "Yoga",
-    duration: "1 h",
-    description:
-      "Ett guidat yogapass anpassat för gruppen. Mattor finns på plats. Tips: Köp gärna med eget bubbel för en extra festlig stämning.",
-    price: "200 kr/person",
-    image: "/images/event/hero/yoga-placeholder.jpg",
-  },
-  {
-    title: "Skapande med färg",
-    description:
-      "Måla din egen tavla. En kreativ målarkurs där ni får testa olika tekniker. Tavla, färg och utrustning ingår.",
-    price: "300 kr/person",
-    image: "/images/event/konstafton-2025.jpg",
-  },
-  {
-    title: "Skapa ditt eget collage",
-    description:
-      "Bläddra igenom tidningar, böcker och klipp. Klistra och skapa din egen vision eller moodboard. Vi bidrar med inspiration och idéer.",
-    price: "100 kr/person",
-    image: "/images/evenemang/slide10.jpg",
-  },
-  {
-    title: "Cocktailkurs",
-    description:
-      "Lär er konsten att blanda goda drinkar. Vi går igenom hur ni skapar två valfria drinkar. Ni köper själva in alkohol, vi står för utrustning, juicer, mixers och garnityr.",
-    price: "300 kr/person",
-    image: "/images/evenemang/slide2.jpg",
-  },
-  {
-    title: "Måla din egen keramikskål",
-    description:
-      "Alla får varsin handgjord keramikskål. Pennor för porslin ingår för att dekorera era verk. Ni bränner sedan fast motivet hemma i ugnen (160 grader i 1,5 h).",
-    price: "400 kr/person",
-    image: "/images/konst-keramik/slide16.jpg",
-  },
+const CONTACT_EMAIL = "bylinawiklund@gmail.com";
+
+const HERO_FACTS = [
+  { label: "Pris från", value: "500 kr/person" },
+  { label: "Tid", value: "10:00-22:00" },
+  { label: "Upplägg", value: "Baspaket + tillval" },
 ];
 
 const BASE_FEATURES = [
   {
     title: "Konsultation",
-    text: "Möte på Storegården 7 där vi planerar och styr upp eran dag.",
-    icon: <Calendar size={20} />
+    text: "Möte på Storegården 7 där vi planerar och styr upp er dag.",
+    icon: <Calendar size={20} />,
   },
   {
     title: "Välkomstskål",
-    text: "Vi förbereder den dryck ni själva köpt in och lämnat dagen innan för kylning.",
-    icon: <Heart size={20} />
+    text: "Vi förbereder drycken ni själva köpt in och lämnat dagen innan för kylning.",
+    icon: <Heart size={20} />,
   },
   {
     title: "Miljö",
-    text: "Uppdukat och dekorat inomhus.",
-    icon: <Sparkles size={20} />
+    text: "Uppdukat och dekorerat inomhus med tillgång till ladan, loftet och uteplatserna.",
+    icon: <Sparkles size={20} />,
   },
   {
     title: "Musik",
-    text: "Vi sköter ljud och musik (skicka gärna egen spellista).",
-    icon: <Music size={20} />
+    text: "Vi sköter ljud och musik. Skicka gärna en egen spellista inför dagen.",
+    icon: <Music size={20} />,
   },
   {
     title: "Mat",
-    text: "Ni köper maten själva, så hanterar vi och lägger upp den (möjlighet att lämna maten dagen innan finns).",
-    icon: <Utensils size={20} />
-  }
+    text: "Ni köper maten själva, så hanterar vi den och lägger upp den åt er.",
+    icon: <Utensils size={20} />,
+  },
 ];
+
+const DETAILS = [
+  "Möjlighet att lämna mat och dryck för kylning dagen innan.",
+  "Vi finns på plats under dagen för att hjälpa till med det praktiska.",
+  "Vi tar hand om disk och städning så att ni kan fokusera på bruden.",
+];
+
+const ACTIVITIES = [
+  {
+    title: "Yoga",
+    tone: "Starta lugnt",
+    duration: "1 h",
+    description:
+      "Ett guidat yogapass anpassat för gruppen. Mattor finns på plats. Ta gärna med eget bubbel för extra festlig stämning.",
+    price: "200 kr/person",
+    image: "/images/evenemang/slide12.jpg",
+  },
+  {
+    title: "Skapande med färg",
+    tone: "Kreativt pass",
+    description:
+      "Måla din egen tavla och testa olika tekniker. Tavla, färg och utrustning ingår.",
+    price: "300 kr/person",
+    image: "/images/evenemang/konstafton/konstafton-2025.webp",
+  },
+  {
+    title: "Skapa ditt eget collage",
+    tone: "Moodboard",
+    description:
+      "Bläddra igenom tidningar, böcker och klipp. Klistra, bygg moodboard och skapa en egen vision.",
+    price: "100 kr/person",
+    image: "/images/evenemang/slide10.jpg",
+  },
+  {
+    title: "Cocktailkurs",
+    tone: "Höj tempot",
+    description:
+      "Lär er att blanda två valfria drinkar. Ni köper själva in alkohol, vi står för utrustning, juicer, mixers och garnityr.",
+    price: "300 kr/person",
+    image: "/images/evenemang/slide2.jpg",
+  },
+  {
+    title: "Måla din egen keramikskål",
+    tone: "Minne från dagen",
+    description:
+      "Alla får varsin handgjord keramikskål och pennor för porslin. Motivet bränns hemma i ugn efteråt.",
+    price: "400 kr/person",
+    image: "/images/konst-keramik/slide16.jpg",
+  },
+];
+
+const formatActivityNumber = (index) => String(index + 1).padStart(2, "0");
 
 function MohippaPage() {
   useEffect(() => {
@@ -90,100 +110,178 @@ function MohippaPage() {
   return (
     <div className="mohippa-page">
       <main>
-        {/* Base Package */}
-        <PageSection background="white" spacing="default" id="mohippa-paket">
-          <FadeInSection>
-            <div className="mohippa-base-package">
-              <div className="mohippa-base-info">
-                <div className="package-header">
-                  <h3>Baspaketet</h3>
-                </div>
-                <p className="package-intro-text">
-                  Ni får tillgång till vår lokal, både ladan och loftet samt tillhörande uteplatser. 
-                  Ni har tillgång 10:00 – 22:00.
-                </p>
-                <p className="package-price-text">
-                  <strong>Pris:</strong> 500 kr / person
-                </p>
-                <div className="mohippa-base-grid">
-                  {BASE_FEATURES.map((feature, idx) => (
-                    <div key={idx} className="base-feature-item">
-                      <div className="feature-icon-wrapper">
-                        {feature.icon}
-                      </div>
-                      <div className="feature-text">
-                        <strong>{feature.title}:</strong> {feature.text}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mohippa-base-details">
-                  <div className="details-refined">
-                    <h4>Bra att veta</h4>
-                    <ul className="details-list">
-                      <li>Möjlighet att lämna mat och dryck för kylning dagen innan.</li>
-                      <li>Vi finns på plats under dagen för att hjälpa till med allt det praktiska.</li>
-                      <li>Vi tar hand om disk och städning så att ni kan fokusera helt på bruden.</li>
-                    </ul>
+        <section className="mohippa-hero" aria-labelledby="mohippa-heading">
+          <div className="mohippa-hero__inner">
+            <div className="mohippa-hero__copy">
+              <span className="mohippa-eyebrow">Möhippa på gården</span>
+              <h1 id="mohippa-heading">Möhippa på Storegården 7</h1>
+              <p>
+                En färdig grund för dagen, med lokal, hjälp på plats och
+                kreativa tillval som gör firandet personligt.
+              </p>
+
+              <div className="mohippa-hero__facts" aria-label="Snabbfakta">
+                {HERO_FACTS.map((fact) => (
+                  <div key={fact.label}>
+                    <span>{fact.label}</span>
+                    <strong>{fact.value}</strong>
                   </div>
-                </div>
+                ))}
               </div>
-              <div className="mohippa-activities-panel" id="mohippa-aktiviteter">
-                <div className="activities-intro">
-                  <h2>Tillval & aktiviteter</h2>
-                  <p>Gör dagen ännu mer minnesvärd med våra kreativa workshops</p>
-                </div>
-                <div className="mohippa-activities-list">
-                  {ACTIVITIES.map((activity, index) => (
-                    <div
-                      key={index}
-                      className="activity-list-item activity-list-item-compact"
-                    >
-                      <div className="activity-list-content">
-                        <div className="activity-list-header">
-                          <h3>{activity.title}</h3>
-                          {activity.duration && (
-                            <span className="activity-duration-badge">
-                              <Clock size={12} />
-                              {activity.duration}
-                            </span>
-                          )}
-                        </div>
-                        <p>{activity.description}</p>
-                        {activity.tip && (
-                          <div className="activity-list-tip">
-                            <strong>Tips:</strong> {activity.tip}
-                          </div>
-                        )}
-                        <div className="activity-list-price">
-                          <span className="price-amount">{activity.price}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+
+              <div className="mohippa-hero__actions">
+                <a
+                  className="mohippa-button mohippa-button--primary"
+                  href={`mailto:${CONTACT_EMAIL}`}
+                >
+                  <Mail size={18} />
+                  Skicka en förfrågan
+                </a>
+                <a
+                  className="mohippa-button mohippa-button--secondary"
+                  href="#mohippa-aktiviteter"
+                >
+                  Se tillval
+                  <ArrowDown size={17} />
+                </a>
               </div>
             </div>
+
+            <div className="mohippa-hero__media" aria-hidden="true">
+              <img src="/images/evenemang/slide2.jpg" alt="" />
+              <div className="mohippa-hero__note">
+                <strong>Skapa eran dag</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <PageSection background="white" spacing="default" id="mohippa-paket">
+          <FadeInSection>
+            <section
+              className="mohippa-package"
+              aria-labelledby="mohippa-package-heading"
+            >
+              <div className="mohippa-section-heading">
+                <span className="mohippa-eyebrow">Baspaket</span>
+                <h2 id="mohippa-package-heading">Allt ni behöver som grund</h2>
+                <p>
+                  Ni får tillgång till vår lokal, både ladan och loftet samt
+                  tillhörande uteplatser. Ni har tillgång 10:00-22:00.
+                </p>
+              </div>
+
+              <div className="mohippa-package-card">
+                <div className="mohippa-package-card__summary">
+                  <div>
+                    <span>Baspaketet</span>
+                    <strong>500 kr/person</strong>
+                  </div>
+                  <p>
+                    Lokal, planering och praktisk hjälp ingår. Aktiviteter
+                    väljer ni till efter grupp och tempo.
+                  </p>
+                </div>
+
+                <div className="mohippa-feature-grid">
+                  {BASE_FEATURES.map((feature) => (
+                    <article key={feature.title} className="mohippa-feature">
+                      <span className="mohippa-feature__icon" aria-hidden="true">
+                        {feature.icon}
+                      </span>
+                      <div>
+                        <h3>{feature.title}</h3>
+                        <p>{feature.text}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="mohippa-good-to-know">
+                  <h3>Bra att veta</h3>
+                  <ul>
+                    {DETAILS.map((detail) => (
+                      <li key={detail}>
+                        <CheckCircle2 size={17} />
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
           </FadeInSection>
         </PageSection>
 
-        {/* CTA */}
+        <PageSection background="white" spacing="default" id="mohippa-aktiviteter">
+          <FadeInSection>
+            <section
+              className="mohippa-activities"
+              aria-labelledby="mohippa-activities-heading"
+            >
+              <div className="mohippa-section-heading mohippa-section-heading--split">
+                <div>
+                  <span className="mohippa-eyebrow">Tillval & aktiviteter</span>
+                  <h2 id="mohippa-activities-heading">
+                    Lägg till det som passar gruppen
+                  </h2>
+                </div>
+                <p>
+                  Välj en lugn start, ett kreativt pass eller något mer
+                  festligt. Vi hjälper er att sätta ihop ett upplägg som passar
+                  dagen.
+                </p>
+              </div>
+
+              <div className="mohippa-activity-grid">
+                {ACTIVITIES.map((activity, index) => (
+                  <article key={activity.title} className="mohippa-activity">
+                    <span className="mohippa-activity__number">
+                      {formatActivityNumber(index)}
+                    </span>
+                    <div className="mohippa-activity__body">
+                      <div className="mohippa-activity__header">
+                        <span>{activity.tone}</span>
+                        <h3>{activity.title}</h3>
+                      </div>
+                      <p>{activity.description}</p>
+                    </div>
+                    <div className="mohippa-activity__meta">
+                      {activity.duration && (
+                        <span>
+                          <Clock size={14} />
+                          {activity.duration}
+                        </span>
+                      )}
+                      <strong>
+                        <small>+ </small>
+                        {activity.price}
+                      </strong>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </FadeInSection>
+        </PageSection>
+
         <PageSection background="white" spacing="default">
           <FadeInSection>
-            <div className="mohippa-cta-refined">
-              <span className="cta-tag">Planera er dag</span>
-              <h2>Vill ni boka eller veta mer?</h2>
+            <section className="mohippa-cta" aria-labelledby="mohippa-cta-heading">
+              <span className="mohippa-eyebrow">Planera er dag</span>
+              <h2 id="mohippa-cta-heading">Berätta vad ni vill göra</h2>
               <p>
-                Vi hjälper er gärna att skräddarsy en oförglömlig dag för blivande bruden. 
-                Hör av er med era önskemål så återkommer vi med förslag.
+                Skriv hur många ni blir, vilket datum ni tänker er och vilka
+                aktiviteter som lockar. Vi återkommer med förslag på upplägg.
               </p>
-              <div className="cta-action-group">
-                <a href="mailto:bylinawiklund@gmail.com" className="btn-cta-new">
-                  Skicka en förfrågan
-                </a>
-                <span className="cta-email-display">Kontakt: bylinawiklund@gmail.com</span>
-              </div>
-            </div>
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="mohippa-button mohippa-button--primary"
+              >
+                <Mail size={18} />
+                Skicka en förfrågan
+              </a>
+            </section>
           </FadeInSection>
         </PageSection>
       </main>

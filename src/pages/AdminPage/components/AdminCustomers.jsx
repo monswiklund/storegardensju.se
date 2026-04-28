@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { formatAmount, formatDateTime } from "../adminUtils";
 
@@ -124,134 +124,178 @@ function AdminCustomers({ orders, loading }) {
   }
 
   return (
-    <section className="admin-panel admin-customers-view" id="admin-customers">
-      <div className="admin-panel-header">
-        <div className="admin-header-title">
-          <h3>Kundlista</h3>
-          <span className="admin-count-badge">{customers.length} st</span>
+    <section className="admin-workspace admin-customers-view" id="admin-customers">
+      <div className="admin-workspace-header">
+        <div>
+          <p className="admin-workspace-kicker">CRM</p>
+          <h2>Kunder</h2>
+          <p>{customers.length} kunder matchar aktuell sökning.</p>
         </div>
-        <div className="admin-search-wrapper" style={{ maxWidth: "300px" }}>
+        <span className="admin-count-badge">{customers.length} st</span>
+      </div>
+
+      <div className="admin-toolbar-card">
+        <div className="admin-search-wrapper">
           <input
             type="search"
             className="admin-input admin-search-input"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Sök kund..."
+            placeholder="Sök på namn, e-post eller telefon..."
+            aria-label="Sök kunder"
           />
         </div>
+        <div className="admin-filters-group">
+          <select 
+            className="admin-select admin-select-sm"
+            value={`${sortField}-${sortDesc}`}
+            onChange={(e) => {
+              const [field, desc] = e.target.value.split("-");
+              setSortField(field);
+              setSortDesc(desc === "true");
+            }}
+          >
+            <option value="totalSpend-true">Mest spenderat</option>
+            <option value="orderCount-true">Flest ordrar</option>
+            <option value="lastOrder-true">Senaste köp</option>
+            <option value="lastOrder-false">Äldsta köp</option>
+          </select>
+        </div>
       </div>
+
       {!hidePolicy && (
         <div className="admin-policy-banner">
-          <div>
+          <div className="admin-policy-text">
             <strong>GDPR:</strong> Personuppgifter visas endast för
-            orderhantering. Klicka på “Visa full” för att se kontaktuppgifter.
+            orderhantering. Klicka på ögon-ikonen för att se fullständiga uppgifter.
           </div>
           <button
             type="button"
-            className="admin-link-btn"
+            className="admin-clear-btn"
             onClick={() => setHidePolicy(true)}
           >
-            Dölj
+            Stäng
           </button>
         </div>
       )}
 
-      <div className="admin-customer-grid-list">
-        {customers.map((c) => (
-          <div key={c.email} className="admin-customer-card">
-            <div className="admin-customer-top">
-              <div className="admin-customer-identity">
-                <span className="admin-customer-name">
-                  {c.name || "Okänd kund"}
-                </span>
-                <span className="admin-customer-contact">
-                  {revealed.has(c.email) ? c.email : maskEmail(c.email)}
-                </span>
-                <span className="admin-customer-contact">
-                  {revealed.has(c.email) ? c.phone : maskPhone(c.phone)}
-                </span>
-              </div>
-              <div className="admin-customer-actions">
-                <button
-                  type="button"
-                  className="admin-btn-secondary admin-btn-sm"
-                  onClick={() => toggleReveal(c.email)}
-                >
-                  {revealed.has(c.email) ? "Dölj detaljer" : "Visa full"}
-                </button>
-                <button
-                  type="button"
-                  className="admin-btn-tertiary admin-btn-sm"
-                  onClick={() => toggleExpanded(c.email)}
-                >
-                  {expanded.has(c.email) ? "Dölj historik" : "Visa historik"}
-                </button>
-              </div>
-            </div>
-
-            <div className="admin-customer-stats-row">
-              <div className="admin-customer-stat">
-                <span className="admin-customer-stat-label">Ordrar</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span className="admin-customer-stat-value">{c.orderCount}</span>
-                  {c.orderCount > 1 && <span className="admin-badge" style={{ fontSize: '10px', padding: '1px 5px' }}>Återkommande</span>}
-                </div>
-              </div>
-              <div className="admin-customer-stat">
-                <span className="admin-customer-stat-label">Totalt köpt</span>
-                <span className="admin-customer-stat-value">
-                  {formatAmount(c.totalSpend)}
-                </span>
-              </div>
-              <div className="admin-customer-stat">
-                <span className="admin-customer-stat-label">Senaste köp</span>
-                <span className="admin-customer-stat-value">
-                  {formatDateTime(c.lastOrder)}
-                </span>
-              </div>
-            </div>
-
-            <div
-              className={`admin-customer-history ${
-                expanded.has(c.email) ? "is-expanded" : ""
-              }`}
-              aria-hidden={!expanded.has(c.email)}
-            >
-              <div className="admin-customer-history-inner">
-                <div className="admin-customer-history-item">
-                  <span className="admin-customer-history-label">Stripe kund-ID</span>
-                  <span className="admin-customer-history-value">
-                    {c.ids && c.ids.size > 0 ? Array.from(c.ids).join(", ") : "—"}
-                  </span>
-                </div>
-                <div className="admin-customer-history-orders">
-                  <h4>Senaste ordrar</h4>
-                  <ul>
-                    {orders
-                      .filter((o) => o.customerEmail === c.email)
-                      .sort((a, b) => b.created - a.created)
-                      .slice(0, 5)
-                      .map((o) => (
-                        <li key={o.id}>
-                          <span>{formatDateTime(o.created)}</span>
-                          <span>{formatAmount(o.amountTotal)}</span>
-                          <Link
-                            to={`/admin?view=orders&order=${o.id}`}
-                            className="admin-customer-order-link"
-                          >
-                            #{o.id.slice(-6)}
-                          </Link>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="admin-section-card admin-customer-table-card">
+      <div className="admin-table-container">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th onClick={() => handleSort("name")}>Namn</th>
+              <th onClick={() => handleSort("email")}>E-post / Telefon</th>
+              <th onClick={() => handleSort("orderCount")}>Ordrar</th>
+              <th onClick={() => handleSort("totalSpend")}>Totalt Köpt</th>
+              <th onClick={() => handleSort("lastOrder")}>Senaste Köp</th>
+              <th className="admin-table-actions-header">Åtgärder</th>
+            </tr>
+          </thead>
+          <tbody>
+            {customers.map((c) => {
+              const isRevealed = revealed.has(c.email);
+              const isExpanded = expanded.has(c.email);
+              
+              return (
+                <Fragment key={c.email}>
+                  <tr className={isExpanded ? "is-expanded" : ""}>
+                    <td>
+                      <div className="admin-customer-name-cell">
+                        <span className="admin-customer-name-text">{c.name || "Okänd kund"}</span>
+                        {c.orderCount > 1 && <span className="admin-chip admin-chip-new" style={{ fontSize: '10px', padding: '2px 6px' }}>Återkommande</span>}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="admin-customer-contact-cell">
+                        <span className="admin-customer-email-text">
+                          {isRevealed ? c.email : maskEmail(c.email)}
+                        </span>
+                        <span className="admin-customer-phone-text">
+                          {isRevealed ? c.phone : maskPhone(c.phone)}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="admin-table-stat">{c.orderCount} st</span>
+                    </td>
+                    <td>
+                      <span className="admin-table-stat font-bold">{formatAmount(c.totalSpend)}</span>
+                    </td>
+                    <td>
+                      <span className="admin-table-date">{formatDateTime(c.lastOrder)}</span>
+                    </td>
+                    <td>
+                      <div className="admin-table-actions">
+                        <button
+                          type="button"
+                          className={`admin-table-action-btn ${isRevealed ? "active" : ""}`}
+                          onClick={() => toggleReveal(c.email)}
+                          title={isRevealed ? "Dölj detaljer" : "Visa fullständiga uppgifter"}
+                        >
+                          {isRevealed ? (
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                          ) : (
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          className={`admin-table-action-btn ${isExpanded ? "active" : ""}`}
+                          onClick={() => toggleExpanded(c.email)}
+                          title={isExpanded ? "Dölj historik" : "Visa historik"}
+                        >
+                          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {isExpanded && (
+                    <tr className="admin-table-expanded-row">
+                      <td colSpan="6">
+                        <div className="admin-customer-expanded-content fade-in">
+                          <div className="admin-customer-expanded-grid">
+                            <div className="admin-customer-expanded-info">
+                              <span className="admin-label">Stripe Kund-ID</span>
+                              <span className="admin-text-mono">
+                                {c.ids && c.ids.size > 0 ? Array.from(c.ids).join(", ") : "—"}
+                              </span>
+                            </div>
+                            <div className="admin-customer-expanded-orders">
+                              <span className="admin-label">Senaste ordrar</span>
+                              <div className="admin-mini-order-list">
+                                {orders
+                                  .filter((o) => o.customerEmail === c.email)
+                                  .sort((a, b) => b.created - a.created)
+                                  .slice(0, 5)
+                                  .map((o) => (
+                                    <div key={o.id} className="admin-mini-order-item">
+                                      <span className="admin-mini-order-date">{formatDateTime(o.created)}</span>
+                                      <span className="admin-mini-order-amount">{formatAmount(o.amountTotal)}</span>
+                                      <Link
+                                        to={`/admin?view=orders&order=${o.id}`}
+                                        className="admin-link-btn admin-link-sm"
+                                      >
+                                        #{o.id.slice(-6)}
+                                      </Link>
+                                    </div>
+                                  ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })}
+          </tbody>
+        </table>
         {customers.length === 0 && (
-          <div className="admin-empty">Inga kunder hittades.</div>
+          <div className="admin-soft-empty">Inga kunder matchar sökningen.</div>
         )}
+      </div>
       </div>
     </section>
   );

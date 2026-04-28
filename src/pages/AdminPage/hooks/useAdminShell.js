@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getApiBaseUrl } from "../../../config/apiBaseUrl";
 import { ADMIN_VIEW_OPTIONS } from "../adminConstants";
+import { isLoopbackHost } from "../adminAuthConstants";
 
 export function useAdminShell({
   initialAdminKey,
@@ -116,11 +117,25 @@ export function useAdminShell({
   const handleOpenAccessLogin = useCallback(() => {
     if (typeof window === "undefined") return;
     const apiBaseUrl = getApiBaseUrl();
-    const returnTo = encodeURIComponent(`${window.location.origin}/admin`);
+    const isAllowedApiBase =
+      apiBaseUrl === "/__api" || apiBaseUrl.startsWith("https://");
+    if (!isAllowedApiBase) {
+      console.error("[admin] refusing access-login redirect — unsafe API base", apiBaseUrl);
+      return;
+    }
+    const returnUrl = `${window.location.origin}/admin`;
+    try {
+      const parsedReturn = new URL(returnUrl);
+      if (parsedReturn.origin !== window.location.origin) {
+        console.error("[admin] refusing access-login — origin mismatch", parsedReturn.origin);
+        return;
+      }
+    } catch {
+      return;
+    }
+    const returnTo = encodeURIComponent(returnUrl);
     const loginUrl = `${apiBaseUrl}/admin/access-login?redirect=${returnTo}`;
-    const host = window.location.hostname;
-    const isLocalHost = host === "localhost" || host === "127.0.0.1";
-    if (isLocalHost) {
+    if (isLoopbackHost(window.location.hostname)) {
       window.open(loginUrl, "_blank", "noopener,noreferrer");
       return;
     }

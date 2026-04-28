@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import { ADMIN_VIEW_GROUPS } from "../adminConstants";
 
 function AdminSidebar({ adminView, onViewChange, isOpen, onClose }) {
@@ -43,6 +44,16 @@ function AdminSidebar({ adminView, onViewChange, isOpen, onClose }) {
               </nav>
             </div>
           ))}
+
+          <div className="admin-sidebar-group" style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid #f3f4f6' }}>
+            <Link to="/" className="admin-sidebar-link" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280' }}>
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              Tillbaka till Storegården 7
+            </Link>
+          </div>
         </div>
       </aside>
     </>

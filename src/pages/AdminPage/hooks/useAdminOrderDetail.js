@@ -25,6 +25,7 @@ export function useAdminOrderDetail({
   const [editTrackingCarrier, setEditTrackingCarrier] = useState("auto");
   const [saveLoading, setSaveLoading] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [refundLoading, setRefundLoading] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -255,12 +256,15 @@ export function useAdminOrderDetail({
       return;
     }
 
+    setRefundLoading(true);
     try {
       await AdminService.refundOrder(adminKey, selectedId, amount * 100);
       success(`Återbetalat ${amount} kr`);
       await Promise.all([loadOrders(true), loadOrder(selectedId)]);
     } catch (err) {
       handleApiError(err, "Återbetalning misslyckades");
+    } finally {
+      setRefundLoading(false);
     }
   }, [
     adminKey,
@@ -313,6 +317,7 @@ export function useAdminOrderDetail({
     saveStatus: {
       loading: saveLoading,
       error: saveError,
+      refunding: refundLoading,
     },
     hasChanges,
     isBackwardStatus,

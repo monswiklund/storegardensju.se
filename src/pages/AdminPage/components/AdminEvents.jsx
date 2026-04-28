@@ -1,11 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
+import {
+  ArrowLeft,
+  CalendarDays,
+  Eye,
+  Image as ImageIcon,
+  Link as LinkIcon,
+  Pencil,
+  Plus,
+  Save,
+  Search,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { AdminService } from "../../../services/adminService";
 import { useToast } from "../../../contexts/ToastContext";
+import { MAX_UPLOAD_BYTES } from "../adminConstants";
 import EventCard from "../../../features/home/UpcomingEvents/components/EventCard";
 
 const EVENT_STATUS_OPTIONS = [
-  { value: "draft", label: "Draft" },
+  { value: "draft", label: "Utkast" },
   { value: "published", label: "Publicerad" },
 ];
 
@@ -68,6 +82,28 @@ const toLocalDateTimeInput = (value) => {
   return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
 };
 
+const getStatusLabel = (status) =>
+  EVENT_STATUS_OPTIONS.find((option) => option.value === status)?.label || "Utkast";
+
+const getBucketLabel = (bucket) => (bucket === "upcoming" ? "Kommande" : "Tidigare");
+
+const normalizeComparableForm = (value) => ({
+  ...value,
+  links: (value.links || []).map((link) => ({
+    href: String(link?.href || ""),
+    label: String(link?.label || ""),
+  })),
+  images: (value.images || []).map((image) => ({
+    id: image?.id || "",
+    uploadId: image?.uploadId || "",
+    storageKey: image?.storageKey || "",
+    url: image?.url || "",
+    alt: image?.alt || "",
+    order: image?.order ?? "",
+    createdAt: image?.createdAt || "",
+  })),
+});
+
 const mapEventToForm = (item) => ({
   title: item.title || "",
   description: item.description || "",
@@ -84,13 +120,27 @@ const mapEventToForm = (item) => ({
 function AdminEvents({ adminKey = "" }) {
   const { success, error } = useToast();
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedId, setSelectedId] = useState("");
   const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [form, setForm] = useState(emptyEventForm());
   const [formView, setFormView] = useState("edit"); // "edit" or "preview"
+  const [isMobileEditorOpen, setIsMobileEditorOpen] = useState(false);
+
+  const selectedEvent = useMemo(
+    () => events.find((item) => item.id === selectedId) || null,
+    [events, selectedId]
+  );
+
+  const hasUnsavedChanges = useMemo(() => {
+    const baseline = selectedEvent ? mapEventToForm(selectedEvent) : emptyEventForm();
+    return (
+      JSON.stringify(normalizeComparableForm(form)) !==
+      JSON.stringify(normalizeComparableForm(baseline))
+    );
+  }, [form, selectedEvent]);
 
   const previewEvent = useMemo(() => {
     const startAt = form.startAt || "";
@@ -120,7 +170,6 @@ function AdminEvents({ adminKey = "" }) {
 
   const loadEvents = useCallback(async () => {
     if (!adminKey) return;
-    setLoading(true);
     try {
       const data = await AdminService.getEvents(adminKey);
       const fetched = Array.isArray(data?.events) ? data.events : [];
@@ -131,8 +180,6 @@ function AdminEvents({ adminKey = "" }) {
       });
     } catch (err) {
       error(err?.message || "Kunde inte hämta events.");
-    } finally {
-      setLoading(false);
     }
   }, [adminKey, error]);
 
@@ -150,6 +197,7 @@ function AdminEvents({ adminKey = "" }) {
   }, [events, selectedId]);
 
   const filteredEvents = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
     return events
       .filter((item) => {
         if (filter === "all") return true;
@@ -158,23 +206,46 @@ function AdminEvents({ adminKey = "" }) {
         }
         return item.status === filter;
       })
+      .filter((item) => {
+        if (!query) return true;
+        return [item.title, item.location, item.artists]
+          .some((value) => String(value || "").toLowerCase().includes(query));
+      })
       .sort((a, b) => {
         const dateA = new Date(a.startAt || 0).getTime();
         const dateB = new Date(b.startAt || 0).getTime();
         return dateB - dateA; // Senaste datumet först
       });
-  }, [events, filter]);
+  }, [events, filter, searchQuery]);
+
+  const canLeaveEditor = () => {
+    if (!hasUnsavedChanges) return true;
+    return window.confirm("Du har osparade ändringar. Vill du fortsätta utan att spara?");
+  };
 
   const handleCreateNew = () => {
+    if (!canLeaveEditor()) return;
     setSelectedId("");
     setForm(emptyEventForm());
     setFormView("edit");
+    setIsMobileEditorOpen(true);
   };
 
   const handleSelect = (item) => {
+    if (item.id === selectedId) {
+      setIsMobileEditorOpen(true);
+      return;
+    }
+    if (!canLeaveEditor()) return;
     setSelectedId(item.id);
     setForm(mapEventToForm(item));
     setFormView("edit");
+    setIsMobileEditorOpen(true);
+  };
+
+  const handleCloseEditor = () => {
+    if (!canLeaveEditor()) return;
+    setIsMobileEditorOpen(false);
   };
 
   const setField = (name, value) => {
@@ -227,15 +298,24 @@ function AdminEvents({ adminKey = "" }) {
       .filter((link) => link.href);
 
     const images = form.images
-      .map((image, idx) => ({
-        id: image?.id || `img-${Date.now()}-${idx}`,
-        uploadId: String(image?.uploadId || "").trim(),
-        storageKey: String(image?.storageKey || "").trim(),
-        url: String(image?.url || "").trim(),
-        alt: String(image?.alt || "").trim(),
-        order: Number(image?.order || (idx + 1) * 10),
-        createdAt: Number(image?.createdAt || Math.floor(Date.now() / 1000)),
-      }))
+      .map((image, idx) => {
+        const fallbackOrder = (idx + 1) * 10;
+        const rawOrder = image?.order;
+        const order =
+          rawOrder === "" || rawOrder === null || rawOrder === undefined
+            ? fallbackOrder
+            : Number(rawOrder);
+
+        return {
+          id: image?.id || `img-${Date.now()}-${idx}`,
+          uploadId: String(image?.uploadId || "").trim(),
+          storageKey: String(image?.storageKey || "").trim(),
+          url: String(image?.url || "").trim(),
+          alt: String(image?.alt || "").trim(),
+          order,
+          createdAt: Number(image?.createdAt || Math.floor(Date.now() / 1000)),
+        };
+      })
       .filter((image) => image.url);
 
     return {
@@ -254,6 +334,7 @@ function AdminEvents({ adminKey = "" }) {
 
   const handleSave = async (event) => {
     if (event) event.preventDefault();
+    if (saving || uploading || !hasUnsavedChanges) return;
     setSaving(true);
     try {
       const payload = buildPayload();
@@ -295,10 +376,27 @@ function AdminEvents({ adminKey = "" }) {
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
+    const validFiles = files.filter((file) => {
+      if (!file.size) {
+        error(`${file.name}: filen är tom.`);
+        return false;
+      }
+      if (file.size > MAX_UPLOAD_BYTES) {
+        const maxMb = Math.round(MAX_UPLOAD_BYTES / (1024 * 1024));
+        error(`${file.name}: filen är för stor (max ${maxMb} MB).`);
+        return false;
+      }
+      return true;
+    });
+    if (validFiles.length === 0) {
+      event.target.value = "";
+      return;
+    }
+
     setUploading(true);
     try {
       const uploadedImages = [];
-      for (const [idx, file] of files.entries()) {
+      for (const [idx, file] of validFiles.entries()) {
         const uploadInfo = await AdminService.createEventUpload(adminKey, file);
 
         uploadedImages.push({
@@ -326,28 +424,39 @@ function AdminEvents({ adminKey = "" }) {
   };
 
   return (
-    <div className="admin-events-manager">
-      <div className="admin-panel admin-events-list-panel">
-        <div className="admin-panel-header">
-          <div className="admin-header-title">
-            <h3 style={{ margin: 0 }}>Evenemangslista</h3>
+    <div className={`admin-events-manager ${isMobileEditorOpen ? "admin-events-manager--editor-open" : ""}`}>
+      <aside className="admin-events-list-panel" aria-label="Evenemangslista">
+        <div className="admin-events-list-header">
+          <div>
+            <p className="admin-events-eyebrow">Innehåll</p>
+            <h3>Evenemangslista</h3>
+            <span>{events.length} sparade</span>
           </div>
-          <div className="admin-panel-actions">
-            <button
-              type="button"
-              className="admin-btn-primary admin-btn-sm"
-              onClick={handleCreateNew}
-            >
-              + Nytt
-            </button>
-          </div>
+          <button
+            type="button"
+            className="admin-events-new-btn"
+            onClick={handleCreateNew}
+          >
+            <Plus size={16} />
+            + Nytt
+          </button>
         </div>
 
-        <div className="admin-controls" style={{ marginBottom: "1rem" }}>
+        <div className="admin-events-list-tools">
+          <label className="admin-events-search">
+            <Search size={16} />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Sök evenemang"
+            />
+          </label>
           <select
-            className="admin-select admin-select-sm admin-select-full"
+            className="admin-select admin-select-sm"
             value={filter}
             onChange={(event) => setFilter(event.target.value)}
+            aria-label="Filtrera evenemang"
           >
             {FILTER_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -358,265 +467,339 @@ function AdminEvents({ adminKey = "" }) {
         </div>
 
         <div className="admin-events-manager-list">
-          {filteredEvents.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`admin-events-manager-list-item ${
-                item.id === selectedId ? "active" : ""
-              }`}
-              onClick={() => handleSelect(item)}
-            >
-              <div className="admin-event-item-content">
-                <strong>{item.title}</strong>
-                <div className="admin-order-chips" style={{ marginTop: '4px' }}>
-                  <span className={`admin-chip admin-chip-${item.status === 'published' ? 'paid' : 'new'}`}>
-                    {item.status === 'published' ? 'Publicerad' : 'Utkast'}
-                  </span>
-                  <span className="admin-chip" style={{ background: '#f3f4f6', color: '#6b7280' }}>
-                    {item.computedBucket === 'upcoming' ? 'Kommande' : 'Tidigare'}
-                  </span>
-                </div>
-              </div>
-            </button>
-          ))}
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((item) => {
+              const date = formatDate(item.startAt);
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`admin-events-manager-list-item ${
+                    item.id === selectedId ? "active" : ""
+                  }`}
+                  onClick={() => handleSelect(item)}
+                >
+                  <span className="admin-events-card-date">{date || "Datum saknas"}</span>
+                  <strong>{item.title}</strong>
+                  {item.location && <span className="admin-events-card-location">{item.location}</span>}
+                  <div className="admin-events-card-badges">
+                    <span className={`admin-events-status admin-events-status--${item.status === "published" ? "published" : "draft"}`}>
+                      {getStatusLabel(item.status)}
+                    </span>
+                    <span className={`admin-events-status admin-events-status--${item.computedBucket === "upcoming" ? "upcoming" : "past"}`}>
+                      {getBucketLabel(item.computedBucket)}
+                    </span>
+                  </div>
+                </button>
+              );
+            })
+          ) : (
+            <div className="admin-events-empty-list">
+              <CalendarDays size={24} />
+              <strong>Inga evenemang hittades</strong>
+              <span>Justera filtret eller skapa ett nytt evenemang.</span>
+            </div>
+          )}
         </div>
-      </div>
+      </aside>
 
-      <div className="admin-panel admin-events-form-panel">
-        <div className="admin-panel-header">
-          <div className="admin-header-title">
-            <div className="admin-mobile-tabs" style={{ marginBottom: 0 }}>
+      <section className="admin-events-editor-panel" aria-label="Redigera evenemang">
+        <div className="admin-events-editor-shell">
+          <div className="admin-events-editor-bar">
+            <button
+              type="button"
+              className="admin-events-back-btn"
+              onClick={handleCloseEditor}
+            >
+              <ArrowLeft size={16} />
+              Lista
+            </button>
+            <div className="admin-events-editor-title">
+              <span>{selectedId ? "Redigerar" : "Nytt evenemang"}</span>
+              <strong>{form.title || "Namnlöst evenemang"}</strong>
+            </div>
+            <div className="admin-events-editor-actions">
               <button
                 type="button"
-                className={`admin-tab-link ${formView === 'edit' ? 'active' : ''}`}
+                className={`admin-events-view-toggle ${formView === 'edit' ? 'active' : ''}`}
                 onClick={() => setFormView('edit')}
               >
+                <Pencil size={15} />
                 Redigera
               </button>
               <button
                 type="button"
-                className={`admin-tab-link ${formView === 'preview' ? 'active' : ''}`}
+                className={`admin-events-view-toggle ${formView === 'preview' ? 'active' : ''}`}
                 onClick={() => setFormView('preview')}
               >
+                <Eye size={15} />
                 Förhandsgranska
               </button>
-            </div>
-          </div>
-          <div className="admin-panel-actions">
-            {selectedId && (
               <button
                 type="button"
-                className="admin-btn-danger admin-btn-sm"
-                onClick={handleDelete}
-                disabled={saving}
+                className="admin-events-save-btn"
+                onClick={handleSave}
+                disabled={saving || uploading || !hasUnsavedChanges}
               >
-                Ta bort
+                <Save size={16} />
+                {saving ? "Sparar..." : uploading ? "Vänta på bilder..." : "Spara händelse"}
               </button>
-            )}
-            <button 
-              type="button" 
-              className="admin-btn-primary admin-btn-sm" 
-              onClick={handleSave}
-              disabled={saving}
-            >
-              {saving ? "Sparar..." : "Spara händelse"}
-            </button>
+            </div>
           </div>
-        </div>
 
-        {formView === 'edit' ? (
-          <form onSubmit={handleSave}>
-            <div className="admin-events-manager-grid">
-              <label className="admin-field">
-                <span className="admin-field-label">Titel</span>
-                <input
-                  className="admin-input"
-                  value={form.title}
-                  onChange={(event) => setField("title", event.target.value)}
-                  required
-                />
-              </label>
+          {hasUnsavedChanges && (
+            <div className="admin-events-dirty-state">Osparade ändringar</div>
+          )}
 
-              <label className="admin-field">
-                <span className="admin-field-label">Plats</span>
-                <input
-                  className="admin-input"
-                  value={form.location}
-                  onChange={(event) => setField("location", event.target.value)}
-                />
-              </label>
-
-              <label className="admin-field">
-                <span className="admin-field-label">Start</span>
-                <input
-                  type="datetime-local"
-                  className="admin-input"
-                  value={form.startAt}
-                  onChange={(event) => setField("startAt", event.target.value)}
-                  required
-                />
-              </label>
-
-              <label className="admin-field">
-                <span className="admin-field-label">Slut</span>
-                <input
-                  type="datetime-local"
-                  className="admin-input"
-                  value={form.endAt}
-                  onChange={(event) => setField("endAt", event.target.value)}
-                  required
-                />
-              </label>
-
-              <label className="admin-field">
-                <span className="admin-field-label">Status</span>
-                <select
-                  className="admin-select"
-                  value={form.status}
-                  onChange={(event) => setField("status", event.target.value)}
-                >
-                  {EVENT_STATUS_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="admin-field">
-                <span className="admin-field-label">Gäster/Konstnärer</span>
-                <input
-                  className="admin-input"
-                  value={form.artists}
-                  onChange={(event) => setField("artists", event.target.value)}
-                />
-              </label>
-
-              <label className="admin-field admin-field--full">
-                <span className="admin-field-label">Beskrivning</span>
-                <textarea
-                  className="admin-input"
-                  rows={4}
-                  value={form.description}
-                  onChange={(event) => setField("description", event.target.value)}
-                />
-              </label>
-
-              <label className="admin-field admin-field--full">
-                <span className="admin-field-label">Badge/platser</span>
-                <input
-                  className="admin-input"
-                  value={form.spots}
-                  onChange={(event) => setField("spots", event.target.value)}
-                />
-              </label>
-            </div>
-
-            <div className="admin-events-manager-subsection">
-              <div className="admin-events-manager-subsection-header">
-                <h4>Länkar</h4>
-                <button type="button" className="admin-btn-secondary" onClick={addLink}>
-                  + Lägg till länk
-                </button>
-              </div>
-              {form.links.map((link, index) => (
-                <div key={`link-${index}`} className="admin-events-manager-inline-row">
-                  <input
-                    className="admin-input"
-                    placeholder="https://..."
-                    value={link.href || ""}
-                    onChange={(event) =>
-                      handleLinkChange(index, "href", event.target.value)
-                    }
-                  />
-                  <input
-                    className="admin-input"
-                    placeholder="Länktext"
-                    value={link.label || ""}
-                    onChange={(event) =>
-                      handleLinkChange(index, "label", event.target.value)
-                    }
-                  />
-                  <button
-                    type="button"
-                    className="admin-btn-danger"
-                    onClick={() => removeLink(index)}
-                  >
-                    Ta bort
-                  </button>
+          {formView === 'edit' ? (
+            <form className="admin-events-editor-content" onSubmit={handleSave}>
+              <section className="admin-events-section-card">
+                <div className="admin-events-section-heading">
+                  <Pencil size={18} />
+                  <div>
+                    <h4>Grundinformation</h4>
+                    <p>Det som syns först på evenemangskortet.</p>
+                  </div>
                 </div>
-              ))}
-            </div>
-
-            <div className="admin-events-manager-subsection">
-              <div className="admin-events-manager-subsection-header">
-                <h4>Bilder</h4>
-                <label className="admin-btn-secondary admin-events-manager-upload-btn">
-                  {uploading ? "Laddar upp..." : "Ladda upp bild"}
-                  <input
-                    type="file"
-                    accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif"
-                    multiple
-                    onChange={handleUploadImages}
-                    disabled={uploading}
-                    hidden
-                  />
-                </label>
-              </div>
-              <p className="admin-muted">
-                Bilder optimeras automatiskt till WebP (max 800x1063).
-              </p>
-
-              {form.images.map((image, index) => (
-                <div key={image.id || `img-${index}`} className="admin-events-manager-image-row">
-                  <img src={image.url} alt={image.alt || ""} />
-                  <div className="admin-events-manager-image-fields">
+                <div className="admin-events-manager-grid">
+                  <label className="admin-field">
+                    <span className="admin-field-label">Titel</span>
                     <input
                       className="admin-input"
-                      placeholder="Beskrivande text (alt-text)"
-                      value={image.alt || ""}
-                      onChange={(event) =>
-                        handleImageChange(index, "alt", event.target.value)
-                      }
+                      value={form.title}
+                      onChange={(event) => setField("title", event.target.value)}
+                      required
                     />
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                  </label>
+
+                  <label className="admin-field">
+                    <span className="admin-field-label">Plats</span>
+                    <input
+                      className="admin-input"
+                      value={form.location}
+                      onChange={(event) => setField("location", event.target.value)}
+                    />
+                  </label>
+
+                  <label className="admin-field admin-field--full">
+                    <span className="admin-field-label">Beskrivning</span>
+                    <textarea
+                      className="admin-input admin-textarea"
+                      rows={4}
+                      value={form.description}
+                      onChange={(event) => setField("description", event.target.value)}
+                    />
+                  </label>
+
+                  <label className="admin-field">
+                    <span className="admin-field-label">Badge</span>
+                    <input
+                      className="admin-input"
+                      value={form.spots}
+                      onChange={(event) => setField("spots", event.target.value)}
+                      placeholder="Ex. Fri entré"
+                    />
+                  </label>
+
+                  <label className="admin-field">
+                    <span className="admin-field-label">Gäster/Konstnärer</span>
+                    <input
+                      className="admin-input"
+                      value={form.artists}
+                      onChange={(event) => setField("artists", event.target.value)}
+                    />
+                  </label>
+                </div>
+              </section>
+
+              <section className="admin-events-section-card">
+                <div className="admin-events-section-heading">
+                  <CalendarDays size={18} />
+                  <div>
+                    <h4>Tid & status</h4>
+                    <p>Styr om evenemanget listas som kommande eller tidigare.</p>
+                  </div>
+                </div>
+                <div className="admin-events-manager-grid admin-events-time-grid">
+                  <label className="admin-field">
+                    <span className="admin-field-label">Start</span>
+                    <input
+                      type="datetime-local"
+                      className="admin-input"
+                      value={form.startAt}
+                      onChange={(event) => setField("startAt", event.target.value)}
+                      required
+                    />
+                  </label>
+
+                  <label className="admin-field">
+                    <span className="admin-field-label">Slut</span>
+                    <input
+                      type="datetime-local"
+                      className="admin-input"
+                      value={form.endAt}
+                      onChange={(event) => setField("endAt", event.target.value)}
+                      required
+                    />
+                  </label>
+
+                  <label className="admin-field admin-field--full">
+                    <span className="admin-field-label">Status</span>
+                    <select
+                      className="admin-select"
+                      value={form.status}
+                      onChange={(event) => setField("status", event.target.value)}
+                    >
+                      {EVENT_STATUS_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </section>
+
+              <section className="admin-events-section-card">
+                <div className="admin-events-section-heading admin-events-section-heading--with-action">
+                  <div className="admin-events-section-title-row">
+                    <LinkIcon size={18} />
+                    <div>
+                      <h4>Länkar</h4>
+                      <p>Knappar som visas på evenemangskortet.</p>
+                    </div>
+                  </div>
+                  <button type="button" className="admin-btn-secondary admin-btn-sm" onClick={addLink}>
+                    <Plus size={15} />
+                    Lägg till länk
+                  </button>
+                </div>
+                <div className="admin-events-link-list">
+                  {form.links.length > 0 ? form.links.map((link, index) => (
+                    <div key={`link-${index}`} className="admin-events-manager-inline-row">
                       <input
-                        type="number"
                         className="admin-input"
-                        placeholder="Ordning"
-                        value={image.order || ""}
+                        placeholder="https://..."
+                        value={link.href || ""}
                         onChange={(event) =>
-                          handleImageChange(index, "order", event.target.value)
+                          handleLinkChange(index, "href", event.target.value)
                         }
                       />
-                      <div className="admin-muted" style={{ fontSize: '0.7rem', alignSelf: 'center', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {image.url.split('/').pop()}
-                      </div>
+                      <input
+                        className="admin-input"
+                        placeholder="Länktext"
+                        value={link.label || ""}
+                        onChange={(event) =>
+                          handleLinkChange(index, "label", event.target.value)
+                        }
+                      />
+                      <button
+                        type="button"
+                        className="admin-events-danger-icon"
+                        onClick={() => removeLink(index)}
+                        aria-label="Ta bort länk"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
+                  )) : (
+                    <div className="admin-events-soft-empty">Inga länkar tillagda.</div>
+                  )}
+                </div>
+              </section>
+
+              <section className="admin-events-section-card">
+                <div className="admin-events-section-heading admin-events-section-heading--with-action">
+                  <div className="admin-events-section-title-row">
+                    <ImageIcon size={18} />
+                    <div>
+                      <h4>Bilder</h4>
+                      <p>Optimeras automatiskt till WebP, max 800x1063.</p>
+                    </div>
+                  </div>
+                  <label className="admin-btn-secondary admin-btn-sm admin-events-manager-upload-btn">
+                    <Upload size={15} />
+                    {uploading ? "Laddar upp..." : "Ladda upp bild"}
+                    <input
+                      type="file"
+                      accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif"
+                      multiple
+                      onChange={handleUploadImages}
+                      disabled={uploading}
+                      hidden
+                    />
+                  </label>
+                </div>
+
+                <div className="admin-events-image-list">
+                  {form.images.length > 0 ? form.images.map((image, index) => (
+                    <div key={image.id || `img-${index}`} className="admin-events-manager-image-row">
+                      <img src={image.url} alt={image.alt || ""} />
+                      <div className="admin-events-manager-image-fields">
+                        <input
+                          className="admin-input"
+                          placeholder="Beskrivande text"
+                          value={image.alt || ""}
+                          onChange={(event) =>
+                            handleImageChange(index, "alt", event.target.value)
+                          }
+                        />
+                        <details className="admin-events-advanced-image">
+                          <summary>Avancerat</summary>
+                          <div className="admin-events-image-advanced-grid">
+                            <input
+                              type="number"
+                              className="admin-input"
+                              placeholder="Ordning"
+                              value={image.order ?? ""}
+                              onChange={(event) =>
+                                handleImageChange(index, "order", event.target.value)
+                              }
+                            />
+                            <span>{image.url.split('/').pop()}</span>
+                          </div>
+                        </details>
+                      </div>
+                      <button
+                        type="button"
+                        className="admin-events-danger-icon"
+                        onClick={() => removeImage(index)}
+                        aria-label="Ta bort bild"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  )) : (
+                    <div className="admin-events-soft-empty">Ingen bild uppladdad.</div>
+                  )}
+                </div>
+              </section>
+
+              {selectedId && (
+                <section className="admin-events-delete-zone">
+                  <div>
+                    <strong>Ta bort evenemang</strong>
+                    <span>Det här går inte att ångra.</span>
                   </div>
                   <button
                     type="button"
                     className="admin-btn-danger"
-                    onClick={() => removeImage(index)}
+                    onClick={handleDelete}
+                    disabled={saving}
                   >
+                    <Trash2 size={16} />
                     Ta bort
                   </button>
-                </div>
-              ))}
-            </div>
-          </form>
-        ) : (
-          <div className="admin-events-preview-container">
-            <p className="admin-muted" style={{ marginBottom: '2rem', textAlign: 'center' }}>
-              Så här kommer evenemanget att se ut på hemsidan:
-            </p>
-            <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+                </section>
+              )}
+            </form>
+          ) : (
+            <div className="admin-events-preview-container">
               <EventCard event={previewEvent} />
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

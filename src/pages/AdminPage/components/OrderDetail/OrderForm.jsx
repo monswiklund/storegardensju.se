@@ -48,7 +48,7 @@ function OrderForm({
   };
 
   return (
-    <div className="admin-card admin-form-card">
+    <div className="admin-card admin-form-card admin-status-editor-card">
       <form className="admin-fulfillment-form" onSubmit={onSave}>
         <div className="admin-form-header">
           <div>

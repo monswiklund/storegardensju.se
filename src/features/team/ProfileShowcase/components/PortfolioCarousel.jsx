@@ -28,6 +28,7 @@ function SwipeIndicator() {
 
 function PortfolioCarousel({ profile }) {
   const scrollContainerRef = useRef(null);
+  const hasPortfolio = profile.portfolio && profile.portfolio.length > 0;
 
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -35,23 +36,51 @@ function PortfolioCarousel({ profile }) {
     }
   }, []);
 
+  const scroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = direction === "left" ? -500 : 500;
+      scrollContainerRef.current.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
-    <div className="portfolio-gallery">
-      <SwipeIndicator />
+    <div className={`portfolio-gallery ${!hasPortfolio ? "no-portfolio" : ""}`}>
+      {hasPortfolio && (
+        <>
+          <SwipeIndicator />
+          <button
+            className="nav-arrow prev"
+            onClick={() => scroll("left")}
+            aria-label="Föregående bild"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            className="nav-arrow next"
+            onClick={() => scroll("right")}
+            aria-label="Nästa bild"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </>
+      )}
       <div className="portfolio-scroll-container" ref={scrollContainerRef}>
         <div className="profile-slide-wrapper">
           <ProfileCard profile={profile} />
         </div>
 
-        {profile.portfolio && profile.portfolio.length > 0 ? (
+        {hasPortfolio ? (
           profile.portfolio.map((item, index) => (
             <PortfolioSlide key={`${item.src}-${index}`} item={item} />
           ))
-        ) : (
-          <div className="portfolio-placeholder">
-            <p></p>
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

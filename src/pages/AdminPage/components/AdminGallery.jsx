@@ -2,6 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { AdminService } from "../../../services/adminService";
 import { useToast } from "../../../contexts/ToastContext";
+import { MAX_UPLOAD_BYTES } from "../adminConstants";
+
+const formatMaxUploadSize = () => `${Math.round(MAX_UPLOAD_BYTES / (1024 * 1024))} MB`;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -107,12 +110,28 @@ function AdminGallery({ adminKey }) {
   const [imageEdits, setImageEdits] = useState({});
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [failedUploads, setFailedUploads] = useState([]);
   const [selectedImageIds, setSelectedImageIds] = useState(() => new Set());
   const [draggingId, setDraggingId] = useState("");
   const [showCreateCategoryModal, setShowCreateCategoryModal] = useState(false);
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [lastActionMessage, setLastActionMessage] = useState("");
   const [lastMoveAction, setLastMoveAction] = useState(null);
+  const [expandedImages, setExpandedImages] = useState(() => new Set());
   const feedbackTimerRef = useRef(null);
+  const categoryPickerRef = useRef(null);
+
+  const toggleImageExpanded = (imageId) => {
+    setExpandedImages((prev) => {
+      const next = new Set(prev);
+      if (next.has(imageId)) {
+        next.delete(imageId);
+      } else {
+        next.add(imageId);
+      }
+      return next;
+    });
+  };
 
   const categories = useMemo(() => {
     const raw = galleryData?.categories || [];
@@ -277,6 +296,33 @@ function AdminGallery({ adminKey }) {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!isCategoryMenuOpen) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (
+        categoryPickerRef.current &&
+        !categoryPickerRef.current.contains(event.target)
+      ) {
+        setIsCategoryMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsCategoryMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isCategoryMenuOpen]);
 
   const handleCreateCategory = async (event) => {
     event.preventDefault();
@@ -668,39 +714,34 @@ function AdminGallery({ adminKey }) {
     setLastMoveAction(null);
   };
 
-  const handleUpload = async (event) => {
-    const files = Array.from(event.target.files || []);
-    if (!files.length) return;
-    if (!activeCategoryId) {
-      error("Välj en kategori innan uppladdning.");
-      return;
-    }
-    if (!activeCategoryIsAssignable) {
-      error("Välj en specifik kategori (inte Alla bilder) innan uppladdning.");
-      event.target.value = "";
-      return;
-    }
-
-    const validFiles = files.filter((file) => {
+  const validateUploadFiles = (files) =>
+    files.filter((file) => {
       const contentType = String(file.type || "").toLowerCase();
-      if (!contentType || SUPPORTED_GALLERY_MIME_TYPES.has(contentType)) {
-        return true;
+      if (contentType && !SUPPORTED_GALLERY_MIME_TYPES.has(contentType)) {
+        error(
+          `${file.name}: filformat stöds inte i galleriet (använd JPG, PNG, WEBP eller GIF).`
+        );
+        return false;
       }
-      error(
-        `${file.name}: filformat stöds inte i galleriet (använd JPG, PNG, WEBP eller GIF).`
-      );
-      return false;
+      if (!file.size) {
+        error(`${file.name}: filen är tom.`);
+        return false;
+      }
+      if (file.size > MAX_UPLOAD_BYTES) {
+        error(`${file.name}: filen är för stor (max ${formatMaxUploadSize()}).`);
+        return false;
+      }
+      return true;
     });
-    if (validFiles.length === 0) {
-      event.target.value = "";
-      return;
-    }
 
+  const runUploadBatch = async (filesToUpload) => {
+    if (!filesToUpload.length) return;
     setUploading(true);
     setUploadProgress(0);
-    try {
-      let completed = 0;
-      for (const file of validFiles) {
+    const failed = [];
+    let completed = 0;
+    for (const file of filesToUpload) {
+      try {
         const uploadInfo = await AdminService.createGalleryUpload(adminKey, file);
 
         const title = file.name
@@ -722,27 +763,62 @@ function AdminGallery({ adminKey }) {
           originalFilename: file.name,
           published: false,
         });
-
+      } catch (err) {
+        failed.push({ file, reason: err?.message || "Okänt fel" });
+      } finally {
         completed += 1;
-        setUploadProgress(Math.round((completed / validFiles.length) * 100));
+        setUploadProgress(Math.round((completed / filesToUpload.length) * 100));
       }
+    }
 
+    setFailedUploads(failed);
+    setUploading(false);
+    setUploadProgress(0);
+
+    if (failed.length === 0) {
       success("Uppladdning klar.");
-      await loadGallery();
-    } catch (err) {
-      error(err?.message || "Uppladdningen misslyckades.");
+    } else if (failed.length < filesToUpload.length) {
+      error(`${failed.length} av ${filesToUpload.length} filer misslyckades.`);
+    } else {
+      error("Uppladdningen misslyckades. Försök igen.");
+    }
+
+    await loadGallery();
+  };
+
+  const handleUpload = async (event) => {
+    const files = Array.from(event.target.files || []);
+    if (!files.length) return;
+    if (!activeCategoryId) {
+      error("Välj en kategori innan uppladdning.");
+      return;
+    }
+    if (!activeCategoryIsAssignable) {
+      error("Välj en specifik kategori (inte Alla bilder) innan uppladdning.");
+      event.target.value = "";
+      return;
+    }
+
+    const validFiles = validateUploadFiles(files);
+    if (validFiles.length === 0) {
+      event.target.value = "";
+      return;
+    }
+
+    setFailedUploads([]);
+    try {
+      await runUploadBatch(validFiles);
     } finally {
-      setUploading(false);
-      setUploadProgress(0);
       event.target.value = "";
     }
   };
 
   return (
-    <div className="admin-gallery">
-      <div className="admin-panel admin-gallery-panel">
-        <div className="admin-panel-header">
+    <div className="admin-workspace admin-gallery">
+      <div className="admin-section-card admin-panel admin-gallery-panel">
+        <div className="admin-section-card-header admin-panel-header">
           <div>
+            <p className="admin-workspace-kicker">Media</p>
             <h3>Galleriöversikt</h3>
             <p>Hantera kategorier och bilder som visas på /galleri.</p>
           </div>
@@ -790,117 +866,152 @@ function AdminGallery({ adminKey }) {
                 + Ny kategori
               </button>
             </div>
-            {categories.length === 0 && !loading && (
-              <p className="admin-muted">Inga kategorier ännu.</p>
-            )}
-            <div className="admin-gallery-categories">
-              {categories.map((category) => {
-                const edits = categoryEdits[category.id] || {};
-                const nameValue = edits.name ?? category.name ?? "";
-                const slugValue = edits.slug ?? category.slug ?? "";
-                const orderValue =
-                  edits.order ??
-                  (Number.isFinite(Number(category.order))
-                    ? category.order
-                    : "");
+            <div className="admin-gallery-category-picker" ref={categoryPickerRef}>
+              <label className="admin-label" htmlFor="gallery-category-select">
+                Välj kategori
+              </label>
+              <div className="admin-gallery-category-picker-row">
+                <button
+                  type="button"
+                  className="admin-gallery-category-dropdown-trigger"
+                  onClick={() =>
+                    setIsCategoryMenuOpen((prev) =>
+                      categories.length === 0 ? false : !prev
+                    )
+                  }
+                  aria-expanded={isCategoryMenuOpen}
+                  aria-haspopup="listbox"
+                  disabled={categories.length === 0}
+                >
+                  <span className="admin-gallery-category-dropdown-name">
+                    {activeCategory?.name || "Välj kategori"}
+                  </span>
+                  <span className="admin-gallery-category-dropdown-meta">
+                    {activeCategory ? `${activeCategory.images?.length || 0} bilder` : ""}
+                  </span>
+                  <span className="admin-gallery-category-dropdown-caret" aria-hidden="true" />
+                </button>
+                {isCategoryMenuOpen && categories.length > 0 && (
+                  <div className="admin-gallery-category-dropdown-menu" role="listbox">
+                    {categories.map((category) => {
+                      const isActive = category.id === activeCategoryId;
+                      return (
+                        <button
+                          key={category.id}
+                          type="button"
+                          className={`admin-gallery-category-option ${
+                            isActive ? "active" : ""
+                          }`}
+                          role="option"
+                          aria-selected={isActive}
+                          onClick={() => {
+                            setActiveCategoryId(category.id);
+                            setIsCategoryMenuOpen(false);
+                          }}
+                        >
+                          <span className="admin-gallery-category-option-name">
+                            {category.name}
+                          </span>
+                          <span className="admin-gallery-category-option-count">
+                            {category.images?.length || 0}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <small className="admin-field-help">
+                Välj kategori för att redigera namn, slug och ordning.
+              </small>
+            </div>
 
-                return (
-                  <div
-                    key={category.id}
-                    className={`admin-gallery-category-card ${
-                      category.id === activeCategoryId ? "active" : ""
-                    }`}
-                  >
+            {categories.length === 0 && !loading ? (
+              <p className="admin-muted">Inga kategorier ännu.</p>
+            ) : activeCategory ? (
+              <div className="admin-gallery-category-card">
+                <div className="admin-gallery-category-form">
+                  <label className="admin-label">
+                    Namn
+                    <input
+                      className="admin-input"
+                      value={
+                        categoryEdits[activeCategory.id]?.name ??
+                        activeCategory.name ??
+                        ""
+                      }
+                      onChange={(event) =>
+                        handleEditCategoryChange(
+                          activeCategory.id,
+                          "name",
+                          event.target.value
+                        )
+                      }
+                    />
+                  </label>
+                  <label className="admin-label">
+                    Slug
+                    <input
+                      className="admin-input"
+                      value={
+                        categoryEdits[activeCategory.id]?.slug ??
+                        activeCategory.slug ??
+                        ""
+                      }
+                      onChange={(event) =>
+                        handleEditCategoryChange(
+                          activeCategory.id,
+                          "slug",
+                          event.target.value
+                        )
+                      }
+                    />
+                    <small className="admin-field-help">
+                      Del av länken till kategorin, t.ex. /galleri/keramik.
+                      Använd små bokstäver och bindestreck.
+                    </small>
+                  </label>
+                  <label className="admin-label">
+                    Ordning
+                    <input
+                      className="admin-input"
+                      type="number"
+                      value={
+                        categoryEdits[activeCategory.id]?.order ??
+                        (Number.isFinite(Number(activeCategory.order))
+                          ? activeCategory.order
+                          : "")
+                      }
+                      onChange={(event) =>
+                        handleEditCategoryChange(
+                          activeCategory.id,
+                          "order",
+                          event.target.value
+                        )
+                      }
+                    />
+                  </label>
+                  <div className="admin-gallery-category-actions">
                     <button
                       type="button"
-                      className="admin-gallery-category-select"
-                      onClick={() => setActiveCategoryId(category.id)}
+                      className="admin-btn-primary admin-btn-sm"
+                      onClick={() => handleSaveCategory(activeCategory)}
+                      disabled={saving}
                     >
-                      <span>{category.name}</span>
-                      <div className="admin-gallery-category-meta">
-                        {category.slug ? (
-                          <span className="admin-gallery-category-slug">
-                            /{category.slug}
-                          </span>
-                        ) : null}
-                        <span className="admin-badge">
-                          {category.images?.length || 0}
-                        </span>
-                      </div>
+                      Spara
                     </button>
-                    {category.id === activeCategoryId && (
-                      <div className="admin-gallery-category-form">
-                        <label className="admin-label">
-                          Namn
-                          <input
-                            className="admin-input"
-                            value={nameValue}
-                            onChange={(event) =>
-                              handleEditCategoryChange(
-                                category.id,
-                                "name",
-                                event.target.value
-                              )
-                            }
-                          />
-                        </label>
-                        <label className="admin-label">
-                          Slug
-                          <input
-                            className="admin-input"
-                            value={slugValue}
-                            onChange={(event) =>
-                              handleEditCategoryChange(
-                                category.id,
-                                "slug",
-                                event.target.value
-                              )
-                            }
-                          />
-                          <small className="admin-field-help">
-                            Del av länken till kategorin, t.ex. /galleri/keramik.
-                            Använd små bokstäver och bindestreck.
-                          </small>
-                        </label>
-                        <label className="admin-label">
-                          Ordning
-                          <input
-                            className="admin-input"
-                            type="number"
-                            value={orderValue}
-                            onChange={(event) =>
-                              handleEditCategoryChange(
-                                category.id,
-                                "order",
-                                event.target.value
-                              )
-                            }
-                          />
-                        </label>
-                        <div className="admin-gallery-category-actions">
-                          <button
-                            type="button"
-                            className="admin-btn-primary admin-btn-sm"
-                            onClick={() => handleSaveCategory(category)}
-                            disabled={saving}
-                          >
-                            Spara
-                          </button>
-                          <button
-                            type="button"
-                            className="admin-btn-tertiary admin-btn-sm"
-                            onClick={() => handleDeleteCategory(category.id)}
-                            disabled={saving}
-                          >
-                            Ta bort
-                          </button>
-                        </div>
-                      </div>
-                    )}
+                    <button
+                      type="button"
+                      className="admin-btn-tertiary admin-btn-sm"
+                      onClick={() => handleDeleteCategory(activeCategory.id)}
+                      disabled={saving}
+                    >
+                      Ta bort
+                    </button>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              </div>
+            ) : null}
           </div>
 
           <div className="admin-gallery-content">
@@ -944,6 +1055,25 @@ function AdminGallery({ adminKey }) {
                   </span>
                 )}
               </div>
+              {failedUploads.length > 0 && !uploading && (
+                <div className="admin-gallery-upload-retry">
+                  <p className="admin-muted">
+                    Misslyckade ({failedUploads.length}):{" "}
+                    {failedUploads.map((f) => f.file.name).join(", ")}
+                  </p>
+                  <button
+                    type="button"
+                    className="admin-btn-tertiary"
+                    onClick={async () => {
+                      const filesToRetry = failedUploads.map((f) => f.file);
+                      setFailedUploads([]);
+                      await runUploadBatch(filesToRetry);
+                    }}
+                  >
+                    Försök igen
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="admin-gallery-images">
@@ -1024,13 +1154,14 @@ function AdminGallery({ adminKey }) {
                   const isSelected = image.id
                     ? selectedImageIds.has(image.id)
                     : false;
+                  const isExpanded = image.id ? expandedImages.has(image.id) : true;
 
                   return (
                     <div
                       key={imageId}
                       className={`admin-gallery-image-card ${
                         isSelected ? "is-selected" : ""
-                      }`}
+                      } ${isExpanded ? "is-expanded" : "is-collapsed"}`}
                       draggable={Boolean(image.id && activeCategoryIsAssignable)}
                       onDragStart={() => {
                         if (!activeCategoryIsAssignable) return;
@@ -1043,7 +1174,13 @@ function AdminGallery({ adminKey }) {
                       }}
                       onDrop={() => handleReorder(image.id)}
                     >
-                      <div className="admin-gallery-image-preview">
+                      <div 
+                        className="admin-gallery-image-preview"
+                        onClick={() => image.id && toggleImageExpanded(image.id)}
+                        role="button"
+                        aria-expanded={isExpanded}
+                        title="Klicka för att redigera uppgifter"
+                      >
                         {getImageSrc(image) ? (
                           <img
                             src={getImageSrc(image)}
@@ -1077,10 +1214,30 @@ function AdminGallery({ adminKey }) {
                           </button>
                         )}
                         <span className="admin-gallery-image-position">
-                          Plats {index + 1}
+                          {index + 1}
                         </span>
+                        
+                        {!isExpanded && (
+                          <div className="admin-gallery-image-mobile-info">
+                            <span className="admin-gallery-image-mobile-title">
+                              {titleValue || "Namnlös bild"}
+                            </span>
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                          </div>
+                        )}
                       </div>
+                      
                       <div className="admin-gallery-image-form">
+                        <div className="admin-gallery-image-form-header">
+                          <h4>Redigera bild</h4>
+                          <button 
+                            type="button" 
+                            className="admin-btn-tertiary admin-btn-sm mobile-only"
+                            onClick={() => toggleImageExpanded(image.id)}
+                          >
+                            Stäng
+                          </button>
+                        </div>
                         <label className="admin-label">
                           Titel
                           <input

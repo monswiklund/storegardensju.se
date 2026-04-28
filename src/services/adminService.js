@@ -1,7 +1,11 @@
 import { getApiBaseUrl } from "../config/apiBaseUrl";
+import { SESSION_AUTH_KEY } from "../pages/AdminPage/adminAuthConstants";
 
+// VERIFY: backend must set session cookies with SameSite=Lax (or stricter) and
+// Secure flag. Bearer-token mode is unaffected by CSRF; cookie-mode relies on
+// SameSite to mitigate cross-site requests when credentials: "include" is used.
 const API_URL = getApiBaseUrl();
-const isSessionAuth = (key) => key === "session";
+const isSessionAuth = (key) => key === SESSION_AUTH_KEY;
 const shouldAvoidPreflight = (key) =>
   isSessionAuth(key) &&
   typeof API_URL === "string" &&
@@ -40,7 +44,7 @@ const getHeaders = (
 ) => {
   if (shouldAvoidPreflight(key)) {
     const headers = {};
-    if (key && key !== "session") {
+    if (key && key !== SESSION_AUTH_KEY) {
       headers.Authorization = `Bearer ${key}`;
     }
     return headers;
@@ -51,7 +55,7 @@ const getHeaders = (
   if (includeJsonContentType) {
     headers["Content-Type"] = "application/json";
   }
-  if (key && key !== "session") {
+  if (key && key !== SESSION_AUTH_KEY) {
     headers.Authorization = `Bearer ${key}`;
   }
   if (idempotencyKey) {
@@ -89,7 +93,14 @@ const unwrapSuccessData = (payload) => {
   return payload;
 };
 
+const logAdminCall = (res) => {
+  if (!import.meta.env.DEV) return;
+  const path = (res?.url || "").replace(API_URL, "");
+  console.info(`[admin] ${res?.status ?? "?"} ${path}`);
+};
+
 const handleJSONResponse = async (res, defaultMessage) => {
+  logAdminCall(res);
   const payload = await parseJSONSafely(res);
 
   if (!res.ok) {
@@ -113,6 +124,7 @@ const handleJSONResponse = async (res, defaultMessage) => {
 };
 
 const handleBlobResponse = async (res, defaultMessage) => {
+  logAdminCall(res);
   if (!res.ok) {
     const payload = await parseJSONSafely(res);
     const message = extractErrorMessage(payload, defaultMessage);

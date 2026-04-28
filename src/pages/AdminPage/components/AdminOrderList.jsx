@@ -1,4 +1,5 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
+import { Filter, ChevronDown, ChevronUp } from "lucide-react";
 import {
   FULFILLMENT_FILTERS,
   ORDER_SORT_OPTIONS,
@@ -51,6 +52,7 @@ function AdminOrderList({
   onClearFilters,
   onCopy,
 }) {
+  const [showFilters, setShowFilters] = useState(false);
   const searchInputRef = useRef(null);
 
   useEffect(() => {
@@ -85,10 +87,10 @@ function AdminOrderList({
 
   return (
     <section
-      className={`admin-panel admin-panel-list ${isHidden ? "is-hidden" : ""}`}
+      className={`admin-section-card admin-panel admin-panel-list ${isHidden ? "is-hidden" : ""}`}
       id="admin-orders"
     >
-      <div className="admin-panel-header">
+      <div className="admin-section-card-header admin-panel-header">
         <div className="admin-header-title">
           <h3>{isOverview ? "Senaste Ordrar" : "Orderlista"}</h3>
           {!isOverview && <span className="admin-count-badge">{ordersCount} st</span>}
@@ -107,7 +109,22 @@ function AdminOrderList({
       </div>
 
       {!isOverview && (
-        <div className="admin-controls">
+        <div className="admin-mobile-filter-toggle">
+          <button
+            type="button"
+            className={`admin-filter-toggle-btn ${showFilters ? "active" : ""}`}
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <Filter size={16} />
+            <span>{showFilters ? "Dölj filter" : "Visa filter"}</span>
+            {hasActiveFilters && !showFilters && <span className="admin-filter-indicator" />}
+            {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+        </div>
+      )}
+
+      {!isOverview && (
+        <div className={`admin-toolbar-card admin-controls ${isMobile && !showFilters ? "mobile-hidden" : ""}`}>
           <div className="admin-search-wrapper">
             <input
               ref={searchInputRef}
@@ -164,7 +181,7 @@ function AdminOrderList({
             )}
           </div>
 
-          <div className="admin-filters-group">
+          <div className="admin-filters-group admin-order-filter-controls">
             <select
               className="admin-select admin-select-sm"
               value={dateFilter}
@@ -208,19 +225,20 @@ function AdminOrderList({
 
       {!isOverview && (
         <>
-          <div className="admin-fulfillment-filter">
-            <select
-              className="admin-select admin-select-sm admin-select-full"
-              value={fulfillmentFilter}
-              onChange={(event) => setFulfillmentFilter(event.target.value)}
-              aria-label="Filtrera status"
-            >
+          <div className={`admin-fulfillment-filter admin-status-segments ${isMobile && !showFilters ? "mobile-hidden" : ""}`}>
               {FULFILLMENT_FILTERS.map((filter) => (
-                <option key={filter.value} value={filter.value}>
-                  {filter.label} ({counts[filter.value] ?? 0})
-                </option>
+                <button
+                  key={filter.value}
+                  type="button"
+                  className={`admin-status-segment ${
+                    fulfillmentFilter === filter.value ? "active" : ""
+                  }`}
+                  onClick={() => setFulfillmentFilter(filter.value)}
+                >
+                  <span>{filter.label}</span>
+                  <strong>{counts[filter.value] ?? 0}</strong>
+                </button>
               ))}
-            </select>
           </div>
 
           <div className="admin-results-info">
@@ -239,7 +257,7 @@ function AdminOrderList({
           </div>
 
           {filteredOrders.length > 0 && (
-            <div className="admin-list-actions">
+            <div className={`admin-list-actions ${isMobile && !showFilters ? "mobile-hidden" : ""}`}>
               <label className="admin-checkbox-label">
                 <input
                   type="checkbox"
@@ -408,40 +426,38 @@ function AdminOrderList({
 
                 <div className="admin-order-content">
                   <div className="admin-order-main">
-                    <div className="admin-order-header">
-                      <div className="admin-order-id-group">
-                        <span className="admin-order-id">#{order.id.slice(-6)}</span>
-                        {!isOverview && (
-                          <button
-                            type="button"
-                            className="admin-id-copy-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onCopy(order.id, "orderId");
-                            }}
-                            title="Kopiera hela Order-ID"
-                          >
-                            <CopyIcon size={12} />
-                          </button>
-                        )}
-                        <span className="admin-order-date">
-                          {formatDateTime(order.created)}
-                        </span>
-                      </div>
-                      
-                      <div className="admin-order-amount-inline">
-                        {formatAmount(order.amountTotal)}
-                      </div>
-                    </div>
-                    
-                    <div className="admin-order-details-row">
-                      <div className="admin-order-customer">
+                    <div className="admin-order-primary">
+                      <div className="admin-order-identity">
+                        <div className="admin-order-id-group">
+                          <span className="admin-order-id">#{order.id.slice(-6)}</span>
+                          {!isOverview && (
+                            <button
+                              type="button"
+                              className="admin-id-copy-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onCopy(order.id, "orderId");
+                              }}
+                              title="Kopiera hela Order-ID"
+                            >
+                              <CopyIcon size={12} />
+                            </button>
+                          )}
+                        </div>
                         <span className="admin-order-email">
                           {order.customerEmail || "Okänd email"}
                         </span>
                       </div>
-                      
-                      <div className="admin-order-chips">
+
+                      <div className="admin-order-time">
+                        {formatDateTime(order.created)}
+                      </div>
+
+                      <div className="admin-order-summary-side">
+                        <div className="admin-order-amount-inline">
+                          {formatAmount(order.amountTotal)}
+                        </div>
+                        <div className="admin-order-chips">
                         <span className={`admin-chip admin-chip-${fulfillmentValue}`}>
                           {fulfillmentLabel}
                         </span>
@@ -459,6 +475,7 @@ function AdminOrderList({
                             {listEventLabel}
                           </span>
                         )}
+                        </div>
                       </div>
                     </div>
                   </div>

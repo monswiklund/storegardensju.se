@@ -189,3 +189,57 @@
     gap: 1.5rem;
   }
 }
+
+.admin-create-product.admin-workspace {
+  max-width: 1040px;
+  margin: 0 auto 2rem;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.admin-cp-header.admin-workspace-header {
+  margin-bottom: 0;
+  border-bottom: 0;
+  padding-bottom: clamp(1rem, 2vw, 1.4rem);
+}
+
+.admin-cp-header.admin-workspace-header h2 {
+  margin: 0;
+}
+
+.product-form {
+  gap: 1rem;
+}
+
+.form-section.admin-section-card h3,
+.image-section.admin-section-card h3 {
+  margin: 0;
+}
+
+.form-row.admin-section-card {
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.form-actions.admin-section-card {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 5;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+}
+
+@media (max-width: 640px) {
+  .form-actions.admin-section-card {
+    position: static;
+    flex-direction: column-reverse;
+  }
+
+  .save-button,
+  .cancel-button {
+    width: 100%;
+  }
+}

@@ -44,12 +44,12 @@ function AdminOrderDetail({
 
   return (
     <section
-      className={`admin-panel admin-panel-detail ${
+      className={`admin-section-card admin-panel admin-panel-detail ${
         isHidden ? "is-hidden" : ""
       }`}
       id="admin-details"
     >
-      <div className="admin-panel-header">
+      <div className="admin-section-card-header admin-panel-header">
         <h3>Orderdetaljer</h3>
         {saveStatus.loading && (
           <span className="admin-save-indicator">
@@ -127,14 +127,6 @@ function AdminOrderDetail({
               copiedField={copiedField}
             />
 
-            <OrderLineItems
-              order={order}
-              onCopy={onCopy}
-              copiedField={copiedField}
-            />
-
-            <OrderEvents order={order} />
-
             <OrderForm
               order={order}
               editState={editState}
@@ -145,6 +137,14 @@ function AdminOrderDetail({
               onReset={onReset}
             />
 
+            <OrderLineItems
+              order={order}
+              onCopy={onCopy}
+              copiedField={copiedField}
+            />
+
+            <OrderEvents order={order} />
+
             <OrderMeta order={order} onCopy={onCopy} copiedField={copiedField} />
 
             <div className="admin-refund-card">
@@ -153,8 +153,9 @@ function AdminOrderDetail({
                 type="button"
                 className="admin-btn-secondary admin-btn-block admin-refund-btn"
                 onClick={onRefund}
+                disabled={Boolean(saveStatus?.refunding)}
               >
-                Återbetala...
+                {saveStatus?.refunding ? "Återbetalar..." : "Återbetala..."}
               </button>
             </div>
           </div>

@@ -47,9 +47,7 @@ export const formatListEventLabel = (event) => {
     case "paid":
       return "Betald";
     case "fulfillment":
-      return `Status: ${
-        FULFILLMENT_LABELS[event.value] || event.value || "okänd"
-      }`;
+      return FULFILLMENT_LABELS[event.value] || event.value || "Okänd";
     case "note":
       return "Note uppd.";
     case "customer_message":

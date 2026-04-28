@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -30,7 +30,7 @@ import MohippaPage from "../pages/MohippaPage.jsx";
 import ArtPage from "../pages/ArtPage.jsx";
 import GalleriPage from "../pages/GalleriPage.jsx";
 import TeamPage from "../pages/TeamPage.jsx";
-import AdminPage from "../pages/AdminPage/AdminPage.jsx";
+const AdminPage = lazy(() => import("../pages/AdminPage/AdminPage.jsx"));
 // BUTIK
 import ButikPage from "../pages/ButikPage.jsx";
 import ProductDetailPage from "../pages/ProductDetailPage.jsx";
@@ -77,6 +77,8 @@ function App() {
       touchMultiplier: 2,
     });
 
+    window.storegardenLenis = lenis;
+
     // Connect Lenis with GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -88,6 +90,9 @@ function App() {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      if (window.storegardenLenis === lenis) {
+        window.storegardenLenis = null;
+      }
       lenis.destroy();
       gsap.ticker.remove(tickerCallback);
     };
@@ -131,9 +136,9 @@ function AppContent() {
     <div
       className={isAdminRoute ? "admin-app" : isHomePage ? "home-app" : "page-app"}
     >
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <EventSubnav isActive={isEventSection} />}
-      <CartDrawer />
+      {!isAdminRoute && <CartDrawer />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/event" element={<EventPage />} />
@@ -148,7 +153,14 @@ function AppContent() {
         <Route path="/success" element={<SuccessPage />} />
         <Route path="/cancel" element={<CancelPage />} />
         <Route path="/om-oss" element={<TeamPage />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route
+          path="/admin"
+          element={
+            <Suspense fallback={null}>
+              <AdminPage />
+            </Suspense>
+          }
+        />
       </Routes>
       {!isAdminRoute && (
         <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>

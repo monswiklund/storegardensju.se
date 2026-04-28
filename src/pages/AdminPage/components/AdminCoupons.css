@@ -106,8 +106,9 @@
 }
 
 .status-active {
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: #dcfce7;
+  color: #14532d;
+  border: 1px solid #86efac;
   padding: 0.2rem 0.5rem;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -115,8 +116,9 @@
 }
 
 .status-archived {
-  background-color: #f3f4f6;
-  color: #9ca3af;
+  background-color: #f4efe6;
+  color: #6b5b48;
+  border: 1px solid #d6cfc2;
   padding: 0.2rem 0.5rem;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -145,4 +147,53 @@
   .coupon-form {
     grid-template-columns: 1fr;
   }
+}
+
+.admin-coupons.admin-workspace {
+  max-width: 1100px;
+}
+
+.coupon-create-section.admin-section-card,
+.coupon-list-section.admin-section-card {
+  overflow: visible;
+  border-radius: 28px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+}
+
+.coupon-create-section .admin-section-card-header h3,
+.coupon-list-section .admin-section-card-header h3 {
+  margin: 0;
+  padding: 0;
+  border-bottom: 0;
+}
+
+.coupon-form .admin-input,
+.coupon-form .admin-select,
+.coupon-filter .admin-select {
+  border-radius: 12px;
+  min-height: 42px;
+}
+
+.create-btn.admin-btn-primary {
+  min-height: 42px;
+  border-radius: 12px;
+}
+
+.coupon-filter {
+  max-width: 220px;
+  margin-bottom: 1rem;
+}
+
+.delete-btn.admin-btn-danger {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 10px;
+  padding: 0.45rem 0.75rem;
+  color: #be123c;
+  text-decoration: none;
+}
+
+.delete-btn.admin-btn-danger:hover {
+  background: #ffe4e6;
+  color: #9f1239;
 }

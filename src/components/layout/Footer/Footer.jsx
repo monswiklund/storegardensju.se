@@ -49,25 +49,28 @@ const Footer = () => {
           </ul>
         </nav>
 
-        <div className="footer-social">
-          <a
-            href="https://www.facebook.com/profile.php?id=61564642647081"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-social-link"
-            aria-label="Besök oss på Facebook"
-          >
-            <Facebook size={24} />
-          </a>
-          <a
-            href="https://www.instagram.com/storegarden7/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-social-link"
-            aria-label="Besök oss på Instagram"
-          >
-            <Instagram size={24} />
-          </a>
+        <div className="footer-social-wrapper">
+          <p className="footer-social-title">Följ oss gärna på</p>
+          <div className="footer-social">
+            <a
+              href="https://www.facebook.com/profile.php?id=61564642647081"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-social-link"
+              aria-label="Besök oss på Facebook"
+            >
+              <Facebook size={24} />
+            </a>
+            <a
+              href="https://www.instagram.com/storegarden7/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-social-link"
+              aria-label="Besök oss på Instagram"
+            >
+              <Instagram size={24} />
+            </a>
+          </div>
         </div>
 
         <div className="footer-build-info">

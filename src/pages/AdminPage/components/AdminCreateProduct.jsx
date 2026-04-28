@@ -293,19 +293,27 @@ export default function AdminCreateProduct({
   };
 
   return (
-    <div className="admin-create-product">
-      <div className="admin-cp-header">
-        <h2>{isEdit ? "Redigera produkt" : "Skapa ny produkt"}</h2>
-        <p className="admin-cp-subtitle">
-          {isEdit
-            ? "Uppdatera information om produkten."
-            : "Lägg till nya varor i butiken. De publiceras direkt."}
-        </p>
+    <div className="admin-workspace admin-create-product">
+      <div className="admin-workspace-header admin-cp-header">
+        <div>
+          <p className="admin-workspace-kicker">Produkt</p>
+          <h2>{isEdit ? "Redigera produkt" : "Skapa ny produkt"}</h2>
+          <p className="admin-cp-subtitle">
+            {isEdit
+              ? "Uppdatera information om produkten."
+              : "Lägg till nya varor i butiken. De publiceras direkt."}
+          </p>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="product-form">
-        <div className="form-section">
-          <h3>Grunduppgifter</h3>
+        <div className="admin-section-card form-section">
+          <div className="admin-section-card-header">
+            <div>
+              <h3>Grunduppgifter</h3>
+              <p>Namn och beskrivning som visas i butiken.</p>
+            </div>
+          </div>
 
           <div className="form-group">
             <label htmlFor="name">Produktnamn</label>
@@ -343,7 +351,7 @@ export default function AdminCreateProduct({
           </div>
         </div>
 
-        <div className="form-row">
+        <div className="admin-section-card form-row">
           <div className="form-group">
             <label htmlFor="price">Pris (SEK)</label>
             <input
@@ -384,7 +392,7 @@ export default function AdminCreateProduct({
           </div>
         </div>
 
-        <div className="form-row">
+        <div className="admin-section-card form-row">
           <div className="form-group">
             <label htmlFor="category">Kategori</label>
             <select
@@ -423,11 +431,16 @@ export default function AdminCreateProduct({
           </div>
         </div>
 
-        <div className="form-section image-section">
-          <h3>
-            Produktbild
-            {imageProcessing ? " (bearbetar...)" : ""}
-          </h3>
+        <div className="admin-section-card form-section image-section">
+          <div className="admin-section-card-header">
+            <div>
+              <h3>
+                Produktbild
+                {imageProcessing ? " (bearbetar...)" : ""}
+              </h3>
+              <p>Bilden beskärs och optimeras innan uppladdning.</p>
+            </div>
+          </div>
           <div className="form-group">
             <div
               className={`file-dropzone ${dragActive ? "is-drag" : ""}`}
@@ -492,7 +505,7 @@ export default function AdminCreateProduct({
           </div>
         </div>
 
-        <div className="form-actions">
+        <div className="admin-section-card form-actions">
           <button
             type="submit"
             className="save-button"

@@ -124,25 +124,27 @@ export default function AdminOrdersSection({
           onCopy={onCopy}
         />
 
-        <AdminOrderDetail
-          order={order}
-          loading={detailLoading}
-          error={detailError}
-          customerHistory={customerHistory}
-          onCopy={onCopy}
-          copiedField={copiedField}
-          editState={editState}
-          onSave={onSave}
-          onReset={onReset}
-          onRefund={onRefund}
-          hasChanges={hasChanges}
-          isBackwardStatus={isBackwardStatus}
-          saveStatus={saveStatus}
-          isMobile={isMobile}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          onCustomerFilter={onCustomerFilter}
-        />
+        <div className="admin-panel-detail-sticky">
+          <AdminOrderDetail
+            order={order}
+            loading={detailLoading}
+            error={detailError}
+            customerHistory={customerHistory}
+            onCopy={onCopy}
+            copiedField={copiedField}
+            editState={editState}
+            onSave={onSave}
+            onReset={onReset}
+            onRefund={onRefund}
+            hasChanges={hasChanges}
+            isBackwardStatus={isBackwardStatus}
+            saveStatus={saveStatus}
+            isMobile={isMobile}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            onCustomerFilter={onCustomerFilter}
+          />
+        </div>
       </div>
     </>
   );

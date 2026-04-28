@@ -3,20 +3,14 @@ import {
   FULFILLMENT_LABELS,
   PAYMENT_LABELS,
   PAYMENT_CHIP_CLASS,
-  HIGH_ORDER_THRESHOLD,
-  TRACKING_CARRIER_OPTIONS,
 } from "../../adminConstants";
 import {
   formatDateTime,
-  formatListEventLabel,
   formatAmount,
 } from "../../adminUtils";
-import { CopyIcon, CheckIcon } from "../AdminIcons";
 
 function OrderStatusCard({ order, latestEvent, onCopy, copiedField }) {
   const paymentStatus = order?.paymentStatus || "";
-  const isHighValueOrder = (order?.amountTotal || 0) >= HIGH_ORDER_THRESHOLD;
-  const isUnpaid = paymentStatus === "unpaid";
   const shippingRateLabel = order?.shippingRate || "";
   const isPickup =
     shippingRateLabel && /hämta|hämtning|pickup/i.test(shippingRateLabel);
@@ -25,15 +19,6 @@ function OrderStatusCard({ order, latestEvent, onCopy, copiedField }) {
       ? "Hämtning"
       : "Frakt"
     : "";
-
-  const trackingCarrierLabel = useMemo(() => {
-    const carrier = (order?.trackingCarrier || "auto").toLowerCase();
-    if (!carrier || carrier === "auto") return "Auto";
-    const option = TRACKING_CARRIER_OPTIONS.find(
-      (item) => item.value === carrier
-    );
-    return option?.label || carrier;
-  }, [order?.trackingCarrier]);
 
   const trackingInfo = useMemo(() => {
     const raw = order?.trackingNumber || "";
@@ -112,16 +97,13 @@ function OrderStatusCard({ order, latestEvent, onCopy, copiedField }) {
       <div className="admin-card-header">
         <h3>Status & Leverans</h3>
       </div>
-      <div className="admin-detail-list">
-        <div className="admin-detail-row">
-          <span className="admin-detail-label">Totalt</span>
-          <span className="admin-order-total" style={{ fontSize: '1.25rem' }}>
-            {formatAmount(order.amountTotal)}
-          </span>
+      <div className="admin-status-overview-grid">
+        <div className="admin-status-overview-card admin-status-overview-card--total">
+          <span>Totalt</span>
+          <strong>{formatAmount(order.amountTotal)}</strong>
         </div>
-        <div className="admin-detail-row" style={{ alignItems: 'flex-start', paddingTop: '0.75rem' }}>
-          <span className="admin-detail-label">Status</span>
-          <div className="admin-detail-value admin-detail-value-stack" style={{ alignItems: 'flex-end' }}>
+        <div className="admin-status-overview-card">
+          <span>Status</span>
             <div className="admin-detail-chip-row">
               <span
                 className={`admin-chip admin-chip-${
@@ -148,39 +130,32 @@ function OrderStatusCard({ order, latestEvent, onCopy, copiedField }) {
               )}
             </div>
             {latestEvent && (
-              <p className="admin-muted" style={{ fontSize: '0.75rem', marginTop: '0.5rem' }}>
-                Senaste händelse: {formatDateTime(latestEvent.timestamp)}
+              <p className="admin-muted">
+                Senast {formatDateTime(latestEvent.timestamp)}
               </p>
             )}
-          </div>
         </div>
-        <div className="admin-detail-row">
-          <span className="admin-detail-label">Beställd</span>
-          <span className="admin-detail-value">
-            {formatDateTime(order.created)}
-          </span>
+        <div className="admin-status-overview-card">
+          <span>Beställd</span>
+          <strong>{formatDateTime(order.created)}</strong>
         </div>
-        <div className="admin-detail-row">
-          <span className="admin-detail-label">Fraktmetod</span>
-          <span className="admin-detail-value">
-            {order.shippingRate || "Hämtas i butik"}
-          </span>
+        <div className="admin-status-overview-card">
+          <span>Fraktmetod</span>
+          <strong>{order.shippingRate || "Hämtas i butik"}</strong>
         </div>
-        <div className="admin-detail-row">
-          <span className="admin-detail-label">Spårning</span>
-          <div className="admin-detail-value">
+        <div className="admin-status-overview-card admin-status-overview-card--tracking">
+          <span>Spårning</span>
             {order.trackingNumber ? (
-              <div className="admin-detail-inline" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <span style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>
+              <div className="admin-detail-inline">
+                <strong className="admin-tracking-number">
                   {order.trackingNumber}
-                </span>
+                </strong>
                 {trackingInfo && (
                   <a
                     className="admin-link-btn"
                     href={trackingInfo.url}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ fontSize: '0.75rem' }}
                   >
                     Spåra ({trackingInfo.label})
                   </a>
@@ -189,7 +164,6 @@ function OrderStatusCard({ order, latestEvent, onCopy, copiedField }) {
             ) : (
               <span className="admin-muted">—</span>
             )}
-          </div>
         </div>
       </div>
     </div>

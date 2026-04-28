@@ -30,17 +30,47 @@ export const heroContent = {
 export const services = [
   {
     id: "event-fest",
-    title: "Event, Bröllop & Fest",
-    description: "Boka lokalen för ditt nästa evenemang",
+    kicker: "Ladan och loftet",
+    title: "Event & fest",
+    description:
+      "Hyr gården för bröllop, företagsevent, födelsedagar eller en kväll med långbord, bar och dansgolv.",
+    meta: "Loft 150+ sittande · Lada 50+ sittande · Mingel 300+",
     route: "/event",
-    image: "/images/lokal/slide22.jpg",
+    image: "/images/event/hero/hero.webp",
+    ctaLabel: "Utforska event",
+  },
+  {
+    id: "mohippa",
+    kicker: "En planerad dag",
+    title: "Möhippa",
+    description:
+      "Baspaket med lokal, hjälp på plats och kreativa tillval som målning, collage, cocktailkurs och keramik.",
+    meta: "Lokal 10:00-22:00 · Tillval per aktivitet",
+    route: "/mohippa",
+    image: "/images/evenemang/slide10.jpg",
+    ctaLabel: "Planera möhippa",
   },
   {
     id: "skapande",
-    title: "Kurser & Skapande",
-    description: "Kreativa workshops i en inspirerande miljö",
+    kicker: "Ateljé och lera",
+    title: "Kurser & skapande",
+    description:
+      "Målning, keramik, drejning och privata workshops för nybörjare, vänner, kollegor och kreativa grupper.",
+    meta: "Målning · Keramik · Privata workshops",
     route: "/konst",
     image: "/images/portfolio/ann-2.webp",
+    ctaLabel: "Se kurser",
+  },
+  {
+    id: "om-platsen",
+    kicker: "Människorna bakom",
+    title: "Om platsen & oss",
+    description:
+      "Lär känna Storegården 7, människorna bakom ateljén och hur den gamla gården blivit en plats för möten.",
+    meta: "15 min från Lidköping · Ateljé · Gårdsbutik",
+    route: "/om-oss",
+    image: "/images/lokal/slide23.jpg",
+    ctaLabel: "Möt oss",
   },
 ];
 

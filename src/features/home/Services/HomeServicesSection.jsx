@@ -3,84 +3,55 @@ import { Link } from "react-router-dom";
 import { services as servicesData } from "../../../data/homeContent.js";
 
 const HomeServicesSection = () => {
-  const scrollToSection = (sectionId) => {
-    const element = document.querySelector(`#${sectionId}-section`);
-    element?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
-    <div className="services-section">
+    <section className="services-section" aria-labelledby="services-heading">
       <div className="services-container">
-        <h2 id="services-heading">Vad vi erbjuder</h2>
-        <div className="services-grid">
-          {servicesData.map((service, index) => {
-            // If service has scrollTo property, render as clickable div instead of Link
-            if (service.scrollTo) {
-              return (
-                <div
-                  key={index}
-                  className="service-card"
-                  role="button"
-                  tabIndex="0"
-                  onClick={() => scrollToSection(service.scrollTo)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      scrollToSection(service.scrollTo);
-                    }
-                  }}
-                  aria-label={`Läs mer om ${service.title}`}
-                >
-                  <div className="service-image-container">
-                    <img
-                      src={service.image}
-                      alt={service.title}
-                      className="service-image"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="service-content">
-                    <h3 className="service-title">{service.title}</h3>
-                    {service.subtitle && (
-                      <p className="service-subtitle">{service.subtitle}</p>
-                    )}
-                    <p className="service-description">{service.description}</p>
-                    <span className="service-arrow">Läs mer</span>
-                  </div>
-                </div>
-              );
-            }
+        <div className="services-header">
+          <div className="services-header__title">
+            <h2 id="services-heading">Vad vi erbjuder</h2>
+          </div>
+          <p className="services-intro">
+          </p>
+        </div>
 
-            // For services with route property, render as Link
-            return (
-              <Link
-                key={index}
-                to={service.route}
-                className="service-card"
-                aria-label={`Läs mer om ${service.title}`}
-              >
-                <div className="service-image-container">
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    className="service-image"
-                    loading="lazy"
-                  />
+        <div className="services-list">
+          {servicesData.map((service) => (
+            <Link
+              key={service.id}
+              to={service.route}
+              className="service-row"
+              aria-label={`${service.ctaLabel}: ${service.title}`}
+            >
+              <div className="service-row__image-wrap">
+                <img
+                  src={service.image}
+                  alt=""
+                  className="service-row__image"
+                  loading="lazy"
+                />
+              </div>
+
+              <div className="service-row__content">
+                <div className="service-row__topline">
+                  <span className="service-row__kicker">{service.kicker}</span>
                 </div>
-                <div className="service-content">
-                  <h3 className="service-title">{service.title}</h3>
-                  {service.subtitle && (
-                    <p className="service-subtitle">{service.subtitle}</p>
-                  )}
-                  <p className="service-description">{service.description}</p>
-                  <span className="service-arrow">Läs mer</span>
-                </div>
-              </Link>
-            );
-          })}
+
+                <h3 className="service-row__title">{service.title}</h3>
+                <p className="service-row__description">
+                  {service.description}
+                </p>
+                <span className="service-row__meta">{service.meta}</span>
+              </div>
+
+              <span className="service-row__cta">
+                {service.ctaLabel}
+                <span aria-hidden="true">→</span>
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

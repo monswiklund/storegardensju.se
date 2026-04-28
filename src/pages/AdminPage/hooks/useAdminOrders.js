@@ -22,7 +22,7 @@ export function useAdminOrders({ adminKey, isPreview, demoOrders, handleApiError
   const [quickActionId, setQuickActionId] = useState("");
   const [sortMode, setSortMode] = useState(() => {
     if (typeof window === "undefined") return "event";
-    return localStorage.getItem(SORT_STORAGE_KEY) || "event";
+    return sessionStorage.getItem(SORT_STORAGE_KEY) || "event";
   });
 
   const loadOrders = useCallback(
@@ -82,7 +82,13 @@ export function useAdminOrders({ adminKey, isPreview, demoOrders, handleApiError
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    localStorage.setItem(SORT_STORAGE_KEY, sortMode);
+    sessionStorage.setItem(SORT_STORAGE_KEY, sortMode);
+    // legacy cleanup: avoid persisted prefs in localStorage
+    try {
+      localStorage.removeItem(SORT_STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
   }, [sortMode]);
 
   const sortedOrders = useMemo(() => {

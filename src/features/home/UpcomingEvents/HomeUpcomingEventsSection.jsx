@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import "./UpcomingEvents.css";
 import "../PastEvents/PastEvents.css";
 import EventCard from "./components/EventCard";
-import InfoCallout from "./components/InfoCallout";
 import PastEventsAccordion from "./components/PastEventsAccordion";
 import useScrollToSelector from "../../../hooks/useScrollToSelector";
 import { fetchPublicEvents } from "../../../services/eventsService";
@@ -60,6 +59,7 @@ const toUiEvent = (item) => {
 
 function HomeUpcomingEventsSection() {
   const scrollToContact = useScrollToSelector(".contact-container");
+  const scrollToPastEvents = useScrollToSelector("#past-events");
   const [eventsData, setEventsData] = useState({ upcoming: [], past: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -109,20 +109,19 @@ function HomeUpcomingEventsSection() {
   return (
     <div id="events-section" className="events-section">
       <div className="events-container">
-        <h2 id="events-heading">Kommande evenemang</h2>
-        <p className="events-intro">
-          Upptäck våra kommande workshops, kurser och evenemang. Boka din plats
-          redan idag!
-        </p>
+        <header className="events-section-header">
+          <span className="events-eyebrow">Ateljén och gården</span>
+          <h2 id="events-heading">Kommande evenemang</h2>
+        </header>
 
         {loading && (
-          <div className="events-placeholder">
+          <div className="events-status-panel">
             <p>Hämtar evenemang...</p>
           </div>
         )}
 
         {!loading && error && (
-          <div className="events-placeholder">
+          <div className="events-status-panel">
             <p>{error}</p>
           </div>
         )}
@@ -135,16 +134,39 @@ function HomeUpcomingEventsSection() {
               ))}
             </div>
           ) : (
-            <div className="events-placeholder">
-              <p>Inga evenemang planerade just nu.</p>
-              <p>
-                Håll utkik för kommande evenemang eller kontakta oss för att boka
-                din egen workshop!
-              </p>
+            <div className="events-empty-panel">
+              <div className="events-empty-date" aria-hidden="true">
+                <span>Nästa</span>
+                <strong>snart</strong>
+              </div>
+              <div className="events-empty-content">
+                <span className="events-empty-kicker">Inga datum ligger ute just nu</span>
+                <h3>Vill du samla en grupp i ateljén?</h3>
+                <p>
+                  Vi släpper nya tillfällen när kalendern tillåter. Det går
+                  också att höra av sig om privat workshop, gruppbokning eller
+                  en egen dag på gården.
+                </p>
+                <div className="events-empty-actions">
+                  <button
+                    className="events-primary-action"
+                    type="button"
+                    onClick={scrollToContact}
+                  >
+                    Kontakta oss
+                  </button>
+                  <button
+                    className="events-secondary-action"
+                    type="button"
+                    onClick={scrollToPastEvents}
+                  >
+                    Se tidigare kvällar
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
 
-        <InfoCallout onContact={scrollToContact} />
 
         <PastEventsAccordion events={pastEvents} />
       </div>

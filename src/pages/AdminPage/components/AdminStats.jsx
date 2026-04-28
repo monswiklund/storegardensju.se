@@ -27,9 +27,10 @@ function AdminStats({
   const formatAmount = (amountMinor) => formatPrice((amountMinor || 0) / 100);
 
   return (
-    <>
-      <div className="admin-stats-header" id="admin-stats">
+    <div className="admin-workspace admin-stats-workspace">
+      <div className="admin-workspace-header admin-stats-header" id="admin-stats">
         <div className="admin-stats-title">
+          <p className="admin-workspace-kicker">Dashboard</p>
           <h3>Statistiköversikt</h3>
           <p className="admin-muted">Period: {statsRangeLabel.toLowerCase()}</p>
           {generatedAtLabel && (
@@ -83,7 +84,7 @@ function AdminStats({
 
           {statsError && <p className="admin-error">{statsError}</p>}
 
-          <div className="admin-stats">
+          <div className="admin-stats admin-dashboard-grid">
             <div className="admin-stat-card">
               <p className="admin-stat-label">Ordrar i period</p>
               <p className="admin-stat-value">{statsSummary.totalOrders}</p>
@@ -126,8 +127,13 @@ function AdminStats({
 
           {/* Sales Chart */}
           {statsSummary.series && statsSummary.series.length > 0 && (
-            <div className="admin-panel" style={{ marginBottom: "2rem" }}>
-              <h3>Försäljning över tid</h3>
+            <div className="admin-section-card admin-chart-card">
+              <div className="admin-section-card-header">
+                <div>
+                  <h3>Försäljning över tid</h3>
+                  <p>Omsättning och ordervolym för vald period.</p>
+                </div>
+              </div>
               <div className="admin-chart">
                 {(() => {
                   const maxRevenue =
@@ -158,8 +164,8 @@ function AdminStats({
       )}
 
       {!isOverview && (
-        <div className="admin-category-panel" id="admin-categories">
-          <div className="admin-category-header">
+        <div className="admin-section-card admin-category-panel" id="admin-categories">
+          <div className="admin-section-card-header admin-category-header">
             <div>
               <h3>Kategori-mix</h3>
               <p className="admin-muted">Andel av omsättning</p>
@@ -197,8 +203,11 @@ function AdminStats({
               {!statsLoading &&
                 !statsError &&
                 statsSummary.categories.length === 0 && (
-                  <div className="admin-empty">
-                    <p>Ingen statistik att visa ännu.</p>
+                  <div className="admin-empty-state">
+                    <div className="admin-empty-icon">
+                      <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    </div>
+                    <p>Ingen statistik att visa för vald period ännu.</p>
                   </div>
                 )}
               {statsSummary.categories.length > 0 && (
@@ -228,7 +237,7 @@ function AdminStats({
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
