@@ -3,11 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { PageSection } from "../components";
-import { formatPrice } from "../data/products";
+import { formatPrice } from "../services/stripeService";
 import "./CartPage.css";
 
 export default function CartPage() {
-  const { cart, removeItem, updateQuantity, getTotal, clearCart } =
+  const { cart, removeItem, updateQuantity, getTotal, clearCart, getItemCount } =
     useContext(CartContext);
   const navigate = useNavigate();
 
