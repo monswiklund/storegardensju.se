@@ -30,6 +30,7 @@ import MohippaPage from "../pages/MohippaPage.jsx";
 import ArtPage from "../pages/ArtPage.jsx";
 import GalleriPage from "../pages/GalleriPage.jsx";
 import TeamPage from "../pages/TeamPage.jsx";
+import KurserPage from "../pages/KurserPage.jsx";
 const AdminPage = lazy(() => import("../pages/AdminPage/AdminPage.jsx"));
 // BUTIK
 import ButikPage from "../pages/ButikPage.jsx";
@@ -144,6 +145,7 @@ function AppContent() {
         <Route path="/event" element={<EventPage />} />
         <Route path="/mohippa" element={<MohippaPage />} />
         <Route path="/konst" element={<ArtPage />} />
+        <Route path="/kurser" element={<KurserPage />} />
         <Route path="/galleri" element={<GalleriPage />} />
         {/* BUTIK */}
         <Route path="/butik" element={<ButikPage />} />

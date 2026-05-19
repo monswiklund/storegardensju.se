@@ -8,7 +8,9 @@ export const appRoutes = [
       { path: "/konst", label: "Konst" },
     ],
   },
+  { path: "/kurser", label: "Kurser" },
   { path: "/galleri", label: "Galleri" },
   { path: "/butik", label: "Butik" },
   { path: "/om-oss", label: "Om Oss" },
 ];
+

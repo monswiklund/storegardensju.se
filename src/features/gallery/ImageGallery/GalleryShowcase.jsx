@@ -7,6 +7,7 @@ import GalleryGrid from "./components/GalleryGrid";
 import ExpandedGallery from "./components/ExpandedGallery";
 import GalleryLightbox from "./components/GalleryLightbox";
 import FeaturedGallery from "../FeaturedGallery/FeaturedGallery";
+import VenueIntroSection from "../../venue/VenueIntro/VenueIntroSection.jsx";
 import useGalleryLightbox from "./hooks/useGalleryLightbox";
 import useDockedToggle from "./hooks/useDockedToggle";
 import logoImage from "../../../assets/logoTransp_cropped.png";
@@ -220,6 +221,11 @@ function GalleryShowcase() {
     <div className="storegarden-gallery">
       <div className="gallery-logo-container">
         <img src={logoImage} alt="Storegården 7" className="gallery-logo" />
+      </div>
+
+      {/* Venue Intro Section (Om platsen) */}
+      <div className="gallery-venue-intro-wrapper" style={{ margin: "20px auto 40px", maxWidth: "800px", borderBottom: "1px solid #eae7e0", paddingBottom: "40px" }}>
+        <VenueIntroSection />
       </div>
 
       <h2 id="gallery-heading">Bildgalleri</h2>

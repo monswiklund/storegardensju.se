@@ -92,12 +92,32 @@ function HomeUpcomingEventsSection() {
     };
   }, []);
 
-  const upcomingEvents = useMemo(
-    () => eventsData.upcoming
+  const upcomingEvents = useMemo(() => {
+    const fetched = eventsData.upcoming
       .sort((a, b) => new Date(a.startAt || 0) - new Date(b.startAt || 0))
-      .map(toUiEvent),
-    [eventsData.upcoming]
-  );
+      .map(toUiEvent);
+
+    const staticYogaEvent = {
+      title: "Heldag med yoga & måleri",
+      spots: "Passar alla",
+      date: "13 Juli 2026",
+      time: "10:00 - 17:30",
+      description: "En stämningsfull heldag fylld med återhämtning och skaparglädje på vackra Storegården 7. Mjukt yogapass med Lina Wiklund på förmiddagen, god lunch på gården, och glädjefylld målarkurs med Ann Wiklund på eftermiddagen.",
+      location: "Storegården 7",
+      links: [
+        {
+          href: "/kurser",
+          label: "Läs mer & anmäl dig",
+        }
+      ],
+      image: {
+        src: "/images/evenemang/yoga-loft.png",
+        alt: "Yoga på loftet"
+      }
+    };
+
+    return [staticYogaEvent, ...fetched];
+  }, [eventsData.upcoming]);
 
   const pastEvents = useMemo(
     () => eventsData.past

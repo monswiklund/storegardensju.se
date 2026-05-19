@@ -1,5 +1,4 @@
 import { Suspense, lazy } from "react";
-import VenueIntroSection from "../features/venue/VenueIntro/VenueIntroSection.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
@@ -30,16 +29,6 @@ function GalleriPage() {
             </Suspense>
           </FadeInSection>
         </ErrorBoundary>
-      </PageSection>
-      {/* Om lokalen */}
-      <PageSection
-        background="alt"
-        spacing="compact"
-        ariaLabel="venue-intro-heading"
-      >
-        <FadeInSection>
-          <VenueIntroSection />
-        </FadeInSection>
       </PageSection>
     </main>
   );

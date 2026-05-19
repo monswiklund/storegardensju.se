@@ -103,12 +103,13 @@ function EventCard({ event }) {
               <div className="event-card__actions">
                 {eventLinks.map((linkItem, index) => {
                   const isMapLink = linkItem.href?.includes("maps.google.com");
+                  const isInternal = linkItem.href?.startsWith("/");
                   return (
                     <a
                       key={index}
                       href={linkItem.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      target={isInternal ? undefined : "_blank"}
+                      rel={isInternal ? undefined : "noopener noreferrer"}
                       className="event-card__button"
                     >
                       {isMapLink ? (
