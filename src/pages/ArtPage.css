@@ -1,0 +1,288 @@
+/* ==========================================================================
+   Art & Creation Page Styles
+   ========================================================================== */
+
+.art-page {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--background-alt);
+  color: var(--text-main);
+  font-family: var(--font-body);
+}
+
+/* --- Parallax Hero Section --- */
+.art-hero {
+  position: relative;
+  height: 65vh;
+  min-height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-light);
+  background-size: cover;
+  background-position: center;
+  background-attachment: scroll;
+}
+
+@media (min-width: 1024px) {
+  .art-hero {
+    background-attachment: fixed;
+  }
+}
+
+.art-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  z-index: 1;
+}
+
+.art-hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.art-eyebrow {
+  display: inline-block;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-color);
+  font-weight: 700;
+  margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 6px 18px;
+  border-radius: 99px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.art-hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  margin-bottom: 16px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  color: #ffffff;
+}
+
+.art-hero p {
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: 300;
+  opacity: 0.95;
+  margin-bottom: 30px;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --- Buttons & Links --- */
+.art-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  border: none;
+}
+
+.art-button--primary {
+  background-color: var(--primary-color);
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(95, 111, 82, 0.2);
+}
+
+.art-button--primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(95, 111, 82, 0.35);
+}
+
+/* --- Offerings Grid --- */
+.art-section-heading {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 50px;
+}
+
+.art-section-heading h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.art-section-heading p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.art-offerings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 25px;
+  margin-top: 40px;
+}
+
+@media (min-width: 768px) {
+  .art-offerings-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .art-offerings-grid {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+.art-offering-card {
+  background: white;
+  border-radius: 16px;
+  padding: 35px 24px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.art-offering-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+
+.offering-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  transition: var(--transition-smooth);
+}
+
+.art-offering-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  margin-bottom: 12px;
+  color: var(--text-main);
+}
+
+.art-offering-card p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+  flex-grow: 1;
+}
+
+/* Card Accents */
+.offering-terracotta .offering-icon-wrapper {
+  background-color: rgba(185, 148, 112, 0.1);
+  color: var(--accent-color);
+}
+.offering-terracotta:hover {
+  border-color: rgba(185, 148, 112, 0.3);
+}
+
+.offering-green .offering-icon-wrapper {
+  background-color: rgba(95, 111, 82, 0.1);
+  color: var(--primary-color);
+}
+.offering-green:hover {
+  border-color: rgba(95, 111, 82, 0.3);
+}
+
+.offering-slate .offering-icon-wrapper {
+  background-color: rgba(26, 37, 25, 0.1);
+  color: var(--dark-color);
+}
+.offering-slate:hover {
+  border-color: rgba(26, 37, 25, 0.2);
+}
+
+.offering-gold .offering-icon-wrapper {
+  background-color: rgba(212, 175, 55, 0.1);
+  color: #c59b27;
+}
+.offering-gold:hover {
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+/* --- CTA Banner --- */
+.art-cta-banner {
+  background: linear-gradient(135deg, #1e251c 0%, #121711 100%);
+  color: white;
+  padding: 60px 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.art-cta-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(185, 148, 112, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.art-cta-banner__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.art-cta-banner h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  color: white;
+  margin-bottom: 16px;
+}
+
+.art-cta-banner p {
+  color: #dfdfdf;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.art-button--premium {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.art-button--premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(185, 148, 112, 0.3);
+}

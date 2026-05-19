@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Creation Section alternating rows
+   ========================================================================== */
+
 .creation-section {
   width: 100%;
   background-color: var(--background-alt);
@@ -6,152 +10,99 @@
 }
 
 .creation-container {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
   box-sizing: border-box;
 }
 
-.creation-container h2 {
-  text-align: center;
-  font-size: clamp(1.9rem, 1.35rem + 2.5vw, 2.6rem);
+.creation-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 75px;
+}
+
+.creation-row {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .creation-row {
+    flex-direction: row;
+    gap: 60px;
+  }
+
+  .creation-row.row-normal {
+    flex-direction: row;
+  }
+
+  .creation-row.row-reverse {
+    flex-direction: row-reverse;
+  }
+}
+
+.creation-row__text {
+  flex: 1;
+}
+
+.creation-row__text h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
   font-weight: 400;
-  color: var(--text-color);
-  margin: 0 0 48px 0;
-  letter-spacing: -0.02em;
+  color: var(--text-main);
+  margin: 0 0 20px 0;
+  position: relative;
 }
 
-.creation-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  margin-bottom: 48px;
+.creation-row__text h3::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 2px;
+  background-color: var(--accent-color);
+  margin-top: 10px;
 }
 
-.creation-text h3 {
-  font-size: clamp(1.3rem, 1.1rem + 1.8vw, 1.8rem);
-  font-weight: 400;
-  color: var(--text-color);
-  margin: 0 0 24px 0;
-}
-
-.creation-text p {
-  font-size: clamp(0.95rem, 0.92rem + 0.5vw, 1.1rem);
+.creation-row__text p {
+  font-size: 1.05rem;
   line-height: 1.7;
   color: var(--text-secondary);
   margin: 0 0 16px 0;
 }
 
-.creation-info {
-  background: white;
-  padding: 32px;
-  border-radius: 12px;
-  box-shadow: var(--shadow-sm);
+.creation-row__text p:last-child {
+  margin-bottom: 0;
 }
 
-.creation-info h4 {
-  font-size: clamp(1.1rem, 1rem + 1.2vw, 1.4rem);
-  font-weight: 500;
-  color: var(--text-color);
-  margin: 0 0 20px 0;
-}
-
-.creation-info ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.creation-info li {
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
-  color: var(--text-secondary);
+.creation-row__image-wrapper {
+  flex: 1.1;
   position: relative;
-  padding-left: 24px;
-}
-
-.creation-info li:last-child {
-  border-bottom: none;
-}
-
-.creation-info li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: var(--primary-color);
-  font-weight: bold;
-}
-
-.creation-cta {
-  text-align: center;
-  padding: 32px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: var(--shadow-sm);
-}
-
-.cta-button {
-  padding: 16px 40px;
-  background: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  font-size: clamp(1rem, 0.95rem + 0.7vw, 1.2rem);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  border-radius: 16px;
+  overflow: hidden;
   box-shadow: var(--shadow-md);
+  aspect-ratio: 4 / 3;
+  width: 100%;
 }
 
-.cta-button:hover {
-  background: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+.creation-row__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.cta-note {
-  margin: 16px 0 0 0;
-  font-size: clamp(0.85rem, 0.8rem + 0.4vw, 0.95rem);
-  color: var(--text-muted);
+.creation-row:hover .creation-row__image {
+  transform: scale(1.04);
 }
 
-@media (max-width: 768px) {
-  .creation-section {
-    padding: 60px 15px;
-  }
-
-  .creation-container h2 {
-    margin-bottom: 32px;
-  }
-
-  .creation-content {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .creation-info {
-    padding: 24px 20px;
-  }
-
-  .creation-cta {
-    padding: 24px 20px;
-  }
-
-  .cta-button {
-    width: 100%;
-    padding: 14px 32px;
-  }
-}
-
-@media (max-width: 480px) {
-  .creation-section {
-    padding: 40px 10px;
-  }
-
-  .creation-info {
-    padding: 20px 15px;
-  }
-
-  .creation-cta {
-    padding: 20px 15px;
-  }
+.creation-row__image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(95, 111, 82, 0.1) 0%, transparent 100%);
+  pointer-events: none;
 }

@@ -139,7 +139,7 @@ function KurserPage() {
                 <h2>Våra kurser & paket</h2>
                 <p>
                   Välj att delta på förmiddagens yogapass, eftermiddagens målarkurs, 
-                  eller boka hela dagen för den ultimata upplevelsen.
+                  eller boka hela dagen för den hela upplevelsen.
                 </p>
               </div>
 
@@ -175,7 +175,7 @@ function KurserPage() {
                     </div>
 
                     <div className="kurser-card__meta" style={{ marginTop: "auto", borderTop: "1px solid #eee", paddingTop: "15px" }}>
-                      <span className="kurser-card__price">200:- /person <span style={{ fontSize: "0.8rem", fontWeight: "normal", color: "var(--text-secondary)" }}>(ingår kaffe & te)</span></span>
+                      <span className="kurser-card__price" style={{ color: "var(--primary-hover)" }}>200:- /person <span style={{ fontSize: "0.8rem", fontWeight: "normal", color: "var(--text-secondary)" }}>(ingår kaffe & te)</span></span>
                     </div>
 
                     {/* Lina Wiklund Bio */}
@@ -207,7 +207,7 @@ function KurserPage() {
                 {/* MÅLERI KORT (ANN - BRUN) */}
                 <article id="maleri" className="kurser-card" style={{ padding: "10px" }}>
                   <div className="kurser-card__image" style={{ height: "200px" }}>
-                    <img src="/images/evenemang/konstafton/konstafton-2025.webp" alt="Målarkurs" />
+                    <img src="/images/evenemang/maleri-kurs.webp" alt="Målarkurs" />
                     <div className="kurser-card__badge" style={{ backgroundColor: "var(--accent-color)", color: "white" }}>
                       <Palette size={14} /> Måleri
                     </div>
@@ -231,7 +231,7 @@ function KurserPage() {
                     </div>
 
                     <div className="kurser-card__meta" style={{ marginTop: "auto", borderTop: "1px solid #eee", paddingTop: "15px" }}>
-                      <span className="kurser-card__price">600:- /person <span style={{ fontSize: "0.8rem", fontWeight: "normal", color: "var(--text-secondary)" }}>(ingår material, kaffe & fika)</span></span>
+                      <span className="kurser-card__price" style={{ color: "var(--accent-color)" }}>600:- /person <span style={{ fontSize: "0.8rem", fontWeight: "normal", color: "var(--text-secondary)" }}>(ingår material, kaffe & fika)</span></span>
                     </div>
 
                     {/* Ann Wiklund Bio */}
@@ -255,16 +255,26 @@ function KurserPage() {
                         style={{ width: "100%", fontSize: "0.95rem", padding: "12px" }}
                       >
                         <Mail size={16} /> Anmäl dig till Måleri
-                    </a>
+                      </a>
                     </div>
                   </div>
                 </article>
 
-                {/* HELDAG KORT (LINA & ANN - GRÖN) */}
-                <article id="heldag" className="kurser-card" style={{ padding: "10px", border: "2px solid var(--primary-color)" }}>
+                {/* HELDAG KORT (LINA & ANN - GRADIENT) */}
+                <article 
+                  id="heldag" 
+                  className="kurser-card" 
+                  style={{ 
+                    padding: "10px", 
+                    border: "2px solid transparent",
+                    backgroundImage: "linear-gradient(white, white), linear-gradient(135deg, var(--primary-color), var(--accent-color))",
+                    backgroundOrigin: "border-box",
+                    backgroundClip: "padding-box, border-box"
+                  }}
+                >
                   <div className="kurser-card__image" style={{ height: "200px" }}>
                     <img src="/images/evenemang/heldag-paket.jpg" alt="Heldag på gården" />
-                    <div className="kurser-card__badge" style={{ backgroundColor: "var(--primary-hover)", color: "white" }}>
+                    <div className="kurser-card__badge" style={{ background: "linear-gradient(135deg, var(--primary-color), var(--accent-color))", color: "white" }}>
                       <Sparkles size={14} /> Heldag
                     </div>
                   </div>
@@ -287,7 +297,7 @@ function KurserPage() {
                     </div>
 
                     <div className="kurser-card__meta" style={{ marginTop: "auto", borderTop: "1px solid #eee", paddingTop: "15px" }}>
-                      <span className="kurser-card__price">900:- /person <span style={{ fontSize: "0.8rem", fontWeight: "normal", color: "var(--text-secondary)" }}>(ingår lunch, fika & kaffe)</span></span>
+                      <span className="kurser-card__price" style={{ color: "var(--primary-hover)" }}>900:- /person <span style={{ fontSize: "0.8rem", fontWeight: "normal", color: "var(--text-secondary)" }}>(ingår lunch, fika & kaffe)</span></span>
                     </div>
 
                     {/* Bio Lina & Ann Wiklund */}
@@ -310,12 +320,18 @@ function KurserPage() {
                       </div>
                     </div>
 
-                    {/* Heldag - GRÖN/MÖRK KNAPP */}
+                    {/* Heldag - GRADIENT KNAPP */}
                     <div style={{ marginTop: "20px" }}>
                       <a
                         href={`mailto:${CONTACT_EMAIL}?subject=Anmälan: Heldag med yoga %26 måleri (13:e juli)`}
-                        className="kurser-button kurser-button--primary"
-                        style={{ width: "100%", fontSize: "0.95rem", padding: "12px", backgroundColor: "var(--primary-hover)" }}
+                        className="kurser-button"
+                        style={{ 
+                          width: "100%", 
+                          fontSize: "0.95rem", 
+                          padding: "12px", 
+                          background: "linear-gradient(135deg, var(--primary-color), var(--accent-color))",
+                          color: "white"
+                        }}
                       >
                         <Mail size={16} /> Anmäl dig till Heldag
                       </a>
