@@ -146,7 +146,7 @@ function KurserPage() {
               <div className="kurser-grid">
                 {/* YOGA KORT (LINA - GRÖN) */}
                 <article id="yoga" className="kurser-card" style={{ padding: "10px" }}>
-                  <div className="kurser-card__image" style={{ height: "200px" }}>
+                  <div className="kurser-card__image">
                     <img src="/images/evenemang/yoga-loft.png" alt="Yoga på loftet" />
                     <div className="kurser-card__badge" style={{ backgroundColor: "var(--primary-color)", color: "white" }}>
                       <Heart size={14} /> Yoga
@@ -206,7 +206,7 @@ function KurserPage() {
 
                 {/* MÅLERI KORT (ANN - BRUN) */}
                 <article id="maleri" className="kurser-card" style={{ padding: "10px" }}>
-                  <div className="kurser-card__image" style={{ height: "200px" }}>
+                  <div className="kurser-card__image">
                     <img src="/images/evenemang/maleri-kurs.webp" alt="Målarkurs" />
                     <div className="kurser-card__badge" style={{ backgroundColor: "var(--accent-color)", color: "white" }}>
                       <Palette size={14} /> Måleri
@@ -272,7 +272,7 @@ function KurserPage() {
                     backgroundClip: "padding-box, border-box"
                   }}
                 >
-                  <div className="kurser-card__image" style={{ height: "200px" }}>
+                  <div className="kurser-card__image">
                     <img src="/images/evenemang/heldag-paket.jpg" alt="Heldag på gården" />
                     <div className="kurser-card__badge" style={{ background: "linear-gradient(135deg, var(--primary-color), var(--accent-color))", color: "white" }}>
                       <Sparkles size={14} /> Heldag

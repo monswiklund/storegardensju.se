@@ -193,9 +193,16 @@
 }
 
 .kurser-card__image {
-  height: 250px;
+  height: 240px;
   position: relative;
   overflow: hidden;
+  transition: var(--transition-smooth);
+}
+
+@media (max-width: 768px) {
+  .kurser-card__image {
+    height: 295px; /* Taller on mobile for gorgeous proportions and photography display */
+  }
 }
 
 .kurser-card__image img {

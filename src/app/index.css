@@ -129,16 +129,16 @@ html.lenis body {
 /* --- Floating Scroll Indicator Nav (Scroll Spy) --- */
 .scroll-indicator-nav {
   position: fixed;
-  right: 30px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 100;
-  display: none;
+  display: block; /* Visible on all screen sizes */
 }
 
 @media (min-width: 1024px) {
   .scroll-indicator-nav {
-    display: block;
+    right: 30px;
   }
 }
 
@@ -165,6 +165,16 @@ html.lenis body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* UX Trick: Increase the interactive touch zone on mobile/tablets without changing the visual dot size */
+.scroll-dot::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
 }
 
 .scroll-dot:hover {
@@ -198,8 +208,22 @@ html.lenis body {
   border: 1px solid rgba(255,255,255,0.08);
 }
 
-.scroll-dot:hover .dot-label {
-  opacity: 1;
-  transform: translateX(0);
+/* Disable hover labels on touch screens to avoid sticky state issues and shrink dots by 25% */
+@media (max-width: 1023px) {
+  .dot-label {
+    display: none !important;
+  }
+  .scroll-dot {
+    width: 10px;
+    height: 10px;
+    border-width: 1.5px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .scroll-dot:hover .dot-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
