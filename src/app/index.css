@@ -148,16 +148,17 @@ html.lenis body {
   margin: 0;
   display: flex;
   flex-direction: column;
+  align-items: flex-end; /* Align dashes to the right edge */
   gap: 20px;
 }
 
 .scroll-dot {
   position: relative;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background-color: #ffffff;
-  border: 2px solid var(--primary-color);
+  width: 24px; /* Fixed width */
+  height: 4px; /* Fixed height */
+  border-radius: 2px; /* Rounded pill shape */
+  background-color: #d1d5db; /* Light gray for inactive state */
+  border: none; /* No border for clean aesthetic */
   padding: 0;
   cursor: pointer;
   outline: none;
@@ -178,21 +179,21 @@ html.lenis body {
 }
 
 .scroll-dot:hover {
-  transform: scale(1.25);
-  border-color: var(--primary-hover);
+  background-color: var(--primary-hover); /* Soft feedback on hover */
+  transform: none;
 }
 
 .scroll-dot.active {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  transform: scale(1.35);
-  box-shadow: 0 0 10px rgba(95, 111, 82, 0.5);
+  background-color: var(--primary-color); /* Active green */
+  transform: none;
+  box-shadow: 0 0 10px rgba(95, 111, 82, 0.3);
 }
 
 /* Hover label styling */
 .dot-label {
   position: absolute;
-  right: 28px;
+  right: 100%;
+  margin-right: 12px; /* Position label to the left of the dash */
   background-color: rgba(20, 25, 19, 0.9);
   color: #ffffff;
   padding: 5px 12px;
@@ -208,15 +209,18 @@ html.lenis body {
   border: 1px solid rgba(255,255,255,0.08);
 }
 
-/* Disable hover labels on touch screens to avoid sticky state issues and shrink dots by 25% */
+/* Disable hover labels on touch screens and adjust to smaller fixed size */
 @media (max-width: 1023px) {
   .dot-label {
     display: none !important;
   }
   .scroll-dot {
-    width: 10px;
-    height: 10px;
-    border-width: 1.5px;
+    width: 16px; /* Fixed smaller width for mobile */
+    height: 3px;
+    border-radius: 1.5px;
+  }
+  .scroll-dot.active {
+    width: 16px; /* Keep same width on mobile */
   }
 }
 
