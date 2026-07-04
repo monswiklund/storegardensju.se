@@ -181,7 +181,7 @@ function EventPage() {
 
         {/* Sektion: Ytor & Kapacitet (Alternativ A - hero-2.webp) */}
         <div id="event-loft-section">
-          <PageSection background="alt" spacing="default">
+          <PageSection background="green" spacing="default">
             <FadeInSection>
               <div className="event-split-layout">
                 <div className="event-split-image">

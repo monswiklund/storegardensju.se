@@ -165,7 +165,7 @@ function ArtPage() {
 
         {/* Booking CTA Section */}
         <div id="art-cta-section">
-          <PageSection background="alt" spacing="default">
+          <PageSection background="green" spacing="default">
             <FadeInSection>
               <div className="art-cta-banner">
                 <div className="art-cta-banner__inner">

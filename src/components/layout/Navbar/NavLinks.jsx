@@ -1,40 +1,10 @@
 import PropTypes from "prop-types";
-import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 function NavLinks({ items, currentPath, onNavigate }) {
-  const [openSubmenus, setOpenSubmenus] = useState({});
-
-  const activeSubmenus = useMemo(() => {
-    const next = {};
-    items.forEach((item) => {
-      const children = item.children ?? [];
-      if (
-        item.path === currentPath ||
-        children.some((child) => child.path === currentPath)
-      ) {
-        next[item.path] = true;
-      }
-    });
-    return next;
-  }, [items, currentPath]);
-
-  useEffect(() => {
-    if (!isMobileNav()) return;
-    if (Object.keys(activeSubmenus).length === 0) return;
-    setOpenSubmenus((prev) => ({ ...prev, ...activeSubmenus }));
-  }, [activeSubmenus]);
-
   const isMobileNav = () =>
     typeof window !== "undefined" &&
     window.matchMedia("(max-width: 768px)").matches;
-
-  const toggleSubmenu = (path) => {
-    setOpenSubmenus((prev) => ({
-      ...prev,
-      [path]: !prev[path],
-    }));
-  };
 
   return (
     <ul className="nav-list">
@@ -52,12 +22,10 @@ function NavLinks({ items, currentPath, onNavigate }) {
           (child) => child.path === currentPath,
         );
         const isActive = currentPath === item.path || isChildActive;
-        const isOpen = Boolean(openSubmenus[item.path]);
 
-        const handleParentClick = (event) => {
+        const handleParentClick = () => {
           if (hasChildren && isMobile) {
-            event.preventDefault();
-            toggleSubmenu(item.path);
+            onNavigate(item.path);
             return;
           }
           onNavigate(item.path);
@@ -66,9 +34,7 @@ function NavLinks({ items, currentPath, onNavigate }) {
         return (
           <li
             key={item.path}
-            className={`nav-item ${hasChildren ? "has-submenu" : ""} ${
-              isOpen ? "submenu-open" : ""
-            }`}
+            className={`nav-item ${hasChildren ? "has-submenu" : ""}`}
           >
             <div className="nav-item-row">
               <Link
@@ -78,17 +44,6 @@ function NavLinks({ items, currentPath, onNavigate }) {
               >
                 {item.label}
               </Link>
-              {hasChildren && (
-                <button
-                  type="button"
-                  className="nav-submenu-toggle"
-                  aria-label={`Visa ${item.label} undermeny`}
-                  aria-expanded={isOpen}
-                  onClick={() => toggleSubmenu(item.path)}
-                >
-                  <span className="nav-submenu-caret" aria-hidden="true" />
-                </button>
-              )}
             </div>
             {hasChildren && (
               <ul className="nav-submenu" aria-label={`${item.label} undermeny`}>
@@ -129,6 +84,7 @@ NavLinks.propTypes = {
     }),
   ).isRequired,
   currentPath: PropTypes.string.isRequired,
+  isMenuOpen: PropTypes.bool.isRequired,
   onNavigate: PropTypes.func.isRequired,
 };
 

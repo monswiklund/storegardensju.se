@@ -13,7 +13,6 @@ import {
   CartDrawer,
   ScrollToTopButton,
   ScrollToTop,
-  BuildInfo,
   Footer,
 } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
@@ -167,12 +166,12 @@ function AppContent() {
       </Routes>
       {!isAdminRoute && (
         <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
-          <HomeInstagramSection />
+          <ContactSection />
         </FadeInSection>
       )}
       {!isAdminRoute && (
         <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
-          <ContactSection />
+          <HomeInstagramSection />
         </FadeInSection>
       )}
       {!isAdminRoute && <Footer />}

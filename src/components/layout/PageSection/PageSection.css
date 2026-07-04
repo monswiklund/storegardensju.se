@@ -11,6 +11,10 @@
   background-color: var(--background-alt) !important;
 }
 
+.page-section.bg-green {
+  background-color: var(--background-green) !important;
+}
+
 .page-section.spacing-default {
   padding: 80px 20px;
 }

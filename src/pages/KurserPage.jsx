@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { PageSection } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
+import MailtoFallback from "../features/contact/MailtoFallback.jsx";
 import "./KurserPages.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
@@ -19,6 +20,7 @@ const CONTACT_EMAIL = "bylinawiklund@gmail.com";
 function KurserPage() {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState("top");
+  const [signupFallback, setSignupFallback] = useState(null);
 
   // Smooth scroll handler for anchor links (#yoga and #maleri)
   useEffect(() => {
@@ -126,7 +128,7 @@ function KurserPage() {
 
         {/* Tidslinje Sektion */}
         <div id="kurser-timeline-section">
-          <PageSection background="alt" spacing="default">
+          <PageSection background="green" spacing="default">
             <FadeInSection>
               <div className="kurser-section-heading">
                 <h2>Tidsschema för heldagen</h2>
@@ -254,9 +256,16 @@ function KurserPage() {
                         href={`mailto:${CONTACT_EMAIL}?subject=Anmälan: Yoga (13:e juli)`}
                         className="kurser-button kurser-button--primary"
                         style={{ width: "100%", fontSize: "0.95rem", padding: "12px" }}
+                        onClick={() => setSignupFallback("Anmälan: Yoga (13:e juli)")}
                       >
                         <Mail size={16} /> Anmäl dig till Yoga
                       </a>
+                      {signupFallback === "Anmälan: Yoga (13:e juli)" && (
+                        <MailtoFallback
+                          email={CONTACT_EMAIL}
+                          copyText={`Till: ${CONTACT_EMAIL}\nÄmne: Anmälan: Yoga (13:e juli)`}
+                        />
+                      )}
                     </div>
                   </div>
                 </article>
@@ -310,9 +319,16 @@ function KurserPage() {
                         href={`mailto:${CONTACT_EMAIL}?subject=Anmälan: Måleri (13:e juli)`}
                         className="kurser-button kurser-button--accent"
                         style={{ width: "100%", fontSize: "0.95rem", padding: "12px" }}
+                        onClick={() => setSignupFallback("Anmälan: Måleri (13:e juli)")}
                       >
                         <Mail size={16} /> Anmäl dig till Måleri
                       </a>
+                      {signupFallback === "Anmälan: Måleri (13:e juli)" && (
+                        <MailtoFallback
+                          email={CONTACT_EMAIL}
+                          copyText={`Till: ${CONTACT_EMAIL}\nÄmne: Anmälan: Måleri (13:e juli)`}
+                        />
+                      )}
                     </div>
                   </div>
                 </article>
@@ -382,16 +398,23 @@ function KurserPage() {
                       <a
                         href={`mailto:${CONTACT_EMAIL}?subject=Anmälan: Heldag med yoga %26 måleri (13:e juli)`}
                         className="kurser-button"
-                        style={{ 
-                          width: "100%", 
-                          fontSize: "0.95rem", 
-                          padding: "12px", 
+                        style={{
+                          width: "100%",
+                          fontSize: "0.95rem",
+                          padding: "12px",
                           background: "linear-gradient(135deg, var(--primary-color), var(--accent-color))",
                           color: "white"
                         }}
+                        onClick={() => setSignupFallback("Anmälan: Heldag med yoga & måleri (13:e juli)")}
                       >
                         <Mail size={16} /> Anmäl dig till Heldag
                       </a>
+                      {signupFallback === "Anmälan: Heldag med yoga & måleri (13:e juli)" && (
+                        <MailtoFallback
+                          email={CONTACT_EMAIL}
+                          copyText={`Till: ${CONTACT_EMAIL}\nÄmne: Anmälan: Heldag med yoga & måleri (13:e juli)`}
+                        />
+                      )}
                     </div>
                   </div>
                 </article>

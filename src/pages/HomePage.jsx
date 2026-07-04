@@ -136,7 +136,7 @@ function HomePage() {
         {/* Kommande evenemang */}
         <div id="home-events">
           <PageSection
-            background="alt"
+            background="white"
             spacing="compact"
             ariaLabel="evenemang-heading"
           >
@@ -149,7 +149,7 @@ function HomePage() {
         {/* Services - Klickbara kort */}
         <div id="home-services">
           <PageSection
-            background="alt"
+            background="green"
             spacing="compact"
             ariaLabel="services-heading"
           >

@@ -1,4 +1,4 @@
-export const contactBackgroundImage = '/images/lokal/slide6.jpg';
+export const contactEmail = 'storegardensju@gmail.com';
 
 export const contactMethods = [
   {

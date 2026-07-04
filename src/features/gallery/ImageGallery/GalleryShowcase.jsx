@@ -166,9 +166,6 @@ function GalleryShowcase() {
 
   return (
     <div className="storegarden-gallery">
-      <div className="gallery-logo-container">
-        <img src={logoImage} alt="Storegården 7" className="gallery-logo" />
-      </div>
 
       {/* Venue Intro Section (Om platsen) */}
       <div className="gallery-venue-intro-wrapper" style={{ margin: "20px auto 40px", maxWidth: "800px", borderBottom: "1px solid #eae7e0", paddingBottom: "40px" }}>

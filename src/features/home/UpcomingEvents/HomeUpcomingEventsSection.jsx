@@ -190,7 +190,7 @@ function HomeUpcomingEventsSection() {
               {/* Left Column: Text info and Call to action buttons */}
               <div className="upcoming-events-content-col">
                 <span className="events-eyebrow">KOMMANDE EVENEMANG</span>
-                <h2 className="events-heading-large">Nästa upplevelse på Storegården</h2>
+                <h2 className="events-heading-large">Nästa grej på Storegården</h2>
                 <p className="events-description-large">
                   En dag för kropp, sinne och kreativitet i en inspirerande miljö.
                   Välkommen till en stämningsfull retreat med yoga, måleri och god mat.

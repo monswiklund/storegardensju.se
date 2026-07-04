@@ -51,7 +51,7 @@ function HomeInstagramSection() {
     <section className="instagram-section" aria-labelledby="instagram-heading">
       <div className="instagram-container">
         <header className="instagram-section-header">
-          <h2 id="instagram-heading">Följ oss på Instagram</h2>
+          <h2 id="instagram-heading">Se mer på vår Instagram</h2>
           <a
             className="instagram-handle"
             href="https://www.instagram.com/storegarden7/"

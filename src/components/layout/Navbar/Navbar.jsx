@@ -1,17 +1,30 @@
 import { useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
 import { appRoutes } from "../../../config/routes.js";
 import CartBadge from "./CartBadge.jsx";
+import logo from "../../../assets/logoTransp_cropped.png";
 
 const NAV_ITEMS = appRoutes.filter(route => !route.hidden);
+
+const getCurrentTitle = (pathname) => {
+  for (const item of NAV_ITEMS) {
+    const children = item.children ?? [];
+    const child = children.find(route => route.path === pathname);
+    if (child) return child.label;
+    if (item.path === pathname) return item.label;
+  }
+
+  return "Hem";
+};
 
 function Navbar() {
   const location = useLocation();
   const { isOpen, toggle, close, menuRef, triggerRef } = useNavbarToggle();
   const pendingScrollTargetRef = useRef(null);
+  const currentTitle = getCurrentTitle(location.pathname);
 
   const scrollToHeroTitle = () => {
     if (typeof window === "undefined") return;
@@ -62,6 +75,17 @@ function Navbar() {
   return (
     <nav className="navbar" role="navigation" aria-label="Huvudnavigation">
       <div className="navbar-container">
+        <span className="navbar-page-title">{currentTitle}</span>
+
+        <Link
+          to="/"
+          className="navbar-brand"
+          aria-label="Till startsidan"
+          onClick={() => handleNavigate("/")}
+        >
+          <img src={logo} alt="Storegården 7" className="navbar-logo" />
+        </Link>
+
         <div ref={menuRef} className={`nav-menu ${isOpen ? "open" : ""}`}>
           <NavLinks
             items={NAV_ITEMS}
