@@ -4,8 +4,11 @@ import "./CategoryToggle.css";
 
 function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef(null);
+    const dropdownRef = useRef(null);
     const buttonRefs = useRef([]);
+
     const sortedCategories = useMemo(() => {
         const next = [...categories];
         next.sort((a, b) => {
@@ -16,11 +19,27 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
             }
             return orderA - orderB;
         });
+
+        // Position "alla" and "stellet" specifically
         const allaIndex = next.findIndex((cat) => cat.id === "alla");
-        if (allaIndex > 0) {
-            const [alla] = next.splice(allaIndex, 1);
-            next.unshift(alla);
+        let allaCat = null;
+        if (allaIndex !== -1) {
+            [allaCat] = next.splice(allaIndex, 1);
         }
+
+        const stelletIndex = next.findIndex((cat) => cat.id === "stellet");
+        let stelletCat = null;
+        if (stelletIndex !== -1) {
+            [stelletCat] = next.splice(stelletIndex, 1);
+        }
+
+        if (allaCat) {
+            next.unshift(allaCat);
+        }
+        if (stelletCat) {
+            next.unshift(stelletCat);
+        }
+
         return next;
     }, [categories]);
 
@@ -32,13 +51,12 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
         }
     }, [activeCategory, sortedCategories]);
 
-    // Scroll to active button on mobile
+    // Scroll to active button on mobile/desktop
     useEffect(() => {
         if (buttonRefs.current[selectedIndex] && containerRef.current) {
             const button = buttonRefs.current[selectedIndex];
             const container = containerRef.current;
 
-            // Check if we're on mobile (container is scrollable)
             if (container.scrollWidth > container.clientWidth) {
                 const buttonLeft = button.offsetLeft;
                 const buttonWidth = button.offsetWidth;
@@ -53,9 +71,26 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
         }
     }, [selectedIndex]);
 
+    // Click outside handler to close dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isOpen]);
+
     const handleCategoryClick = (category, index) => {
         setSelectedIndex(index);
         onCategoryChange(category.id);
+        setIsOpen(false);
     };
 
     const handleKeyDown = (event, index) => {
@@ -83,9 +118,12 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
         }
     };
 
+    const activeCategoryData = sortedCategories[selectedIndex] || { name: "Kategori", images: [] };
+
     return (
         <div className="category-toggle">
-            <div className="category-toggle-container" ref={containerRef}>
+            {/* Desktop Segmented Control */}
+            <div className="category-toggle-container desktop-only" ref={containerRef}>
                 {sortedCategories.map((category, index) => (
                     <button
                         key={category.id}
@@ -102,6 +140,45 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
                         <span className="category-count">({category.images.length})</span>
                     </button>
                 ))}
+            </div>
+
+            {/* Custom Mobile Dropdown Control */}
+            <div className="category-toggle-dropdown-container mobile-only" ref={dropdownRef}>
+                <button
+                    className={`category-select-trigger ${isOpen ? "is-open" : ""}`}
+                    onClick={() => setIsOpen(!isOpen)}
+                    aria-expanded={isOpen}
+                    aria-haspopup="listbox"
+                    aria-label="Välj kategori"
+                    type="button"
+                >
+                    <span className="select-trigger-text">
+                        {activeCategoryData.name} <span className="select-trigger-count">({activeCategoryData.images.length})</span>
+                    </span>
+                    <div className="category-select-arrow" aria-hidden="true">
+                        ▼
+                    </div>
+                </button>
+
+                {isOpen && (
+                    <ul className="category-dropdown-options" role="listbox" aria-label="Kategorier">
+                        {sortedCategories.map((category, index) => {
+                            const isActive = category.id === activeCategory;
+                            return (
+                                <li
+                                    key={category.id}
+                                    role="option"
+                                    aria-selected={isActive}
+                                    className={`category-dropdown-option ${isActive ? "active" : ""}`}
+                                    onClick={() => handleCategoryClick(category, index)}
+                                >
+                                    <span className="option-name">{category.name}</span>
+                                    <span className="option-count">({category.images.length})</span>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
             </div>
         </div>
     );

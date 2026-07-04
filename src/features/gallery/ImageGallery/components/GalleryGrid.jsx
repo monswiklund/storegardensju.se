@@ -32,7 +32,7 @@ function GalleryGrid({ images, isLoading, onImageSelect, categoryName }) {
       className="gallery-grid"
       columnClassName="gallery-column"
     >
-      {images.slice(0, 6).map((image, index) => (
+      {images.map((image, index) => (
         <div
           key={image.filename || image.original || index}
           className="gallery-thumbnail"
@@ -47,7 +47,11 @@ function GalleryGrid({ images, isLoading, onImageSelect, categoryName }) {
             }
           }}
         >
-          <img src={image.thumbnail} alt={image.thumbnailAlt} loading="eager" />
+          <img
+            src={image.thumbnail}
+            alt={image.thumbnailAlt}
+            loading={index < 6 ? "eager" : "lazy"}
+          />
         </div>
       ))}
     </Masonry>

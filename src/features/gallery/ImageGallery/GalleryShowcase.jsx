@@ -4,12 +4,9 @@ import CategoryToggle from "../CategoryToggle/CategoryToggle";
 import staticGalleryData from "../../../data/galleryCategories.json";
 import galleryOrder from "../../../data/gallery-order.json";
 import GalleryGrid from "./components/GalleryGrid";
-import ExpandedGallery from "./components/ExpandedGallery";
 import GalleryLightbox from "./components/GalleryLightbox";
-import FeaturedGallery from "../FeaturedGallery/FeaturedGallery";
 import VenueIntroSection from "../../venue/VenueIntro/VenueIntroSection.jsx";
 import useGalleryLightbox from "./hooks/useGalleryLightbox";
-import useDockedToggle from "./hooks/useDockedToggle";
 import logoImage from "../../../assets/logoTransp_cropped.png";
 import { fetchGalleryCategories } from "../../../services/galleryService";
 
@@ -46,23 +43,57 @@ const normalizeGalleryData = (data) => {
   });
 
   const hasAllCategory = categories.some((category) => category.id === "alla");
-  if (!hasAllCategory && categories.length > 0) {
-    const allImages = categories.flatMap((category) =>
-      (category.images || []).map((image) => ({
-        ...image,
-        categoryId: category.id,
-      }))
-    );
-    categories = [
-      {
-        id: "alla",
-        name: "Alla bilder",
-        description: "Alla bilder från Storegården 7",
-        images: allImages,
-        order: -1,
-      },
-      ...categories,
-    ];
+  let allImages = [];
+  if (categories.length > 0) {
+    if (hasAllCategory) {
+      allImages = categories.find((c) => c.id === "alla").images;
+    } else {
+      allImages = categories.flatMap((category) =>
+        (category.images || []).map((image) => ({
+          ...image,
+          categoryId: category.id,
+        }))
+      );
+      categories = [
+        {
+          id: "alla",
+          name: "Alla bilder",
+          description: "Alla bilder från Storegården 7",
+          images: allImages,
+          order: -1,
+        },
+        ...categories,
+      ];
+    }
+  }
+
+  // Add "stellet" category if featured images exist
+  const featuredList = data?.featured || raw?.featured || galleryOrder?.featured || [];
+  if (featuredList && featuredList.length > 0 && allImages.length > 0) {
+    const featuredImages = featuredList
+      .map((featuredId) => {
+        const imageData = allImages.find(
+          (img) =>
+            img.filename === featuredId ||
+            img.id === featuredId ||
+            img.storageKey === featuredId
+        );
+        if (!imageData) return null;
+        return {
+          ...imageData,
+        };
+      })
+      .filter(Boolean);
+
+    if (featuredImages.length > 0) {
+      categories.push({
+        id: "stellet",
+        name: "Stället",
+        description: "Utvalda bilder från Storegården 7",
+        images: featuredImages,
+        order: -0.5, // Order between "alla" (-1) and other categories (>= 0)
+      });
+    }
   }
 
   return {
@@ -72,9 +103,8 @@ const normalizeGalleryData = (data) => {
 };
 
 function GalleryShowcase() {
-  const [activeCategory, setActiveCategory] = useState("alla");
+  const [activeCategory, setActiveCategory] = useState("stellet");
   const [isLoading, setIsLoading] = useState(false);
-  const [showAllImages, setShowAllImages] = useState(false);
   const [galleryData, setGalleryData] = useState(null);
 
   useEffect(() => {
@@ -100,6 +130,18 @@ function GalleryShowcase() {
     [galleryData]
   );
 
+  // Fallback if the active category is not found (e.g. if "stellet" is not present)
+  useEffect(() => {
+    if (normalizedGallery.categories.length > 0) {
+      const exists = normalizedGallery.categories.some(
+        (cat) => cat.id === activeCategory
+      );
+      if (!exists) {
+        setActiveCategory(normalizedGallery.categories[0].id);
+      }
+    }
+  }, [activeCategory, normalizedGallery]);
+
   const activeCategoryData = useMemo(
     () =>
       normalizedGallery.categories.find((cat) => cat.id === activeCategory),
@@ -122,61 +164,6 @@ function GalleryShowcase() {
     }));
   }, [activeCategoryData]);
 
-  // Featured images - lookup from "alla" category based on featured list
-  const featuredImages = useMemo(() => {
-    const featuredList =
-      normalizedGallery.featured ||
-      galleryOrder?.featured ||
-      [];
-
-    if (!featuredList || featuredList.length === 0) {
-      return [];
-    }
-
-    const allaCategoryData = normalizedGallery.categories.find(
-      (cat) => cat.id === "alla"
-    );
-    if (!allaCategoryData) {
-      return [];
-    }
-
-    return featuredList
-      .map((featuredId) => {
-        const imageData = allaCategoryData.images.find(
-          (img) =>
-            img.filename === featuredId ||
-            img.id === featuredId ||
-            img.storageKey === featuredId
-        );
-        if (!imageData) return null;
-
-        return {
-          original: imageData.path,
-          thumbnail: imageData.path,
-          description: imageData.displayName,
-          originalAlt: imageData.displayName,
-          thumbnailAlt: imageData.displayName,
-          filename: imageData.filename,
-          subcategory: imageData.subcategory,
-        };
-      })
-      .filter(Boolean);
-  }, [normalizedGallery]);
-
-  // Separate lightbox for featured gallery
-  const {
-    isOpen: showFeaturedLightbox,
-    currentIndex: featuredLightboxIndex,
-    currentImage: featuredCurrentImage,
-    openLightbox: openFeaturedLightbox,
-    closeLightbox: closeFeaturedLightbox,
-    goToImage: goToFeaturedImage,
-    goToNextImage: goToFeaturedNextImage,
-    goToPreviousImage: goToFeaturedPreviousImage,
-    dialogRef: featuredDialogRef,
-    closeButtonRef: featuredCloseButtonRef,
-  } = useGalleryLightbox(featuredImages, "featured");
-
   // Main gallery lightbox
   const {
     isOpen: showLightbox,
@@ -191,21 +178,10 @@ function GalleryShowcase() {
     closeButtonRef,
   } = useGalleryLightbox(images, activeCategory);
 
-  const {
-    mode: buttonMode,
-    containerRef,
-    buttonRef,
-  } = useDockedToggle(showAllImages);
-
-  const toggleAllImages = useCallback(() => {
-    setShowAllImages((prev) => !prev);
-  }, []);
-
   const handleCategoryChange = useCallback(
     (categoryId) => {
       setIsLoading(true);
       setActiveCategory(categoryId);
-      setShowAllImages(false);
       closeLightbox();
 
       setTimeout(() => {
@@ -230,14 +206,6 @@ function GalleryShowcase() {
 
       <h2 id="gallery-heading">Bildgalleri</h2>
 
-      {/* Featured Gallery - always visible */}
-      {featuredImages.length > 0 && (
-        <FeaturedGallery
-          images={featuredImages}
-          onImageSelect={openFeaturedLightbox}
-        />
-      )}
-
       <CategoryToggle
         categories={normalizedGallery.categories}
         activeCategory={activeCategory}
@@ -249,46 +217,6 @@ function GalleryShowcase() {
         isLoading={isLoading}
         onImageSelect={openLightbox}
         categoryName={categoryName}
-      />
-
-      {!showAllImages && (
-        <button
-          className="show-more-button"
-          onClick={toggleAllImages}
-          aria-expanded={showAllImages}
-          aria-controls="expanded-gallery"
-          aria-label={`Visa alla ${images.length} bilder i galleriet`}
-        >
-          Visa alla bilder ({images.length})
-        </button>
-      )}
-
-      {showAllImages && (
-        <ExpandedGallery
-          images={images.slice(6)}
-          startIndex={6}
-          totalCount={images.length}
-          onImageSelect={openLightbox}
-          categoryName={categoryName}
-          buttonMode={buttonMode}
-          onToggle={toggleAllImages}
-          containerRef={containerRef}
-          buttonRef={buttonRef}
-        />
-      )}
-
-      {/* Featured Gallery Lightbox */}
-      <GalleryLightbox
-        isOpen={showFeaturedLightbox}
-        images={featuredImages}
-        currentIndex={featuredLightboxIndex}
-        currentImage={featuredCurrentImage}
-        onClose={closeFeaturedLightbox}
-        onNext={goToFeaturedNextImage}
-        onPrevious={goToFeaturedPreviousImage}
-        onSelectImage={goToFeaturedImage}
-        dialogRef={featuredDialogRef}
-        closeButtonRef={featuredCloseButtonRef}
       />
 
       {/* Main Gallery Lightbox */}
