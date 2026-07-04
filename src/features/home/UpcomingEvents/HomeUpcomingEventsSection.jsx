@@ -1,4 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ArrowUpRight,
+  Leaf,
+  Coffee,
+  Users
+} from "lucide-react";
 import "./UpcomingEvents.css";
 import "../PastEvents/PastEvents.css";
 import EventCard from "./components/EventCard";
@@ -57,12 +66,30 @@ const toUiEvent = (item) => {
   };
 };
 
+// Helper component to render either react-router Link or standard anchor tag
+const SmartLink = ({ href, className, children, ...props }) => {
+  const isInternal = href && href.startsWith("/") && !href.startsWith("//");
+  if (isInternal) {
+    return (
+      <Link to={href} className={className} {...props}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} className={className} target="_blank" rel="noopener noreferrer" {...props}>
+      {children}
+    </a>
+  );
+};
+
 function HomeUpcomingEventsSection() {
   const scrollToContact = useScrollToSelector(".contact-container");
   const scrollToPastEvents = useScrollToSelector("#past-events");
   const [eventsData, setEventsData] = useState({ upcoming: [], past: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [currentUpcomingIndex, setCurrentUpcomingIndex] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -126,13 +153,24 @@ function HomeUpcomingEventsSection() {
     [eventsData.past]
   );
 
+  const activeEvent = upcomingEvents[currentUpcomingIndex] || null;
+  const primaryLink = activeEvent?.links?.[0] || { href: "/kurser", label: "Läs mer & anmäl dig" };
+  const secondaryLink = activeEvent?.links?.[1] || { href: "/event", label: "Mer information" };
+
+  const nextUpcoming = () => {
+    if (upcomingEvents.length <= 1) return;
+    setCurrentUpcomingIndex((prev) => (prev + 1) % upcomingEvents.length);
+  };
+
+  const prevUpcoming = () => {
+    if (upcomingEvents.length <= 1) return;
+    setCurrentUpcomingIndex((prev) => (prev - 1 + upcomingEvents.length) % upcomingEvents.length);
+  };
+
   return (
     <div id="events-section" className="events-section">
       <div className="events-container">
-        <header className="events-section-header">
-          <span className="events-eyebrow">Ateljén och gården</span>
-          <h2 id="events-heading">Kommande evenemang</h2>
-        </header>
+
 
         {loading && (
           <div className="events-status-panel">
@@ -146,12 +184,60 @@ function HomeUpcomingEventsSection() {
           </div>
         )}
 
-        {!loading && !error &&
-          (upcomingEvents.length > 0 ? (
-            <div className="events-grid">
-              {upcomingEvents.map((event) => (
-                <EventCard key={`${event.title}-${event.date}-${event.time}`} event={event} />
-              ))}
+        {!loading && !error && (
+          upcomingEvents.length > 0 ? (
+            <div className="upcoming-events-layout">
+              {/* Left Column: Text info and Call to action buttons */}
+              <div className="upcoming-events-content-col">
+                <span className="events-eyebrow">KOMMANDE EVENEMANG</span>
+                <h2 className="events-heading-large">Nästa upplevelse på Storegården</h2>
+                <p className="events-description-large">
+                  En dag för kropp, sinne och kreativitet i en inspirerande miljö.
+                  Välkommen till en stämningsfull retreat med yoga, måleri och god mat.
+                </p>
+                
+                <div className="upcoming-desktop-actions desktop-only">
+                  {primaryLink && (
+                    <SmartLink href={primaryLink.href} className="btn-primary-event">
+                      <span>{primaryLink.label}</span>
+                      <ArrowUpRight size={16} />
+                    </SmartLink>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Column: Event card carousel */}
+              <div className="upcoming-events-carousel-col">
+                {activeEvent && (
+                  <div className="upcoming-event-carousel">
+                    <EventCard event={activeEvent} />
+
+                    {/* Carousel Navigation (Dots & Chevrons) */}
+                    <div className="carousel-controls-row">
+                      <div className="carousel-dots-indicator">
+                        {upcomingEvents.map((_, idx) => (
+                          <button
+                            key={idx}
+                            className={`carousel-dot-indicator ${idx === currentUpcomingIndex ? "active" : ""}`}
+                            onClick={() => setCurrentUpcomingIndex(idx)}
+                            aria-label={`Visa evenemang ${idx + 1}`}
+                          />
+                        ))}
+                      </div>
+                      {upcomingEvents.length > 1 && (
+                        <div className="carousel-nav-arrows">
+                          <button className="carousel-nav-arrow" onClick={prevUpcoming} aria-label="Föregående">
+                            <ChevronLeft size={18} />
+                          </button>
+                          <button className="carousel-nav-arrow" onClick={nextUpcoming} aria-label="Nästa">
+                            <ChevronRight size={18} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <div className="events-empty-panel">
@@ -185,10 +271,15 @@ function HomeUpcomingEventsSection() {
                 </div>
               </div>
             </div>
-          ))}
+          )
+        )}
 
+        {/* Separator line */}
+        <div className="events-section-separator" />
 
+        {/* Past Events Section */}
         <PastEventsAccordion events={pastEvents} />
+
       </div>
     </div>
   );

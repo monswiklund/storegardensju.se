@@ -57,7 +57,7 @@ export const profiles = {
     title: "Carl Wiklund",
     about: "Event & Restaurang Konsult",
     contact: {
-      email: "cwconsultingevent@gmail.com",
+      email: "storegardensju@gmail.com",
       instagram: "www.instagram.com/_wiklund_",
     },
     texts: [
@@ -112,6 +112,7 @@ export const profiles = {
       "Cloud & Infra: AWS · Azure · Hetzner",
       "DevOps: Docker · Kubernetes · Hashicorp",
       "Webb: TypeScript · React · Node.js",
+      "DB: Postgres",
     ],
     imageSrc: "/images/mans-profile.webp",
     portfolio: [],

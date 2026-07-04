@@ -5,7 +5,7 @@
 .services-section {
   width: 100%;
   padding: clamp(56px, 7vw, 88px) 20px;
-  background: #ffffff;
+  background: transparent;
 }
 
 .services-container {

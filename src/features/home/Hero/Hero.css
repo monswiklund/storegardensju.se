@@ -369,7 +369,7 @@
   overflow-y: hidden;
   position: relative;
   cursor: grab;
-  touch-action: pan-x; /* Horizontal drag/swipe; vertical page scroll passes through */
+  touch-action: pan-y; /* Vertical page scroll stays native; horizontal drag is handled in JS */
   scrollbar-width: none; /* Firefox: hide scrollbar */
   -ms-overflow-style: none;
   /* Mask gradient for smooth edges */

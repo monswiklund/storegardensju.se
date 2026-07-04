@@ -1,132 +1,104 @@
 import PropTypes from "prop-types";
-import { CalendarDays, Clock, ExternalLink, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Clock, MapPin, ArrowUpRight } from "lucide-react";
 
-const splitDate = (date) => {
-  const parts = (date || "").split(" ");
+const splitDateString = (dateStr) => {
+  if (!dateStr) return { day: "", month: "", year: "" };
+  const parts = dateStr.split(" ");
   return {
     day: parts[0] || "",
-    month: parts[1] || "",
+    month: (parts[1] || "").toUpperCase(),
     year: parts[2] || "",
   };
 };
 
-function EventCard({ event }) {
-  const {
-    title,
-    spots,
-    date,
-    time,
-    description,
-    artists,
-    location,
-    link,
-    linkLabel,
-    links,
-    image,
-  } = event;
+const SmartLink = ({ href, className, children, ...props }) => {
+  const isInternal = href && href.startsWith("/") && !href.startsWith("//");
+  if (isInternal) {
+    return (
+      <Link to={href} className={className} {...props}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} className={className} target="_blank" rel="noopener noreferrer" {...props}>
+      {children}
+    </a>
+  );
+};
 
-  // Support both single link (legacy) and multiple links
-  const eventLinks =
-    links || (link ? [{ href: link, label: linkLabel ?? "Läs mer" }] : []);
-  const dateParts = splitDate(date);
+function EventCard({ event }) {
+  const { title, spots, date, time, location, links, link, linkLabel, image } = event;
+  const eventDate = splitDateString(date);
+  
+  const eventLinks = links || (link ? [{ href: link, label: linkLabel ?? "Läs mer" }] : []);
+  const primaryLink = eventLinks[0] || null;
+  const secondaryLink = eventLinks[1] || null;
 
   return (
-    <article
-      className={`event-card ${
-        eventLinks.length > 0 ? "konstafton-card" : ""
-      } ${image?.src ? "event-card--has-image" : ""}`}
-    >
-      <header className="event-card__header">
-        <div className="event-card__date-card" aria-label={date}>
-          <span className="event-card__date-day">{dateParts.day}</span>
-          <span className="event-card__date-month">{dateParts.month}</span>
-          {dateParts.year && (
-            <span className="event-card__date-year">{dateParts.year}</span>
-          )}
+    <div className="upcoming-event-card">
+      {/* Info Side (Left on desktop, Bottom on mobile) */}
+      <div className="upcoming-card-info">
+        <div className="upcoming-card-date-badge desktop-only">
+          <span className="upcoming-date-day">{eventDate.day}</span>
+          <span className="upcoming-date-month">{eventDate.month}</span>
+          <span className="upcoming-date-year">{eventDate.year}</span>
         </div>
-        <div className="event-card__headline">
-          <div className="event-card__title-row">
-            <h3 className="event-card__title">{title}</h3>
-            {spots && <span className="event-card__badge">{spots}</span>}
-          </div>
-          <div className="event-card__meta">
-            {location && (
-              <span className="event-card__meta-item">
-                <MapPin size={15} aria-hidden="true" />
-                {location}
-              </span>
-            )}
+        
+        <div className="upcoming-card-details">
+          {spots && (
+            <span className="upcoming-spots-pill">
+              {spots}
+            </span>
+          )}
+          
+          <h3 className="upcoming-event-title">{title}</h3>
+          
+          <div className="upcoming-event-meta">
             {time && (
-              <span className="event-card__meta-item">
-                <Clock size={15} aria-hidden="true" />
-                {time}
-              </span>
+              <div className="upcoming-meta-item">
+                <Clock size={16} />
+                <span>{time}</span>
+              </div>
             )}
-            {!time && date && (
-              <span className="event-card__meta-item">
-                <CalendarDays size={15} aria-hidden="true" />
-                {date}
-              </span>
-            )}
-          </div>
-          {date && <span className="event-card__full-date">{date}</span>}
-        </div>
-      </header>
-
-      <div className="event-card__layout">
-        {image?.src && (
-          <div className="event-card__image-container">
-            <img
-              className="event-card__image"
-              src={image.src}
-              alt={image.alt ?? ""}
-              loading="lazy"
-            />
-          </div>
-        )}
-
-        <div className="event-card__content">
-          <div className="event-card__body">
-            {description && (
-              <p className="event-card__description">{description}</p>
-            )}
-
-            {artists && (
-              <div className="event-card__artists">
-                <strong>Gäster:</strong> {artists}
+            {location && (
+              <div className="upcoming-meta-item">
+                <MapPin size={16} />
+                <span>{location}</span>
               </div>
             )}
           </div>
 
-          {eventLinks.length > 0 && (
-            <footer className="event-card__footer">
-              <div className="event-card__actions">
-                {eventLinks.map((linkItem, index) => {
-                  const isMapLink = linkItem.href?.includes("maps.google.com");
-                  const isInternal = linkItem.href?.startsWith("/");
-                  return (
-                    <a
-                      key={index}
-                      href={linkItem.href}
-                      target={isInternal ? undefined : "_blank"}
-                      rel={isInternal ? undefined : "noopener noreferrer"}
-                      className="event-card__button"
-                    >
-                      {isMapLink ? (
-                        <MapPin size={16} aria-hidden="true" />
-                      ) : (
-                        <ExternalLink size={16} aria-hidden="true" />
-                      )}
-                      {linkItem.label ?? "Läs mer"}
-                    </a>
-                  );
-                })}
-              </div>
-            </footer>
-          )}
+          {/* Stacked actions inside card for Mobile only */}
+          <div className="upcoming-card-actions mobile-only">
+            {primaryLink && (
+              <SmartLink href={primaryLink.href} className="btn-primary-event">
+                <span>{primaryLink.label}</span>
+                <ArrowUpRight size={16} />
+              </SmartLink>
+            )}
+          </div>
         </div>
       </div>
-    </article>
+
+      {/* Image Side (Right on desktop, Top on mobile) */}
+      <div className="upcoming-card-image-wrap">
+        {image?.src && (
+          <img
+            src={image.src}
+            alt={image.alt || ""}
+            className="upcoming-card-image"
+          />
+        )}
+        {/* Overlay Date badge for Mobile only */}
+        <div className="upcoming-card-date-badge-overlay mobile-only">
+          <span className="upcoming-date-day">{eventDate.day}</span>
+          <span className="upcoming-date-month">{eventDate.month}</span>
+          <span className="upcoming-date-year">{eventDate.year}</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -136,8 +108,6 @@ EventCard.propTypes = {
     spots: PropTypes.string,
     date: PropTypes.string,
     time: PropTypes.string,
-    description: PropTypes.string,
-    artists: PropTypes.string,
     location: PropTypes.string,
     link: PropTypes.string,
     linkLabel: PropTypes.string,
@@ -148,7 +118,7 @@ EventCard.propTypes = {
       })
     ),
     image: PropTypes.shape({
-      src: PropTypes.string.isRequired,
+      src: PropTypes.string,
       alt: PropTypes.string,
     }),
   }).isRequired,

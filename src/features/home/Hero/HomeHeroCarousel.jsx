@@ -126,17 +126,19 @@ const HomeHeroCarousel = () => {
     return () => cancelAnimationFrame(rafId);
   }, [slides.length]);
 
-  // Mouse drag-to-scroll (touch/trackpad handled natively by overflow scroll).
+  // Drag-to-scroll; touch pauses auto-scroll so it cannot fight the finger.
   const dragStartX = useRef(0);
+  const dragStartY = useRef(0);
   const dragStartScroll = useRef(0);
 
   const handlePointerDown = (e) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
-    if (e.pointerType !== "mouse") return; // native scroll covers touch/pen
+    if (e.pointerType !== "mouse") return;
     const el = scrollerRef.current;
     isDraggingRef.current = true;
     dragStartX.current = e.clientX;
     dragStartScroll.current = el.scrollLeft;
+    posRef.current = el.scrollLeft;
     el.setPointerCapture(e.pointerId);
   };
 
@@ -151,6 +153,38 @@ const HomeHeroCarousel = () => {
     }
     el.scrollLeft = next;
     posRef.current = next; // keep auto-scroll accumulator in sync
+  };
+
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    const el = scrollerRef.current;
+    isDraggingRef.current = true;
+    dragStartX.current = touch.clientX;
+    dragStartY.current = touch.clientY;
+    dragStartScroll.current = el.scrollLeft;
+    posRef.current = el.scrollLeft;
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDraggingRef.current) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    const dx = touch.clientX - dragStartX.current;
+    const dy = touch.clientY - dragStartY.current;
+    if (Math.abs(dx) < Math.abs(dy)) return;
+
+    e.preventDefault();
+    const el = scrollerRef.current;
+    const half = el.scrollWidth / 2;
+    let next = dragStartScroll.current - dx;
+    if (half > 0) {
+      if (next >= half) next -= half;
+      else if (next < 0) next += half;
+    }
+    el.scrollLeft = next;
+    posRef.current = next;
   };
 
   const endDrag = () => {
@@ -186,6 +220,10 @@ const HomeHeroCarousel = () => {
       onPointerMove={handlePointerMove}
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={endDrag}
+      onTouchCancel={endDrag}
     >
       <div className="hero-carousel-inner">
         {slides.map((src, index) => (
