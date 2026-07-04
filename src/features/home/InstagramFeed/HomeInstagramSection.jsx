@@ -11,8 +11,17 @@ const PAGE_SIZE = 9;
 const toImageSrc = (item) =>
   `${getApiBaseUrl()}/api/instagram/image/${item.id}`;
 
+const toFallbackImageSrc = (item) =>
+  item.media_type === "VIDEO" ? item.thumbnail_url : item.media_url;
+
 const hasImage = (item) =>
-  item?.id && (item.media_type === "VIDEO" ? item.thumbnail_url : item.media_url);
+  item?.id && toFallbackImageSrc(item);
+
+const handleImageError = (event, item) => {
+  const fallback = toFallbackImageSrc(item);
+  if (!fallback || event.currentTarget.src === fallback) return;
+  event.currentTarget.src = fallback;
+};
 
 function HomeInstagramSection() {
   const [items, setItems] = useState([]);
@@ -54,7 +63,7 @@ function HomeInstagramSection() {
         </header>
         <div className="instagram-frame">
           <div className="instagram-grid">
-            {visibleItems.map((item) => (
+            {visibleItems.map((item, index) => (
               <a
                 key={item.id}
                 className="instagram-grid-item"
@@ -65,8 +74,9 @@ function HomeInstagramSection() {
                 <img
                   src={toImageSrc(item)}
                   alt={item.caption || "Instagram-inlägg från Storegården 7"}
-                  loading="lazy"
+                  loading={index < 3 ? "eager" : "lazy"}
                   decoding="async"
+                  onError={(event) => handleImageError(event, item)}
                 />
                 <span className="instagram-overlay" aria-hidden="true">
                   {item.caption && (
