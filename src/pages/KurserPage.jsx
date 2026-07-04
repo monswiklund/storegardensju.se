@@ -50,10 +50,10 @@ function KurserPage() {
 
       const getAbsTop = (el) => el ? el.getBoundingClientRect().top + window.pageYOffset : 0;
 
-      if (timelineSection && scrollPosition >= getAbsTop(timelineSection)) {
-        setActiveSection("timeline");
-      } else if (cardsSection && scrollPosition >= getAbsTop(cardsSection)) {
+      if (cardsSection && scrollPosition >= getAbsTop(cardsSection)) {
         setActiveSection("cards");
+      } else if (timelineSection && scrollPosition >= getAbsTop(timelineSection)) {
+        setActiveSection("timeline");
       } else {
         setActiveSection("top");
       }
@@ -90,20 +90,20 @@ function KurserPage() {
           </li>
           <li>
             <button
-              onClick={() => scrollToSection("kurser-cards-section")}
-              className={`scroll-dot ${activeSection === "cards" ? "active" : ""}`}
-              title="Våra kurser & paket"
-            >
-              <span className="dot-label">Kurser & Paket</span>
-            </button>
-          </li>
-          <li>
-            <button
               onClick={() => scrollToSection("kurser-timeline-section")}
               className={`scroll-dot ${activeSection === "timeline" ? "active" : ""}`}
               title="Tidsschema"
             >
               <span className="dot-label">Tidsschema</span>
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => scrollToSection("kurser-cards-section")}
+              className={`scroll-dot ${activeSection === "cards" ? "active" : ""}`}
+              title="Våra kurser & paket"
+            >
+              <span className="dot-label">Kurser & Paket</span>
             </button>
           </li>
         </ul>
@@ -121,15 +121,72 @@ function KurserPage() {
             <span className="kurser-eyebrow">Kurser & Workshops</span>
             <h1 id="kurser-heading">Heldag med yoga & måleri</h1>
             <p>13:e juli | Kl 10:00 - 17:30</p>
-            <a
-              href={`mailto:${CONTACT_EMAIL}?subject=Anmälan: Heldag med yoga %26 måleri (13:e juli)`}
-              className="kurser-button kurser-button--primary"
-            >
-              <Mail size={18} />
-              Anmäl dig till heldagen
-            </a>
           </div>
         </section>
+
+        {/* Tidslinje Sektion */}
+        <div id="kurser-timeline-section">
+          <PageSection background="alt" spacing="default">
+            <FadeInSection>
+              <div className="kurser-section-heading">
+                <h2>Tidsschema för heldagen</h2>
+                <p>Här är dagens fullständiga flöde i detalj för dig som deltar i heldagen den 13:e juli.</p>
+              </div>
+
+              <div className="schedule-timeline">
+                {/* Kl 10:00 - GRÖN */}
+                <div className="timeline-item">
+                  <div className="timeline-marker" style={{ borderColor: "var(--primary-color)" }} />
+                  <div className="timeline-time" style={{ color: "var(--primary-hover)" }}>Kl 10:00</div>
+                  <h4 className="timeline-title">Välkommen & Landa</h4>
+                  <p className="timeline-desc">
+                    Dörrarna öppnas på gården. Välkommen av Lina Wiklund att kliva in i lugn och ro, rulla ut din matta på anvisad plats och göra dig hemmastadd.
+                  </p>
+                </div>
+
+                {/* Kl 10:30 - GRÖN */}
+                <div className="timeline-item">
+                  <div className="timeline-marker" style={{ borderColor: "var(--primary-color)" }} />
+                  <div className="timeline-time" style={{ color: "var(--primary-hover)" }}>Kl 10:30 - 12:00</div>
+                  <h4 className="timeline-title">Yoga — Mind, Body & Breath</h4>
+                  <p className="timeline-desc">
+                    Mjukt och flödande yogapass lett av <strong>Lina Wiklund</strong>. Fokus på andning, närvaro och mjuka rörelser. Passar perfekt för både nybörjare och vana utövare.
+                  </p>
+                </div>
+
+                {/* Kl 12:00 - BRUN */}
+                <div className="timeline-item">
+                  <div className="timeline-marker" style={{ borderColor: "var(--accent-color)" }} />
+                  <div className="timeline-time" style={{ color: "var(--accent-color)" }}>Kl 12:00 - 13:30</div>
+                  <h4 className="timeline-title">Gemensam Lunch</h4>
+                  <p className="timeline-desc">
+                    En härlig, näringsrik lunch serveras på gården (ingår i heldagspaketet). En stund för vila, trevliga samtal och skön återhämtning i den vackra gårdsmiljön.
+                  </p>
+                </div>
+
+                {/* Kl 13:30 - BRUN */}
+                <div className="timeline-item">
+                  <div className="timeline-marker" style={{ borderColor: "var(--accent-color)" }} />
+                  <div className="timeline-time" style={{ color: "var(--accent-color)" }}>Kl 13:30 - 17:30</div>
+                  <h4 className="timeline-title">Måleri — Glädjefylld Målarkurs</h4>
+                  <p className="timeline-desc">
+                    Kreativ workshop ledd av <strong>Ann Wiklund</strong>. Vi gör roliga, prestationsfria uppvärmningsövningar och målar fritt med akvarell och akryl. Allt konstnärsmaterial ingår!
+                  </p>
+                </div>
+
+                {/* Kl 17:30 - BRUN */}
+                <div className="timeline-item">
+                  <div className="timeline-marker" style={{ borderColor: "var(--accent-color)" }} />
+                  <div className="timeline-time" style={{ color: "var(--accent-color)" }}>Kl 17:30</div>
+                  <h4 className="timeline-title">Kaffe, Fika & Avslutning</h4>
+                  <p className="timeline-desc">
+                    Vi avrundar en fantastisk dag tillsammans, beundrar skapelserna och njuter av gott hembakat fika, kaffe och te.
+                  </p>
+                </div>
+              </div>
+            </FadeInSection>
+          </PageSection>
+        </div>
 
         {/* Kurser Kort Sektion */}
         <div id="kurser-cards-section">
@@ -338,70 +395,6 @@ function KurserPage() {
                     </div>
                   </div>
                 </article>
-              </div>
-            </FadeInSection>
-          </PageSection>
-        </div>
-
-        {/* Tidslinje Sektion */}
-        <div id="kurser-timeline-section">
-          <PageSection background="alt" spacing="default">
-            <FadeInSection>
-              <div className="kurser-section-heading">
-                <h2>Tidsschema för heldagen</h2>
-                <p>Här är dagens fullständiga flöde i detalj för dig som deltar i heldagen den 13:e juli.</p>
-              </div>
-
-              <div className="schedule-timeline">
-                {/* Kl 10:00 - GRÖN */}
-                <div className="timeline-item">
-                  <div className="timeline-marker" style={{ borderColor: "var(--primary-color)" }} />
-                  <div className="timeline-time" style={{ color: "var(--primary-hover)" }}>Kl 10:00</div>
-                  <h4 className="timeline-title">Välkommen & Landa</h4>
-                  <p className="timeline-desc">
-                    Dörrarna öppnas på gården. Välkommen av Lina Wiklund att kliva in i lugn och ro, rulla ut din matta på anvisad plats och göra dig hemmastadd.
-                  </p>
-                </div>
-
-                {/* Kl 10:30 - GRÖN */}
-                <div className="timeline-item">
-                  <div className="timeline-marker" style={{ borderColor: "var(--primary-color)" }} />
-                  <div className="timeline-time" style={{ color: "var(--primary-hover)" }}>Kl 10:30 - 12:00</div>
-                  <h4 className="timeline-title">Yoga — Mind, Body & Breath</h4>
-                  <p className="timeline-desc">
-                    Mjukt och flödande yogapass lett av <strong>Lina Wiklund</strong>. Fokus på andning, närvaro och mjuka rörelser. Passar perfekt för både nybörjare och vana utövare.
-                  </p>
-                </div>
-
-                {/* Kl 12:00 - BRUN */}
-                <div className="timeline-item">
-                  <div className="timeline-marker" style={{ borderColor: "var(--accent-color)" }} />
-                  <div className="timeline-time" style={{ color: "var(--accent-color)" }}>Kl 12:00 - 13:30</div>
-                  <h4 className="timeline-title">Gemensam Lunch</h4>
-                  <p className="timeline-desc">
-                    En härlig, näringsrik lunch serveras på gården (ingår i heldagspaketet). En stund för vila, trevliga samtal och skön återhämtning i den vackra gårdsmiljön.
-                  </p>
-                </div>
-
-                {/* Kl 13:30 - BRUN */}
-                <div className="timeline-item">
-                  <div className="timeline-marker" style={{ borderColor: "var(--accent-color)" }} />
-                  <div className="timeline-time" style={{ color: "var(--accent-color)" }}>Kl 13:30 - 17:30</div>
-                  <h4 className="timeline-title">Måleri — Glädjefylld Målarkurs</h4>
-                  <p className="timeline-desc">
-                    Kreativ workshop ledd av <strong>Ann Wiklund</strong>. Vi gör roliga, prestationsfria uppvärmningsövningar och målar fritt med akvarell och akryl. Allt konstnärsmaterial ingår!
-                  </p>
-                </div>
-
-                {/* Kl 17:30 - BRUN */}
-                <div className="timeline-item">
-                  <div className="timeline-marker" style={{ borderColor: "var(--accent-color)" }} />
-                  <div className="timeline-time" style={{ color: "var(--accent-color)" }}>Kl 17:30</div>
-                  <h4 className="timeline-title">Kaffe, Fika & Avslutning</h4>
-                  <p className="timeline-desc">
-                    Vi avrundar en fantastisk dag tillsammans, beundrar skapelserna och njuter av gott hembakat fika, kaffe och te.
-                  </p>
-                </div>
               </div>
             </FadeInSection>
           </PageSection>

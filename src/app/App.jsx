@@ -18,6 +18,7 @@ import {
 } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import EventSubnav from "../components/layout/Navbar/EventSubnav.jsx";
+import HomeInstagramSection from "../features/home/InstagramFeed/HomeInstagramSection.jsx";
 import { ToastProvider } from "../contexts/ToastContext";
 import { appRoutes } from "../config/routes.js";
 
@@ -164,6 +165,11 @@ function AppContent() {
           }
         />
       </Routes>
+      {!isAdminRoute && (
+        <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
+          <HomeInstagramSection />
+        </FadeInSection>
+      )}
       {!isAdminRoute && (
         <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
           <ContactSection />

@@ -578,10 +578,10 @@
   }
 
   .past-event-thumbnail {
-    grid-column: 1 / -1;
+    grid-column: 2;
     grid-row: 2;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 3 / 2;
   }
 
   .past-event-info {

@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import welcomeImage from "../../../assets/logoTransp_cropped.png";
 import { heroContent } from "../../../data/homeContent.js";
 import "./Hero.css";
-import HomeHeroLogo from "./HomeHeroLogo.jsx";
 import HomeHeroContent from "./HomeHeroContent.jsx";
 
 function HomeHeroSection() {
@@ -15,6 +13,7 @@ function HomeHeroSection() {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [isScrollIndicatorVisible, setIsScrollIndicatorVisible] =
     useState(false);
+  const [heroOpacity, setHeroOpacity] = useState(1);
 
   // Reveal scroll indicator after delay
   useEffect(() => {
@@ -61,53 +60,57 @@ function HomeHeroSection() {
     return () => observer.disconnect();
   }, []);
 
-  // Hide scroll indicator when scrolling
+  // Track scroll to hide indicator and fade out hero logo section
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 100) {
+      const scrollY = window.scrollY;
+      
+      if (scrollY > 100) {
         setIsScrollIndicatorVisible(false);
       } else {
-        // We only want to show it again if we are at the very top
-        // And we don't want to re-trigger the delay, but we can just show it immediately if they scroll back up
-        // or we could decide to keep it hidden once scrolled.
-        // Let's mimic previous behavior: show if at top.
         setIsScrollIndicatorVisible(true);
       }
+      
+      // Fade out logo section starting at 150px and ending at 400px scroll (150 + 250)
+      let opacity = 1;
+      if (scrollY > 150) {
+        opacity = Math.max(0, 1 - (scrollY - 150) / 250);
+      }
+      setHeroOpacity(opacity);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <>
       {/* Hero Logo Section - Full Viewport */}
-      <div className="hero-logo-section">
-        <HomeHeroLogo imageSrc={welcomeImage} alt="Storegården 7 logotyp" />
+      <div 
+        className="hero-logo-section"
+        style={{ 
+          opacity: heroOpacity,
+          pointerEvents: heroOpacity <= 0.05 ? "none" : "auto"
+        }}
+      >
 
-        <button
-          type="button"
-          className={`hero-scroll-indicator${
+        <div
+          className={`hero-scroll-indicator-wrapper${
             isScrollIndicatorVisible ? " is-visible" : " is-fading-out"
           }`}
-          onClick={handleScrollIndicatorClick}
-          aria-label="Skrolla ned"
         >
-          <span className="hero-scroll-indicator-label">Upptäck mer</span>
-          <svg
-            className="hero-scroll-indicator-icon"
-            aria-hidden="true"
-            focusable="false"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+          <button
+            type="button"
+            className="hero-scroll-indicator"
+            onClick={handleScrollIndicatorClick}
+            aria-label="Skrolla ned"
           >
-            <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
-          </svg>
-        </button>
+            <span className="hero-scroll-indicator-label">Upptäck mer</span>
+            <div className="hero-scroll-indicator-line-container">
+              <div className="hero-scroll-indicator-line-active" />
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Hero Content Section - Appears on Scroll */}

@@ -20,24 +20,11 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
             return orderA - orderB;
         });
 
-        // Position "alla" and "stellet" specifically
+        // Position "alla" specifically
         const allaIndex = next.findIndex((cat) => cat.id === "alla");
-        let allaCat = null;
-        if (allaIndex !== -1) {
-            [allaCat] = next.splice(allaIndex, 1);
-        }
-
-        const stelletIndex = next.findIndex((cat) => cat.id === "stellet");
-        let stelletCat = null;
-        if (stelletIndex !== -1) {
-            [stelletCat] = next.splice(stelletIndex, 1);
-        }
-
-        if (allaCat) {
-            next.unshift(allaCat);
-        }
-        if (stelletCat) {
-            next.unshift(stelletCat);
+        if (allaIndex > 0) {
+            const [alla] = next.splice(allaIndex, 1);
+            next.unshift(alla);
         }
 
         return next;

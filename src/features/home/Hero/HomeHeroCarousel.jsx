@@ -48,9 +48,14 @@ const normalizeGalleryData = (data) => {
   };
 };
 
+// Auto-scroll speed (px/frame ~60fps). Idle time before resume after interaction.
+const SCROLL_SPEED = 0.25;
+
 const HomeHeroCarousel = () => {
   const scrollerRef = useRef(null);
   const [galleryData, setGalleryData] = useState(null);
+  const isDraggingRef = useRef(false);
+  const posRef = useRef(0); // fractional scroll accumulator (scrollLeft may round to int)
 
   useEffect(() => {
     let isMounted = true;
@@ -97,6 +102,61 @@ const HomeHeroCarousel = () => {
     addAnimation();
   }, [slides.length]);
 
+  // Continuous auto-scroll (marquee band) driven in JS so the track stays
+  // natively scrollable/draggable. Pauses while the user interacts, wraps at
+  // the halfway point (content is duplicated by addAnimation).
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el || slides.length === 0) return;
+
+    let rafId;
+    const tick = () => {
+      if (!isDraggingRef.current) {
+        const half = el.scrollWidth / 2;
+        if (half > 0) {
+          posRef.current += SCROLL_SPEED;
+          if (posRef.current >= half) posRef.current -= half;
+          el.scrollLeft = posRef.current;
+        }
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(rafId);
+  }, [slides.length]);
+
+  // Mouse drag-to-scroll (touch/trackpad handled natively by overflow scroll).
+  const dragStartX = useRef(0);
+  const dragStartScroll = useRef(0);
+
+  const handlePointerDown = (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (e.pointerType !== "mouse") return; // native scroll covers touch/pen
+    const el = scrollerRef.current;
+    isDraggingRef.current = true;
+    dragStartX.current = e.clientX;
+    dragStartScroll.current = el.scrollLeft;
+    el.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e) => {
+    if (!isDraggingRef.current) return;
+    const el = scrollerRef.current;
+    const half = el.scrollWidth / 2;
+    let next = dragStartScroll.current - (e.clientX - dragStartX.current);
+    if (half > 0) {
+      if (next >= half) next -= half;
+      else if (next < 0) next += half;
+    }
+    el.scrollLeft = next;
+    posRef.current = next; // keep auto-scroll accumulator in sync
+  };
+
+  const endDrag = () => {
+    isDraggingRef.current = false;
+  };
+
   function addAnimation() {
     const scroller = scrollerRef.current;
     if (!scroller) return;
@@ -119,7 +179,14 @@ const HomeHeroCarousel = () => {
   }
 
   return (
-    <div className="hero-carousel" ref={scrollerRef}>
+    <div
+      className="hero-carousel"
+      ref={scrollerRef}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+    >
       <div className="hero-carousel-inner">
         {slides.map((src, index) => (
           <div className="hero-carousel-item" key={index}>

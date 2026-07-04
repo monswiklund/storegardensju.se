@@ -67,35 +67,6 @@ const normalizeGalleryData = (data) => {
     }
   }
 
-  // Add "stellet" category if featured images exist
-  const featuredList = data?.featured || raw?.featured || galleryOrder?.featured || [];
-  if (featuredList && featuredList.length > 0 && allImages.length > 0) {
-    const featuredImages = featuredList
-      .map((featuredId) => {
-        const imageData = allImages.find(
-          (img) =>
-            img.filename === featuredId ||
-            img.id === featuredId ||
-            img.storageKey === featuredId
-        );
-        if (!imageData) return null;
-        return {
-          ...imageData,
-        };
-      })
-      .filter(Boolean);
-
-    if (featuredImages.length > 0) {
-      categories.push({
-        id: "stellet",
-        name: "Stället",
-        description: "Utvalda bilder från Storegården 7",
-        images: featuredImages,
-        order: -0.5, // Order between "alla" (-1) and other categories (>= 0)
-      });
-    }
-  }
-
   return {
     categories,
     featured: data?.featured || raw?.featured || null,
@@ -103,7 +74,7 @@ const normalizeGalleryData = (data) => {
 };
 
 function GalleryShowcase() {
-  const [activeCategory, setActiveCategory] = useState("stellet");
+  const [activeCategory, setActiveCategory] = useState("alla");
   const [isLoading, setIsLoading] = useState(false);
   const [galleryData, setGalleryData] = useState(null);
 

@@ -60,6 +60,7 @@ export default defineConfig({
   },
   // Optimize dev server
   server: {
+    host: '0.0.0.0',
     hmr: {
       overlay: false
     },

@@ -4,3 +4,4 @@ export { default as HomeServicesSection } from "./Services/HomeServicesSection.j
 export { default as HomeUpcomingEventsSection } from "./UpcomingEvents/HomeUpcomingEventsSection.jsx";
 export { default as HomeStickyImageStory } from "./StickyImageSection/HomeStickyImageStory.jsx";
 export { default as HomeValuePropositionSection } from "./ValueProposition/HomeValuePropositionSection.jsx";
+export { default as HomeInstagramSection } from "./InstagramFeed/HomeInstagramSection.jsx";

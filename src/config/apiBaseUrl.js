@@ -45,7 +45,7 @@ export function getApiBaseUrl() {
     if (import.meta.env.DEV && forceLocalApi && isLoopbackHost(host)) {
       return "http://localhost:4242";
     }
-    if (import.meta.env.DEV && devProxyEnabled && isLoopbackHost(host)) {
+    if (import.meta.env.DEV && devProxyEnabled) {
       return "/__api";
     }
     if (host === "storegardensju.se" || host === "www.storegardensju.se") {

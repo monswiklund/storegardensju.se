@@ -14,39 +14,54 @@ const HomeServicesSection = () => {
           </p>
         </div>
 
-        <div className="services-list">
+        <div className="services-grid">
           {servicesData.map((service) => (
             <Link
               key={service.id}
               to={service.route}
-              className="service-row"
+              className="service-card"
               aria-label={`${service.ctaLabel}: ${service.title}`}
             >
-              <div className="service-row__image-wrap">
+              <div className="service-card__image-wrap">
                 <img
                   src={service.image}
                   alt=""
-                  className="service-row__image"
+                  className="service-card__image"
                   loading="lazy"
                 />
               </div>
 
-              <div className="service-row__content">
-                <div className="service-row__topline">
-                  <span className="service-row__kicker">{service.kicker}</span>
+              <div className="service-card__content">
+                <div className="service-card__topline">
+                  <span className="service-card__kicker">{service.kicker}</span>
                 </div>
 
-                <h3 className="service-row__title">{service.title}</h3>
-                <p className="service-row__description">
+                <h3 className="service-card__title">{service.title}</h3>
+                <p className="service-card__description">
                   {service.description}
                 </p>
-                <span className="service-row__meta">{service.meta}</span>
+                <div className="service-card__bottom">
+                  <span className="service-card__meta">{service.meta}</span>
+                  <span className="service-card__cta">
+                    {service.ctaLabel}
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="service-card__arrow"
+                      aria-hidden="true"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </span>
+                </div>
               </div>
-
-              <span className="service-row__cta">
-                {service.ctaLabel}
-                <span aria-hidden="true">→</span>
-              </span>
             </Link>
           ))}
         </div>

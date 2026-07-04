@@ -1,3 +1,5 @@
+export const contactBackgroundImage = '/images/lokal/slide6.jpg';
+
 export const contactMethods = [
   {
     id: 'email',
@@ -18,9 +20,3 @@ export const contactMethods = [
     external: true
   }
 ];
-
-export const collaborationCopy = {
-  title: 'Samarbeta med oss',
-  body:
-    'Vi samarbetar gärna med andra som har idéer eller vill ställa ut konst, arrangera evenemang eller skapa något kreativt. Hör av dig så diskuterar vi möjligheterna!'
-};

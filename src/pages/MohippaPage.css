@@ -21,7 +21,8 @@
 
 .mohippa-hero__inner,
 .mohippa-package,
-.mohippa-activities {
+.mohippa-activities,
+.mohippa-planner-workspace {
   width: min(100%, 1120px);
   margin: 0 auto;
 }
@@ -235,21 +236,23 @@
   line-height: 1.7;
 }
 
-.mohippa-package-card {
+.mohippa-planner-workspace {
   display: grid;
-  grid-template-columns: minmax(230px, 0.36fr) minmax(0, 1fr);
-  gap: clamp(24px, 4vw, 44px);
+  grid-template-columns: minmax(280px, 0.36fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
   border-top: 1px solid var(--mohippa-line);
   border-bottom: 1px solid var(--mohippa-line);
-  padding: clamp(24px, 4vw, 44px) 0;
+  padding: clamp(24px, 5vw, 56px) 0;
 }
 
 .mohippa-package-card__summary {
+  grid-row: span 2;
   align-self: start;
   position: sticky;
   top: 132px;
-  display: grid;
-  gap: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   border-radius: 8px;
   border: 1px solid var(--mohippa-line);
   background: var(--mohippa-paper);
@@ -257,79 +260,250 @@
   padding: 24px;
 }
 
-.mohippa-package-card__summary div {
-  display: grid;
-  gap: 8px;
+.mohippa-summary__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.mohippa-package-card__summary span,
-.mohippa-package-card__summary p {
+.mohippa-summary__header span {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--mohippa-muted);
+  text-transform: uppercase;
+}
+
+.mohippa-summary__header strong {
+  color: var(--mohippa-green-dark);
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+  line-height: 1;
+}
+
+.mohippa-summary__desc {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--mohippa-muted);
+  border-bottom: 1px solid var(--mohippa-line);
+  padding-bottom: 16px;
+}
+
+/* Calculator & Guest picker */
+.mohippa-calculator {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mohippa-calculator__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mohippa-calculator__field label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
   color: var(--mohippa-muted);
 }
 
-.mohippa-package-card__summary strong {
-  color: var(--mohippa-green-dark);
-  font-family: var(--font-heading);
-  font-size: clamp(2rem, 3.2vw, 3rem);
-  line-height: 0.95;
-}
-
-.mohippa-package-card__summary p {
-  margin: 0;
-  line-height: 1.6;
-}
-
-.mohippa-feature-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0;
-  border-top: 1px solid var(--mohippa-line);
-  border-left: 1px solid var(--mohippa-line);
-}
-
-.mohippa-feature {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 14px;
-  border-right: 1px solid var(--mohippa-line);
-  border-bottom: 1px solid var(--mohippa-line);
+.mohippa-guest-picker {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--mohippa-line);
+  border-radius: 6px;
+  overflow: hidden;
   background: #ffffff;
-  padding: 20px;
+  max-width: 140px;
 }
 
-.mohippa-feature__icon {
-  display: inline-flex;
+.mohippa-guest-picker button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  color: var(--mohippa-ink);
+  cursor: pointer;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 8px;
-  background: #eaf7ef;
-  color: var(--mohippa-green);
+  transition: background 120ms ease;
 }
 
-.mohippa-feature h3,
-.mohippa-good-to-know h3,
-.mohippa-activity h3 {
+.mohippa-guest-picker button:hover {
+  background: rgba(33, 29, 24, 0.05);
+}
+
+.mohippa-guest-picker input {
+  flex: 1;
+  width: 100%;
+  height: 36px;
+  border: none;
+  border-left: 1px solid var(--mohippa-line);
+  border-right: 1px solid var(--mohippa-line);
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--mohippa-ink);
+  background: transparent;
+}
+
+.mohippa-guest-picker input::-webkit-outer-spin-button,
+.mohippa-guest-picker input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
   margin: 0;
+}
+
+.mohippa-guest-picker input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Breakdown & list */
+.mohippa-calculator__breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(33, 29, 24, 0.02);
+  border-radius: 6px;
+  padding: 14px;
+  border: 1px solid rgba(33, 29, 24, 0.05);
+}
+
+.mohippa-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.mohippa-breakdown-row span:first-child {
+  color: var(--mohippa-muted);
+}
+
+.mohippa-breakdown-row span:last-child {
+  font-weight: 700;
   color: var(--mohippa-ink);
 }
 
-.mohippa-feature h3 {
-  margin-bottom: 5px;
-  font-size: 1rem;
+.mohippa-breakdown-row--details {
+  border-top: 1px dashed var(--mohippa-line);
+  padding-top: 8px;
 }
 
-.mohippa-feature p {
+.mohippa-selected-list {
+  list-style: none;
+  padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 8px;
+  font-size: 0.8rem;
+  border-left: 2px solid var(--mohippa-green);
+}
+
+.mohippa-selected-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: var(--mohippa-muted);
+}
+
+.mohippa-selected-list li button {
+  border: none;
+  background: transparent;
+  color: var(--mohippa-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.mohippa-selected-list li button:hover {
+  color: #ff3333;
+}
+
+.mohippa-breakdown-row--total {
+  border-top: 1px solid var(--mohippa-line);
+  padding-top: 10px;
+  margin-top: 4px;
+  font-size: 0.98rem;
+}
+
+.mohippa-breakdown-row--total span {
+  font-weight: 800;
+  color: var(--mohippa-ink) !important;
+}
+
+.mohippa-breakdown-row--total strong {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  color: var(--mohippa-green-dark);
+}
+
+.mohippa-price-per-person {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--mohippa-muted);
+  margin-top: -6px;
+}
+
+.mohippa-calculator__button {
+  width: 100%;
+}
+
+/* Checklist style for Baspaket features */
+.mohippa-checklist {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 36px;
+  padding: 8px 0;
+  align-self: start;
+}
+
+.mohippa-checklist-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.mohippa-checklist-item__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mohippa-green);
+  flex-shrink: 0;
+  margin-top: 3px;
+  background: #eaf7ef;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.mohippa-checklist-item__content h3 {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+  color: var(--mohippa-ink);
+}
+
+.mohippa-checklist-item__content p {
+  margin: 0;
+  font-size: 0.94rem;
   line-height: 1.55;
+  color: var(--mohippa-muted);
 }
 
 .mohippa-good-to-know {
   grid-column: 2;
   border-top: 1px solid var(--mohippa-line);
   padding-top: 24px;
+  align-self: start;
 }
 
 .mohippa-good-to-know h3 {
@@ -399,20 +573,7 @@
 }
 
 .mohippa-activity__header {
-  display: grid;
-  gap: 9px;
-}
-
-.mohippa-activity__header span {
-  width: fit-content;
-  border-left: 3px solid var(--mohippa-green);
-  background: transparent;
-  color: var(--mohippa-green-dark);
-  padding: 0 0 0 9px;
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0;
+  display: block;
 }
 
 .mohippa-activity h3 {
@@ -490,13 +651,24 @@
   }
 
   .mohippa-hero__inner,
-  .mohippa-section-heading--split,
-  .mohippa-package-card {
+  .mohippa-section-heading--split {
     grid-template-columns: 1fr;
+  }
+
+  .mohippa-planner-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
   }
 
   .mohippa-package-card__summary {
     position: static;
+    grid-row: auto;
+    order: 2;
+  }
+
+  .mohippa-planner-content {
+    order: 1;
   }
 
   .mohippa-good-to-know {
@@ -509,15 +681,20 @@
   }
 
   .mohippa-activity {
-    grid-template-columns: 56px minmax(0, 1fr);
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+    padding: 20px 0;
   }
 
   .mohippa-activity__meta {
     grid-column: 2;
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
     justify-content: flex-start;
     text-align: left;
+    padding-top: 4px;
   }
 }
 
@@ -531,7 +708,7 @@
   }
 
   .mohippa-hero__facts,
-  .mohippa-feature-grid {
+  .mohippa-checklist {
     grid-template-columns: 1fr;
   }
 
@@ -544,10 +721,6 @@
   .mohippa-hero__actions,
   .mohippa-button {
     width: 100%;
-  }
-
-  .mohippa-feature {
-    border-left: 0;
   }
 
   #mohippa-aktiviteter {
@@ -568,7 +741,157 @@
     min-width: 0;
   }
 
-  .mohippa-feature {
-    grid-template-columns: 1fr;
+  .mohippa-main-tabs {
+    flex-direction: column;
+    gap: 0;
+    border-bottom: none;
+    margin-bottom: 20px;
+  }
+
+  .mohippa-main-tab-btn {
+    width: 100%;
+    border-bottom: 2px solid var(--mohippa-line) !important;
+    padding: 12px 4px;
+    font-size: 1.08rem;
+    justify-content: flex-start;
+  }
+
+  .mohippa-main-tab-btn.active {
+    border-bottom-color: var(--mohippa-green) !important;
+  }
+}
+
+/* Tabs for Activities */
+.mohippa-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--mohippa-line);
+  padding-bottom: 16px;
+}
+
+.mohippa-tab-btn {
+  background: transparent;
+  border: 1px solid var(--mohippa-line);
+  border-radius: 99px;
+  padding: 8px 18px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--mohippa-muted);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.mohippa-tab-btn:hover {
+  border-color: rgba(33, 29, 24, 0.4);
+  color: var(--mohippa-ink);
+  background: rgba(33, 29, 24, 0.02);
+}
+
+.mohippa-tab-btn.active {
+  background: var(--mohippa-green);
+  border-color: var(--mohippa-green);
+  color: #ffffff;
+}
+
+/* Selected Activity card highlights */
+.mohippa-activity--selected {
+  background: linear-gradient(90deg, rgba(234, 247, 239, 0.6) 0%, rgba(234, 247, 239, 0.2) 100%) !important;
+  border-color: var(--mohippa-green) !important;
+  border-bottom-width: 1px;
+}
+
+.mohippa-activity--selected:hover {
+  background: linear-gradient(90deg, rgba(234, 247, 239, 0.8) 0%, rgba(234, 247, 239, 0.4) 100%) !important;
+  border-color: var(--mohippa-green-dark) !important;
+}
+
+/* Select Button */
+.mohippa-select-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 99px;
+  border: 1px solid var(--mohippa-line);
+  background: #ffffff;
+  color: var(--mohippa-ink);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 150ms ease;
+  margin-top: 4px;
+}
+
+.mohippa-select-btn:hover {
+  border-color: rgba(33, 29, 24, 0.4);
+  background: rgba(33, 29, 24, 0.02);
+}
+
+.mohippa-select-btn--selected {
+  background: var(--mohippa-green) !important;
+  border-color: var(--mohippa-green) !important;
+  color: #ffffff !important;
+}
+
+.mohippa-select-btn--selected:hover {
+  background: var(--mohippa-green-dark) !important;
+  border-color: var(--mohippa-green-dark) !important;
+}
+
+/* Main Planner Tabs (Baspaket / Aktiviteter) */
+.mohippa-main-tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 2px solid var(--mohippa-line);
+  margin-bottom: clamp(24px, 4vw, 36px);
+  padding-bottom: 0px;
+}
+
+.mohippa-main-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 12px 8px;
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+  font-weight: 700;
+  color: var(--mohippa-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 180ms ease;
+  margin-bottom: -2px; /* overlap border */
+}
+
+.mohippa-main-tab-btn:hover {
+  color: var(--mohippa-ink);
+  border-bottom-color: rgba(33, 29, 24, 0.3);
+}
+
+.mohippa-main-tab-btn.active {
+  color: var(--mohippa-green-dark);
+  border-bottom-color: var(--mohippa-green);
+}
+
+/* Tab panes fade-in animation */
+.mohippa-tab-content-pane {
+  animation: mohippaFadeIn 280ms ease forwards;
+}
+
+@keyframes mohippaFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

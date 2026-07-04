@@ -71,6 +71,16 @@ const Footer = () => {
               <Instagram size={24} />
             </a>
           </div>
+
+          <div className="footer-collaboration">
+            <h3 className="footer-collab-title">Samarbeta med oss</h3>
+            <p className="footer-collab-text">
+              Vi samarbetar gärna med andra som har idéer eller vill ställa ut konst, arrangera evenemang eller skapa något kreativt.{" "}
+              <a href="mailto:storegardensju@gmail.com?subject=Samarbete med Storegården 7" className="footer-collab-link">
+                Hör av dig till oss!
+              </a>
+            </p>
+          </div>
         </div>
 
         <div className="footer-build-info">

@@ -40,6 +40,60 @@
   text-transform: uppercase;
 }
 
+/* Collaboration Info */
+.footer-collaboration {
+  max-width: 540px;
+  margin-top: 24px;
+  padding: 0;
+}
+
+.footer-collab-title {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #000000;
+  margin: 0 0 6px 0;
+}
+
+.footer-collab-text {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.footer-collab-link {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+.footer-collab-link::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--primary-hover);
+  transform-origin: bottom right;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.footer-collab-link:hover {
+  color: var(--primary-hover);
+}
+
+.footer-collab-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
 /* Navigation */
 .footer-links {
   list-style: none;

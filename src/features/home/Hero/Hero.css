@@ -12,6 +12,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-image: url('../../../assets/logoTransp_cropped.png');
+  background-size: clamp(260px, 45vw, 360px);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed; /* Apply fixed globally to let it stick on all screen sizes */
   background-color: transparent !important;
   text-align: center;
   padding: 0 20px;
@@ -20,20 +25,18 @@
   --hero-logo-offset: 0px;
 }
 
+@media (min-width: 1024px) {
+  .hero-logo-section {
+    background-size: 380px;
+  }
+}
+
 @media (max-width: 480px) {
   .hero-logo-section {
     margin-top: -55px;
     --hero-logo-offset: 0px;
+    background-size: 240px;
   }
-}
-
-/* Logo */
-.hero-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 400px;
-  width: 80%;
 }
 
 .hero-logo img {
@@ -249,57 +252,95 @@
   box-shadow: none;
 }
 
-/* Scroll Indicator */
-.hero-scroll-indicator {
+/* Scroll Indicator Wrapper (Centers and handles fade in/out) */
+.hero-scroll-indicator-wrapper {
   position: absolute;
-  bottom: 40px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.hero-scroll-indicator-wrapper.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero-scroll-indicator-wrapper.is-fading-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Scroll Indicator Button */
+.hero-scroll-indicator {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #666666;
+  gap: 8px;
+  color: #555555;
   background: none;
   border: none;
   cursor: pointer;
-  transition: color 0.3s ease, opacity 0.3s ease;
-  z-index: 5;
   padding: 0;
-  font-size: 0.85rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.hero-scroll-indicator.is-visible {
-  opacity: 1;
-  pointer-events: auto;
-  animation: bounce 2s infinite;
-}
-
-.hero-scroll-indicator.is-fading-out {
-  opacity: 0;
-  pointer-events: none;
+  transition: color 0.3s ease;
 }
 
 .hero-scroll-indicator:hover {
   color: var(--primary-color);
 }
 
-@keyframes bounce {
-  0%,
-  20%,
-  50%,
-  80%,
-  100% {
-    transform: translateY(0);
+.hero-scroll-indicator-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+/* Vertical Flowing Scroll Line visual */
+.hero-scroll-indicator-line-container {
+  position: relative;
+  width: 1.5px;
+  height: 40px;
+  background-color: rgba(95, 111, 82, 0.15); /* Light primary green tint */
+  overflow: hidden;
+  border-radius: 1px;
+  margin-top: 4px;
+}
+
+.hero-scroll-indicator-line-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 16px;
+  background-color: var(--primary-color);
+  border-radius: 1px;
+  animation: scrollLineFlow 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.hero-scroll-indicator:hover .hero-scroll-indicator-line-active {
+  background-color: var(--primary-hover);
+}
+
+@keyframes scrollLineFlow {
+  0% {
+    transform: translateY(-16px);
+    opacity: 0;
   }
-  40% {
-    transform: translateY(-10px);
+  20% {
+    opacity: 1;
   }
   60% {
-    transform: translateY(-5px);
+    opacity: 1;
+    transform: translateY(12px);
+  }
+  100% {
+    transform: translateY(40px);
+    opacity: 0;
   }
 }
 
@@ -324,8 +365,13 @@
   margin-right: calc(-50vw + 50%);
   margin-top: 0px; /* Reduced to minimum */
   margin-bottom: -10px; /* No bottom margin */
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   position: relative;
+  cursor: grab;
+  touch-action: pan-x; /* Horizontal drag/swipe; vertical page scroll passes through */
+  scrollbar-width: none; /* Firefox: hide scrollbar */
+  -ms-overflow-style: none;
   /* Mask gradient for smooth edges */
 
   -webkit-mask: linear-gradient(
@@ -338,12 +384,21 @@
   mask: linear-gradient(90deg, transparent, white 10%, white 90%, transparent);
 }
 
+.hero-carousel::-webkit-scrollbar {
+  display: none; /* Chrome/Safari: hide scrollbar */
+}
+
+.hero-carousel:active {
+  cursor: grabbing;
+}
+
 .hero-carousel-inner {
   display: flex;
-  gap: 2rem; /* Increased gap for polaroid style */
+  align-items: center;
+  gap: 0.25rem; /* Base spacing; per-item margins vary it */
   width: max-content;
   flex-wrap: nowrap;
-  padding: 20px 0; /* Space for shadows */
+  padding: 40px 0; /* Space for shadows + tilt/stagger */
 }
 
 /* Match .gallery-thumbnail style */
@@ -365,6 +420,24 @@
   -webkit-user-drag: none;
 }
 
+/* Playful scattered polaroid look: alternating tilt + vertical stagger */
+.hero-carousel-item:nth-child(4n + 1) {
+  transform: rotate(-3deg) scale(1.08);
+  margin-left: 0.75rem;
+}
+.hero-carousel-item:nth-child(4n + 2) {
+  transform: rotate(2deg) scale(0.88);
+  margin-left: -0.5rem;
+}
+.hero-carousel-item:nth-child(4n + 3) {
+  transform: rotate(-1.5deg) scale(1);
+  margin-left: 1rem;
+}
+.hero-carousel-item:nth-child(4n + 4) {
+  transform: rotate(3deg) scale(0.94);
+  margin-left: -0.25rem;
+}
+
 /* User requested "remove click", so hover effects are likely unwanted too.
    Since pointer-events: none is set, this won't trigger anyway on the item. 
 */
@@ -381,21 +454,8 @@
   border-radius: 0; /* Sharp corners inside padding */
 }
 
-/* Animation */
-.hero-carousel[data-animated="true"] .hero-carousel-inner {
-  animation: scroll 90s linear infinite;
-}
-
-/* Removed pause on hover as requested */
-/* .hero-carousel[data-animated="true"] .hero-carousel-inner:hover {
-  animation-play-state: paused;
-} */
-
-@keyframes scroll {
-  to {
-    transform: translate(calc(-50% - 1rem));
-  }
-}
+/* Auto-scroll is JS-driven (see HomeHeroCarousel.jsx) so the track stays
+   natively scrollable and draggable. */
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
@@ -406,12 +466,6 @@
   }
 
   .hero-carousel-inner {
-    gap: 1rem;
-  }
-
-  @keyframes scroll {
-    to {
-      transform: translate(calc(-50% - 0.5rem));
-    }
+    gap: 0.5rem;
   }
 }
