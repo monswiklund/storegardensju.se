@@ -2,12 +2,10 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import "./Gallery.css";
 import CategoryToggle from "../CategoryToggle/CategoryToggle";
 import staticGalleryData from "../../../data/galleryCategories.json";
-import galleryOrder from "../../../data/gallery-order.json";
 import GalleryGrid from "./components/GalleryGrid";
 import GalleryLightbox from "./components/GalleryLightbox";
 import VenueIntroSection from "../../venue/VenueIntro/VenueIntroSection.jsx";
 import useGalleryLightbox from "./hooks/useGalleryLightbox";
-import logoImage from "../../../assets/logoTransp_cropped.png";
 import { fetchGalleryCategories } from "../../../services/galleryService";
 
 const normalizeGalleryData = (data) => {
@@ -75,7 +73,6 @@ const normalizeGalleryData = (data) => {
 
 function GalleryShowcase() {
   const [activeCategory, setActiveCategory] = useState("alla");
-  const [isLoading, setIsLoading] = useState(false);
   const [galleryData, setGalleryData] = useState(null);
 
   useEffect(() => {
@@ -151,18 +148,11 @@ function GalleryShowcase() {
 
   const handleCategoryChange = useCallback(
     (categoryId) => {
-      setIsLoading(true);
       setActiveCategory(categoryId);
       closeLightbox();
-
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 300);
     },
     [closeLightbox]
   );
-
-  const categoryName = activeCategoryData?.name || "Alla";
 
   return (
     <div className="storegarden-gallery">
@@ -182,9 +172,7 @@ function GalleryShowcase() {
 
       <GalleryGrid
         images={images}
-        isLoading={isLoading}
         onImageSelect={openLightbox}
-        categoryName={categoryName}
       />
 
       {/* Main Gallery Lightbox */}

@@ -6,26 +6,7 @@ const breakpointColumns = {
   768: 2,
 };
 
-function GalleryGrid({ images, isLoading, onImageSelect, categoryName }) {
-  if (isLoading) {
-    return (
-      <Masonry
-        breakpointCols={breakpointColumns}
-        className="gallery-grid"
-        columnClassName="gallery-column"
-      >
-        {[...Array(6)].map((_, index) => (
-          <div key={index} className="gallery-thumbnail skeleton-item">
-            <div
-              className="skeleton-image"
-              style={{ height: `${200 + (index % 3) * 50}px` }}
-            />
-          </div>
-        ))}
-      </Masonry>
-    );
-  }
-
+function GalleryGrid({ images, onImageSelect }) {
   return (
     <Masonry
       breakpointCols={breakpointColumns}
@@ -67,13 +48,7 @@ GalleryGrid.propTypes = {
       original: PropTypes.string,
     })
   ).isRequired,
-  isLoading: PropTypes.bool.isRequired,
   onImageSelect: PropTypes.func.isRequired,
-  categoryName: PropTypes.string,
-};
-
-GalleryGrid.defaultProps = {
-  categoryName: "Alla",
 };
 
 export default GalleryGrid;

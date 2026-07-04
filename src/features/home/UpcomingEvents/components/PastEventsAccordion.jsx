@@ -59,6 +59,7 @@ function PastEventsAccordion({ events }) {
 
   const images = getEventImages(selectedEvent);
   const hasImages = images.length > 0;
+  const currentImage = hasImages ? images[currentImageIndex] || images[0] : null;
   const showControls = images.length > 1;
   const selectedEventLinks =
     selectedEvent?.links ||
@@ -239,10 +240,13 @@ function PastEventsAccordion({ events }) {
             </button>
 
             {hasImages && (
-              <div className="past-event-modal-image">
+              <div
+                className="past-event-modal-image"
+                style={{ "--past-event-modal-bg": `url("${currentImage.src}")` }}
+              >
                 <img
-                  src={images[currentImageIndex].src}
-                  alt={images[currentImageIndex].alt || ""}
+                  src={currentImage.src}
+                  alt={currentImage.alt || ""}
                 />
 
                 {showControls && (

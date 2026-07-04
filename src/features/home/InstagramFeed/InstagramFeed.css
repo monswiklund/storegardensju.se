@@ -18,9 +18,54 @@
   text-align: center;
 }
 
-.instagram-handle {
+.instagram-eyebrow {
+  display: inline-block;
   color: var(--primary-hover);
-  font-size: 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.instagram-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--primary-hover);
+  margin-bottom: 14px;
+}
+
+.instagram-ornament-line {
+  width: 48px;
+  height: 1px;
+  background: var(--primary-hover);
+  opacity: 0.5;
+}
+
+.instagram-section-header h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-weight: 500;
+  margin: 0 0 14px;
+  color: var(--text-main);
+}
+
+.instagram-subtitle {
+  font-size: clamp(0.95rem, 0.92rem + 0.5vw, 1.1rem);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 520px;
+  margin: 0 auto 20px;
+}
+
+.instagram-handle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary-hover);
+  font-size: 0.95rem;
   text-decoration: none;
 }
 

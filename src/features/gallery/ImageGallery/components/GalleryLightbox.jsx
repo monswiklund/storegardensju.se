@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 function GalleryLightbox({
   isOpen,
@@ -38,15 +40,24 @@ function GalleryLightbox({
     }
   }, [dialogRef]);
 
-  // Lock body scroll when open
+  // Lock body scroll when open (including Lenis compatibility)
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      if (window.storegardenLenis) {
+        window.storegardenLenis.stop();
+      }
     } else {
       document.body.style.overflow = "";
+      if (window.storegardenLenis) {
+        window.storegardenLenis.start();
+      }
     }
     return () => {
       document.body.style.overflow = "";
+      if (window.storegardenLenis) {
+        window.storegardenLenis.start();
+      }
     };
   }, [isOpen]);
 
@@ -119,7 +130,7 @@ function GalleryLightbox({
   const currentCount = currentIndex + 1;
   const totalCount = images.length;
 
-  return (
+  return createPortal(
     <div
       className={`gallery-model ${immersive ? "is-immersive" : ""}`}
       role="dialog"
@@ -170,7 +181,7 @@ function GalleryLightbox({
             aria-label="Stäng bildgalleri"
             ref={closeButtonRef}
           >
-            ×
+            <X size={24} />
           </button>
         </div>
 
@@ -193,7 +204,7 @@ function GalleryLightbox({
               }}
               aria-label="Föregående bild"
             >
-              ‹
+              <ChevronLeft size={36} />
             </button>
           )}
 
@@ -223,7 +234,7 @@ function GalleryLightbox({
               }}
               aria-label="Nästa bild"
             >
-              ›
+              <ChevronRight size={36} />
             </button>
           )}
         </div>
@@ -281,7 +292,8 @@ function GalleryLightbox({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

@@ -6,7 +6,6 @@ export const profiles = {
     contact: {
       email: "ann.wiklund.design@gmail.com ",
       instagram: "www.instagram.com/annwiklundstudio/",
-      address: "Storegården 7, Rackeby, Lidköping",
     },
     texts: [
       "Jag bor i Rackeby, på Storegården 7 utanför Lidköping där jag har min atelje, kurs/festlokal och en keramikbutik.",

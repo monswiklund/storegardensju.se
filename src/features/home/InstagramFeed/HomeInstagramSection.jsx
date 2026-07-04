@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Instagram } from "lucide-react";
+import { Instagram, Sprout } from "lucide-react";
 import "./InstagramFeed.css";
 import { fetchInstagramFeed } from "../../../services/instagramService";
 import { getApiBaseUrl } from "../../../config/apiBaseUrl";
@@ -51,13 +51,24 @@ function HomeInstagramSection() {
     <section className="instagram-section" aria-labelledby="instagram-heading">
       <div className="instagram-container">
         <header className="instagram-section-header">
-          <h2 id="instagram-heading">Se mer på vår Instagram</h2>
+          <span className="instagram-eyebrow">Instagram</span>
+          <div className="instagram-ornament" aria-hidden="true">
+            <span className="instagram-ornament-line"></span>
+            <Sprout size={20} />
+            <span className="instagram-ornament-line"></span>
+          </div>
+          <h2 id="instagram-heading">Följ oss på Instagram</h2>
+          <p className="instagram-subtitle">
+            Följ vår vardag på Storegården 7 – få en inblick i event, kurser,
+            skapande och livet på gården.
+          </p>
           <a
             className="instagram-handle"
             href="https://www.instagram.com/storegarden7/"
             target="_blank"
             rel="noopener noreferrer"
           >
+            <Instagram size={18} />
             @storegarden7
           </a>
         </header>
