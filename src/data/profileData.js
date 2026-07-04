@@ -91,6 +91,7 @@ export const profiles = {
 
     listItems: [
       "Planering och genomförande av bröllop, fester & event",
+      "Bartender och servering",
       "Bar & dryckeskoncept",
       "Festdekoration & miljöskapande",
       "Digital design & illustration",
@@ -100,7 +101,7 @@ export const profiles = {
   },
   mans: {
     title: "Måns Wiklund",
-    about: "Junior Fullstack Cloud Developer",
+    about: "Junior Fullstack & DevOps",
     contact: {
       email: "monswiklund99@gmail.com",
       github: "github.com/monswiklund",

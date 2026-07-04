@@ -13,10 +13,12 @@ function TeamPage() {
                     <FadeInSection>
                         <div className="profile-showcase-container">
                             <h2 id="about-heading">Om Oss</h2>
-                            <TeamProfileShowcase profile={profiles.ann} />
-                            <TeamProfileShowcase profile={profiles.carl} />
-                            <TeamProfileShowcase profile={profiles.lina} />
-                            <TeamProfileShowcase profile={profiles.mans} />
+                            <div className="team-grid">
+                                <TeamProfileShowcase profile={profiles.ann} />
+                                <TeamProfileShowcase profile={profiles.carl} />
+                                <TeamProfileShowcase profile={profiles.lina} />
+                                <TeamProfileShowcase profile={profiles.mans} />
+                            </div>
                         </div>
                     </FadeInSection>
                 </ErrorBoundary>
