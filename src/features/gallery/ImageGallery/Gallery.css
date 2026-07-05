@@ -102,30 +102,79 @@
 /* Gallery Grid - Masonry Layout */
 .gallery-grid {
   display: flex;
-  gap: 12px;
+  gap: 28px; /* Less dense spacing horizontally */
   width: 100%;
 }
 
 .gallery-column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 28px; /* Less dense spacing vertically */
+}
+
+@media (max-width: 768px) {
+  .gallery-grid, .gallery-column {
+    gap: 20px; /* Medium spacing on tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-grid, .gallery-column {
+    gap: 14px; /* Cozy spacing on mobile phones */
+  }
 }
 
 .gallery-thumbnail {
   position: relative;
   background: white;
-  padding: 12px;
+  padding: 12px 12px 28px 12px; /* Deeper bottom padding for polaroid look */
   border-radius: 2px;
   cursor: pointer;
-  transition: var(--transition-smooth);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
-  margin-bottom: 12px;
+  
+  /* Use dynamic deterministic values injected by JS */
+  transform: rotate(var(--item-rotation, 0deg));
+  margin-top: var(--item-y-offset, 0px);
+  margin-bottom: calc(12px - var(--item-y-offset, 0px));
+  
+  /* Scrapbook sizing and alignment inside column flexbox */
+  width: var(--item-width, 100%);
+  align-self: var(--item-align-self, stretch);
+  
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+              box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+              z-index 0.1s ease;
+  box-shadow: 0 4px 12px rgba(45, 40, 35, 0.08), 0 1px 4px rgba(45, 40, 35, 0.04);
+  z-index: 1;
+  will-change: transform, box-shadow;
 }
 
+/* Retro Washi Tape Effect */
+.gallery-thumbnail::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(var(--item-tape-rotation, -3deg));
+  width: var(--item-tape-width, 65px);
+  height: 18px;
+  background: rgba(222, 216, 198, 0.55); /* Warm masking tape color */
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  z-index: 2;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover state: straightens, lifts up, and casts a larger shadow */
 .gallery-thumbnail:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px) rotate(0deg) scale(1.03) !important; /* Force override of inline transform rotation */
+  box-shadow: 0 20px 35px rgba(45, 40, 35, 0.15), 0 6px 12px rgba(45, 40, 35, 0.1);
+  z-index: 10;
+}
+
+.gallery-thumbnail:hover::before {
+  opacity: 0.75;
+  transform: translateX(-50%) translateY(-2px) rotate(0.5deg);
 }
 
 .gallery-thumbnail img {
@@ -133,11 +182,18 @@
   height: auto;
   display: block;
   border-radius: 0;
+  border: 1px solid rgba(0, 0, 0, 0.04); /* Subtle edge separation for the image */
 }
 
 @media (max-width: 480px) {
   .gallery-thumbnail {
-    padding: 6px;
+    padding: 8px 8px 20px 8px; /* Maintain polaroid aspect ratio with smaller padding */
+  }
+  
+  .gallery-thumbnail::before {
+    width: 46px;
+    height: 13px;
+    top: -6px;
   }
 }
 
@@ -267,6 +323,26 @@
 }
 
 /* Lightbox model */
+@keyframes lightboxOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lightboxStageZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .gallery-model {
   position: fixed;
   top: 0;
@@ -282,6 +358,7 @@
   justify-content: center;
   transition: background 0.3s ease, backdrop-filter 0.3s ease;
   overflow: hidden;
+  animation: lightboxOverlayFadeIn 0.3s ease-out forwards;
 }
 
 .gallery-model.is-immersive {
@@ -297,6 +374,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  animation: lightboxStageZoomIn 0.35s cubic-bezier(0.34, 1.3, 0.64, 1) forwards;
 }
 
 /* Controls Header */

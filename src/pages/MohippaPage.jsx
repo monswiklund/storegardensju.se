@@ -9,6 +9,7 @@ import {
   Music,
   Sparkles,
   Utensils,
+  Palette,
 } from "lucide-react";
 import { PageSection } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
@@ -67,7 +68,7 @@ const ACTIVITIES = [
     price: "200 kr/person",
     priceVal: 200,
     category: "lugn",
-    image: "/images/evenemang/slide12.jpg",
+    image: "/images/evenemang/slide12.webp",
   },
   {
     id: "farg",
@@ -89,7 +90,7 @@ const ACTIVITIES = [
     price: "100 kr/person",
     priceVal: 100,
     category: "lugn",
-    image: "/images/evenemang/slide10.jpg",
+    image: "/images/evenemang/slide10.webp",
   },
   {
     id: "cocktail",
@@ -100,7 +101,7 @@ const ACTIVITIES = [
     price: "300 kr/person",
     priceVal: 300,
     category: "festligt",
-    image: "/images/evenemang/slide2.jpg",
+    image: "/images/evenemang/slide2.webp",
   },
   {
     id: "keramik",
@@ -111,7 +112,7 @@ const ACTIVITIES = [
     price: "400 kr/person",
     priceVal: 400,
     category: "kreativt",
-    image: "/images/konst-keramik/slide16.jpg",
+    image: "/images/konst-keramik/slide16.webp",
   },
 ];
 
@@ -294,7 +295,7 @@ function MohippaPage() {
               </div>
 
               <div className="mohippa-hero__media" aria-hidden="true">
-                <img src="/images/evenemang/slide2.jpg" alt="" />
+                <img src="/images/evenemang/slide2.webp" alt="" />
                 <div className="mohippa-hero__note">
                   <strong>Skapa eran dag</strong>
                 </div>
@@ -418,6 +419,11 @@ function MohippaPage() {
                       <div className="mohippa-tab-content-pane">
                         <div className="mohippa-section-heading">
                           <span className="mohippa-eyebrow">Baspaket</span>
+                          <div className="section-ornament align-left" aria-hidden="true">
+                            <span className="section-ornament-line"></span>
+                            <Heart size={18} />
+                            <span className="section-ornament-line"></span>
+                          </div>
                           <h2 id="mohippa-package-heading">Allt ni behöver som grund</h2>
                           <p>
                             Ni får tillgång till vår lokal, både ladan och loftet samt
@@ -457,6 +463,11 @@ function MohippaPage() {
                       <div className="mohippa-tab-content-pane">
                         <div className="mohippa-section-heading">
                           <span className="mohippa-eyebrow">Tillval & aktiviteter</span>
+                          <div className="section-ornament align-left" aria-hidden="true">
+                            <span className="section-ornament-line"></span>
+                            <Palette size={18} />
+                            <span className="section-ornament-line"></span>
+                          </div>
                           <h2 id="mohippa-activities-heading">
                             Lägg till det som passar gruppen
                           </h2>

@@ -157,7 +157,7 @@ const TeamProfileShowcase = ({ profile }) => {
                   onClick={() => setActiveImageIndex(idx)}
                   aria-label={`Visa bild ${idx + 1}`}
                 >
-                  <img src={img.src} alt="" />
+                  <img src={img.src} alt="" loading="lazy" decoding="async" />
                 </button>
               ))}
             </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { PartyPopper, Wine, Maximize2, Sparkles } from "lucide-react";
 import { PageSection } from "../../components";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import "./EventPage.css";
@@ -137,6 +138,11 @@ function EventPage() {
         >
           <div className="event-hero__inner">
             <span className="event-eyebrow">Eventlokal på landet</span>
+            <div className="section-ornament" aria-hidden="true" style={{ color: "var(--primary-color)" }}>
+              <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
+              <PartyPopper size={20} />
+              <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
+            </div>
             <h1 id="event-heading">Bröllop, Event & Fest</h1>
             <p>Skapa minnesvärda stunder på vackra Storegården 7</p>
           </div>
@@ -148,6 +154,11 @@ function EventPage() {
             <FadeInSection>
               <div className="event-section-intro">
                 <span className="event-section-eyebrow">Unik lokal för alla tillfällen</span>
+                <div className="section-ornament" aria-hidden="true">
+                  <span className="section-ornament-line"></span>
+                  <Wine size={20} />
+                  <span className="section-ornament-line"></span>
+                </div>
                 <h2>Bröllop, fest eller afterwork</h2>
                 <p className="event-section-lead">
                   Vår gård passar lika bra för ett stort firande som för ett mer
@@ -189,6 +200,11 @@ function EventPage() {
                 </div>
                 <div className="event-split-content">
                   <span className="event-section-eyebrow">Ytor & Kapacitet</span>
+                  <div className="section-ornament align-left" aria-hidden="true">
+                    <span className="section-ornament-line"></span>
+                    <Maximize2 size={18} />
+                    <span className="section-ornament-line"></span>
+                  </div>
                   <h2>Stora sällskap eller mindre sammankomster</h2>
                   <p>
                     Med totalt 360 kvm inomhusyta fördelat på två våningar i vår omsorgsfullt renoverade lada
@@ -215,6 +231,11 @@ function EventPage() {
                 </div>
                 <div className="event-split-content">
                   <span className="event-section-eyebrow">Allt är förberett</span>
+                  <div className="section-ornament align-left" aria-hidden="true">
+                    <span className="section-ornament-line"></span>
+                    <Sparkles size={18} />
+                    <span className="section-ornament-line"></span>
+                  </div>
                   <h2>Vi har allt som behövs för ett lyckat event</h2>
                   <p>
                     Vi vill göra det så enkelt och bekymmersfritt som möjligt för er att arrangera er fest. 

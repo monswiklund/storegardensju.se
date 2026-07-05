@@ -5,9 +5,6 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Navbar,
   CartDrawer,
@@ -21,24 +18,22 @@ import HomeInstagramSection from "../features/home/InstagramFeed/HomeInstagramSe
 import { ToastProvider } from "../contexts/ToastContext";
 import { appRoutes } from "../config/routes.js";
 
-gsap.registerPlugin(ScrollTrigger);
-
-// Pages
+// Pages — HomePage eager (initial route/LCP), rest lazy per route
 import HomePage from "../pages/HomePage.jsx";
-import EventPage from "../pages/EventPage/EventPage.jsx";
-import MohippaPage from "../pages/MohippaPage.jsx";
-import ArtPage from "../pages/ArtPage.jsx";
-import GalleriPage from "../pages/GalleriPage.jsx";
-import TeamPage from "../pages/TeamPage.jsx";
-import KurserPage from "../pages/KurserPage.jsx";
+const EventPage = lazy(() => import("../pages/EventPage/EventPage.jsx"));
+const MohippaPage = lazy(() => import("../pages/MohippaPage.jsx"));
+const ArtPage = lazy(() => import("../pages/ArtPage.jsx"));
+const GalleriPage = lazy(() => import("../pages/GalleriPage.jsx"));
+const TeamPage = lazy(() => import("../pages/TeamPage.jsx"));
+const KurserPage = lazy(() => import("../pages/KurserPage.jsx"));
 const AdminPage = lazy(() => import("../pages/AdminPage/AdminPage.jsx"));
 // BUTIK
-import ButikPage from "../pages/ButikPage.jsx";
-import ProductDetailPage from "../pages/ProductDetailPage.jsx";
-import CartPage from "../pages/CartPage.jsx";
-import CheckoutPage from "../pages/CheckoutPage/CheckoutPage.jsx";
-import SuccessPage from "../pages/SuccessPage.jsx";
-import CancelPage from "../pages/CancelPage.jsx";
+const ButikPage = lazy(() => import("../pages/ButikPage.jsx"));
+const ProductDetailPage = lazy(() => import("../pages/ProductDetailPage.jsx"));
+const CartPage = lazy(() => import("../pages/CartPage.jsx"));
+const CheckoutPage = lazy(() => import("../pages/CheckoutPage/CheckoutPage.jsx"));
+const SuccessPage = lazy(() => import("../pages/SuccessPage.jsx"));
+const CancelPage = lazy(() => import("../pages/CancelPage.jsx"));
 import { ContactSection } from "../features/contact";
 
 function App() {
@@ -61,41 +56,63 @@ function App() {
     };
   }, []);
 
-  // Initialize Lenis smooth scroll globally when motion is allowed
+  // Initialize Lenis smooth scroll globally when motion is allowed.
+  // Lenis/GSAP loaded dynamically to keep them out of the initial bundle.
   useEffect(() => {
-    if (prefersReducedMotion) {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-      return undefined;
-    }
+    let cancelled = false;
+    let cleanup;
 
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      smoothTouch: false,
-      touchMultiplier: 2,
-    });
+    (async () => {
+      const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
+      if (cancelled) return;
 
-    window.storegardenLenis = lenis;
+      gsap.registerPlugin(ScrollTrigger);
 
-    // Connect Lenis with GSAP ScrollTrigger
-    lenis.on("scroll", ScrollTrigger.update);
+      if (prefersReducedMotion) {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        return;
+      }
 
-    const tickerCallback = (time) => {
-      lenis.raf(time * 1000);
-    };
+      const { default: Lenis } = await import("lenis");
+      if (cancelled) return;
 
-    gsap.ticker.add(tickerCallback);
-    gsap.ticker.lagSmoothing(0);
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: "vertical",
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+      });
+
+      window.storegardenLenis = lenis;
+
+      // Connect Lenis with GSAP ScrollTrigger
+      lenis.on("scroll", ScrollTrigger.update);
+
+      const tickerCallback = (time) => {
+        lenis.raf(time * 1000);
+      };
+
+      gsap.ticker.add(tickerCallback);
+      gsap.ticker.lagSmoothing(0);
+
+      cleanup = () => {
+        if (window.storegardenLenis === lenis) {
+          window.storegardenLenis = null;
+        }
+        lenis.destroy();
+        gsap.ticker.remove(tickerCallback);
+      };
+    })();
 
     return () => {
-      if (window.storegardenLenis === lenis) {
-        window.storegardenLenis = null;
-      }
-      lenis.destroy();
-      gsap.ticker.remove(tickerCallback);
+      cancelled = true;
+      cleanup?.();
     };
   }, [prefersReducedMotion]);
 
@@ -140,6 +157,7 @@ function AppContent() {
       {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <EventSubnav isActive={isEventSection} />}
       {!isAdminRoute && <CartDrawer />}
+      <Suspense fallback={null}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/event" element={<EventPage />} />
@@ -155,15 +173,9 @@ function AppContent() {
         <Route path="/success" element={<SuccessPage />} />
         <Route path="/cancel" element={<CancelPage />} />
         <Route path="/om-oss" element={<TeamPage />} />
-        <Route
-          path="/admin"
-          element={
-            <Suspense fallback={null}>
-              <AdminPage />
-            </Suspense>
-          }
-        />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
+      </Suspense>
       {!isAdminRoute && (
         <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
           <ContactSection />

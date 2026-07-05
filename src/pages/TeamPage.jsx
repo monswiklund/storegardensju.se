@@ -1,3 +1,4 @@
+import { Users } from "lucide-react";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import { PageSection } from "../components";
@@ -12,6 +13,12 @@ function TeamPage() {
                 <ErrorBoundary>
                     <FadeInSection>
                         <div className="profile-showcase-container">
+                            <span className="section-eyebrow">STOREGÅRDEN 7</span>
+                            <div className="section-ornament align-left" aria-hidden="true">
+                                <span className="section-ornament-line"></span>
+                                <Users size={18} />
+                                <span className="section-ornament-line"></span>
+                            </div>
                             <h2 id="about-heading">Om Oss</h2>
                             <div className="team-grid">
                                 <TeamProfileShowcase profile={profiles.ann} />

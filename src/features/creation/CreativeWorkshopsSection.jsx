@@ -7,8 +7,8 @@ function CreativeWorkshopsSection() {
   // Let's pair each section with a beautiful, high-quality image path
   const sectionImages = [
     "/images/evenemang/maleri-kurs.webp",
-    "/images/evenemang/heldag-paket.jpg",
-    "/images/lokal/slide23.jpg"
+    "/images/evenemang/heldag-paket.webp",
+    "/images/lokal/slide23.webp"
   ];
 
   return (
@@ -33,6 +33,8 @@ function CreativeWorkshopsSection() {
                     src={sectionImages[index]} 
                     alt={section.heading} 
                     className="creation-row__image"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="creation-row__image-overlay" />
                 </div>

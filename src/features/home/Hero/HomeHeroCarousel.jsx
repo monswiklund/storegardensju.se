@@ -228,7 +228,13 @@ const HomeHeroCarousel = () => {
       <div className="hero-carousel-inner">
         {slides.map((src, index) => (
           <div className="hero-carousel-item" key={index}>
-            <img src={src} alt="" loading="lazy" />
+            <img
+              src={src}
+              alt=""
+              loading={index < 3 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : undefined}
+              decoding="async"
+            />
           </div>
         ))}
       </div>

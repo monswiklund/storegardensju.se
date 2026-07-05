@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Minus,
   Plus,
+  ShoppingBag,
 } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
@@ -80,6 +81,12 @@ function ButikPage() {
       <PageSection background="alt" spacing="default">
         {/* Header */}
         <div className="butik-header">
+          <span className="section-eyebrow">GÅRDSBUTIK</span>
+          <div className="section-ornament" aria-hidden="true">
+            <span className="section-ornament-line"></span>
+            <ShoppingBag size={20} />
+            <span className="section-ornament-line"></span>
+          </div>
           <h1>Butik</h1>
           <p>Handgjord konst och keramik från lokala konstnärer</p>
         </div>
@@ -142,7 +149,7 @@ function ButikPage() {
                   key={product.id}
                 >
                   <div className="product-card-image">
-                    <img src={product.images[0]} alt={product.name} />
+                    <img src={product.images[0]} alt={product.name} loading="lazy" decoding="async" />
                     {/* Endast SÅLD badge visas på bilden */}
                     {isSoldOut && (
                       <div className="product-badges">

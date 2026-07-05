@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { Camera } from "lucide-react";
 import "./Gallery.css";
 import CategoryToggle from "../CategoryToggle/CategoryToggle";
 import staticGalleryData from "../../../data/galleryCategories.json";
@@ -162,7 +163,15 @@ function GalleryShowcase() {
         <VenueIntroSection />
       </div>
 
-      <h2 id="gallery-heading">Bildgalleri</h2>
+      <div className="gallery-header" style={{ textAlign: "center", marginBottom: "48px" }}>
+        <span className="section-eyebrow">GALLERI</span>
+        <div className="section-ornament" aria-hidden="true">
+          <span className="section-ornament-line"></span>
+          <Camera size={20} />
+          <span className="section-ornament-line"></span>
+        </div>
+        <h2 id="gallery-heading" style={{ margin: 0 }}>Bildgalleri</h2>
+      </div>
 
       <CategoryToggle
         categories={normalizedGallery.categories}

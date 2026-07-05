@@ -47,7 +47,7 @@ export const services = [
       "Baspaket med lokal, hjälp på plats och kreativa tillval som målning, collage, cocktailkurs och keramik.",
     meta: "Lokal 10:00-22:00 · Tillval per aktivitet",
     route: "/mohippa",
-    image: "/images/evenemang/slide10.jpg",
+    image: "/images/evenemang/slide10.webp",
     ctaLabel: "Planera möhippa",
   },
   {
@@ -69,7 +69,7 @@ export const services = [
       "Lär känna Storegården 7, människorna bakom ateljén och hur den gamla gården blivit en plats för möten.",
     meta: "15 min från Lidköping · Ateljé · Gårdsbutik",
     route: "/om-oss",
-    image: "/images/lokal/slide23.jpg",
+    image: "/images/lokal/slide23.webp",
     ctaLabel: "Möt oss",
   },
 ];

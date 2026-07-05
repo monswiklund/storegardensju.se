@@ -89,6 +89,8 @@ function EventCard({ event }) {
             src={image.src}
             alt={image.alt || ""}
             className="upcoming-card-image"
+            loading="lazy"
+            decoding="async"
           />
         )}
         {/* Overlay Date badge for Mobile only */}

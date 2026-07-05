@@ -6,7 +6,8 @@ import {
   ArrowUpRight,
   Leaf,
   Coffee,
-  Users
+  Users,
+  Calendar
 } from "lucide-react";
 import "./UpcomingEvents.css";
 import "../PastEvents/PastEvents.css";
@@ -138,7 +139,7 @@ function HomeUpcomingEventsSection() {
         }
       ],
       image: {
-        src: "/images/evenemang/yoga-loft.png",
+        src: "/images/evenemang/yoga-loft.webp",
         alt: "Yoga på loftet"
       }
     };
@@ -190,6 +191,11 @@ function HomeUpcomingEventsSection() {
               {/* Left Column: Text info and Call to action buttons */}
               <div className="upcoming-events-content-col">
                 <span className="events-eyebrow">KOMMANDE EVENEMANG</span>
+                <div className="section-ornament align-left" aria-hidden="true">
+                  <span className="section-ornament-line"></span>
+                  <Calendar size={18} />
+                  <span className="section-ornament-line"></span>
+                </div>
                 <h2 className="events-heading-large">Nästa grej på Storegården</h2>
                 <p className="events-description-large">
                   En dag för kropp, sinne och kreativitet i en inspirerande miljö.

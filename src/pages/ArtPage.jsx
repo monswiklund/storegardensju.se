@@ -100,6 +100,11 @@ function ArtPage() {
         >
           <div className="art-hero__inner">
             <span className="art-eyebrow">Ateljé & Skaparglädje</span>
+            <div className="section-ornament" aria-hidden="true" style={{ color: "var(--accent-color)" }}>
+              <span className="section-ornament-line" style={{ background: "var(--accent-color)" }}></span>
+              <Palette size={20} />
+              <span className="section-ornament-line" style={{ background: "var(--accent-color)" }}></span>
+            </div>
             <h1 id="art-heading">Skapande — Målning & Lera</h1>
             <p>Utforska din kreativitet i en inspirerande gårdsateljé på Storegården 7</p>
             <button

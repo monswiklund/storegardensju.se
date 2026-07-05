@@ -1,5 +1,6 @@
 import "./Services.css";
 import { Link } from "react-router-dom";
+import { Sparkles } from "lucide-react";
 import { services as servicesData } from "../../../data/homeContent.js";
 
 const HomeServicesSection = () => {
@@ -7,9 +8,13 @@ const HomeServicesSection = () => {
     <section className="services-section" aria-labelledby="services-heading">
       <div className="services-container">
         <div className="services-header">
-          <div className="services-header__title">
-            <h2 id="services-heading">Vad vi erbjuder</h2>
+          <span className="section-eyebrow">VAD VI HAR</span>
+          <div className="section-ornament" aria-hidden="true">
+            <span className="section-ornament-line"></span>
+            <Sparkles size={20} />
+            <span className="section-ornament-line"></span>
           </div>
+          <h2 id="services-heading">Vad vi erbjuder</h2>
           <p className="services-intro">
           </p>
         </div>

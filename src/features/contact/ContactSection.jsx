@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Mail } from "lucide-react";
 import { contactMethods, contactEmail } from "./contact.js";
 import MailtoFallback from "./MailtoFallback.jsx";
 import "./Contact.css";
@@ -127,10 +128,11 @@ function ContactSection() {
   return (
     <section className="contact-section" aria-labelledby="contact-heading">
       <div className="contact-container">
-        <div className="contact-ornament" aria-hidden="true">
-          <span className="contact-ornament-line"></span>
-          {leafIcon}
-          <span className="contact-ornament-line"></span>
+        <span className="section-eyebrow">KONTAKT</span>
+        <div className="section-ornament" aria-hidden="true">
+          <span className="section-ornament-line"></span>
+          <Mail size={20} />
+          <span className="section-ornament-line"></span>
         </div>
         <h2 id="contact-heading">Kontakta oss</h2>
         <p className="contact-subtitle">

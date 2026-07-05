@@ -9,6 +9,7 @@ import {
   Palette,
   Coffee,
   CheckCircle2,
+  Flower2,
 } from "lucide-react";
 import { PageSection } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
@@ -116,11 +117,16 @@ function KurserPage() {
         <section
           id="kurser-hero"
           className="kurser-hero"
-          style={{ backgroundImage: "url('/images/evenemang/kurser-header.jpg')" }}
+          style={{ backgroundImage: "url('/images/evenemang/kurser-header.webp')" }}
           aria-labelledby="kurser-heading"
         >
           <div className="kurser-hero__inner">
             <span className="kurser-eyebrow">Kurser & Workshops</span>
+            <div className="section-ornament" aria-hidden="true" style={{ color: "var(--primary-color)" }}>
+              <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
+              <Flower2 size={20} />
+              <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
+            </div>
             <h1 id="kurser-heading">Heldag med yoga & måleri</h1>
             <p>13:e juli | Kl 10:00 - 17:30</p>
           </div>
@@ -206,7 +212,7 @@ function KurserPage() {
                 {/* YOGA KORT (LINA - GRÖN) */}
                 <article id="yoga" className="kurser-card" style={{ padding: "10px" }}>
                   <div className="kurser-card__image">
-                    <img src="/images/evenemang/yoga-loft.png" alt="Yoga på loftet" />
+                    <img src="/images/evenemang/yoga-loft.webp" alt="Yoga på loftet" />
                     <div className="kurser-card__badge" style={{ backgroundColor: "var(--primary-color)", color: "white" }}>
                       <Heart size={14} /> Yoga
                     </div>
@@ -346,7 +352,7 @@ function KurserPage() {
                   }}
                 >
                   <div className="kurser-card__image">
-                    <img src="/images/evenemang/heldag-paket.jpg" alt="Heldag på gården" />
+                    <img src="/images/evenemang/heldag-paket.webp" alt="Heldag på gården" />
                     <div className="kurser-card__badge" style={{ background: "linear-gradient(135deg, var(--primary-color), var(--accent-color))", color: "white" }}>
                       <Sparkles size={14} /> Heldag
                     </div>

@@ -10,6 +10,8 @@ function ProfileCard({ profile }) {
           className="profile-image"
           src={profile.imageSrc}
           alt={profile.imageAlt || "Profilbild"}
+          loading="lazy"
+          decoding="async"
         />
       )}
 
