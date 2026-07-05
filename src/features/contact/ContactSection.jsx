@@ -114,6 +114,7 @@ const leafIcon = (
 function ContactSection() {
   const [subjectValue, setSubjectValue] = useState("");
   const [fallbackText, setFallbackText] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -140,140 +141,124 @@ function ContactSection() {
           Tveka inte att höra av dig – vi svarar så snart vi kan.
         </p>
 
-        <div className="contact-grid">
-          <form className="contact-form contact-panel" onSubmit={handleSubmit}>
-            <div className="contact-field-row">
+        <div className="contact-trigger-wrapper">
+          <button
+            type="button"
+            className="contact-toggle-btn"
+            aria-expanded={isOpen}
+            aria-controls="contact-collapsible-content"
+            onClick={() => setIsOpen((prev) => !prev)}
+          >
+            {isOpen ? "Dölj kontaktformulär" : "Visa kontaktformulär & info"}
+            <svg
+              className={`contact-toggle-chevron ${isOpen ? "contact-toggle-chevron--open" : ""}`}
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+        </div>
+
+        <div
+          id="contact-collapsible-content"
+          className={`contact-collapsible-content ${isOpen ? "contact-collapsible-content--open" : ""}`}
+          role="region"
+          aria-labelledby="contact-heading"
+        >
+          <div className="contact-grid">
+            <form className="contact-form contact-panel" onSubmit={handleSubmit}>
+              <div className="contact-field-row">
+                <div className="contact-field">
+                  <label htmlFor="contact-name">Namn *</label>
+                  <input
+                    id="contact-name"
+                    name="name"
+                    type="text"
+                    placeholder="Ditt namn"
+                    required
+                  />
+                </div>
+                <div className="contact-field">
+                  <label htmlFor="contact-date">Önskat datum (valfritt)</label>
+                  <input id="contact-date" name="date" type="date" />
+                </div>
+              </div>
+
               <div className="contact-field">
-                <label htmlFor="contact-name">Namn *</label>
+                <label htmlFor="contact-subject">Ämne *</label>
+                <div className="contact-chips" role="group" aria-label="Föreslagna ämnen">
+                  {subjectSuggestions.map((suggestion) => (
+                    <button
+                      key={suggestion.label}
+                      type="button"
+                      className={`contact-chip${
+                        subjectValue === suggestion.label
+                          ? " contact-chip--active"
+                          : ""
+                      }`}
+                      aria-pressed={subjectValue === suggestion.label}
+                      onClick={() => setSubjectValue(suggestion.label)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        {chipIcons[suggestion.icon]}
+                      </svg>
+                      {suggestion.label}
+                    </button>
+                  ))}
+                </div>
                 <input
-                  id="contact-name"
-                  name="name"
+                  id="contact-subject"
+                  name="subject"
                   type="text"
-                  placeholder="Ditt namn"
+                  value={subjectValue}
+                  onChange={(e) => setSubjectValue(e.target.value)}
+                  placeholder="Välj ovan eller skriv eget ämne"
                   required
                 />
               </div>
+
               <div className="contact-field">
-                <label htmlFor="contact-date">Önskat datum (valfritt)</label>
-                <input id="contact-date" name="date" type="date" />
+                <label htmlFor="contact-message">Meddelande *</label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  rows={5}
+                  placeholder="Berätta gärna mer om ditt evenemang eller din förfrågan..."
+                  required
+                />
               </div>
-            </div>
 
-            <div className="contact-field">
-              <label htmlFor="contact-subject">Ämne *</label>
-              <div className="contact-chips">
-                {subjectSuggestions.map((suggestion) => (
-                  <button
-                    key={suggestion.label}
-                    type="button"
-                    className={`contact-chip${
-                      subjectValue === suggestion.label
-                        ? " contact-chip--active"
-                        : ""
-                    }`}
-                    onClick={() => setSubjectValue(suggestion.label)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      {chipIcons[suggestion.icon]}
-                    </svg>
-                    {suggestion.label}
-                  </button>
-                ))}
+              <div className="contact-note">
+                <span className="contact-note-icon">{leafIcon}</span>
+                <p>
+                  <strong>Vi gör vårt bästa för att återkomma inom 24 timmar.</strong>
+                  <br />
+                  Tack för att du hör av dig till Storegården 7!
+                </p>
               </div>
-              <input
-                id="contact-subject"
-                name="subject"
-                type="text"
-                value={subjectValue}
-                onChange={(e) => setSubjectValue(e.target.value)}
-                placeholder="Välj ovan eller skriv eget ämne"
-                required
-              />
-            </div>
 
-            <div className="contact-field">
-              <label htmlFor="contact-message">Meddelande *</label>
-              <textarea
-                id="contact-message"
-                name="message"
-                rows={5}
-                placeholder="Berätta gärna mer om ditt evenemang eller din förfrågan..."
-                required
-              />
-            </div>
-
-            <div className="contact-note">
-              <span className="contact-note-icon">{leafIcon}</span>
-              <p>
-                <strong>Vi gör vårt bästa för att återkomma inom 24 timmar.</strong>
-                <br />
-                Tack för att du hör av dig till Storegården 7!
-              </p>
-            </div>
-
-            <div className="contact-submit-row">
-              <button type="submit" className="contact-submit">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <rect x="2" y="4" width="20" height="16" rx="2" />
-                  <path d="m2 7 10 7 10-7" />
-                </svg>
-                Skicka meddelande
-              </button>
-            </div>
-
-            {fallbackText && (
-              <MailtoFallback
-                key={fallbackText}
-                email={contactEmail}
-                copyText={fallbackText}
-              />
-            )}
-          </form>
-
-          <div className="contact-aside">
-            <h3 className="contact-aside-heading">Du kan också nå oss direkt</h3>
-            {contactMethods.map((method) => {
-              const icon = iconMap[method.icon] ?? null;
-              const externalProps = method.external
-                ? { target: "_blank", rel: "noopener noreferrer" }
-                : {};
-
-              return (
-                <a
-                  key={method.id}
-                  href={method.href}
-                  className="contact-card"
-                  aria-label={method.ariaLabel}
-                  {...externalProps}
-                >
-                  <div className="contact-icon">{icon}</div>
-                  <div className="contact-card-body">
-                    <h4>{method.label}</h4>
-                    <p className="contact-info">{method.display}</p>
-                    <p className="contact-card-note">{methodNotes[method.id]}</p>
-                  </div>
+              <div className="contact-submit-row">
+                <button type="submit" className="contact-submit">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
@@ -285,13 +270,63 @@ function ContactSection() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     aria-hidden="true"
-                    className="contact-card-chevron"
                   >
-                    <path d="m9 18 6-6-6-6" />
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <path d="m2 7 10 7 10-7" />
                   </svg>
-                </a>
-              );
-            })}
+                  Skicka meddelande
+                </button>
+              </div>
+
+              {fallbackText && (
+                <MailtoFallback
+                  key={fallbackText}
+                  email={contactEmail}
+                  copyText={fallbackText}
+                />
+              )}
+            </form>
+
+            <div className="contact-aside">
+              <h3 className="contact-aside-heading">Du kan också nå oss direkt</h3>
+              {contactMethods.map((method) => {
+                const icon = iconMap[method.icon] ?? null;
+                const externalProps = method.external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {};
+
+                return (
+                  <a
+                    key={method.id}
+                    href={method.href}
+                    className="contact-card"
+                    {...externalProps}
+                  >
+                    <div className="contact-icon">{icon}</div>
+                    <div className="contact-card-body">
+                      <h4>{method.label}</h4>
+                      <p className="contact-info">{method.display}</p>
+                      <p className="contact-card-note">{methodNotes[method.id]}</p>
+                    </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                      className="contact-card-chevron"
+                    >
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  </a>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

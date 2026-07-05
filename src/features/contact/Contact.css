@@ -107,7 +107,7 @@
 
 .contact-field input::placeholder,
 .contact-field textarea::placeholder {
-  color: rgba(51, 51, 51, 0.45);
+  color: rgba(51, 51, 51, 0.65);
 }
 
 .contact-field input:focus,
@@ -148,13 +148,19 @@
 
 .contact-chip:hover {
   border-color: var(--primary-color);
-  color: var(--primary-hover);
+  color: #2c6b50;
+}
+
+.contact-chip:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-color: var(--primary-color);
 }
 
 .contact-chip--active {
   background: var(--background-green);
   border-color: var(--primary-color);
-  color: var(--primary-hover);
+  color: #2c6b50;
 }
 
 .contact-chips + input {
@@ -220,6 +226,12 @@
   box-shadow: 0 8px 20px rgba(95, 111, 82, 0.25);
 }
 
+.contact-submit:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 3px;
+  background: var(--primary-hover);
+}
+
 .contact-submit:active {
   transform: translateY(0);
 }
@@ -255,7 +267,7 @@
 }
 
 .contact-fallback a {
-  color: var(--primary-hover);
+  color: #2c6b50;
   font-weight: 600;
 }
 
@@ -263,7 +275,7 @@
   font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--primary-hover);
+  color: #2c6b50;
   background: white;
   border: 1px solid var(--primary-color);
   border-radius: 30px;
@@ -271,6 +283,11 @@
   cursor: pointer;
   transition: all 0.3s ease;
   flex-shrink: 0;
+}
+
+.contact-fallback-copy:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }
 
 .contact-fallback-copy:hover {
@@ -314,6 +331,14 @@
   border-color: var(--primary-color);
 }
 
+.contact-card:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 4px;
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-color);
+}
+
 .contact-icon {
   width: 52px;
   height: 52px;
@@ -322,7 +347,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-hover);
+  color: #2c6b50;
   flex-shrink: 0;
   transition: transform 0.3s ease;
 }
@@ -346,7 +371,7 @@
 
 .contact-info {
   font-size: 0.95rem;
-  color: var(--primary-hover);
+  color: #2c6b50;
   margin: 0 0 2px 0;
   font-weight: 600;
   word-break: break-word;
@@ -366,117 +391,68 @@
 
 .contact-card:hover .contact-card-chevron {
   transform: translateX(3px);
-  color: var(--primary-hover);
+  color: #2c6b50;
 }
 
-/* ==========================================================================
-   Welcome Text Section
-   ========================================================================== */
-.välkomst-text {
-  flex: 1;
-  max-width: 800px;
-  font-weight: 300;
-  width: 100%;
-  text-align: center;
-  padding: 0 15px;
-  box-sizing: border-box;
-}
-
-.välkomst-text h2,
-.välkomst-text h3,
-.välkomst-text h4,
-.services h3,
-.services h4 {
-  font-weight: 300;
-  margin: 1rem 0 0.5rem 0;
-  padding: 0;
-  text-align: center;
-  color: var(--text-secondary);
-}
-
-.välkomst-text h2 {
-  font-size: clamp(1.6rem, 1.2rem + 2.5vw, 2.2rem);
-}
-
-.välkomst-text h3,
-.services h3 {
-  font-size: clamp(1.25rem, 1.05rem + 2vw, 1.7rem);
-}
-
-.välkomst-text h4,
-.services h4 {
-  font-size: clamp(1.05rem, 0.95rem + 1.4vw, 1.4rem);
-}
-
-.välkomst-text p,
-.services p {
-  font-size: clamp(0.95rem, 0.92rem + 0.4vw, 1.05rem);
-  line-height: 1.5;
-  margin: 0 0 0.5rem 0;
-  padding: 0;
-  text-align: center;
-}
-
-/* ==========================================================================
-   Collaboration Section
-   ========================================================================== */
-.collaboration-section {
-  background-color: #faf9f6; /* Very soft light warm beige */
-  padding: 90px 20px;
-  text-align: center;
-  border-top: 1px solid rgba(0, 0, 0, 0.04);
-}
-
-.collaboration-container {
-  max-width: 680px;
-  margin: 0 auto;
+/* Collapsible container ("rullgardin") */
+.contact-trigger-wrapper {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.contact-toggle-btn {
+  display: inline-flex;
   align-items: center;
-}
-
-.collaboration-section h2 {
-  font-family: var(--font-heading);
-  font-size: clamp(1.8rem, 2.5vw, 2.3rem);
-  font-weight: 500;
-  color: var(--text-main);
-  margin-bottom: 16px;
-}
-
-.collaboration-body {
+  gap: 10px;
   font-family: var(--font-body);
-  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
-  line-height: 1.7;
-  color: var(--text-secondary);
-  margin-bottom: 36px;
-  text-align: center;
-}
-
-.collaboration-button {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--primary-color);
-  background-color: transparent;
-  padding: 14px 36px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-hover);
+  background: white;
   border: 2px solid var(--primary-color);
   border-radius: 30px;
-  text-decoration: none;
+  padding: 14px 32px;
+  cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: var(--shadow-sm);
 }
 
-.collaboration-button:hover {
+.contact-toggle-btn:hover {
+  background: var(--primary-color);
   color: white;
-  background-color: var(--primary-color);
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(95, 111, 82, 0.2);
 }
 
-.collaboration-button:active {
-  transform: translateY(-1px);
+.contact-toggle-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 3px;
+}
+
+.contact-toggle-btn:active {
+  transform: translateY(0);
+}
+
+.contact-toggle-chevron {
+  transition: transform 0.3s ease;
+}
+
+.contact-toggle-chevron--open {
+  transform: rotate(180deg);
+}
+
+.contact-collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin 0.4s ease;
+}
+
+.contact-collapsible-content--open {
+  max-height: 1400px;
+  opacity: 1;
+  margin-top: 32px;
 }
 
 /* Responsive adjustments */
@@ -487,10 +463,6 @@
 }
 
 @media (max-width: 768px) {
-  .collaboration-section {
-    padding: 70px 20px;
-  }
-
   .contact-section {
     padding: 70px 16px;
   }
