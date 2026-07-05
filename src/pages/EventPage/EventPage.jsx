@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PartyPopper, Wine, Maximize2, Sparkles } from "lucide-react";
 import { PageSection } from "../../components";
+import { HomeServicesSection } from "../../features/home";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import "./EventPage.css";
 
@@ -249,6 +250,19 @@ function EventPage() {
                   </ul>
                 </div>
               </div>
+            </FadeInSection>
+          </PageSection>
+        </div>
+
+        {/* Andra erbjudanden */}
+        <div id="event-services-recommendation">
+          <PageSection background="green" spacing="default">
+            <FadeInSection>
+              <HomeServicesSection
+                excludeId="event-fest"
+                title="Utforska mer på gården"
+                eyebrow="MER HOS OSS"
+              />
             </FadeInSection>
           </PageSection>
         </div>

@@ -12,6 +12,7 @@ import {
   Palette,
 } from "lucide-react";
 import { PageSection } from "../components";
+import { HomeServicesSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import "./MohippaPage.css";
 
@@ -566,6 +567,19 @@ function MohippaPage() {
                   </div>
 
                 </div>
+              </FadeInSection>
+            </PageSection>
+          </div>
+
+          {/* Andra erbjudanden */}
+          <div id="mohippa-services-recommendation">
+            <PageSection background="green" spacing="default">
+              <FadeInSection>
+                <HomeServicesSection
+                  excludeId="mohippa"
+                  title="Planera mer på gården"
+                  eyebrow="FLER AKTIVITETER"
+                />
               </FadeInSection>
             </PageSection>
           </div>

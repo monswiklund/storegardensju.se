@@ -3,24 +3,28 @@ import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import { services as servicesData } from "../../../data/homeContent.js";
 
-const HomeServicesSection = () => {
+const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "VAD VI HAR" }) => {
+  const filteredServices = excludeId
+    ? servicesData.filter((service) => service.id !== excludeId)
+    : servicesData;
+
   return (
     <section className="services-section" aria-labelledby="services-heading">
       <div className="services-container">
         <div className="services-header">
-          <span className="section-eyebrow">VAD VI HAR</span>
+          <span className="section-eyebrow">{eyebrow}</span>
           <div className="section-ornament" aria-hidden="true">
             <span className="section-ornament-line"></span>
             <Sparkles size={20} />
             <span className="section-ornament-line"></span>
           </div>
-          <h2 id="services-heading">Vad vi erbjuder</h2>
+          <h2 id="services-heading">{title}</h2>
           <p className="services-intro">
           </p>
         </div>
 
         <div className="services-grid">
-          {servicesData.map((service) => (
+          {filteredServices.map((service) => (
             <Link
               key={service.id}
               to={service.route}

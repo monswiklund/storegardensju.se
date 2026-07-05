@@ -3,6 +3,7 @@ import { Mail, Palette, Sparkles, Flame, Users } from "lucide-react";
 import CreativeWorkshopsSection from "../features/creation/CreativeWorkshopsSection.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { PageSection } from "../components";
+import { HomeServicesSection } from "../features/home";
 import "./ArtPage.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
@@ -188,6 +189,19 @@ function ArtPage() {
                   </a>
                 </div>
               </div>
+            </FadeInSection>
+          </PageSection>
+        </div>
+
+        {/* Andra erbjudanden */}
+        <div id="art-services-recommendation">
+          <PageSection background="alt" spacing="default">
+            <FadeInSection>
+              <HomeServicesSection
+                excludeId="skapande"
+                title="Upptäck mer på gården"
+                eyebrow="MER ATT SE & GÖRA"
+              />
             </FadeInSection>
           </PageSection>
         </div>

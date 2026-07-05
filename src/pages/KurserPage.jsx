@@ -12,6 +12,7 @@ import {
   Flower2,
 } from "lucide-react";
 import { PageSection } from "../components";
+import { HomeServicesSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import MailtoFallback from "../features/contact/MailtoFallback.jsx";
 import "./KurserPages.css";
@@ -425,6 +426,19 @@ function KurserPage() {
                   </div>
                 </article>
               </div>
+            </FadeInSection>
+          </PageSection>
+        </div>
+
+        {/* Andra erbjudanden */}
+        <div id="kurser-services-recommendation">
+          <PageSection background="alt" spacing="default">
+            <FadeInSection>
+              <HomeServicesSection
+                excludeId="skapande"
+                title="Upptäck mer på gården"
+                eyebrow="MER ATT SE & GÖRA"
+              />
             </FadeInSection>
           </PageSection>
         </div>

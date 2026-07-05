@@ -133,6 +133,7 @@ function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isHomePage = location.pathname === "/";
+  const isTeamPage = location.pathname === "/om-oss";
   const eventRoute = appRoutes.find((route) => route.path === "/event");
   const eventPaths = eventRoute
     ? [
@@ -176,7 +177,7 @@ function AppContent() {
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
       </Suspense>
-      {!isAdminRoute && (
+      {!isAdminRoute && !isTeamPage && (
         <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
           <ContactSection />
         </FadeInSection>
