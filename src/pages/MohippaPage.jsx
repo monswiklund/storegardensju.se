@@ -11,9 +11,11 @@ import {
   Utensils,
   Palette,
 } from "lucide-react";
-import { PageSection } from "../components";
+import { PageSection, SectionDivider } from "../components";
 import { HomeServicesSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
+import { useSeo } from "../hooks/useSeo.js";
+import { seoMeta } from "../config/seoMeta.js";
 import "./MohippaPage.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
@@ -120,6 +122,7 @@ const ACTIVITIES = [
 const formatActivityNumber = (index) => String(index + 1).padStart(2, "0");
 
 function MohippaPage() {
+  useSeo(seoMeta.mohippa);
   const [activeSection, setActiveSection] = useState("top");
   const [mainTab, setMainTab] = useState("baspaket"); // "baspaket" or "aktiviteter"
   const [activeTab, setActiveTab] = useState("alla");
@@ -571,6 +574,8 @@ function MohippaPage() {
             </PageSection>
           </div>
 
+          <SectionDivider above="white" below="green" variant="wave" />
+
           {/* Andra erbjudanden */}
           <div id="mohippa-services-recommendation">
             <PageSection background="green" spacing="default">
@@ -583,6 +588,8 @@ function MohippaPage() {
               </FadeInSection>
             </PageSection>
           </div>
+
+          <SectionDivider above="green" below="alt" variant="hill" />
         </main>
       </div>
     </div>

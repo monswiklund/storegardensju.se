@@ -1,28 +1,90 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
-  Calendar,
   Clock,
   Heart,
   Sparkles,
   Mail,
   Palette,
-  Coffee,
   CheckCircle2,
   Flower2,
 } from "lucide-react";
-import { PageSection } from "../components";
+import { PageSection, SectionDivider } from "../components";
 import { HomeServicesSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import MailtoFallback from "../features/contact/MailtoFallback.jsx";
+import { useSeo } from "../hooks/useSeo.js";
+import { seoMeta } from "../config/seoMeta.js";
 import "./KurserPages.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
+
+const EVENT_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: "Heldag med yoga & måleri på Storegården 7",
+  description:
+    "Kursdag utanför Lidköping: yogapass med Lina Wiklund på förmiddagen och målarkurs i akvarell och akryl med Ann Wiklund på eftermiddagen. Boka yoga, måleri eller hela dagen med lunch och fika.",
+  startDate: "2026-07-13T10:00:00+02:00",
+  endDate: "2026-07-13T17:30:00+02:00",
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  eventStatus: "https://schema.org/EventScheduled",
+  image: ["https://storegardensju.se/images/evenemang/kurser-header.webp"],
+  location: {
+    "@type": "Place",
+    name: "Storegården 7",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Storegården 7",
+      addressLocality: "Rackeby, Lidköping",
+      addressRegion: "Västra Götaland",
+      postalCode: "531 96",
+      addressCountry: "SE",
+    },
+  },
+  organizer: {
+    "@type": "Organization",
+    name: "Storegården 7",
+    url: "https://storegardensju.se",
+  },
+  performer: [
+    { "@type": "Person", name: "Lina Wiklund" },
+    { "@type": "Person", name: "Ann Wiklund" },
+  ],
+  offers: [
+    {
+      "@type": "Offer",
+      name: "Yogapass (förmiddag)",
+      price: "200",
+      priceCurrency: "SEK",
+      availability: "https://schema.org/InStock",
+      url: "https://storegardensju.se/kurser/#yoga",
+    },
+    {
+      "@type": "Offer",
+      name: "Målarkurs (eftermiddag)",
+      price: "600",
+      priceCurrency: "SEK",
+      availability: "https://schema.org/InStock",
+      url: "https://storegardensju.se/kurser/#maleri",
+    },
+    {
+      "@type": "Offer",
+      name: "Heldagspaket med lunch",
+      price: "900",
+      priceCurrency: "SEK",
+      availability: "https://schema.org/InStock",
+      url: "https://storegardensju.se/kurser/#heldag",
+    },
+  ],
+};
 
 function KurserPage() {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState("top");
   const [signupFallback, setSignupFallback] = useState(null);
+
+  useSeo({ ...seoMeta.kurser, jsonLd: EVENT_JSON_LD });
 
   // Smooth scroll handler for anchor links (#yoga and #maleri)
   useEffect(() => {
@@ -128,8 +190,8 @@ function KurserPage() {
               <Flower2 size={20} />
               <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
             </div>
-            <h1 id="kurser-heading">Heldag med yoga & måleri</h1>
-            <p>13:e juli | Kl 10:00 - 17:30</p>
+            <h1 id="kurser-heading">Heldag med yoga & måleri i Lidköping</h1>
+            <p>13 juli 2026 | Kl 10:00 - 17:30</p>
           </div>
         </section>
 
@@ -139,7 +201,7 @@ function KurserPage() {
             <FadeInSection>
               <div className="kurser-section-heading">
                 <h2>Tidsschema för heldagen</h2>
-                <p>Här är dagens fullständiga flöde i detalj för dig som deltar i heldagen den 13:e juli.</p>
+                <p>Här är dagens fullständiga flöde i detalj för dig som deltar i heldagen den 13 juli 2026.</p>
               </div>
 
               <div className="schedule-timeline">
@@ -196,6 +258,8 @@ function KurserPage() {
             </FadeInSection>
           </PageSection>
         </div>
+
+        <SectionDivider above="green" below="white" variant="wave" />
 
         {/* Kurser Kort Sektion */}
         <div id="kurser-cards-section">
@@ -430,9 +494,11 @@ function KurserPage() {
           </PageSection>
         </div>
 
+        <SectionDivider above="white" below="alt" variant="hill" />
+
         {/* Andra erbjudanden */}
         <div id="kurser-services-recommendation">
-          <PageSection background="alt" spacing="default">
+          <PageSection background="green" spacing="default">
             <FadeInSection>
               <HomeServicesSection
                 excludeId="skapande"
@@ -442,6 +508,8 @@ function KurserPage() {
             </FadeInSection>
           </PageSection>
         </div>
+
+        <SectionDivider above="green" below="alt" variant="hill" />
       </main>
     </div>
   );

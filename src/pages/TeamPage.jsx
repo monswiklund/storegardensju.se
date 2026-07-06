@@ -1,17 +1,20 @@
 import { Users } from "lucide-react";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
-import { PageSection } from "../components";
+import { PageSection, SectionDivider } from "../components";
 import { HomeServicesSection } from "../features/home";
 import { ContactSection } from "../features/contact";
 import TeamProfileShowcase from "../features/team/ProfileShowcase/TeamProfileShowcase.jsx";
 import { profiles } from "../data/profileData.js";
+import { useSeo } from "../hooks/useSeo.js";
+import { seoMeta } from "../config/seoMeta.js";
 
 function TeamPage() {
+    useSeo(seoMeta.omOss);
     return (
         <main role="main" id="main-content">
             {/* Team */}
-            <PageSection background="alt" spacing="default" ariaLabel="about-heading">
+            <PageSection background="white" spacing="default" ariaLabel="about-heading">
                 <ErrorBoundary>
                     <FadeInSection>
                         <div className="profile-showcase-container">
@@ -33,14 +36,18 @@ function TeamPage() {
                 </ErrorBoundary>
             </PageSection>
 
+            <SectionDivider above="white" below="alt" variant="hill" />
+
             {/* Kontakta oss */}
             <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
               <ContactSection />
             </FadeInSection>
 
+            <SectionDivider above="alt" below="white" variant="wave" />
+
             {/* Andra erbjudanden */}
             <div id="team-services-recommendation">
-              <PageSection background="green" spacing="default">
+              <PageSection background="white" spacing="default">
                 <FadeInSection>
                   <HomeServicesSection
                     excludeId="om-platsen"
@@ -50,6 +57,8 @@ function TeamPage() {
                 </FadeInSection>
               </PageSection>
             </div>
+
+            <SectionDivider above="white" below="green" variant="wave" />
         </main>
     );
 }

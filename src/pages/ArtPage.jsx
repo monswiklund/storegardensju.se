@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { Mail, Palette, Sparkles, Flame, Users } from "lucide-react";
 import CreativeWorkshopsSection from "../features/creation/CreativeWorkshopsSection.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
-import { PageSection } from "../components";
+import { PageSection, SectionDivider } from "../components";
 import { HomeServicesSection } from "../features/home";
+import { useSeo } from "../hooks/useSeo.js";
+import { seoMeta } from "../config/seoMeta.js";
 import "./ArtPage.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
 
 function ArtPage() {
+  useSeo(seoMeta.konst);
   const [activeSection, setActiveSection] = useState("top");
 
   useEffect(() => {
@@ -169,6 +172,8 @@ function ArtPage() {
           </PageSection>
         </div>
 
+        <SectionDivider above="white" below="green" variant="wave" />
+
         {/* Booking CTA Section */}
         <div id="art-cta-section">
           <PageSection background="green" spacing="default">
@@ -193,9 +198,11 @@ function ArtPage() {
           </PageSection>
         </div>
 
+        <SectionDivider above="green" below="white" variant="hill" />
+
         {/* Andra erbjudanden */}
         <div id="art-services-recommendation">
-          <PageSection background="alt" spacing="default">
+          <PageSection background="white" spacing="default">
             <FadeInSection>
               <HomeServicesSection
                 excludeId="skapande"
@@ -205,6 +212,8 @@ function ArtPage() {
             </FadeInSection>
           </PageSection>
         </div>
+
+        <SectionDivider above="white" below="alt" variant="wave" />
       </main>
     </div>
   );

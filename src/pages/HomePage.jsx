@@ -5,13 +5,16 @@ import {
   HomeServicesSection,
   HomeUpcomingEventsSection,
 } from "../features/home";
-import { PageSection } from "../components";
+import { PageSection, SectionDivider } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { fetchPublicEvents } from "../services/eventsService";
 import { toUiEvent } from "../features/home/UpcomingEvents/HomeUpcomingEventsSection.jsx";
 import PastEventsAccordion from "../features/home/UpcomingEvents/components/PastEventsAccordion.jsx";
+import { useSeo } from "../hooks/useSeo.js";
+import { seoMeta } from "../config/seoMeta.js";
 
 function HomePage() {
+  useSeo(seoMeta.home);
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("top");
   const [eventsData, setEventsData] = useState({ upcoming: [], past: [] });
@@ -199,6 +202,8 @@ function HomePage() {
         </PageSection>
       </header>
 
+      <SectionDivider above="alt" below="white" variant="wave" />
+
       <main role="main" id="main-content">
         {/* Kommande evenemang */}
         <div id="home-events">
@@ -217,6 +222,8 @@ function HomePage() {
           </PageSection>
         </div>
 
+        <SectionDivider above="white" below="alt" variant="hill" />
+
         {/* Tidigare evenemang */}
         <div id="past-events">
           <PageSection
@@ -230,6 +237,8 @@ function HomePage() {
           </PageSection>
         </div>
 
+        <SectionDivider above="alt" below="green" variant="valley" />
+
         {/* Services - Klickbara kort */}
         <div id="home-services">
           <PageSection
@@ -242,6 +251,8 @@ function HomePage() {
             </FadeInSection>
           </PageSection>
         </div>
+
+        <SectionDivider above="green" below="alt" variant="wave" />
       </main>
     </div>
   );

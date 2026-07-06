@@ -13,6 +13,8 @@ import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
 import { PageSection } from "../components";
 import { formatPrice } from "../services/stripeService";
+import { useSeo } from "../hooks/useSeo.js";
+import { seoMeta } from "../config/seoMeta.js";
 import "./ButikPage.css";
 
 /**
@@ -29,6 +31,7 @@ import "./ButikPage.css";
  */
 
 function ButikPage() {
+  useSeo(seoMeta.butik);
   // Hämta produkter från global ProductContext (prefetchade vid app start)
   const { products, loading, error, categories, refetch } =
     useContext(ProductContext);

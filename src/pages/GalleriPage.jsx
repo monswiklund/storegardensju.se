@@ -2,8 +2,10 @@ import { Suspense, lazy } from "react";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
-import { PageSection } from "../components";
+import { PageSection, SectionDivider } from "../components";
 import { HomeServicesSection } from "../features/home";
+import { useSeo } from "../hooks/useSeo.js";
+import { seoMeta } from "../config/seoMeta.js";
 
 // Lazy load heavy components
 const GalleryShowcase = lazy(() =>
@@ -11,6 +13,7 @@ const GalleryShowcase = lazy(() =>
 );
 
 function GalleriPage() {
+  useSeo(seoMeta.galleri);
   return (
     <main role="main" id="main-content">
       {/* Full Gallery */}
@@ -32,6 +35,8 @@ function GalleriPage() {
         </ErrorBoundary>
       </PageSection>
 
+      <SectionDivider above="alt" below="green" variant="wave" />
+
       {/* Erbjudanden */}
       <div id="gallery-services-recommendation">
         <PageSection background="green" spacing="default">
@@ -43,6 +48,8 @@ function GalleriPage() {
           </FadeInSection>
         </PageSection>
       </div>
+
+      <SectionDivider above="green" below="alt" variant="hill" />
     </main>
   );
 }

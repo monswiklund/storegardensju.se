@@ -11,6 +11,7 @@ import {
   ScrollToTopButton,
   ScrollToTop,
   Footer,
+  SectionDivider,
 } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import EventSubnav from "../components/layout/Navbar/EventSubnav.jsx";
@@ -182,10 +183,16 @@ function AppContent() {
           <ContactSection />
         </FadeInSection>
       )}
+      {!isAdminRoute && !isTeamPage && (
+        <SectionDivider above="alt" below="green" variant="wave" />
+      )}
       {!isAdminRoute && (
         <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
           <HomeInstagramSection />
         </FadeInSection>
+      )}
+      {!isAdminRoute && (
+        <SectionDivider above="green" below="alt" variant="hill" />
       )}
       {!isAdminRoute && <Footer />}
     </div>

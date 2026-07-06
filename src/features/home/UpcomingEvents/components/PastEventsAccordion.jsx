@@ -9,6 +9,7 @@ import {
   X,
   Calendar
 } from "lucide-react";
+import "../../PastEvents/PastEvents.css";
 
 function PastEventsAccordion({ events }) {
   const [selectedEvent, setSelectedEvent] = useState(null);

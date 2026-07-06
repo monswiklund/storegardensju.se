@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PartyPopper, Wine, Maximize2, Sparkles } from "lucide-react";
-import { PageSection } from "../../components";
+import { PageSection, SectionDivider } from "../../components";
 import { HomeServicesSection } from "../../features/home";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
+import { useSeo } from "../../hooks/useSeo.js";
+import { seoMeta } from "../../config/seoMeta.js";
 import "./EventPage.css";
 
 const eventFacts = [
@@ -26,6 +28,7 @@ const eventFacts = [
 ];
 
 function EventPage() {
+  useSeo(seoMeta.event);
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("top");
 
@@ -191,6 +194,8 @@ function EventPage() {
           </PageSection>
         </div>
 
+        <SectionDivider above="white" below="green" variant="wave" />
+
         {/* Sektion: Ytor & Kapacitet (Alternativ A - hero-2.webp) */}
         <div id="event-loft-section">
           <PageSection background="green" spacing="default">
@@ -221,6 +226,8 @@ function EventPage() {
             </FadeInSection>
           </PageSection>
         </div>
+
+        <SectionDivider above="green" below="white" variant="hill" />
 
         {/* Sektion: Möjligheter & Utrustning (Alternativ A - hero-3.webp) */}
         <div id="event-amenities-section">
@@ -254,6 +261,8 @@ function EventPage() {
           </PageSection>
         </div>
 
+        <SectionDivider above="white" below="green" variant="wave" />
+
         {/* Andra erbjudanden */}
         <div id="event-services-recommendation">
           <PageSection background="green" spacing="default">
@@ -266,6 +275,8 @@ function EventPage() {
             </FadeInSection>
           </PageSection>
         </div>
+
+        <SectionDivider above="green" below="alt" variant="hill" />
       </main>
     </div>
   );
