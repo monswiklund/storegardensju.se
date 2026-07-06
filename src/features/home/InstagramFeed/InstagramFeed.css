@@ -1,15 +1,16 @@
 .instagram-section {
   width: 100%;
   padding: 56px 0 48px;
-  background: #ffffff;
-  border-top: 1px solid rgba(45, 63, 47, 0.1);
+  background: var(--background-green) !important;
 }
 
 .instagram-container {
-  /* Narrow like a phone profile grid rather than a full-width section. */
-  width: min(100% - 32px, 640px);
+  width: min(100% - 32px, 680px);
   margin: 0 auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .instagram-section-header {
@@ -60,42 +61,450 @@
   margin: 0 auto 20px;
 }
 
-.instagram-handle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--primary-hover);
-  font-size: 0.95rem;
-  text-decoration: none;
+/* ==========================================================================
+   iPhone Device Mockup
+   ========================================================================== */
+.iphone-device {
+  position: relative;
+  width: 360px;
+  height: 740px;
+  background: #ffffff;
+  border-radius: 46px;
+  box-shadow: 
+    0 25px 60px -15px rgba(45, 63, 47, 0.25),
+    0 0 0 8px #1c1c1c,    /* Inner Bezel (Thinner) */
+    0 0 0 9px #2d2d2d,    /* Outer Ring */
+    0 0 0 10px #111111;   /* Outer Bezel Border */
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.instagram-handle:hover,
-.instagram-handle:focus-visible {
+.iphone-device:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 35px 70px -10px rgba(45, 63, 47, 0.35),
+    0 0 0 8px #1c1c1c,
+    0 0 0 9px #2d2d2d,
+    0 0 0 10px #111111;
+}
+
+/* Dynamic Island */
+.iphone-dynamic-island {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 25px;
+  background: #000000;
+  border-radius: 13px;
+  z-index: 1000;
+  box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.15);
+}
+
+/* Status Bar */
+.iphone-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  padding: 0 24px 0 28px;
+  color: #000000;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #ffffff;
+  z-index: 900;
+  position: relative;
+  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.iphone-status-icons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Simulated Instagram App */
+.instagram-app {
+  width: 100%;
+  height: calc(100% - 40px); /* Subtract status bar */
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 0; /* Flexbox constraint */
+  overflow: hidden; /* Prevent child content from stretching parent height */
+}
+
+/* App Header */
+.instagram-app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 48px;
+  padding: 0 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  user-select: none;
+}
+
+.instagram-app-back {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.instagram-app-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.instagram-app-username {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #000000;
+  letter-spacing: -0.01em;
+}
+
+.instagram-verified-badge {
+  display: flex;
+  align-items: center;
+}
+
+.instagram-app-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.instagram-icon-button {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.instagram-icon-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Scrollable Content */
+.instagram-app-content {
+  flex: 1;
+  min-height: 0; /* Flexbox constraint */
+  overflow-y: scroll; /* Force scrolling context */
+  -webkit-overflow-scrolling: touch; /* Momentum scrolling on iOS devices */
+  scrollbar-width: none; /* Firefox */
+  background: #ffffff;
+  padding-bottom: 24px;
+}
+
+.instagram-app-content::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+/* Profile Details */
+.instagram-profile-details {
+  padding: 16px 16px 12px;
+}
+
+.instagram-avatar-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.instagram-avatar-container {
+  flex-shrink: 0;
+}
+
+.instagram-avatar-ring {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  padding: 2.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.instagram-avatar-bg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #ffffff;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.instagram-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #faf8f5; /* matching beige tone */
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.instagram-stats-container {
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.instagram-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.instagram-stat-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #000000;
+  line-height: 1.2;
+}
+
+.instagram-stat-label {
+  font-size: 0.72rem;
+  color: #666666;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+/* Bio Section */
+.instagram-bio-section {
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+.instagram-bio-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 2px;
+}
+
+.instagram-bio-category {
+  display: block;
+  font-size: 0.75rem;
+  color: #8e8e8e;
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+
+.instagram-bio-text {
+  font-size: 0.8rem;
+  color: #262626;
+  white-space: pre-line;
+}
+
+.instagram-bio-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: #00376b;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.instagram-bio-link:hover {
   text-decoration: underline;
 }
 
-.instagram-frame {
-  border: 1px solid rgba(45, 63, 47, 0.14);
-  border-radius: 10px;
-  padding: 10px;
-  background: #fff;
+.instagram-link-icon {
+  transform: rotate(-45deg);
+  color: #00376b;
 }
 
+/* Profile Buttons */
+.instagram-profile-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.instagram-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  box-sizing: border-box;
+}
+
+.instagram-btn-primary {
+  background: var(--primary-hover, #2d3f2f); /* Cohesive with brand green */
+  color: #ffffff;
+}
+
+.instagram-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.instagram-btn-secondary {
+  background: #efefef;
+  color: #000000;
+}
+
+.instagram-btn-secondary:hover {
+  background: #dbdbdb;
+}
+
+/* Tabs */
+.instagram-tabs {
+  display: flex;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  background: #ffffff;
+  user-select: none;
+}
+
+.instagram-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8e8e8e;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.instagram-tab:hover {
+  color: #262626;
+}
+
+.instagram-tab.active {
+  color: #000000;
+}
+
+.instagram-tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background: #000000;
+}
+
+/* Post Grid inside Phone */
 .instagram-grid {
-  /* Instagram profile look: tight 3-column square grid. */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  overflow: hidden;
-  border-radius: 4px;
+  gap: 1.5px;
+  padding: 1.5px;
+  background: #ffffff;
 }
 
+.instagram-grid-item {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: #fafafa;
+}
+
+.instagram-grid-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.instagram-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 8px;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  color: #ffffff;
+  opacity: 1; /* Always visible by default (e.g. on mobile/touch screens) */
+  transition: opacity 0.2s ease;
+  pointer-events: none; /* Avoid blocking clicks */
+}
+
+.instagram-grid-item:hover img {
+  transform: scale(1.06);
+}
+
+.instagram-overlay-caption {
+  font-size: 0.65rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-weight: 500;
+}
+
+/* Home indicator area */
+.iphone-home-area {
+  height: 24px;
+  background: #ffffff;
+  position: relative;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.iphone-home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4.5px;
+  background: #000000;
+  border-radius: 10px;
+}
+
+/* Action button under phone */
 .instagram-actions {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .instagram-more {
@@ -109,8 +518,7 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.instagram-more:hover,
-.instagram-more:focus-visible {
+.instagram-more:hover {
   background: rgba(45, 63, 47, 0.06);
   border-color: rgba(45, 63, 47, 0.5);
 }
@@ -122,76 +530,106 @@
   padding: 10px 28px;
   background: var(--primary-hover, #2d3f2f);
   border-radius: 999px;
-  color: #fff;
+  color: #ffffff;
   font-size: 0.85rem;
   text-decoration: none;
   transition: opacity 0.2s ease;
 }
 
-.instagram-cta:hover,
-.instagram-cta:focus-visible {
+.instagram-cta:hover {
   opacity: 0.88;
 }
 
-.instagram-grid-item {
-  position: relative;
-  display: block;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-}
-
-.instagram-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 6px;
-  padding: 14px;
-  background: linear-gradient(
-    to top,
-    rgba(20, 28, 21, 0.82) 0%,
-    rgba(20, 28, 21, 0.35) 55%,
-    rgba(20, 28, 21, 0) 100%
-  );
-  color: #fff;
-}
-
-.instagram-overlay-caption {
-  font-size: 0.8rem;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.instagram-grid-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.instagram-grid-item:hover img,
-.instagram-grid-item:focus-visible img {
-  transform: scale(1.04);
-}
-
-/* Media block must stay last: it overrides base rules of equal specificity. */
-@media (max-width: 640px) {
-  /* Phones: same dark-gradient overlay as desktop, but 2 columns so the
-     caption stays readable on small tiles. */
-  .instagram-grid {
-    grid-template-columns: repeat(2, 1fr);
+/* ==========================================================================
+   Responsive Design & Breakpoints
+   ========================================================================== */
+@media (max-width: 480px) {
+  /* Scale the physical iPhone slightly on mobile screens so it fits perfectly */
+  .iphone-device {
+    width: 320px;
+    height: 640px;
+    border-radius: 40px;
+    box-shadow: 
+      0 15px 40px -10px rgba(45, 63, 47, 0.20),
+      0 0 0 6px #1c1c1c,
+      0 0 0 7px #2d2d2d,
+      0 0 0 8px #111111;
+    margin-bottom: 20px;
   }
-
-  .instagram-overlay {
-    padding: 10px;
+  
+  .iphone-dynamic-island {
+    width: 86px;
+    height: 22px;
+    top: 9px;
+    border-radius: 11px;
   }
-
-  .instagram-overlay-caption {
+  
+  .iphone-status-bar {
+    height: 38px;
+    padding: 0 20px 0 24px;
+    font-size: 0.7rem;
+  }
+  
+  .instagram-app {
+    height: calc(100% - 38px);
+  }
+  
+  .instagram-profile-details {
+    padding: 12px 12px 10px;
+  }
+  
+  .instagram-avatar-ring {
+    width: 68px;
+    height: 68px;
+  }
+  
+  .instagram-stat-value {
+    font-size: 0.85rem;
+  }
+  
+  .instagram-stat-label {
+    font-size: 0.65rem;
+  }
+  
+  .instagram-bio-name {
+    font-size: 0.8rem;
+  }
+  
+  .instagram-bio-text {
     font-size: 0.75rem;
   }
+  
+  .instagram-app-header {
+    height: 44px;
+  }
+  
+  .instagram-app-username {
+    font-size: 0.88rem;
+  }
 }
+
+@media (max-width: 350px) {
+  /* Even smaller mobile screen sizes (e.g. iPhone SE / 320px screen width) */
+  .iphone-device {
+    width: 290px;
+    height: 580px;
+    border-radius: 36px;
+    box-shadow: 
+      0 10px 30px -10px rgba(45, 63, 47, 0.18),
+      0 0 0 5px #1c1c1c,
+      0 0 0 6px #2d2d2d,
+      0 0 0 7px #111111;
+  }
+  .iphone-dynamic-island {
+    width: 76px;
+    height: 18px;
+    top: 8px;
+  }
+  .instagram-avatar-ring {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+
 
