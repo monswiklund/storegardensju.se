@@ -1,5 +1,5 @@
 # robots.txt för Storegården 7
-# Uppdaterad: 2025-03-06
+# Uppdaterad: 2026-07-06
 
 # Tillåt alla legitima sökmotorer
 User-agent: *
@@ -9,6 +9,13 @@ Allow: /
 Disallow: /build.json
 Disallow: /stats.html
 Disallow: /*.js.map$
+
+# Blockera sidor utan sökvärde
+Disallow: /admin
+Disallow: /varukorg
+Disallow: /checkout
+Disallow: /success
+Disallow: /cancel
 
 # Sitemap för snabbare indexering
 Sitemap: https://storegardensju.se/sitemap.xml
