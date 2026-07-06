@@ -58,6 +58,7 @@ const EVENT_JSON_LD = {
       price: "200",
       priceCurrency: "SEK",
       availability: "https://schema.org/InStock",
+      validFrom: "2026-07-06",
       url: "https://storegardensju.se/kurser/#yoga",
     },
     {
@@ -66,6 +67,7 @@ const EVENT_JSON_LD = {
       price: "600",
       priceCurrency: "SEK",
       availability: "https://schema.org/InStock",
+      validFrom: "2026-07-06",
       url: "https://storegardensju.se/kurser/#maleri",
     },
     {
@@ -74,6 +76,7 @@ const EVENT_JSON_LD = {
       price: "900",
       priceCurrency: "SEK",
       availability: "https://schema.org/InStock",
+      validFrom: "2026-07-06",
       url: "https://storegardensju.se/kurser/#heldag",
     },
   ],
