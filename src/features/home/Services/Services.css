@@ -2,10 +2,24 @@
    Services Section (Editorial Guide)
    ========================================================================== */
 
+/* Let the carousel bleed to the real viewport edges: the PageSection wrapper
+   otherwise insets the box that .services-section overflow-clips against,
+   which cuts the peeking cards 20-40px inside the screen */
+#home-services .page-section.spacing-compact {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+#home-services .page-section-content {
+  max-width: none;
+  padding: 0;
+}
+
 .services-section {
   width: 100%;
   padding: clamp(56px, 7vw, 88px) 20px;
   background: transparent;
+  overflow: hidden; /* Avoid horizontal scrollbar for body during full-bleed breakout */
 }
 
 .services-container {
@@ -50,15 +64,116 @@
   color: var(--text-secondary);
 }
 
-.services-swipe-hint {
-  display: none;
+.services-grid {
+  display: flex;
+  position: relative; /* Ensure offsetParent calculation is correct in JS */
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+
+  /* Break out to viewport bleed, capped: with 6 services the scrollport must
+     stay narrower than the distance between two clones of the same card
+     (6 * 410 - 380 = 2080px), or the card appears twice at once. 1700px
+     shows 3 full cards plus a faded glimpse of cards 4 and 5 */
+  width: min(100vw, 1700px);
+  left: 50%;
+  right: 50%;
+  margin-left: calc(min(100vw, 1700px) / -2);
+  margin-right: calc(min(100vw, 1700px) / -2);
+
+  /* Center padding from scrollport and card size. The max() keeps at least
+     gap + 40px of side padding, so the neighbor peek never shrinks into a
+     sliver at awkward viewport widths */
+  padding-left: max(calc((min(100vw, 1700px) - 380px) / 2), 70px);
+  padding-right: max(calc((min(100vw, 1700px) - 380px) / 2), 70px);
+  
+  gap: 30px;
+  padding-top: 16px;
+  padding-bottom: 28px;
+  margin-top: 10px;
+  
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
 
-.services-grid {
+.services-grid::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome/Safari */
+}
+
+/* Wide screens: fade out the outer cards (4 and 5) toward the scrollport
+   edges. The clear central zone stays 1240px (3 cards); everything beyond
+   it fades. Media query keeps mobile/tablet free of the mask */
+@media (min-width: 1241px) {
+  .services-grid {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 calc((100% - 1240px) / 2),
+      #000 calc(100% - (100% - 1240px) / 2),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 calc((100% - 1240px) / 2),
+      #000 calc(100% - (100% - 1240px) / 2),
+      transparent
+    );
+  }
+}
+
+/* Set during the infinite-loop teleport: the element under the cursor is
+   swapped for its clone, and hover/active styles must apply instantly
+   instead of animating in */
+.services-grid--no-anim .service-card,
+.services-grid--no-anim .service-card__image,
+.services-grid--no-anim .service-card__cta,
+.services-grid--no-anim .service-card__arrow,
+.services-grid--no-anim .service-card__title {
+  transition: none;
+}
+
+.services-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.services-dot {
+  /* 26px hit area around an 8px visual dot */
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(24px, 4vw, 40px);
-  margin-top: 10px;
+  place-items: center;
+}
+
+.services-dot::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(45, 63, 47, 0.2);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+@media (hover: hover) {
+  .services-dot:hover::after {
+    background: rgba(45, 63, 47, 0.4);
+  }
+}
+
+.services-dot--active::after {
+  background: var(--primary-hover);
+  transform: scale(1.3);
+}
+
+.services-dot:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+  border-radius: 50%;
 }
 
 .service-card {
@@ -70,16 +185,70 @@
   overflow: hidden;
   text-decoration: none;
   color: inherit;
+  
+  /* Card caps at 380px but yields to viewport, keeping a constant ~40px
+     neighbor peek (140 = 2 * (30px gap + 40px peek)) */
+  flex: 0 0 min(380px, 100vw - 140px);
+  scroll-snap-align: center;
+  -webkit-tap-highlight-color: transparent;
+  
+  opacity: 0.65;
+  transform: scale(0.95);
   box-shadow: 0 4px 20px rgba(95, 111, 82, 0.03);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               border-color 0.4s ease;
+  /* Keep cards on their own compositor layer; iOS otherwise promotes/demotes
+     layers as transitions start/stop, which flashes the whole screen */
+  will-change: transform, opacity;
 }
 
-.service-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(95, 111, 82, 0.12);
-  border-color: rgba(84, 139, 116, 0.3);
+/* Touch devices: animate only compositor-friendly properties; box-shadow and
+   border-color force full repaints every frame during scroll on iOS */
+@media (hover: none) {
+  .service-card {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+.service-card.service-card--active {
+  opacity: 1;
+  transform: scale(1.02);
+  border-color: rgba(84, 139, 116, 0.4);
+  box-shadow: 0 12px 30px rgba(95, 111, 82, 0.12);
+}
+
+/* Hover styles only on devices with a real pointer; on touch, tap would
+   apply sticky :hover before the active state and cause a two-step wobble */
+@media (hover: hover) {
+  /* Focused card hover */
+  .service-card.service-card--active:hover {
+    transform: scale(1.04) translateY(-2px);
+    box-shadow: 0 20px 40px rgba(95, 111, 82, 0.16);
+    border-color: rgba(84, 139, 116, 0.55);
+  }
+
+  /* Inactive card hover - nudge toward the center, phone-swipe style,
+     to invite bringing the card into focus */
+  .service-card:not(.service-card--active):hover {
+    opacity: 0.85;
+    transform: scale(0.97);
+  }
+
+  /* Right-of-center cards lean left, left-of-center lean right (data-side
+     set from React; sibling selectors can't tell - the active class exists
+     in all three clone copies) */
+  .service-card[data-side="right"]:hover {
+    opacity: 0.85;
+    transform: scale(0.97) translateX(-14px);
+  }
+
+  .service-card[data-side="left"]:hover {
+    opacity: 0.85;
+    transform: scale(0.97) translateX(14px);
+  }
 }
 
 .service-card__image-wrap {
@@ -101,9 +270,11 @@
               filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.service-card:hover .service-card__image {
-  transform: scale(1.04);
-  filter: saturate(1) contrast(1.04);
+@media (hover: hover) {
+  .service-card:hover .service-card__image {
+    transform: scale(1.04);
+    filter: saturate(1) contrast(1.04);
+  }
 }
 
 .service-card__content {
@@ -140,8 +311,10 @@
   transition: color 0.3s ease;
 }
 
-.service-card:hover .service-card__title {
-  color: var(--primary-hover);
+@media (hover: hover) {
+  .service-card:hover .service-card__title {
+    color: var(--primary-hover);
+  }
 }
 
 .service-card__description {
@@ -189,16 +362,18 @@
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.service-card:hover .service-card__cta {
-  color: #ffffff;
-  background: var(--primary-hover);
-  border-color: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(84, 139, 116, 0.22);
-}
+@media (hover: hover) {
+  .service-card:hover .service-card__cta {
+    color: #ffffff;
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(84, 139, 116, 0.22);
+  }
 
-.service-card:hover .service-card__arrow {
-  transform: translateX(4px);
+  .service-card:hover .service-card__arrow {
+    transform: translateX(4px);
+  }
 }
 
 .service-card:active .service-card__cta {
@@ -219,85 +394,25 @@
 @media (max-width: 820px) {
   .services-section {
     padding: clamp(48px, 6vw, 64px) 16px;
-    overflow: hidden; /* Avoid horizontal body scrollbar from negative margins */
-  }
-
-  .services-swipe-hint {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--primary-hover);
-    background: rgba(84, 139, 116, 0.07);
-    border: 1px solid rgba(84, 139, 116, 0.15);
-    padding: 6px 14px;
-    border-radius: 100px;
-    margin-top: 10px;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
   }
 
   .services-grid {
-    display: flex;
-    grid-template-columns: none; /* override grid */
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    gap: 20px;
-    padding: 12px 0 24px 0; /* extra padding bottom for card shadow */
+    /* Reset breakout width to normal on mobile so they don't break horizontal body limits */
+    width: auto;
+    left: auto;
+    right: auto;
     margin-left: -16px;
     margin-right: -16px;
-    scrollbar-width: thin; /* Firefox scrollbar */
-    scrollbar-color: rgba(84, 139, 116, 0.25) rgba(84, 139, 116, 0.05);
     
-    /* Fade edges on scroll */
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      #000 16px,
-      #000 calc(100% - 16px),
-      transparent
-    );
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent,
-      #000 16px,
-      #000 calc(100% - 16px),
-      transparent
-    );
-  }
-
-  .services-grid::-webkit-scrollbar {
-    display: block; /* Show custom scrollbar indicator */
-    height: 4px;
-  }
-
-  .services-grid::-webkit-scrollbar-track {
-    background: rgba(84, 139, 116, 0.05);
-    border-radius: 10px;
-    margin: 0 32px; /* indent track slightly from screen edges */
-  }
-
-  .services-grid::-webkit-scrollbar-thumb {
-    background: rgba(84, 139, 116, 0.25);
-    border-radius: 10px;
+    /* Narrower card than viewport so previous/next cards peek at the edges;
+       min()/max() keep the peek at ~40px instead of a thin sliver */
+    padding-left: max(calc((100% - 320px) / 2), 60px);
+    padding-right: max(calc((100% - 320px) / 2), 60px);
+    gap: 20px;
   }
 
   .service-card {
-    flex: 0 0 290px;
-    scroll-snap-align: start;
-    box-shadow: 0 4px 15px rgba(95, 111, 82, 0.05);
-  }
-
-  .service-card:first-child {
-    margin-left: 16px;
-  }
-
-  .service-card:last-child {
-    margin-right: 16px;
+    flex: 0 0 min(320px, 100vw - 120px);
   }
 
   .service-card__content {
@@ -315,42 +430,15 @@
   }
 
   .services-grid {
-    gap: 16px;
-    padding: 10px 0 20px 0;
     margin-left: -14px;
     margin-right: -14px;
-
-    /* Fade edges on scroll (narrow layout) */
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      #000 14px,
-      #000 calc(100% - 14px),
-      transparent
-    );
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent,
-      #000 14px,
-      #000 calc(100% - 14px),
-      transparent
-    );
-  }
-
-  .services-grid::-webkit-scrollbar-track {
-    margin: 0 20px;
+    padding-left: max(calc((100% - 275px) / 2), 56px);
+    padding-right: max(calc((100% - 275px) / 2), 56px);
+    gap: 16px;
   }
 
   .service-card {
-    flex: 0 0 265px;
-  }
-
-  .service-card:first-child {
-    margin-left: 14px;
-  }
-
-  .service-card:last-child {
-    margin-right: 14px;
+    flex: 0 0 min(275px, 100vw - 112px);
   }
 
   .services-header h2 {

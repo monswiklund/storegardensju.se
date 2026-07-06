@@ -4,8 +4,6 @@
 
 .past-events-section {
   width: 100%;
-  margin-top: 50px;
-  padding-top: 10px;
   box-sizing: border-box;
 }
 
@@ -174,7 +172,7 @@
   background: var(--primary-hover);
   z-index: 2;
   margin-top: 14px; /* aligned with time / title top line */
-  box-shadow: 0 0 0 3px #fffefb; /* hides line behind dot */
+  box-shadow: 0 0 0 3px var(--background-alt); /* hides line behind dot */
 }
 
 .timeline-marker-line {

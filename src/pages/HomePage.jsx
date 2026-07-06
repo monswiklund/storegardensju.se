@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   HomeHeroSection,
@@ -7,11 +7,78 @@ import {
 } from "../features/home";
 import { PageSection } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
-import VenueIntroSection from "../features/venue/VenueIntro/VenueIntroSection.jsx";
+import { fetchPublicEvents } from "../services/eventsService";
+import { toUiEvent } from "../features/home/UpcomingEvents/HomeUpcomingEventsSection.jsx";
+import PastEventsAccordion from "../features/home/UpcomingEvents/components/PastEventsAccordion.jsx";
 
 function HomePage() {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("top");
+  const [eventsData, setEventsData] = useState({ upcoming: [], past: [] });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    const run = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const data = await fetchPublicEvents();
+        if (!active) return;
+        setEventsData({
+          upcoming: Array.isArray(data?.upcoming) ? data.upcoming : [],
+          past: Array.isArray(data?.past) ? data.past : [],
+        });
+      } catch {
+        if (!active) return;
+        setError("Kunde inte hämta evenemang just nu.");
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+    run();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const upcomingEvents = useMemo(() => {
+    const fetched = eventsData.upcoming
+      .sort((a, b) => new Date(a.startAt || 0) - new Date(b.startAt || 0))
+      .map(toUiEvent);
+
+    const staticYogaEvent = {
+      title: "Heldag med yoga & måleri",
+      spots: "Passar alla",
+      date: "13 Juli 2026",
+      time: "10:00 - 17:30",
+      description: "En stämningsfull heldag fylld med återhämtning och skaparglädje på vackra Storegården 7. Mjukt yogapass med Lina Wiklund på förmiddagen, god lunch på gården, och glädjefylld målarkurs med Ann Wiklund på eftermiddagen.",
+      location: "Storegården 7",
+      links: [
+        {
+          href: "/kurser",
+          label: "Läs mer & anmäl dig",
+        }
+      ],
+      image: {
+        src: "/images/evenemang/yoga-loft.webp",
+        alt: "Yoga på loftet"
+      }
+    };
+
+    return [staticYogaEvent, ...fetched];
+  }, [eventsData.upcoming]);
+
+  const pastEvents = useMemo(
+    () => eventsData.past
+      .sort((a, b) => new Date(b.startAt || 0) - new Date(a.startAt || 0))
+      .map(toUiEvent),
+    [eventsData.past]
+  );
 
   const scrollToGallery = () => {
     navigate("/galleri");
@@ -141,7 +208,24 @@ function HomePage() {
             ariaLabel="evenemang-heading"
           >
             <FadeInSection>
-              <HomeUpcomingEventsSection />
+              <HomeUpcomingEventsSection
+                upcomingEvents={upcomingEvents}
+                loading={loading}
+                error={error}
+              />
+            </FadeInSection>
+          </PageSection>
+        </div>
+
+        {/* Tidigare evenemang */}
+        <div id="past-events">
+          <PageSection
+            background="alt"
+            spacing="compact"
+            ariaLabel="tidigare-evenemang-heading"
+          >
+            <FadeInSection>
+              <PastEventsAccordion events={pastEvents} />
             </FadeInSection>
           </PageSection>
         </div>

@@ -2,11 +2,177 @@ import "./Services.css";
 import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import { services as servicesData } from "../../../data/homeContent.js";
+import { useState, useRef, useEffect } from "react";
 
 const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "VAD VI HAR" }) => {
+  const [activeDomIndex, setActiveDomIndex] = useState(0);
+  const containerRef = useRef(null);
+  const initializedRef = useRef(false);
+  const idleTimerRef = useRef(null);
+
   const filteredServices = excludeId
     ? servicesData.filter((service) => service.id !== excludeId)
     : servicesData;
+
+  const L = filteredServices.length;
+
+  // Tripled services for infinite scrolling
+  const tripledServices = [...filteredServices, ...filteredServices, ...filteredServices];
+
+  // Helper to get step size (card width + gap)
+  const getStepSize = (container) => {
+    if (!container || container.children.length === 0) return 0;
+    const cardWidth = container.children[0].clientWidth;
+    const gap = parseInt(window.getComputedStyle(container).gap) || 0;
+    return cardWidth + gap;
+  };
+
+  // Instant (non-animated) scroll jump. The container has scroll-behavior:
+  // smooth in CSS, which would otherwise animate the teleport across the
+  // whole list and break the infinite-loop illusion. Card transitions are
+  // also suppressed briefly: the element under the cursor changes at the
+  // jump, and its :hover styles would otherwise animate in visibly.
+  const teleport = (container, scrollLeft) => {
+    container.classList.add("services-grid--no-anim");
+    // scrollTo with behavior overrides CSS scroll-behavior per spec; toggling
+    // style.scrollBehavior is not reliably synchronous in Safari
+    container.scrollTo({ left: scrollLeft, behavior: "instant" });
+    setTimeout(() => container.classList.remove("services-grid--no-anim"), 100);
+  };
+
+  // Center on middle copy initially and on page change (excludeId changes)
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container && L > 0) {
+      const timer = setTimeout(() => {
+        const step = getStepSize(container);
+        if (step > 0) {
+          teleport(container, L * step);
+          initializedRef.current = true;
+          setActiveDomIndex(L);
+        }
+      }, 50); // Tiny delay to ensure styles and layouts are resolved
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(idleTimerRef.current);
+      };
+    }
+  }, [excludeId, L]);
+
+  // Handle browser window resize to keep the active card centered
+  useEffect(() => {
+    const handleResize = () => {
+      const container = containerRef.current;
+      if (container && L > 0) {
+        const step = getStepSize(container);
+        if (step > 0) {
+          const currentActiveMappedIndex = activeDomIndex % L;
+          const newDomIndex = L + currentActiveMappedIndex;
+          teleport(container, newDomIndex * step);
+          setActiveDomIndex(newDomIndex);
+        }
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [activeDomIndex, L]);
+
+  // If the view has drifted into an outer copy, snap back (invisibly) to the
+  // middle copy and remap the active index. Returns the index shift applied
+  // (-L, 0, or +L) so callers can adjust element indices they hold.
+  const normalizeToMiddle = (container) => {
+    const step = getStepSize(container);
+    if (step === 0) return 0;
+    let jump = 0;
+    if (container.scrollLeft < (L - 0.5) * step) {
+      jump = L;
+    } else if (container.scrollLeft > (2 * L - 0.5) * step) {
+      jump = -L;
+    }
+    if (jump !== 0) {
+      teleport(container, container.scrollLeft + jump * step);
+      setActiveDomIndex((prev) => prev + jump);
+    }
+    return jump;
+  };
+
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (!container || L === 0 || !initializedRef.current) return;
+
+    const step = getStepSize(container);
+    if (step === 0) return;
+
+    // Boundary check for infinite scroll looping, deferred until scrolling
+    // has settled. Teleporting mid-gesture is ignored on iOS momentum
+    // scrolling and gets fought by mandatory scroll snapping.
+    clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(() => normalizeToMiddle(container), 120);
+
+    const containerCenter = container.scrollLeft + container.clientWidth / 2;
+
+    let closestIndex = 0;
+    let minDistance = Infinity;
+
+    Array.from(container.children).forEach((child, index) => {
+      const childCenter = child.offsetLeft + child.clientWidth / 2;
+      const distance = Math.abs(containerCenter - childCenter);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    if (closestIndex !== activeDomIndex) {
+      setActiveDomIndex(closestIndex);
+    }
+  };
+
+  // Cancel a pending boundary teleport while the pointer is down, so the
+  // card is not yanked out from under an in-flight click. The next scroll
+  // event re-arms the teleport.
+  const handlePointerDown = () => {
+    clearTimeout(idleTimerRef.current);
+  };
+
+  const handleDotClick = (serviceIndex) => {
+    const container = containerRef.current;
+    if (!container) return;
+    normalizeToMiddle(container);
+    // Scroll to the closest clone of the service to keep travel short
+    const candidates = [serviceIndex, L + serviceIndex, 2 * L + serviceIndex];
+    const step = getStepSize(container);
+    const closest = candidates.reduce((a, b) =>
+      Math.abs(a * step - container.scrollLeft) <= Math.abs(b * step - container.scrollLeft) ? a : b
+    );
+    container.children[closest]?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  };
+
+  const handleCardClick = (e, index) => {
+    // Compare per service (mod L): a clone of the active card counts as
+    // active, so clicking it navigates instead of re-centering
+    if (index % L !== activeDomIndex % L) {
+      e.preventDefault();
+      const container = containerRef.current;
+      if (container) {
+        // Normalize first so repeated clicks can never walk past the end of
+        // the tripled list; the clicked element's index shifts along
+        const cardElement = container.children[index + normalizeToMiddle(container)];
+        if (cardElement) {
+          cardElement.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center",
+          });
+        }
+      }
+    }
+  };
 
   return (
     <section className="services-section" aria-labelledby="services-heading">
@@ -23,20 +189,34 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
           </p>
         </div>
 
-        <div className="services-grid">
-          {filteredServices.map((service) => (
+        <div 
+          className="services-grid"
+          ref={containerRef}
+          onScroll={handleScroll}
+          onPointerDown={handlePointerDown}
+        >
+          {tripledServices.map((service, index) => {
+            // First and third copies are visual clones; hide them from
+            // keyboard tab order and screen readers to avoid duplicates
+            const isClone = index < L || index >= 2 * L;
+            return (
             <Link
-              key={service.id}
+              key={`${service.id}-${index}`}
               to={service.route}
-              className="service-card"
+              onClick={(e) => handleCardClick(e, index)}
+              className={`service-card ${activeDomIndex % L === index % L ? "service-card--active" : ""}`}
               aria-label={`${service.ctaLabel}: ${service.title}`}
+              aria-hidden={isClone || undefined}
+              tabIndex={isClone ? -1 : undefined}
+              data-side={
+                index < activeDomIndex ? "left" : index > activeDomIndex ? "right" : undefined
+              }
             >
               <div className="service-card__image-wrap">
                 <img
                   src={service.image}
                   alt=""
                   className="service-card__image"
-                  loading="lazy"
                 />
               </div>
 
@@ -72,6 +252,20 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
                 </div>
               </div>
             </Link>
+            );
+          })}
+        </div>
+
+        <div className="services-dots">
+          {filteredServices.map((service, i) => (
+            <button
+              key={service.id}
+              type="button"
+              className={`services-dot ${activeDomIndex % L === i ? "services-dot--active" : ""}`}
+              aria-label={`Visa ${service.title}`}
+              aria-current={activeDomIndex % L === i || undefined}
+              onClick={() => handleDotClick(i)}
+            />
           ))}
         </div>
       </div>

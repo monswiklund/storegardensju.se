@@ -1,20 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ChevronLeft,
   ChevronRight,
   ArrowUpRight,
-  Leaf,
-  Coffee,
-  Users,
   Calendar
 } from "lucide-react";
 import "./UpcomingEvents.css";
-import "../PastEvents/PastEvents.css";
 import EventCard from "./components/EventCard";
-import PastEventsAccordion from "./components/PastEventsAccordion";
 import useScrollToSelector from "../../../hooks/useScrollToSelector";
-import { fetchPublicEvents } from "../../../services/eventsService";
 
 const formatDate = (value) => {
   if (!value) return "";
@@ -41,7 +35,7 @@ const formatTime = (value) => {
   });
 };
 
-const toUiEvent = (item) => {
+export const toUiEvent = (item) => {
   const startAt = item?.startAt || "";
   const endAt = item?.endAt || "";
   const date = formatDate(startAt);
@@ -84,79 +78,13 @@ const SmartLink = ({ href, className, children, ...props }) => {
   );
 };
 
-function HomeUpcomingEventsSection() {
+function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error = "" }) {
   const scrollToContact = useScrollToSelector(".contact-container");
   const scrollToPastEvents = useScrollToSelector("#past-events");
-  const [eventsData, setEventsData] = useState({ upcoming: [], past: [] });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [currentUpcomingIndex, setCurrentUpcomingIndex] = useState(0);
-
-  useEffect(() => {
-    let active = true;
-    const run = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const data = await fetchPublicEvents();
-        if (!active) return;
-        setEventsData({
-          upcoming: Array.isArray(data?.upcoming) ? data.upcoming : [],
-          past: Array.isArray(data?.past) ? data.past : [],
-        });
-      } catch {
-        if (!active) return;
-        setError("Kunde inte hämta evenemang just nu.");
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    };
-    run();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const upcomingEvents = useMemo(() => {
-    const fetched = eventsData.upcoming
-      .sort((a, b) => new Date(a.startAt || 0) - new Date(b.startAt || 0))
-      .map(toUiEvent);
-
-    const staticYogaEvent = {
-      title: "Heldag med yoga & måleri",
-      spots: "Passar alla",
-      date: "13 Juli 2026",
-      time: "10:00 - 17:30",
-      description: "En stämningsfull heldag fylld med återhämtning och skaparglädje på vackra Storegården 7. Mjukt yogapass med Lina Wiklund på förmiddagen, god lunch på gården, och glädjefylld målarkurs med Ann Wiklund på eftermiddagen.",
-      location: "Storegården 7",
-      links: [
-        {
-          href: "/kurser",
-          label: "Läs mer & anmäl dig",
-        }
-      ],
-      image: {
-        src: "/images/evenemang/yoga-loft.webp",
-        alt: "Yoga på loftet"
-      }
-    };
-
-    return [staticYogaEvent, ...fetched];
-  }, [eventsData.upcoming]);
-
-  const pastEvents = useMemo(
-    () => eventsData.past
-      .sort((a, b) => new Date(b.startAt || 0) - new Date(a.startAt || 0))
-      .map(toUiEvent),
-    [eventsData.past]
-  );
 
   const activeEvent = upcomingEvents[currentUpcomingIndex] || null;
   const primaryLink = activeEvent?.links?.[0] || { href: "/kurser", label: "Läs mer & anmäl dig" };
-  const secondaryLink = activeEvent?.links?.[1] || { href: "/event", label: "Mer information" };
 
   const nextUpcoming = () => {
     if (upcomingEvents.length <= 1) return;
@@ -279,12 +207,6 @@ function HomeUpcomingEventsSection() {
             </div>
           )
         )}
-
-        {/* Separator line */}
-        <div className="events-section-separator" />
-
-        {/* Past Events Section */}
-        <PastEventsAccordion events={pastEvents} />
 
       </div>
     </div>

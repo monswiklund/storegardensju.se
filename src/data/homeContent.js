@@ -8,8 +8,8 @@ export const heroContent = {
     "Loppis har vi även emellanåt och det finns en gårdsbutik med konst, keramik och en ateljé för inspiration.",
   ],
   primaryCta: {
-    label: "Boka ditt evenemang",
-    ariaLabel: "Scrolla till kontakt-sektion",
+    label: "Kontakta oss",
+    ariaLabel: "Scrolla till kontakt-sektionen",
   },
   secondaryCtas: [
     {
@@ -60,6 +60,28 @@ export const services = [
     route: "/konst",
     image: "/images/portfolio/ann-2.webp",
     ctaLabel: "Se kurser",
+  },
+  {
+    id: "kurser-heldagar",
+    kicker: "Närvaro & återhämtning",
+    title: "Yoga & heldagar",
+    description:
+      "Följ med på harmoniska heldagar med en härlig kombination av yoga, skapande, fika och vegetarisk lunch på gården.",
+    meta: "Heldagar · Yoga · Lunch ingår",
+    route: "/kurser",
+    image: "/images/evenemang/heldag-paket.webp",
+    ctaLabel: "Se heldagar",
+  },
+  {
+    id: "galleri",
+    kicker: "Bilder & inspiration",
+    title: "Bildgalleri",
+    description:
+      "Kika in i vårt galleri för att se bilder från gården, ateljén, festdukningar och tidigare evenemang.",
+    meta: "Foton · Inspiration · Ladan & loftet",
+    route: "/galleri",
+    image: "/images/event/hero/hero-2.webp",
+    ctaLabel: "Utforska galleriet",
   },
   {
     id: "om-platsen",

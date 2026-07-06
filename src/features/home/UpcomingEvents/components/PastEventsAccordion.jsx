@@ -85,7 +85,7 @@ function PastEventsAccordion({ events }) {
   const visibleEvents = showAll ? events : events.slice(0, 4);
 
   return (
-    <div id="past-events" className="past-events-section" data-section="past-events">
+    <div id="past-events-inner" className="past-events-section" data-section="past-events">
       {/* Mobile-only header row */}
       <div className="past-events-mobile-header mobile-only">
         <span className="past-events-eyebrow">TIDIGARE EVENEMANG</span>

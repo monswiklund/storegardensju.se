@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail } from "lucide-react";
 import { contactMethods, contactEmail } from "./contact.js";
 import MailtoFallback from "./MailtoFallback.jsx";
@@ -115,6 +115,18 @@ function ContactSection() {
   const [subjectValue, setSubjectValue] = useState("");
   const [fallbackText, setFallbackText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const handleExpand = () => {
+      setTimeout(() => {
+        setIsOpen(true);
+      }, 500);
+    };
+    window.addEventListener("expand-contact-form", handleExpand);
+    return () => {
+      window.removeEventListener("expand-contact-form", handleExpand);
+    };
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

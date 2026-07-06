@@ -28,6 +28,7 @@ function HomeHeroSection() {
   }, []);
 
   const handlePrimaryCta = () => {
+    window.dispatchEvent(new CustomEvent("expand-contact-form"));
     document
       .querySelector(".contact-container")
       ?.scrollIntoView({ behavior: "smooth", block: "center" });

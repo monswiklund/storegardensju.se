@@ -1,15 +1,34 @@
 import PropTypes from "prop-types";
 import { forwardRef } from "react";
-import { Calendar, Image, MapPin } from "lucide-react";
+import { Calendar, Image, MapPin, Mail } from "lucide-react";
 import HomeHeroCarousel from "./HomeHeroCarousel";
 
 const getIcon = (label) => {
   if (!label) return null;
   const l = label.toLowerCase();
 
-  // Primary: "Boka", "Evenemang"
-  if (l.includes("boka") || l.includes("evenemang"))
-    return <Calendar size={20} style={{ strokeWidth: 2.5 }} />;
+  const bIndex = l.indexOf("boka");
+  const eIndex = l.indexOf("evenemang");
+  const kIndex = l.indexOf("kontakt");
+  const mIndex = l.indexOf("mail");
+
+  // Find the earliest matching keyword index
+  const indices = [
+    { type: 'calendar', index: bIndex >= 0 ? bIndex : Infinity },
+    { type: 'calendar', index: eIndex >= 0 ? eIndex : Infinity },
+    { type: 'mail', index: kIndex >= 0 ? kIndex : Infinity },
+    { type: 'mail', index: mIndex >= 0 ? mIndex : Infinity },
+  ];
+
+  indices.sort((a, b) => a.index - b.index);
+
+  if (indices[0].index !== Infinity) {
+    if (indices[0].type === 'calendar') {
+      return <Calendar size={20} style={{ strokeWidth: 2.5 }} />;
+    } else if (indices[0].type === 'mail') {
+      return <Mail size={20} style={{ strokeWidth: 2.5 }} />;
+    }
+  }
 
   // Secondary: "Galleri", "Bilder"
   if (l.includes("galleri") || l.includes("se"))
