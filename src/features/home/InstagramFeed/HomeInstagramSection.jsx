@@ -13,7 +13,6 @@ import {
 import "./InstagramFeed.css";
 import { fetchInstagramFeed } from "../../../services/instagramService";
 import { getApiBaseUrl } from "../../../config/apiBaseUrl";
-import logo from "../../../assets/logoTransp_cropped.png";
 
 const toImageSrc = (item) =>
   `${getApiBaseUrl()}/api/instagram/image/${item.id}`;
@@ -148,7 +147,7 @@ function HomeInstagramSection() {
                   <div className="instagram-avatar-container">
                     <div className="instagram-avatar-ring">
                       <div className="instagram-avatar-bg">
-                        <img src={logo} alt="Storegården 7" className="instagram-avatar-img" />
+                        <img src="/images/logoTransp_cropped.png" alt="Storegården 7" className="instagram-avatar-img" />
                       </div>
                     </div>
                   </div>

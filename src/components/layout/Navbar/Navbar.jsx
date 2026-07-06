@@ -5,7 +5,6 @@ import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
 import { appRoutes } from "../../../config/routes.js";
 import CartBadge from "./CartBadge.jsx";
-import logo from "../../../assets/logoTransp_cropped.png";
 
 const NAV_ITEMS = appRoutes.filter(route => !route.hidden);
 
@@ -83,7 +82,7 @@ function Navbar() {
           aria-label="Till startsidan"
           onClick={() => handleNavigate("/")}
         >
-          <img src={logo} alt="Storegården 7" className="navbar-logo" />
+          <img src="/images/logoTransp_cropped.png" alt="Storegården 7" className="navbar-logo" />
         </Link>
 
         <div ref={menuRef} className={`nav-menu ${isOpen ? "open" : ""}`}>
