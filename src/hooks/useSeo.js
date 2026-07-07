@@ -34,10 +34,13 @@ export function useSeo({ title, description, path, jsonLd }) {
 
     let script;
     if (jsonLd) {
-      script = document.createElement("script");
+      script =
+        document.querySelector('script[data-seo-jsonld="route"]') ||
+        document.createElement("script");
       script.type = "application/ld+json";
+      script.dataset.seoJsonld = "route";
       script.text = JSON.stringify(jsonLd);
-      document.head.appendChild(script);
+      if (!script.parentNode) document.head.appendChild(script);
     }
 
     return () => {

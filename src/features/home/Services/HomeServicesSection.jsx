@@ -201,13 +201,25 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
       e.preventDefault();
       const container = containerRef.current;
       if (container) {
-        // Normalize first so repeated clicks can never walk past the end of
-        // the tripled list; the clicked element's index shifts along.
-        // Explicit scrollTo (see handleDotClick) to land exactly on the
-        // snap position without an end-of-scroll correction hop.
-        const targetIndex = index + normalizeToMiddle(container);
+        // Clamp the TARGET into the middle copy, not just the current
+        // position: during fast click-walking the scroll position lags
+        // mid-animation below the normalize threshold while the clicked
+        // index keeps climbing, and the walk runs off the end of the
+        // tripled list. If the target lands in an outer copy, teleport
+        // the view one copy over (invisible) and aim at the equivalent
+        // middle-copy card.
+        let targetIndex = index + normalizeToMiddle(container);
         const step = getStepSize(container);
         if (step > 0) {
+          if (targetIndex >= 2 * L) {
+            teleport(container, container.scrollLeft - L * step);
+            setActiveDomIndex((prev) => prev - L);
+            targetIndex -= L;
+          } else if (targetIndex < L) {
+            teleport(container, container.scrollLeft + L * step);
+            setActiveDomIndex((prev) => prev + L);
+            targetIndex += L;
+          }
           container.scrollTo({ left: targetIndex * step, behavior: "smooth" });
         }
       }

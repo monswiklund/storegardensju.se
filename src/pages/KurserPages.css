@@ -86,6 +86,18 @@
   color: #ffffff;
 }
 
+.kurser-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.kurser-hero__actions .kurser-button {
+  min-width: 170px;
+  padding: 12px 22px;
+}
+
 /* --- Buttons & Links --- */
 .kurser-button {
   display: inline-flex;
@@ -136,6 +148,152 @@
   box-shadow: 0 4px 12px rgba(185, 148, 112, 0.3);
 }
 
+/* --- Evergreen Yoga Intro --- */
+.kurser-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.kurser-intro h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  color: var(--text-main);
+  margin-bottom: 18px;
+}
+
+.kurser-intro p {
+  color: var(--text-secondary);
+  font-size: 1.08rem;
+  line-height: 1.7;
+  max-width: 720px;
+}
+
+.kurser-eyebrow--inline {
+  color: var(--primary-hover);
+  background: rgba(95, 111, 82, 0.1);
+  backdrop-filter: none;
+}
+
+.kurser-facts,
+.kurser-faq {
+  margin: 0;
+}
+
+.kurser-facts {
+  display: grid;
+  gap: 14px;
+}
+
+.kurser-facts div,
+.kurser-faq div {
+  background: #ffffff;
+  border: 1px solid rgba(95, 111, 82, 0.14);
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.kurser-facts dt,
+.kurser-faq dt {
+  color: var(--text-main);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.kurser-facts dd,
+.kurser-faq dd {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.kurser-faq {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.kurser-faq div {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.3fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 18px 22px;
+}
+
+.kurser-faq .kurser-faq__price {
+  border-color: rgba(185, 148, 112, 0.24);
+}
+
+.kurser-faq dt {
+  margin: 0;
+}
+
+.kurser-price-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kurser-price-list li {
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.kurser-faq__price p {
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .kurser-intro {
+    grid-template-columns: 1fr;
+  }
+
+  .kurser-faq div {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 18px;
+  }
+
+  .kurser-hero__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: min(100%, 560px);
+    margin: 0 auto;
+  }
+
+  .kurser-hero__actions .kurser-button {
+    min-width: 0;
+    width: 100%;
+    padding: 12px 10px;
+    font-size: 0.95rem;
+  }
+
+  .kurser-hero__actions .kurser-button--secondary {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 420px) {
+  .kurser-hero__actions {
+    gap: 8px;
+  }
+
+  .kurser-hero__actions .kurser-button {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+}
+
 /* --- Section Styling --- */
 .kurser-section-heading {
   text-align: center;
@@ -154,6 +312,23 @@
   color: var(--text-secondary);
   font-size: 1.1rem;
   line-height: 1.6;
+}
+
+.kurser-date-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  margin: 2px auto 18px;
+  padding: 7px 18px;
+  border: 1px solid rgba(95, 111, 82, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--primary-hover) !important;
+  font-size: 0.95rem !important;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 /* --- Cards Grid --- */
@@ -627,4 +802,3 @@
   color: var(--primary-color);
   transform: translateX(-4px);
 }
-

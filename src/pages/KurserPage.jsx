@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Clock,
@@ -14,80 +14,20 @@ import { HomeServicesSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import MailtoFallback from "../features/contact/MailtoFallback.jsx";
 import { useSeo } from "../hooks/useSeo.js";
-import { seoMeta } from "../config/seoMeta.js";
+import { activeJsonLd, seoMeta } from "../config/seoMeta.js";
 import "./KurserPages.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
-
-const EVENT_JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "Event",
-  name: "Heldag med yoga & måleri på Storegården 7",
-  description:
-    "Kursdag utanför Lidköping: yogapass med Lina Wiklund på förmiddagen och målarkurs i akvarell och akryl med Ann Wiklund på eftermiddagen. Boka yoga, måleri eller hela dagen med lunch och fika.",
-  startDate: "2026-07-13T10:00:00+02:00",
-  endDate: "2026-07-13T17:30:00+02:00",
-  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-  eventStatus: "https://schema.org/EventScheduled",
-  image: ["https://storegardensju.se/images/evenemang/kurser-header.webp"],
-  location: {
-    "@type": "Place",
-    name: "Storegården 7",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "Storegården 7",
-      addressLocality: "Rackeby, Lidköping",
-      addressRegion: "Västra Götaland",
-      postalCode: "531 96",
-      addressCountry: "SE",
-    },
-  },
-  organizer: {
-    "@type": "Organization",
-    name: "Storegården 7",
-    url: "https://storegardensju.se",
-  },
-  performer: [
-    { "@type": "Person", name: "Lina Wiklund" },
-    { "@type": "Person", name: "Ann Wiklund" },
-  ],
-  offers: [
-    {
-      "@type": "Offer",
-      name: "Yogapass (förmiddag)",
-      price: "200",
-      priceCurrency: "SEK",
-      availability: "https://schema.org/InStock",
-      validFrom: "2026-07-06",
-      url: "https://storegardensju.se/kurser/#yoga",
-    },
-    {
-      "@type": "Offer",
-      name: "Målarkurs (eftermiddag)",
-      price: "600",
-      priceCurrency: "SEK",
-      availability: "https://schema.org/InStock",
-      validFrom: "2026-07-06",
-      url: "https://storegardensju.se/kurser/#maleri",
-    },
-    {
-      "@type": "Offer",
-      name: "Heldagspaket med lunch",
-      price: "900",
-      priceCurrency: "SEK",
-      availability: "https://schema.org/InStock",
-      validFrom: "2026-07-06",
-      url: "https://storegardensju.se/kurser/#heldag",
-    },
-  ],
-};
+const COURSE_EVENT_END = new Date("2026-07-14T00:00:00+02:00");
 
 function KurserPage() {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState("top");
   const [signupFallback, setSignupFallback] = useState(null);
+  const isCourseEventPast = Date.now() >= COURSE_EVENT_END.getTime();
+  const kurserJsonLd = useMemo(() => activeJsonLd(seoMeta.kurser), []);
 
-  useSeo({ ...seoMeta.kurser, jsonLd: EVENT_JSON_LD });
+  useSeo({ ...seoMeta.kurser, jsonLd: kurserJsonLd });
 
   // Smooth scroll handler for anchor links (#yoga and #maleri)
   useEffect(() => {
@@ -112,20 +52,22 @@ function KurserPage() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
-
-      const topSection = document.getElementById("kurser-hero");
-      const cardsSection = document.getElementById("kurser-cards-section");
-      const timelineSection = document.getElementById("kurser-timeline-section");
-
       const getAbsTop = (el) => el ? el.getBoundingClientRect().top + window.pageYOffset : 0;
+      const sections = [
+        ["top", document.getElementById("kurser-hero")],
+        ["intro", document.getElementById("kurser-intro-section")],
+        ["timeline", document.getElementById("kurser-timeline-section")],
+        ["cards", document.getElementById("kurser-cards-section")],
+        ["faq", document.getElementById("kurser-faq-section")],
+      ];
 
-      if (cardsSection && scrollPosition >= getAbsTop(cardsSection)) {
-        setActiveSection("cards");
-      } else if (timelineSection && scrollPosition >= getAbsTop(timelineSection)) {
-        setActiveSection("timeline");
-      } else {
-        setActiveSection("top");
+      let current = "top";
+      for (const [id, section] of sections) {
+        if (section && scrollPosition >= getAbsTop(section)) {
+          current = id;
+        }
       }
+      setActiveSection(current);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -159,20 +101,38 @@ function KurserPage() {
           </li>
           <li>
             <button
+              onClick={() => scrollToSection("kurser-intro-section")}
+              className={`scroll-dot ${activeSection === "intro" ? "active" : ""}`}
+              title="Om kurserna"
+            >
+              <span className="dot-label">Om kurserna</span>
+            </button>
+          </li>
+          <li>
+            <button
               onClick={() => scrollToSection("kurser-timeline-section")}
               className={`scroll-dot ${activeSection === "timeline" ? "active" : ""}`}
-              title="Tidsschema"
+              title="Öppet datum"
             >
-              <span className="dot-label">Tidsschema</span>
+              <span className="dot-label">Öppet datum</span>
             </button>
           </li>
           <li>
             <button
               onClick={() => scrollToSection("kurser-cards-section")}
               className={`scroll-dot ${activeSection === "cards" ? "active" : ""}`}
-              title="Våra kurser & paket"
+              title="Yogakurs & paket"
             >
-              <span className="dot-label">Kurser & Paket</span>
+              <span className="dot-label">Yoga & Måleri</span>
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => scrollToSection("kurser-faq-section")}
+              className={`scroll-dot ${activeSection === "faq" ? "active" : ""}`}
+              title="Frågor & svar"
+            >
+              <span className="dot-label">Frågor & svar</span>
             </button>
           </li>
         </ul>
@@ -187,24 +147,82 @@ function KurserPage() {
           aria-labelledby="kurser-heading"
         >
           <div className="kurser-hero__inner">
-            <span className="kurser-eyebrow">Kurser & Workshops</span>
+            <span className="kurser-eyebrow">Yoga & målarkurs nära Lidköping</span>
             <div className="section-ornament" aria-hidden="true" style={{ color: "var(--primary-color)" }}>
               <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
               <Flower2 size={20} />
               <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
             </div>
-            <h1 id="kurser-heading">Heldag med yoga & måleri i Lidköping</h1>
-            <p>13 juli 2026 | Kl 10:00 - 17:30</p>
+            <h1 id="kurser-heading">Yogakurs & målarkurs i Lidköping</h1>
+            <p>Yogapass, skapande målarkurser och heldagar med yoga & måleri på Storegården 7.</p>
+            <div className="kurser-hero__actions">
+              <a href="#yoga" className="kurser-button kurser-button--primary">
+                Boka yoga
+              </a>
+              <a href="#maleri" className="kurser-button kurser-button--accent">
+                Boka målarkurs
+              </a>
+              <a href="#heldag" className="kurser-button kurser-button--secondary">
+                {isCourseEventPast ? "Fråga om nästa datum" : "Se heldag 13 juli"}
+              </a>
+            </div>
           </div>
         </section>
+
+        <div id="kurser-intro-section">
+          <PageSection background="white" spacing="default">
+            <FadeInSection>
+              <div className="kurser-intro">
+                <div>
+                  <span className="kurser-eyebrow kurser-eyebrow--inline">Yoga & måleri på gården</span>
+                  <h2>Yogakurs och målarkurs nära Lidköping</h2>
+                  <p>
+                    På Storegården 7 håller Lina Wiklund yogapass med fokus på
+                    andning, närvaro och återhämtning. Ann Wiklund leder målarkurs
+                    där du får måla med akvarell och akryl i en prestationsfri miljö.
+                    Du kan boka yoga, måleri, privat grupp eller kombinera allt till
+                    en heldag på gården.
+                  </p>
+                </div>
+                <dl className="kurser-facts">
+                  <div>
+                    <dt>Plats</dt>
+                    <dd>Storegården 7 i Rackeby, 15 min från Lidköping</dd>
+                  </div>
+                  <div>
+                    <dt>Nivå</dt>
+                    <dd>Yoga och måleri för både nybörjare och vana deltagare</dd>
+                  </div>
+                  <div>
+                    <dt>Bokning</dt>
+                    <dd>Yogakurs, målarkurs, privata grupper och heldagar</dd>
+                  </div>
+                </dl>
+              </div>
+            </FadeInSection>
+          </PageSection>
+        </div>
+
+        <SectionDivider above="white" below="green" variant="wave" />
 
         {/* Tidslinje Sektion */}
         <div id="kurser-timeline-section">
           <PageSection background="green" spacing="default">
             <FadeInSection>
               <div className="kurser-section-heading">
-                <h2>Tidsschema för heldagen</h2>
-                <p>Här är dagens fullständiga flöde i detalj för dig som deltar i heldagen den 13 juli 2026.</p>
+                <h2>
+                  {isCourseEventPast
+                    ? "Yogakurs, målarkurs & heldag på Storegården 7"
+                    : "Öppet tillfälle: yoga & måleri"}
+                </h2>
+                {!isCourseEventPast && (
+                  <p className="kurser-date-pill">13 juli 2026</p>
+                )}
+                <p>
+                  {isCourseEventPast
+                    ? "Nya öppna datum släpps löpande. Upplägget nedan visar hur en heldag med yogapass, målarkurs, lunch och fika kan se ut."
+                    : "För dig som vill prova yoga och måla på Storegården 7 finns ett öppet datum med yogapass på förmiddagen, målarkurs på eftermiddagen och heldagspaket med lunch."}
+                </p>
               </div>
 
               <div className="schedule-timeline">
@@ -224,7 +242,7 @@ function KurserPage() {
                   <div className="timeline-time" style={{ color: "var(--primary-hover)" }}>Kl 10:30 - 12:00</div>
                   <h4 className="timeline-title">Yoga — Mind, Body & Breath</h4>
                   <p className="timeline-desc">
-                    Mjukt och flödande yogapass lett av <strong>Lina Wiklund</strong>. Fokus på andning, närvaro och mjuka rörelser. Passar perfekt för både nybörjare och vana utövare.
+                    Yogapass lett av <strong>Lina Wiklund</strong>. Fokus på andning, närvaro och rörelse. Passar både nybörjare och vana utövare.
                   </p>
                 </div>
 
@@ -244,7 +262,7 @@ function KurserPage() {
                   <div className="timeline-time" style={{ color: "var(--accent-color)" }}>Kl 13:30 - 17:30</div>
                   <h4 className="timeline-title">Måleri — Glädjefylld Målarkurs</h4>
                   <p className="timeline-desc">
-                    Kreativ workshop ledd av <strong>Ann Wiklund</strong>. Vi gör roliga, prestationsfria uppvärmningsövningar och målar fritt med akvarell och akryl. Allt konstnärsmaterial ingår!
+                    Kreativ målarkurs ledd av <strong>Ann Wiklund</strong>. Vi gör roliga, prestationsfria uppvärmningsövningar och målar fritt med akvarell och akryl. Allt konstnärsmaterial ingår!
                   </p>
                 </div>
 
@@ -269,10 +287,9 @@ function KurserPage() {
           <PageSection background="white" spacing="default">
             <FadeInSection>
               <div className="kurser-section-heading">
-                <h2>Våra kurser & paket</h2>
+                <h2>Yogakurs, målarkurs & heldagspaket</h2>
                 <p>
-                  Välj att delta på förmiddagens yogapass, eftermiddagens målarkurs, 
-                  eller boka hela dagen för den hela upplevelsen.
+                  Välj yogakurs på förmiddagen, målarkurs på eftermiddagen eller boka hela dagen med lunch, fika och tid på gården.
                 </p>
               </div>
 
@@ -280,7 +297,7 @@ function KurserPage() {
                 {/* YOGA KORT (LINA - GRÖN) */}
                 <article id="yoga" className="kurser-card" style={{ padding: "10px" }}>
                   <div className="kurser-card__image">
-                    <img src="/images/evenemang/yoga-loft.webp" alt="Yoga på loftet" />
+                    <img src="/images/evenemang/yoga-loft.webp" alt="Yogakurs på loftet på Storegården 7 nära Lidköping" />
                     <div className="kurser-card__badge" style={{ backgroundColor: "var(--primary-color)", color: "white" }}>
                       <Heart size={14} /> Yoga
                     </div>
@@ -290,7 +307,7 @@ function KurserPage() {
                       <Clock size={16} /> Kl 10:00 - 12:00
                     </div>
                     
-                    <h3 style={{ borderBottom: "1px solid #eee", paddingBottom: "10px", marginBottom: "15px" }}>Yoga</h3>
+                    <h3 style={{ borderBottom: "1px solid #eee", paddingBottom: "10px", marginBottom: "15px" }}>Yogakurs</h3>
                     
                     <div style={{ marginBottom: "20px" }}>
                       <p style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "12px", color: "var(--text-main)" }}>
@@ -303,7 +320,7 @@ function KurserPage() {
                       </p>
                       <p style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "12px", color: "var(--text-main)" }}>
                         <CheckCircle2 size={18} style={{ color: "var(--primary-color)", flexShrink: 0, marginTop: "2px" }} />
-                        <span>Passar nybörjare och övande</span>
+                        <span>Yogakurs nära Lidköping för nybörjare och vana deltagare</span>
                       </p>
                     </div>
 
@@ -332,7 +349,7 @@ function KurserPage() {
                         style={{ width: "100%", fontSize: "0.95rem", padding: "12px" }}
                         onClick={() => setSignupFallback("Anmälan: Yoga (13:e juli)")}
                       >
-                        <Mail size={16} /> Anmäl dig till Yoga
+                        <Mail size={16} /> Anmäl dig till Yogakurs
                       </a>
                       {signupFallback === "Anmälan: Yoga (13:e juli)" && (
                         <MailtoFallback
@@ -347,7 +364,7 @@ function KurserPage() {
                 {/* MÅLERI KORT (ANN - BRUN) */}
                 <article id="maleri" className="kurser-card" style={{ padding: "10px" }}>
                   <div className="kurser-card__image">
-                    <img src="/images/evenemang/maleri-kurs.webp" alt="Målarkurs" />
+                    <img src="/images/evenemang/maleri-kurs.webp" alt="Målarkurs i akvarell och akryl nära Lidköping" />
                     <div className="kurser-card__badge" style={{ backgroundColor: "var(--accent-color)", color: "white" }}>
                       <Palette size={14} /> Måleri
                     </div>
@@ -357,7 +374,7 @@ function KurserPage() {
                       <Clock size={16} /> Kl 13:30 - 17:30
                     </div>
                     
-                    <h3 style={{ borderBottom: "1px solid #eee", paddingBottom: "10px", marginBottom: "15px" }}>Måleri</h3>
+                    <h3 style={{ borderBottom: "1px solid #eee", paddingBottom: "10px", marginBottom: "15px" }}>Målarkurs</h3>
                     
                     <div style={{ marginBottom: "20px" }}>
                       <p style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "12px", color: "var(--text-main)" }}>
@@ -366,7 +383,7 @@ function KurserPage() {
                       </p>
                       <p style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "12px", color: "var(--text-main)" }}>
                         <CheckCircle2 size={18} style={{ color: "var(--accent-color)", flexShrink: 0, marginTop: "2px" }} />
-                        <span>Olika övningar, eget skapande med akvarell och akryl färg</span>
+                        <span>Du får måla med akvarell och akryl i lugn gårdsmiljö nära Lidköping</span>
                       </p>
                     </div>
 
@@ -395,7 +412,7 @@ function KurserPage() {
                         style={{ width: "100%", fontSize: "0.95rem", padding: "12px" }}
                         onClick={() => setSignupFallback("Anmälan: Måleri (13:e juli)")}
                       >
-                        <Mail size={16} /> Anmäl dig till Måleri
+                        <Mail size={16} /> Anmäl dig till Målarkurs
                       </a>
                       {signupFallback === "Anmälan: Måleri (13:e juli)" && (
                         <MailtoFallback
@@ -430,7 +447,7 @@ function KurserPage() {
                       <Clock size={16} /> Kl 10:00 - 17:30
                     </div>
                     
-                    <h3 style={{ borderBottom: "1px solid #eee", paddingBottom: "10px", marginBottom: "15px" }}>Heldagspaket</h3>
+                    <h3 style={{ borderBottom: "1px solid #eee", paddingBottom: "10px", marginBottom: "15px" }}>Heldag med yoga & måleri</h3>
                     
                     <div style={{ marginBottom: "20px" }}>
                       <p style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "12px", color: "var(--text-main)" }}>
@@ -498,6 +515,58 @@ function KurserPage() {
         </div>
 
         <SectionDivider above="white" below="alt" variant="hill" />
+
+        <div id="kurser-faq-section">
+          <PageSection background="alt" spacing="default">
+            <FadeInSection>
+              <div className="kurser-section-heading">
+                <h2>Frågor & svar</h2>
+                <p>För dig som vill boka yoga, målarkurs eller heldag på Storegården 7 nära Lidköping.</p>
+              </div>
+              <dl className="kurser-faq">
+                <div>
+                  <dt>Plats</dt>
+                  <dd>Yoga och målarkurs hålls på Storegården 7 i Rackeby, ungefär 15 minuter från Lidköping centrum.</dd>
+                </div>
+                <div>
+                  <dt>Yoga</dt>
+                  <dd>Passen är lugna och anpassade så att både nybörjare och vana deltagare kan vara med.</dd>
+                </div>
+                <div>
+                  <dt>Målarkurs</dt>
+                  <dd>Målarkursen är prestationsfri och passar både nybörjare och vana deltagare som vill måla med akvarell och akryl.</dd>
+                </div>
+                <div>
+                  <dt>Privat bokning</dt>
+                  <dd>Hör av dig om privat yogapass, målarkurs, möhippa, företagsgrupp eller en egen heldag med yoga och måleri.</dd>
+                </div>
+                <div className="kurser-faq__price">
+                  <dt>Pris</dt>
+                  <dd>
+                    {isCourseEventPast ? (
+                      <>
+                        <ul className="kurser-price-list">
+                          <li>Yogapass: 200 kr/person</li>
+                          <li>Målarkurs: 600 kr/person</li>
+                          <li>Heldag med yoga, måleri, lunch och fika: 900 kr/person</li>
+                        </ul>
+                        <p>Kontakta oss för nästa datum eller privat grupp.</p>
+                      </>
+                    ) : (
+                      <ul className="kurser-price-list">
+                        <li>Yogapass 13 juli 2026: 200 kr/person</li>
+                        <li>Målarkurs 13 juli 2026: 600 kr/person</li>
+                        <li>Heldag med yoga, måleri, lunch och fika: 900 kr/person</li>
+                      </ul>
+                    )}
+                  </dd>
+                </div>
+              </dl>
+            </FadeInSection>
+          </PageSection>
+        </div>
+
+        <SectionDivider above="alt" below="green" variant="wave" />
 
         {/* Andra erbjudanden */}
         <div id="kurser-services-recommendation">

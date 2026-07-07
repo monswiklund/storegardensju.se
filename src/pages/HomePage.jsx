@@ -59,7 +59,7 @@ function HomePage() {
       spots: "Passar alla",
       date: "13 Juli 2026",
       time: "10:00 - 17:30",
-      description: "En stämningsfull heldag fylld med återhämtning och skaparglädje på vackra Storegården 7. Mjukt yogapass med Lina Wiklund på förmiddagen, god lunch på gården, och glädjefylld målarkurs med Ann Wiklund på eftermiddagen.",
+      description: "En stämningsfull heldag fylld med återhämtning och skaparglädje på vackra Storegården 7. Yogapass med Lina Wiklund på förmiddagen, god lunch på gården, och glädjefylld målarkurs med Ann Wiklund på eftermiddagen.",
       location: "Storegården 7",
       links: [
         {
