@@ -155,7 +155,7 @@
 /* Event Card layout - Split */
 .upcoming-event-card {
   display: grid;
-  grid-template-columns: 1.25fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   background: #ffffff;
   border: 1px solid rgba(95, 111, 82, 0.12);
   border-radius: 12px;
@@ -167,8 +167,8 @@
 /* Left portion of card: Content */
 .upcoming-card-info {
   display: flex;
-  gap: 24px;
-  padding: 32px;
+  gap: 16px;
+  padding: 24px;
   align-items: center; /* Vertically center badge and details */
   height: 100%;
   box-sizing: border-box;
@@ -242,7 +242,7 @@
   font-size: clamp(1.2rem, 1rem + 0.6vw, 1.6rem);
   font-weight: 500;
   line-height: 1.2;
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
 }
 
 .upcoming-event-meta {

@@ -99,6 +99,17 @@
   display: none; /* Hide scrollbar for Chrome/Safari */
 }
 
+/* Pointer devices scroll with discrete wheel clicks (~40-120px), far less
+   than one card step - CSS snapping (even proximity) yanks the scroll back
+   after every click and the carousel stutters in place. Disable CSS snap on
+   pointer devices; JS snaps to the nearest card at scroll idle instead.
+   Touch keeps mandatory: one swipe covers a full card there. */
+@media (hover: hover) {
+  .services-grid {
+    scroll-snap-type: none;
+  }
+}
+
 /* Wide screens: fade out the outer cards (4 and 5) toward the scrollport
    edges. The clear central zone stays 1240px (3 cards); everything beyond
    it fades. Media query keeps mobile/tablet free of the mask */
@@ -190,6 +201,7 @@
      neighbor peek (140 = 2 * (30px gap + 40px peek)) */
   flex: 0 0 min(380px, 100vw - 140px);
   scroll-snap-align: center;
+  scroll-snap-stop: always; /* Force the carousel to snap to each individual card, preventing multi-card skips on fast swipes */
   -webkit-tap-highlight-color: transparent;
   
   opacity: 0.65;
@@ -297,9 +309,6 @@
   color: var(--primary-hover);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: rgba(84, 139, 116, 0.07);
-  padding: 5px 12px;
-  border-radius: 100px;
 }
 
 .service-card__title {

@@ -19,10 +19,12 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
   // Tripled services for infinite scrolling
   const tripledServices = [...filteredServices, ...filteredServices, ...filteredServices];
 
-  // Helper to get step size (card width + gap)
+  // Helper to get step size (card width + gap). offsetWidth, not clientWidth:
+  // the cards have a 1px border, and clientWidth excludes it, which drifts
+  // every jump/snap calculation by 2px per card.
   const getStepSize = (container) => {
     if (!container || container.children.length === 0) return 0;
-    const cardWidth = container.children[0].clientWidth;
+    const cardWidth = container.children[0].offsetWidth;
     const gap = parseInt(window.getComputedStyle(container).gap) || 0;
     return cardWidth + gap;
   };
@@ -58,6 +60,33 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
       };
     }
   }, [excludeId, L]);
+
+  // Pointer devices: one wheel/trackpad gesture moves exactly one card.
+  // Native listener with passive: false - React/Chrome wheel listeners are
+  // passive by default and cannot preventDefault the free scroll.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !window.matchMedia("(hover: hover)").matches) return undefined;
+
+    let cooldownUntil = 0;
+    const handleWheel = (e) => {
+      const dx = e.deltaX || (e.shiftKey ? e.deltaY : 0);
+      if (Math.abs(dx) <= Math.abs(e.deltaY) && !e.shiftKey) return; // vertical -> page scroll
+      e.preventDefault();
+      const now = performance.now();
+      // ponytail: 30px threshold + 450ms cooldown absorbs trackpad momentum
+      // tails; tune if double-steps or missed gestures show up on hardware
+      if (now < cooldownUntil || Math.abs(dx) < 30) return;
+      const step = getStepSize(container);
+      if (step === 0) return;
+      cooldownUntil = now + 450;
+      const target = (Math.round(container.scrollLeft / step) + Math.sign(dx)) * step;
+      container.scrollTo({ left: target, behavior: "smooth" });
+    };
+
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    return () => container.removeEventListener("wheel", handleWheel);
+  }, [L]);
 
   // Handle browser window resize to keep the active card centered
   useEffect(() => {
@@ -108,7 +137,19 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
     // has settled. Teleporting mid-gesture is ignored on iOS momentum
     // scrolling and gets fought by mandatory scroll snapping.
     clearTimeout(idleTimerRef.current);
-    idleTimerRef.current = setTimeout(() => normalizeToMiddle(container), 120);
+    idleTimerRef.current = setTimeout(() => {
+      normalizeToMiddle(container);
+      // JS snap-to-card for pointer devices, where CSS snap is disabled
+      // (mandatory/proximity snap fights discrete wheel clicks). No-op when
+      // CSS snap already aligned the position (touch devices).
+      const idleStep = getStepSize(container);
+      if (idleStep > 0) {
+        const target = Math.round(container.scrollLeft / idleStep) * idleStep;
+        if (Math.abs(target - container.scrollLeft) > 1) {
+          container.scrollTo({ left: target, behavior: "smooth" });
+        }
+      }
+    }, 120);
 
     const containerCenter = container.scrollLeft + container.clientWidth / 2;
 
@@ -140,17 +181,17 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
     const container = containerRef.current;
     if (!container) return;
     normalizeToMiddle(container);
-    // Scroll to the closest clone of the service to keep travel short
+    // Scroll to the closest clone of the service to keep travel short.
+    // Explicit scrollTo, not scrollIntoView: the cards are scaled by CSS
+    // transforms mid-transition, which skews scrollIntoView's target and
+    // makes the idle snap visibly correct a few px at the end.
     const candidates = [serviceIndex, L + serviceIndex, 2 * L + serviceIndex];
     const step = getStepSize(container);
+    if (step === 0) return;
     const closest = candidates.reduce((a, b) =>
       Math.abs(a * step - container.scrollLeft) <= Math.abs(b * step - container.scrollLeft) ? a : b
     );
-    container.children[closest]?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center",
-    });
+    container.scrollTo({ left: closest * step, behavior: "smooth" });
   };
 
   const handleCardClick = (e, index) => {
@@ -161,14 +202,13 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
       const container = containerRef.current;
       if (container) {
         // Normalize first so repeated clicks can never walk past the end of
-        // the tripled list; the clicked element's index shifts along
-        const cardElement = container.children[index + normalizeToMiddle(container)];
-        if (cardElement) {
-          cardElement.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "center",
-          });
+        // the tripled list; the clicked element's index shifts along.
+        // Explicit scrollTo (see handleDotClick) to land exactly on the
+        // snap position without an end-of-scroll correction hop.
+        const targetIndex = index + normalizeToMiddle(container);
+        const step = getStepSize(container);
+        if (step > 0) {
+          container.scrollTo({ left: targetIndex * step, behavior: "smooth" });
         }
       }
     }
