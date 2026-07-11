@@ -50,10 +50,10 @@
     </image:image>
   </url>
 
-  <!-- Möhippa Page -->
+  <!-- Gruppdagar Page -->
   <url>
-    <loc>https://storegardensju.se/mohippa/</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://storegardensju.se/gruppdagar/</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
