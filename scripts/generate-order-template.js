@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const GALLERY_DIR = path.join(__dirname, '../public/images/gallery');
 const OUTPUT_FILE = path.join(__dirname, '../src/data/gallery-order.json');
 const CATEGORIES_FILE = path.join(__dirname, '../src/data/galleryCategories.json');
 

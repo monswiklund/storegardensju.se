@@ -44,8 +44,14 @@ const getHeaders = (
 ) => {
   if (shouldAvoidPreflight(key)) {
     const headers = {};
+    if (includeJsonContentType) {
+      headers["Content-Type"] = "application/json";
+    }
     if (key && key !== SESSION_AUTH_KEY) {
       headers.Authorization = `Bearer ${key}`;
+    }
+    if (idempotencyKey) {
+      headers["Idempotency-Key"] = idempotencyKey;
     }
     return headers;
   }
@@ -145,65 +151,16 @@ const handleBlobResponse = async (res, defaultMessage) => {
   return res.blob();
 };
 
-const shouldFallbackToLegacyUpload = (status, code) => {
-  if (status === 404 || status === 503) return true;
-  return (
-    code === "upload_store_unavailable" ||
-    code === "not_found" ||
-    code === "method_not_allowed"
-  );
-};
-
-const buildErrorFromPayload = (status, payload, defaultMessage) => {
-  const message = extractErrorMessage(payload, defaultMessage);
-  const error = new Error(message);
-  error.status = status;
-  error.code = payload?.error?.code || payload?.code;
-  error.details = payload?.error?.details;
-  error.requestId = payload?.error?.requestId || payload?.requestId;
-  error.retryable = Boolean(payload?.error?.retryable);
-  return error;
-};
-
-const uploadImageWithFallback = async (
-  key,
-  file,
-  scope,
-  legacyPath,
-  defaultMessage
-) => {
-  const genericHeaders = getHeaders(key, {
-    idempotencyKey: createIdempotencyKey(),
-  });
-  const genericForm = new FormData();
-  genericForm.append("file", file);
-  genericForm.append("scope", scope);
-
-  const genericRes = await fetch(`${API_URL}/admin/uploads/images`, {
-    method: "POST",
-    headers: genericHeaders,
-    body: genericForm,
-    credentials: "include",
-  });
-  if (genericRes.ok) {
-    return handleJSONResponse(genericRes, defaultMessage);
-  }
-
-  const genericPayload = await parseJSONSafely(genericRes);
-  const genericCode = genericPayload?.error?.code || genericPayload?.code;
-  if (!shouldFallbackToLegacyUpload(genericRes.status, genericCode)) {
-    throw buildErrorFromPayload(genericRes.status, genericPayload, defaultMessage);
-  }
-
-  const legacyForm = new FormData();
-  legacyForm.append("file", file);
-  const legacyRes = await fetch(`${API_URL}${legacyPath}`, {
+const uploadScopedImage = async (key, file, path, defaultMessage) => {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch(`${API_URL}${path}`, {
     method: "POST",
     headers: getHeaders(key, { idempotencyKey: createIdempotencyKey() }),
-    body: legacyForm,
+    body: form,
     credentials: "include",
   });
-  return handleJSONResponse(legacyRes, defaultMessage);
+  return handleJSONResponse(res, defaultMessage);
 };
 
 export const AdminService = {
@@ -409,10 +366,9 @@ export const AdminService = {
   },
 
   createGalleryUpload: async (key, file) => {
-    return uploadImageWithFallback(
+    return uploadScopedImage(
       key,
       file,
-      "gallery",
       "/admin/gallery/uploads",
       "Failed to create upload"
     );
@@ -497,10 +453,9 @@ export const AdminService = {
   },
 
   createEventUpload: async (key, file) => {
-    return uploadImageWithFallback(
+    return uploadScopedImage(
       key,
       file,
-      "events",
       "/admin/events/uploads",
       "Failed to create event upload"
     );

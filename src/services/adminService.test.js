@@ -1,3 +1,7 @@
+vi.mock("../config/apiBaseUrl", () => ({
+  getApiBaseUrl: () => "https://api.storegardensju.se",
+}));
+
 import { AdminService } from "./adminService";
 
 describe("AdminService.getOrders", () => {
@@ -32,5 +36,39 @@ describe("AdminService.getOrders", () => {
     expect(url).toContain("starting_after=ord_99");
     expect(url).not.toContain("startingAfter=");
     expect(options.credentials).toBe("include");
+  });
+});
+
+describe("AdminService idempotency", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: vi.fn().mockResolvedValue(
+        JSON.stringify({
+          ok: true,
+          data: {
+            uploadId: "upl_1",
+            storageKey: "gallery/2026/07/image.webp",
+          },
+        })
+      ),
+      headers: {
+        get: vi.fn().mockReturnValue(null),
+      },
+    });
+  });
+
+  it("V8 sends an idempotency key for session-auth gallery uploads", async () => {
+    const file = new File(["image"], "wedding.jpg", {
+      type: "image/jpeg",
+    });
+
+    await AdminService.createGalleryUpload("session", file);
+
+    const [url, options] = fetch.mock.calls[0];
+    expect(url).toBe("https://api.storegardensju.se/admin/gallery/uploads");
+    expect(options.headers["Idempotency-Key"]).toMatch(/^adm_/);
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 });

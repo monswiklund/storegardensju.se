@@ -71,7 +71,7 @@ const compressImage = async (file) => {
     return new File([blob], file.name.replace(/\.\w+$/, ".webp"), {
       type: "image/webp",
     });
-  } catch (err) {
+  } catch {
     return file;
   }
 };

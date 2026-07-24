@@ -27,3 +27,4 @@ const pastEventsData = [
     }
 ];
 
+export default pastEventsData;

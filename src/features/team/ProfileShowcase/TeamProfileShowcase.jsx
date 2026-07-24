@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
 import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
@@ -21,15 +21,15 @@ const TeamProfileShowcase = ({ profile }) => {
     setIsModalOpen(false);
   };
 
-  const nextImage = (e) => {
+  const nextImage = useCallback((e) => {
     if (e) e.stopPropagation();
     setActiveImageIndex((prev) => (prev + 1) % profile.portfolio.length);
-  };
+  }, [profile.portfolio.length]);
 
-  const prevImage = (e) => {
+  const prevImage = useCallback((e) => {
     if (e) e.stopPropagation();
     setActiveImageIndex((prev) => (prev - 1 + profile.portfolio.length) % profile.portfolio.length);
-  };
+  }, [profile.portfolio.length]);
 
   // Lock scrolling when modal is open (including Lenis compatibility)
   useEffect(() => {
@@ -70,7 +70,7 @@ const TeamProfileShowcase = ({ profile }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isModalOpen, hasPortfolio]);
+  }, [isModalOpen, hasPortfolio, nextImage, prevImage]);
 
   return (
     <div className="team-card">

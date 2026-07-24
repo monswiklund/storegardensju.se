@@ -18,7 +18,6 @@ function ArtPage() {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
 
-      const heroSection = document.getElementById("art-hero");
       const contentSection = document.getElementById("art-content-section");
       const offeringsSection = document.getElementById("art-offerings-section");
       const ctaSection = document.getElementById("art-cta-section");

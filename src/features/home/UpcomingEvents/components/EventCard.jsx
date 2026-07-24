@@ -34,7 +34,6 @@ function EventCard({ event }) {
   
   const eventLinks = links || (link ? [{ href: link, label: linkLabel ?? "Läs mer" }] : []);
   const primaryLink = eventLinks[0] || null;
-  const secondaryLink = eventLinks[1] || null;
 
   return (
     <div className="upcoming-event-card">

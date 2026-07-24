@@ -314,11 +314,31 @@ function PastEventsAccordion({ events }) {
                 {selectedEvent.title}
               </h2>
 
-              {selectedEvent.description && (
+              {selectedEvent.moments?.length > 0 ? (
+                <div className="past-event-modal-moments">
+                  <span>Dagen</span>
+                  <ol>
+                    {selectedEvent.moments.map((moment) => (
+                      <li
+                        key={`${moment.time}-${moment.title}`}
+                        className={`past-event-modal-moment past-event-modal-moment--${
+                          moment.tone || "yoga"
+                        }`}
+                      >
+                        <span className="past-event-modal-moment-time">
+                          {moment.time}
+                        </span>
+                        <strong>{moment.title}</strong>
+                        {moment.description && <p>{moment.description}</p>}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              ) : selectedEvent.description ? (
                 <p className="past-event-modal-description">
                   {selectedEvent.description}
                 </p>
-              )}
+              ) : null}
 
               {selectedEvent.artists && (
                 <p className="past-event-modal-artists">
@@ -366,6 +386,14 @@ PastEventsAccordion.propTypes = {
       date: PropTypes.string.isRequired,
       time: PropTypes.string,
       description: PropTypes.string,
+      moments: PropTypes.arrayOf(
+        PropTypes.shape({
+          time: PropTypes.string.isRequired,
+          title: PropTypes.string.isRequired,
+          description: PropTypes.string,
+          tone: PropTypes.oneOf(["yoga", "creative"]),
+        })
+      ),
       location: PropTypes.string,
       artists: PropTypes.string,
       link: PropTypes.string,

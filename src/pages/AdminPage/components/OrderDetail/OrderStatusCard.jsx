@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
   FULFILLMENT_LABELS,
   PAYMENT_LABELS,
@@ -9,7 +9,7 @@ import {
   formatAmount,
 } from "../../adminUtils";
 
-function OrderStatusCard({ order, latestEvent, onCopy, copiedField }) {
+function OrderStatusCard({ order, latestEvent }) {
   const paymentStatus = order?.paymentStatus || "";
   const shippingRateLabel = order?.shippingRate || "";
   const isPickup =

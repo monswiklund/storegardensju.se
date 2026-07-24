@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { AdminService } from "../../../services/adminService";
 import { useToast } from "../../../contexts/ToastContext";
 import { MAX_UPLOAD_BYTES } from "../adminConstants";
+import { normalizeGalleryData } from "../../../features/gallery/normalizeGalleryData";
 
 const formatMaxUploadSize = () => `${Math.round(MAX_UPLOAD_BYTES / (1024 * 1024))} MB`;
 
@@ -116,7 +117,6 @@ function AdminGallery({ adminKey }) {
   const [showCreateCategoryModal, setShowCreateCategoryModal] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [lastActionMessage, setLastActionMessage] = useState("");
-  const [lastMoveAction, setLastMoveAction] = useState(null);
   const [expandedImages, setExpandedImages] = useState(() => new Set());
   const feedbackTimerRef = useRef(null);
   const categoryPickerRef = useRef(null);
@@ -134,7 +134,9 @@ function AdminGallery({ adminKey }) {
   };
 
   const categories = useMemo(() => {
-    const raw = galleryData?.categories || [];
+    const raw = galleryData?.categories
+      ? normalizeGalleryData(galleryData).categories
+      : [];
     const next = [...raw];
     
     next.sort((a, b) => {
@@ -239,17 +241,14 @@ function AdminGallery({ adminKey }) {
 
   const galleryOverview = useMemo(() => {
     const totalCategories = categories.length;
-    const totalImages = categories.reduce(
-      (sum, category) => sum + (category.images?.length || 0),
-      0
-    );
-    const publishedImages = categories.reduce(
-      (sum, category) =>
-        sum +
-        (category.images?.filter((image) => image.published !== false).length ||
-          0),
-      0
-    );
+    const aggregateCategory = categories.find(isAllImagesCategory);
+    const overviewImages =
+      aggregateCategory?.images ||
+      categories.flatMap((category) => category.images || []);
+    const totalImages = overviewImages.length;
+    const publishedImages = overviewImages.filter(
+      (image) => image.published !== false
+    ).length;
     return {
       totalCategories,
       totalImages,
@@ -286,7 +285,6 @@ function AdminGallery({ adminKey }) {
 
   useEffect(() => {
     setSelectedImageIds(new Set());
-    setLastMoveAction(null);
   }, [activeCategoryId]);
 
   useEffect(() => {
@@ -644,74 +642,18 @@ function AdminGallery({ adminKey }) {
     setDraggingId("");
   };
 
-  const handleNormalizeOrder = () => {
-    if (!activeCategoryIsAssignable) return;
-    if (sortedActiveImages.length === 0) return;
-    const hasAnyChange = sortedActiveImages.some((image, index) => {
-      const nextOrder = (index + 1) * 10;
-      const currentOrder = Number.isFinite(Number(imageEdits[image.id]?.order))
-        ? Number(imageEdits[image.id]?.order)
-        : Number.isFinite(Number(image.order))
-          ? Number(image.order)
-          : null;
-      return currentOrder !== nextOrder;
-    });
-    if (!hasAnyChange) {
-      info("Ordningen är redan normaliserad.");
-      return;
-    }
-    stageOrderForImages(sortedActiveImages);
-    showActionFeedback("Ordning normaliserad, spara för att publicera");
-  };
-
   const handleMoveImage = (imageId, direction) => {
     if (!activeCategoryIsAssignable) return;
     const currentIndex = sortedActiveImages.findIndex((image) => image.id === imageId);
     if (currentIndex === -1) return;
     const nextIndex = currentIndex + direction;
     if (nextIndex < 0 || nextIndex >= sortedActiveImages.length) return;
-    const previousOrderIds = sortedActiveImages.map((image) => image.id).filter(Boolean);
-
     const reordered = [...sortedActiveImages];
     const [moved] = reordered.splice(currentIndex, 1);
     reordered.splice(nextIndex, 0, moved);
     stageOrderForImages(reordered);
     success(direction < 0 ? "Bild flyttad upp." : "Bild flyttad ner.");
     showActionFeedback(direction < 0 ? "Flyttade bild upp, spara ändringar" : "Flyttade bild ner, spara ändringar");
-    setLastMoveAction({
-      categoryId: activeCategoryId,
-      previousOrderIds,
-    });
-  };
-
-  const handleUndoLastMove = () => {
-    if (!lastMoveAction) {
-      info("Ingen flytt att ångra.");
-      return;
-    }
-    if (lastMoveAction.categoryId !== activeCategoryId) {
-      info("Byt tillbaka till kategorin där flytten gjordes för att ångra.");
-      return;
-    }
-    if (!activeCategoryIsAssignable) {
-      info("Ordning kan inte ändras i Alla bilder.");
-      return;
-    }
-    const imageById = new Map(
-      sortedActiveImages.map((image) => [image.id, image]).filter(([id]) => Boolean(id))
-    );
-    const restored = lastMoveAction.previousOrderIds
-      .map((id) => imageById.get(id))
-      .filter(Boolean);
-    if (restored.length === 0) {
-      info("Inget att ångra.");
-      setLastMoveAction(null);
-      return;
-    }
-    stageOrderForImages(restored);
-    success("Senaste flytt ångrad.");
-    showActionFeedback("Ångrade senaste flytt, spara ändringar");
-    setLastMoveAction(null);
   };
 
   const validateUploadFiles = (files) =>

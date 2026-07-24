@@ -1,5 +1,5 @@
 // File: src/context/CartContext.jsx
-import React, {
+import {
   createContext,
   useState,
   useEffect,
@@ -27,7 +27,9 @@ export function CartProvider({ children }) {
   useEffect(() => {
     try {
       localStorage.setItem("cart", JSON.stringify(cart));
-    } catch {}
+    } catch {
+      // Ignore storage write failures.
+    }
   }, [cart]);
 
   // Kolla om produkt redan finns i cart
@@ -78,7 +80,9 @@ export function CartProvider({ children }) {
     // Rensa även localStorage direkt för säkerhets skull
     try {
       localStorage.removeItem("cart");
-    } catch {}
+    } catch {
+      // Ignore storage removal failures.
+    }
   }, []);
 
   // Beräkna totalsumma (memoized)

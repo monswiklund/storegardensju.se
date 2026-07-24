@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import LoadingSpinner from "../../../components/ui/LoadingSpinner.jsx";
 import Skeleton from "../../../components/ui/Skeleton.jsx";
 
@@ -19,7 +19,6 @@ function AdminOrderDetail({
   onCopy,
   copiedField,
   editState,
-  setEditState,
   onSave,
   onReset,
   hasChanges,

@@ -53,6 +53,7 @@ export const toUiEvent = (item) => {
     date,
     time: startTime && endTime ? `${startTime} - ${endTime}` : "",
     description: item?.description || "",
+    moments: Array.isArray(item?.moments) ? item.moments : [],
     artists: item?.artists || "",
     location: item?.location || "",
     links: Array.isArray(item?.links) ? item.links : [],
@@ -126,8 +127,8 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
                 </div>
                 <h2 className="events-heading-large">Nästa grej på Storegården</h2>
                 <p className="events-description-large">
-                  En dag för kropp, sinne och kreativitet i en inspirerande miljö.
-                  Välkommen till en stämningsfull retreat med yoga, måleri och god mat.
+                  Här samlar vi kommande kurser, öppna ateljékvällar och andra
+                  tillfällen att mötas och skapa på gården.
                 </p>
                 
                 <div className="upcoming-desktop-actions desktop-only">
@@ -175,34 +176,28 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
             </div>
           ) : (
             <div className="events-empty-panel">
-              <div className="events-empty-date" aria-hidden="true">
-                <span>Nästa</span>
-                <strong>snart</strong>
-              </div>
-              <div className="events-empty-content">
-                <span className="events-empty-kicker">Inga datum ligger ute just nu</span>
-                <h3>Vill du samla en grupp i ateljén?</h3>
-                <p>
-                  Vi släpper nya tillfällen när kalendern tillåter. Det går
-                  också att höra av sig om privat workshop, gruppbokning eller
-                  en egen dag på gården.
-                </p>
-                <div className="events-empty-actions">
-                  <button
-                    className="events-primary-action"
-                    type="button"
-                    onClick={scrollToContact}
-                  >
-                    Kontakta oss
-                  </button>
-                  <button
-                    className="events-secondary-action"
-                    type="button"
-                    onClick={scrollToPastEvents}
-                  >
-                    Se tidigare kvällar
-                  </button>
-                </div>
+              <span className="events-empty-kicker">Just nu</span>
+              <h2>Inget nytt datum än.</h2>
+              <p>
+                Vill ni samla ett gäng på gården ordnar vi gärna en privat
+                workshop eller en egen dag tillsammans.
+              </p>
+              <div className="events-empty-actions">
+                <button
+                  className="events-primary-action"
+                  type="button"
+                  onClick={scrollToContact}
+                >
+                  Hör av dig
+                  <ArrowUpRight size={15} aria-hidden="true" />
+                </button>
+                <button
+                  className="events-secondary-action"
+                  type="button"
+                  onClick={scrollToPastEvents}
+                >
+                  Se tidigare evenemang
+                </button>
               </div>
             </div>
           )

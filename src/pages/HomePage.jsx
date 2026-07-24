@@ -13,6 +13,78 @@ import PastEventsAccordion from "../features/home/UpcomingEvents/components/Past
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 
+const COURSE_DAY_EVENT = {
+  id: "heldag-yoga-maleri-2026-07-13",
+  title: "Heldag med yoga & måleri",
+  spots: "Passade alla",
+  startAt: "2026-07-13T10:00:00+02:00",
+  endAt: "2026-07-13T17:30:00+02:00",
+  description:
+    "Den 13 juli hade vi yoga med Lina och måleri med Ann på Storegården 7. Under dagen åt vi också lunch och fikade tillsammans.",
+  moments: [
+    {
+      time: "Kl 10:00",
+      title: "Välkommen & Landa",
+      description:
+        "Dörrarna öppnas på gården. Välkommen av Lina Wiklund att kliva in i lugn och ro, rulla ut din matta på anvisad plats och göra dig hemmastadd.",
+      tone: "yoga",
+    },
+    {
+      time: "Kl 10:30–12:00",
+      title: "Yoga – Mind, Body & Breath",
+      description:
+        "Yogapass lett av Lina Wiklund. Fokus på andning, närvaro och rörelse. Passar både nybörjare och vana utövare.",
+      tone: "yoga",
+    },
+    {
+      time: "Kl 12:00–13:30",
+      title: "Gemensam Lunch",
+      description:
+        "En härlig, näringsrik lunch serveras på gården. En stund för vila, trevliga samtal och återhämtning i gårdsmiljön.",
+      tone: "creative",
+    },
+    {
+      time: "Kl 13:30–17:30",
+      title: "Måleri – Glädjefylld Målarkurs",
+      description:
+        "Kreativ målarkurs ledd av Ann Wiklund. Vi gör roliga, prestationsfria uppvärmningsövningar och målar fritt med akvarell och akryl.",
+      tone: "creative",
+    },
+    {
+      time: "Kl 17:30",
+      title: "Kaffe, Fika & Avslutning",
+      description:
+        "Vi avrundar dagen tillsammans och njuter av gott hembakat fika, kaffe och te.",
+      tone: "creative",
+    },
+  ],
+  location: "Storegården 7, Rackeby",
+  links: [
+    {
+      href: "/kurser",
+      label: "Se återblicken",
+    },
+  ],
+  images: [
+    {
+      url: "/images/evenemang/yoga-loft.webp",
+      alt: "Yoga på loftet på Storegården 7",
+    },
+    {
+      url: "/images/evenemang/maleri-kurs.webp",
+      alt: "Målarkurs på Storegården 7",
+    },
+    {
+      url: "/images/evenemang/heldag-paket.webp",
+      alt: "Heldag med yoga och måleri på Storegården 7",
+    },
+  ],
+};
+
+const isCourseDayEvent = (event) =>
+  event?.id === COURSE_DAY_EVENT.id ||
+  event?.startAt === COURSE_DAY_EVENT.startAt;
+
 function HomePage() {
   useSeo(seoMeta.home);
   const navigate = useNavigate();
@@ -51,37 +123,31 @@ function HomePage() {
 
   const upcomingEvents = useMemo(() => {
     const fetched = eventsData.upcoming
+      .filter((event) => !isCourseDayEvent(event))
       .sort((a, b) => new Date(a.startAt || 0) - new Date(b.startAt || 0))
       .map(toUiEvent);
 
-    const staticYogaEvent = {
-      title: "Heldag med yoga & måleri",
-      spots: "Passar alla",
-      date: "13 Juli 2026",
-      time: "10:00 - 17:30",
-      description: "En stämningsfull heldag fylld med återhämtning och skaparglädje på vackra Storegården 7. Yogapass med Lina Wiklund på förmiddagen, god lunch på gården, och glädjefylld målarkurs med Ann Wiklund på eftermiddagen.",
-      location: "Storegården 7",
-      links: [
-        {
-          href: "/kurser",
-          label: "Läs mer & anmäl dig",
-        }
-      ],
-      image: {
-        src: "/images/evenemang/yoga-loft.webp",
-        alt: "Yoga på loftet"
-      }
-    };
+    const courseDayIsUpcoming =
+      Date.now() < new Date(COURSE_DAY_EVENT.endAt).getTime();
 
-    return [staticYogaEvent, ...fetched];
+    return courseDayIsUpcoming
+      ? [toUiEvent(COURSE_DAY_EVENT), ...fetched]
+      : fetched;
   }, [eventsData.upcoming]);
 
-  const pastEvents = useMemo(
-    () => eventsData.past
+  const pastEvents = useMemo(() => {
+    const fetched = eventsData.past
+      .filter((event) => !isCourseDayEvent(event))
       .sort((a, b) => new Date(b.startAt || 0) - new Date(a.startAt || 0))
-      .map(toUiEvent),
-    [eventsData.past]
-  );
+      .map(toUiEvent);
+
+    const courseDayIsPast =
+      Date.now() >= new Date(COURSE_DAY_EVENT.endAt).getTime();
+
+    return courseDayIsPast
+      ? [toUiEvent(COURSE_DAY_EVENT), ...fetched]
+      : fetched;
+  }, [eventsData.past]);
 
   const scrollToGallery = () => {
     navigate("/galleri");

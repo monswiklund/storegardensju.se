@@ -14,6 +14,103 @@
   box-sizing: border-box;
 }
 
+/* Quiet empty state when no public dates are available */
+.events-empty-panel {
+  max-width: 680px;
+  padding: 10px 0 18px;
+}
+
+.events-empty-kicker {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--primary-hover);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.events-empty-panel h2 {
+  margin: 0 0 14px;
+  color: var(--text-main);
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 1.7rem + 1.4vw, 2.8rem);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.events-empty-panel > p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.events-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  margin-top: 24px;
+}
+
+.events-primary-action,
+.events-secondary-action {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.events-primary-action {
+  border-bottom-color: var(--primary-color);
+  color: var(--primary-hover);
+  font-weight: 700;
+}
+
+.events-secondary-action {
+  color: var(--text-secondary);
+}
+
+.events-primary-action:hover,
+.events-primary-action:focus-visible {
+  border-bottom-color: var(--primary-hover);
+  color: var(--text-main);
+}
+
+.events-secondary-action:hover,
+.events-secondary-action:focus-visible {
+  border-bottom-color: currentColor;
+  color: var(--text-main);
+}
+
+.events-primary-action:focus-visible,
+.events-secondary-action:focus-visible {
+  outline: 2px solid rgba(95, 111, 82, 0.32);
+  outline-offset: 5px;
+}
+
+.events-status-panel {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.events-status-panel p {
+  margin: 0;
+}
+
 /* Centered Top Navigation Buttons */
 .events-top-nav {
   display: flex;

@@ -37,8 +37,6 @@ function AdminOrderList({
   searchSuggestions,
   onSuggestionClick,
   highlightedSuggestion,
-  handleQuickStatus,
-  quickActionId,
   isMobile,
   viewMode,
   ordersCount,
@@ -291,14 +289,14 @@ function AdminOrderList({
                   className="admin-btn-secondary admin-btn-sm"
                   onClick={() => onBulkAction("ship")}
                 >
-                  Markera "Att skicka"
+                  Markera &quot;Att skicka&quot;
                 </button>
                 <button
                   type="button"
                   className="admin-btn-secondary admin-btn-sm"
                   onClick={() => onBulkAction("completed")}
                 >
-                  Markera "Klar"
+                  Markera &quot;Klar&quot;
                 </button>
               </>
             )}

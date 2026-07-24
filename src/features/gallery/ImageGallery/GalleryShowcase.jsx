@@ -2,75 +2,12 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { Camera } from "lucide-react";
 import "./Gallery.css";
 import CategoryToggle from "../CategoryToggle/CategoryToggle";
-import staticGalleryData from "../../../data/galleryCategories.json";
 import GalleryGrid from "./components/GalleryGrid";
 import GalleryLightbox from "./components/GalleryLightbox";
 import VenueIntroSection from "../../venue/VenueIntro/VenueIntroSection.jsx";
 import useGalleryLightbox from "./hooks/useGalleryLightbox";
 import { fetchGalleryCategories } from "../../../services/galleryService";
-
-const normalizeGalleryData = (data) => {
-  const raw = data?.categories ? data : staticGalleryData;
-  let categories = (raw?.categories || []).map((category) => ({
-    ...category,
-    images: (category.images || []).map((image) => ({
-      ...image,
-      path:
-        image.path ||
-        image.url ||
-        image.publicUrl ||
-        image.storageUrl ||
-        image.src ||
-        "",
-      displayName:
-        image.displayName ||
-        image.title ||
-        image.alt ||
-        image.filename ||
-        image.id ||
-        "Bild",
-    })),
-  }));
-
-  categories.sort((a, b) => {
-    const orderA = Number.isFinite(Number(a.order)) ? Number(a.order) : 0;
-    const orderB = Number.isFinite(Number(b.order)) ? Number(b.order) : 0;
-    if (orderA === orderB) {
-      return (a.name || "").localeCompare(b.name || "", "sv");
-    }
-    return orderA - orderB;
-  });
-
-  const hasAllCategory = categories.some((category) => category.id === "alla");
-  let allImages = [];
-  if (categories.length > 0) {
-    if (hasAllCategory) {
-      allImages = categories.find((c) => c.id === "alla").images;
-    } else {
-      allImages = categories.flatMap((category) =>
-        (category.images || []).map((image) => ({
-          ...image,
-          categoryId: category.id,
-        }))
-      );
-      categories = [
-        {
-          id: "alla",
-          name: "Alla bilder",
-          description: "Alla bilder från Storegården 7",
-          images: allImages,
-          order: -1,
-        },
-        ...categories,
-      ];
-    }
-  }
-
-  return {
-    categories,
-    featured: data?.featured || raw?.featured || null,
-  };
-};
+import { normalizeGalleryData } from "../normalizeGalleryData";
 
 function GalleryShowcase() {
   const [activeCategory, setActiveCategory] = useState("alla");

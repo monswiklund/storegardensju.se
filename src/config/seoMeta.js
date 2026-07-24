@@ -20,7 +20,7 @@ export function activeJsonLd(meta, now = new Date()) {
     return jsonLd;
   }
 
-  return jsonLd.filter((entry) => entry["@type"] !== "Event");
+  return [];
 }
 
 export const seoMeta = {
@@ -37,13 +37,13 @@ export const seoMeta = {
     path: "/event",
   },
   kurser: {
-    title: "Yogakurs & målarkurs i Lidköping | Storegården 7",
+    title: "Yoga & måleri på Storegården 7 | Tidigare kursdag",
     description:
-      "Boka yogakurs och målarkurs nära Lidköping på Storegården 7. Mjuk yoga med Lina Wiklund, måla akvarell och akryl med Ann Wiklund eller boka heldag.",
+      "En återblick på en dag med yoga, måleri och gemenskap på Storegården 7 utanför Lidköping.",
     path: "/kurser",
-    ogTitle: "Yogakurs & målarkurs i Lidköping | Storegården 7",
+    ogTitle: "Yoga & måleri på Storegården 7",
     ogDescription:
-      "Boka yoga, målarkurs, privat grupp eller heldag med yoga och måleri på Storegården 7 utanför Lidköping.",
+      "Bilder och berättelse från en tidigare dag med yoga och måleri på Storegården 7.",
     image: COURSE_IMAGE,
     jsonLd: [
       {
@@ -251,10 +251,10 @@ export const seoMeta = {
     ],
   },
   mohippa: {
-    title: "Möhippa i Lidköping - Fira på gården | Storegården 7",
+    title: "Gruppdagar i Lidköping | Storegården 7",
     description:
-      "Ordna möhippa på Storegården 7 utanför Lidköping. Baspaket från 500 kr/person med aktiviteter som keramik, måleri och yoga i lantlig gårdsmiljö.",
-    path: "/mohippa",
+      "Planera möhippa, svensexa, teambuilding, afterwork eller workshop på Storegården 7 utanför Lidköping. Baspaket från 500 kr/person med kreativa aktiviteter i lantlig gårdsmiljö.",
+    path: "/gruppdagar",
   },
   konst: {
     title: "Konst & keramik i Lidköping | Storegården 7",

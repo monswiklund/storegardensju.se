@@ -3,7 +3,13 @@ import { AdminService } from "../../../services/adminService";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { DEFAULT_FILTER, SORT_STORAGE_KEY } from "../adminConstants";
 
-export function useAdminOrders({ adminKey, isPreview, demoOrders, handleApiError }) {
+export function useAdminOrders({
+  adminKey,
+  isPreview,
+  demoOrders,
+  handleApiError,
+  enabled = true,
+}) {
   const ordersRequestRef = useRef(0);
   const lastOrderCursorRef = useRef(null);
   const [orders, setOrders] = useState([]);
@@ -27,7 +33,7 @@ export function useAdminOrders({ adminKey, isPreview, demoOrders, handleApiError
 
   const loadOrders = useCallback(
     async (reset = true) => {
-      if (!adminKey && !isPreview) return;
+      if (!enabled || (!adminKey && !isPreview)) return;
       const requestId = ++ordersRequestRef.current;
       setListLoading(true);
       setListError("");
@@ -36,7 +42,7 @@ export function useAdminOrders({ adminKey, isPreview, demoOrders, handleApiError
           if (requestId !== ordersRequestRef.current) return;
           setOrders(demoOrders);
           setHasMore(false);
-          setLastOrderCursor(null);
+          lastOrderCursorRef.current = null;
         } else {
           const params = {
             limit: 50,
@@ -71,14 +77,14 @@ export function useAdminOrders({ adminKey, isPreview, demoOrders, handleApiError
         }
       }
     },
-    [adminKey, demoOrders, handleApiError, isPreview]
+    [adminKey, demoOrders, enabled, handleApiError, isPreview]
   );
 
   useEffect(() => {
-    if (adminKey || isPreview) {
+    if (enabled && (adminKey || isPreview)) {
       loadOrders(true);
     }
-  }, [adminKey, isPreview, loadOrders]);
+  }, [adminKey, enabled, isPreview, loadOrders]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

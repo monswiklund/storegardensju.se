@@ -1,4 +1,3 @@
-import React from "react";
 import { formatAmount } from "../../adminUtils";
 import { CopyIcon, CheckIcon } from "../AdminIcons";
 

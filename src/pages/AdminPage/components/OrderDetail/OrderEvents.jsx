@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { formatDateTime, formatEventLabel } from "../../adminUtils";
 
 function OrderEvents({ order }) {

@@ -1,12 +1,12 @@
 // 🟣 Importer + struktur
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "./Header"; // 🟩 komponent
 
 // 🟣 Funktionell komponent (struktur)
 function App() {
     // 💛 variabler / state
     const [count, setCount] = useState(0);
-    const [user, setUser] = useState({ name: "Måns", age: 25 });
+    const [user] = useState({ name: "Måns", age: 25 });
 
     // 💙 side effect / systemhandling
     useEffect(() => {

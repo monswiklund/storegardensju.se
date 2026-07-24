@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { AdminService } from "../../services/adminService";
 import "./AdminPage.css";
 import {
   DEFAULT_STATS_RANGE,
@@ -119,6 +118,10 @@ function AdminPage() {
     isPreview,
     demoOrders: DEMO_ORDERS,
     handleApiError,
+    enabled:
+      adminView === "overview" ||
+      adminView === "orders" ||
+      adminView === "customers",
   });
 
   const {
@@ -136,6 +139,7 @@ function AdminPage() {
     demoStats,
     statsRange,
     handleApiError,
+    enabled: adminView === "overview" || adminView === "stats",
   });
 
   const {
@@ -251,7 +255,7 @@ function AdminPage() {
     if (filteredOrders.length > 0 && !selectedId && !isMobile) {
       setSelectedId(filteredOrders[0].id);
     }
-  }, [filteredOrders, selectedId, isMobile, searchQuery]);
+  }, [filteredOrders, selectedId, isMobile, searchQuery, setSelectedId]);
 
   if (!adminKey && !previewMode) {
     return (

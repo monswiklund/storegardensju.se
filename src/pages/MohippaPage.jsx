@@ -20,6 +20,8 @@ import "./MohippaPage.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
 
+const GROUP_OCCASIONS = ["Möhippa", "Svensexa", "Teambuilding", "Afterwork", "Workshop"];
+
 const HERO_FACTS = [
   { label: "Pris från", value: "500 kr/person" },
   { label: "Tid", value: "10:00-22:00" },
@@ -29,7 +31,7 @@ const HERO_FACTS = [
 const BASE_FEATURES = [
   {
     title: "Konsultation",
-    text: "Möte på Storegården 7 där vi planerar och styr upp er dag.",
+    text: "Möte på Storegården 7 där vi planerar och styr upp er gruppdag.",
     icon: <Calendar size={20} />,
   },
   {
@@ -57,7 +59,7 @@ const BASE_FEATURES = [
 const DETAILS = [
   "Möjlighet att lämna mat och dryck för kylning dagen innan.",
   "Vi finns på plats under dagen för att hjälpa till med det praktiska.",
-  "Vi tar hand om disk och städning så att ni kan fokusera på bruden.",
+  "Vi tar hand om disk och städning så att ni kan fokusera på varandra.",
 ];
 
 const ACTIVITIES = [
@@ -146,10 +148,10 @@ function MohippaPage() {
       ? selectedObjects.map((a) => `- ${a.title} (${a.price})`).join("\n")
       : "- Inga tillval valda";
 
-    const subject = encodeURIComponent("Förfrågan Möhippa på Storegården 7");
+    const subject = encodeURIComponent("Förfrågan gruppdag på Storegården 7");
     const body = encodeURIComponent(
       `Hej Storegården 7!\n\n` +
-      `Vi vill gärna skicka en förfrågan om möhippa hos er.\n\n` +
+      `Vi vill gärna skicka en förfrågan om en gruppdag hos er.\n\n` +
       `Här är våra önskemål:\n` +
       `- Antal personer: ${guestCount} st\n` +
       `- Paket: Baspaket (500 kr/person)\n` +
@@ -215,7 +217,7 @@ function MohippaPage() {
             <button
               onClick={() => scrollToSection("mohippa-hero-section")}
               className={`scroll-dot ${activeSection === "top" ? "active" : ""}`}
-              title="Möhippa på gården"
+              title="Gruppdag på gården"
             >
               <span className="dot-label">Start</span>
             </button>
@@ -255,11 +257,21 @@ function MohippaPage() {
           <section id="mohippa-hero-section" className="mohippa-hero" aria-labelledby="mohippa-heading">
             <div className="mohippa-hero__inner">
               <div className="mohippa-hero__copy">
-                <span className="mohippa-eyebrow">Möhippa på gården</span>
-                <h1 id="mohippa-heading">Möhippa på Storegården 7</h1>
+                <span className="mohippa-eyebrow">Samla gruppen på gården</span>
+                <h1 id="mohippa-heading" aria-label="Gruppdag på Storegården 7">
+                  Er{" "}
+                  <span className="mohippa-word-switch" aria-hidden="true">
+                    <span className="mohippa-word-switch__track">
+                      {[...GROUP_OCCASIONS, GROUP_OCCASIONS[0]].map((occasion, index) => (
+                        <span key={`${occasion}-${index}`}>{occasion}</span>
+                      ))}
+                    </span>
+                  </span>{" "}
+                  på Storegården 7
+                </h1>
                 <p>
                   En färdig grund för dagen, med lokal, hjälp på plats och
-                  kreativa tillval som gör firandet personligt.
+                  kreativa tillval som gör er sammankomst personlig.
                 </p>
 
                 <div className="mohippa-hero__facts" aria-label="Snabbfakta">
@@ -319,7 +331,7 @@ function MohippaPage() {
                       <strong>500 kr/person</strong>
                     </div>
                     <p className="mohippa-summary__desc">
-                      Lokal, planering och praktisk hjälp ingår. Klicka på flikarna till höger för att planera och välja tillval.
+                      Lokal, planering och praktisk hjälp ingår. Klicka på flikarna till höger för att forma er gruppdag och välja tillval.
                     </p>
 
                     <div className="mohippa-calculator">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { CopyIcon, CheckIcon } from "../AdminIcons";
 
 function OrderMeta({ order, onCopy, copiedField }) {

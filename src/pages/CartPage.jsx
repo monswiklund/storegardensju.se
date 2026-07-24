@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { PageSection } from "../components";
@@ -9,7 +9,6 @@ import "./CartPage.css";
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, getTotal, clearCart, getItemCount } =
     useContext(CartContext);
-  const navigate = useNavigate();
 
   if (cart.length === 0) {
     return (
@@ -28,9 +27,6 @@ export default function CartPage() {
     );
   }
 
-  const handleCheckout = () => {
-    navigate("/checkout");
-  };
 
   return (
     <main role="main" id="main-content">

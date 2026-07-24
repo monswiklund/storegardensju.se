@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FULFILLMENT_OPTIONS,
   NOTE_TEMPLATES,

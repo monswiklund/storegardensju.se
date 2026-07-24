@@ -1,52 +1,8 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import "./Hero.css";
-import staticGalleryData from "../../../data/galleryCategories.json";
 import galleryOrder from "../../../data/gallery-order.json";
 import { fetchGalleryCategories } from "../../../services/galleryService";
-
-const normalizeGalleryData = (data) => {
-  const raw = data?.categories ? data : staticGalleryData;
-  let categories = (raw?.categories || []).map((category) => ({
-    ...category,
-    images: (category.images || []).map((image) => ({
-      ...image,
-      path:
-        image.path ||
-        image.url ||
-        image.publicUrl ||
-        image.storageUrl ||
-        image.src ||
-        "",
-      displayName:
-        image.displayName ||
-        image.title ||
-        image.alt ||
-        image.filename ||
-        image.id ||
-        "Bild",
-    })),
-  }));
-
-  const hasAll = categories.some((cat) => cat.id === "alla");
-  if (!hasAll && categories.length > 0) {
-    const allImages = categories.flatMap((cat) =>
-      (cat.images || []).map((image) => ({ ...image, categoryId: cat.id }))
-    );
-    categories = [
-      {
-        id: "alla",
-        name: "Alla bilder",
-        images: allImages,
-      },
-      ...categories,
-    ];
-  }
-
-  return {
-    categories,
-    featured: data?.featured || raw?.featured || null,
-  };
-};
+import { normalizeGalleryData } from "../../gallery/normalizeGalleryData";
 
 // Auto-scroll speed (px/frame ~60fps). Idle time before resume after interaction.
 const SCROLL_SPEED = 0.25;

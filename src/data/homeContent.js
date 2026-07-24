@@ -41,14 +41,14 @@ export const services = [
   },
   {
     id: "mohippa",
-    kicker: "En planerad dag",
-    title: "Möhippa",
+    kicker: "Samla gruppen på gården",
+    title: "Gruppdagar",
     description:
-      "Baspaket med lokal, hjälp på plats och kreativa tillval som målning, collage, cocktailkurs och keramik.",
+      "För möhippa, svensexa, teambuilding, afterwork och workshop – med lokal, hjälp på plats och kreativa tillval.",
     meta: "Lokal 10:00-22:00 · Tillval per aktivitet",
-    route: "/mohippa",
+    route: "/gruppdagar",
     image: "/images/evenemang/slide10.webp",
-    ctaLabel: "Planera möhippa",
+    ctaLabel: "Planera er gruppdag",
   },
   {
     id: "skapande",

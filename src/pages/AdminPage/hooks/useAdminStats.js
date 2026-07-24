@@ -7,6 +7,7 @@ export function useAdminStats({
   demoStats,
   statsRange,
   handleApiError,
+  enabled = true,
 }) {
   const statsRequestRef = useRef(0);
   const [statsExpanded, setStatsExpanded] = useState(true);
@@ -16,7 +17,7 @@ export function useAdminStats({
   const [statsError, setStatsError] = useState("");
 
   const loadStats = useCallback(async () => {
-    if (!adminKey && !isPreview) return;
+    if (!enabled || (!adminKey && !isPreview)) return;
     const requestId = ++statsRequestRef.current;
     setStatsLoading(true);
     setStatsError("");
@@ -38,13 +39,13 @@ export function useAdminStats({
         setStatsLoading(false);
       }
     }
-  }, [adminKey, demoStats, handleApiError, isPreview, statsRange]);
+  }, [adminKey, demoStats, enabled, handleApiError, isPreview, statsRange]);
 
   useEffect(() => {
-    if (adminKey || isPreview) {
+    if (enabled && (adminKey || isPreview)) {
       loadStats();
     }
-  }, [adminKey, isPreview, loadStats]);
+  }, [adminKey, enabled, isPreview, loadStats]);
 
   const statsSummary = useMemo(() => {
     const data = statsData || (isPreview ? demoStats : null);

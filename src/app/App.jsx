@@ -163,6 +163,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/event" element={<EventPage />} />
+        <Route path="/gruppdagar" element={<MohippaPage />} />
         <Route path="/mohippa" element={<MohippaPage />} />
         <Route path="/konst" element={<ArtPage />} />
         <Route path="/kurser" element={<KurserPage />} />

@@ -4,7 +4,7 @@ export const appRoutes = [
     path: "/event",
     label: "Event",
     children: [
-      { path: "/mohippa", label: "Möhippa" },
+      { path: "/gruppdagar", label: "Gruppdagar" },
       { path: "/konst", label: "Konst" },
     ],
   },
@@ -13,4 +13,3 @@ export const appRoutes = [
   { path: "/butik", label: "Butik" },
   { path: "/om-oss", label: "Om Oss" },
 ];
-

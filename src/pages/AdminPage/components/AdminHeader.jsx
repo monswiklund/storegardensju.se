@@ -44,7 +44,6 @@ function AdminHeader({
   onSwitchAccount,
   adminView,
   onViewChange,
-  onToggleSidebar,
 }) {
   const copy = ADMIN_VIEW_COPY[adminView] || ADMIN_VIEW_COPY.overview;
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { CartContext } from '../../components/layout/CartContext/CartContext.jsx';
 
 const CheckoutButton = () => {

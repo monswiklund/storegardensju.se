@@ -19,7 +19,7 @@ const getObserverKey = (options) => {
   return `${options.threshold}-${options.rootMargin}-${options.triggerOnce}`;
 };
 
-const getOrCreateObserver = (options, callback) => {
+const getOrCreateObserver = (options) => {
   const key = getObserverKey(options);
 
   if (!observerRegistry.has(key)) {
@@ -100,8 +100,7 @@ function useIntersectionObserver({
 
     const options = { threshold, rootMargin, triggerOnce };
     const { observer, targets } = getOrCreateObserver(
-      options,
-      handleIntersection
+      options
     );
 
     targets.set(element, handleIntersection);
