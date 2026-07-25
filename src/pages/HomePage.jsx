@@ -8,7 +8,7 @@ import {
 import { PageSection, SectionDivider } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { fetchPublicEvents } from "../services/eventsService";
-import { toUiEvent } from "../features/home/UpcomingEvents/HomeUpcomingEventsSection.jsx";
+import { toUiEvent } from "../features/home/UpcomingEvents/toUiEvent.js";
 import PastEventsAccordion from "../features/home/UpcomingEvents/components/PastEventsAccordion.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";

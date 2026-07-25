@@ -46,6 +46,7 @@ dist/
 # Production build
 /build
 /dist
+/public/build.json
 
 # Misc
 .DS_Store

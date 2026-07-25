@@ -84,7 +84,6 @@ NavLinks.propTypes = {
     }),
   ).isRequired,
   currentPath: PropTypes.string.isRequired,
-  isMenuOpen: PropTypes.bool.isRequired,
   onNavigate: PropTypes.func.isRequired,
 };
 

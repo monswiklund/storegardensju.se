@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Link, useLocation } from "react-router-dom";
 import { appRoutes } from "../../../config/routes.js";
 
-function EventSubnav({ isActive }) {
+function EventSubnav({ isActive = false }) {
   const location = useLocation();
   const eventRoute = appRoutes.find((route) => route.path === "/event");
   const children = (eventRoute?.children ?? []).filter(
@@ -40,10 +40,6 @@ function EventSubnav({ isActive }) {
 
 EventSubnav.propTypes = {
   isActive: PropTypes.bool,
-};
-
-EventSubnav.defaultProps = {
-  isActive: false,
 };
 
 export default EventSubnav;

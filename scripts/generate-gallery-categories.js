@@ -104,32 +104,26 @@ function parseFilename(filename) {
  * Skannar gallery-mappen och returnerar alla parsade bilder
  */
 function scanGallery() {
-  try {
-    if (!fs.existsSync(GALLERY_DIR)) {
-      console.warn(`⚠️  Gallery-mappen finns inte: ${GALLERY_DIR}`);
-      return [];
-    }
-
-    const files = fs.readdirSync(GALLERY_DIR);
-    const images = [];
-
-    for (const file of files) {
-      // Skippa DS_Store och andra hidden files
-      if (file.startsWith('.')) continue;
-
-      const parsed = parseFilename(file);
-      if (parsed) {
-        images.push(parsed);
-      } else {
-        console.warn(`⚠️  Kunde inte parsa filnamn: ${file}`);
-      }
-    }
-
-    return images;
-  } catch (error) {
-    console.error(`❌ Fel vid skanning av gallery:`, error.message);
-    return [];
+  if (!fs.existsSync(GALLERY_DIR)) {
+    throw new Error(`Gallery-mappen finns inte: ${GALLERY_DIR}`);
   }
+
+  const files = fs.readdirSync(GALLERY_DIR);
+  const images = [];
+
+  for (const file of files) {
+    // Skippa DS_Store och andra hidden files
+    if (file.startsWith('.')) continue;
+
+    const parsed = parseFilename(file);
+    if (parsed) {
+      images.push(parsed);
+    } else {
+      console.warn(`⚠️  Kunde inte parsa filnamn: ${file}`);
+    }
+  }
+
+  return images;
 }
 
 /**
@@ -208,8 +202,7 @@ function generateGalleryCategories() {
   const allImages = scanGallery();
 
   if (allImages.length === 0) {
-    console.warn('⚠️  Inga bilder hittades i gallery-mappen');
-    return { categories: [] };
+    throw new Error('Inga giltiga bilder hittades i gallery-mappen');
   }
 
   console.log(`📸 Hittade ${allImages.length} bilder`);

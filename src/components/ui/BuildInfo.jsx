@@ -9,11 +9,15 @@ function BuildInfo() {
     const resetTimerRef = useRef(null);
 
     useEffect(() => {
-        // Try to load build info
-        import('../../build.json')
-            .then(module => setBuildInfo(module.default))
+        fetch(`/build.json?t=${Date.now()}`, { cache: 'no-store' })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Build info request failed: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(setBuildInfo)
             .catch(() => {
-                // Fallback if build.json doesn't exist
                 setBuildInfo({
                     version: '1.0.0-dev',
                     buildTime: new Date().toISOString(),

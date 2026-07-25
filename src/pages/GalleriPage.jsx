@@ -1,5 +1,4 @@
 import { Suspense, lazy } from "react";
-import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
 import { PageSection, SectionDivider } from "../components";
@@ -23,15 +22,13 @@ function GalleriPage() {
         ariaLabel="gallery-heading"
       >
         <ErrorBoundary>
-          <FadeInSection>
-            <Suspense
-              fallback={
-                <LoadingSpinner size="large" text="Laddar bildgalleri..." />
-              }
-            >
-              <GalleryShowcase />
-            </Suspense>
-          </FadeInSection>
+          <Suspense
+            fallback={
+              <LoadingSpinner size="large" text="Laddar bildgalleri..." />
+            }
+          >
+            <GalleryShowcase />
+          </Suspense>
         </ErrorBoundary>
       </PageSection>
 
@@ -40,12 +37,10 @@ function GalleriPage() {
       {/* Erbjudanden */}
       <div id="gallery-services-recommendation">
         <PageSection background="green" spacing="default">
-          <FadeInSection>
-            <HomeServicesSection
-              title="Upptäck mer på gården"
-              eyebrow="BOKA & BESÖK"
-            />
-          </FadeInSection>
+          <HomeServicesSection
+            title="Upptäck mer på gården"
+            eyebrow="BOKA & BESÖK"
+          />
         </PageSection>
       </div>
 

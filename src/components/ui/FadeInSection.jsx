@@ -6,7 +6,11 @@ import "./FadeInSection.css";
  * FadeInSection - Animates children into view when scrolled into viewport.
  * Uses shared IntersectionObserver for better performance.
  */
-const FadeInSection = ({ children, threshold, rootMargin }) => {
+const FadeInSection = ({
+  children,
+  threshold = 0.05,
+  rootMargin = "0px 0px -5% 0px",
+}) => {
   const { ref, isVisible } = useIntersectionObserver({
     threshold,
     rootMargin,
@@ -27,11 +31,6 @@ FadeInSection.propTypes = {
   children: PropTypes.node.isRequired,
   threshold: PropTypes.number,
   rootMargin: PropTypes.string,
-};
-
-FadeInSection.defaultProps = {
-  threshold: 0.05,
-  rootMargin: "0px 0px -5% 0px",
 };
 
 export default FadeInSection;

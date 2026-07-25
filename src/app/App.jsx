@@ -15,6 +15,7 @@ import {
 } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import EventSubnav from "../components/layout/Navbar/EventSubnav.jsx";
+import PageTransition from "../components/layout/PageTransition/PageTransition.jsx";
 import HomeInstagramSection from "../features/home/InstagramFeed/HomeInstagramSection.jsx";
 import { ToastProvider } from "../contexts/ToastContext";
 import { appRoutes } from "../config/routes.js";
@@ -161,25 +162,27 @@ function AppContent() {
       {!isAdminRoute && <EventSubnav isActive={isEventSection} />}
       {!isAdminRoute && <CartDrawer />}
       <Suspense fallback={null}>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/event" element={<EventPage />} />
-        <Route path="/gruppdagar" element={<MohippaPage />} />
-        <Route path="/mohippa" element={<MohippaPage />} />
-        <Route path="/konst" element={<ArtPage />} />
-        <Route path="/kurser" element={<KurserPage />} />
-        <Route path="/galleri" element={<GalleriPage />} />
-        {/* BUTIK */}
-        <Route path="/butik" element={<ButikPage />} />
-        <Route path="/butik/:productId" element={<ProductDetailPage />} />
-        <Route path="/varukorg" element={<CartPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/success" element={<SuccessPage />} />
-        <Route path="/cancel" element={<CancelPage />} />
-        <Route path="/om-oss" element={<TeamPage />} />
-        <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-      </Routes>
+        <PageTransition>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/event" element={<EventPage />} />
+            <Route path="/gruppdagar" element={<MohippaPage />} />
+            <Route path="/mohippa" element={<MohippaPage />} />
+            <Route path="/konst" element={<ArtPage />} />
+            <Route path="/kurser" element={<KurserPage />} />
+            <Route path="/galleri" element={<GalleriPage />} />
+            {/* BUTIK */}
+            <Route path="/butik" element={<ButikPage />} />
+            <Route path="/butik/:productId" element={<ProductDetailPage />} />
+            <Route path="/varukorg" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/success" element={<SuccessPage />} />
+            <Route path="/cancel" element={<CancelPage />} />
+            <Route path="/om-oss" element={<TeamPage />} />
+            <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+          </Routes>
+        </PageTransition>
       </Suspense>
       {!isAdminRoute && !isTeamPage && (
         <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>

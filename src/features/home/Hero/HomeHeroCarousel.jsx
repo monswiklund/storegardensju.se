@@ -188,7 +188,6 @@ const HomeHeroCarousel = () => {
               src={src}
               alt=""
               loading={index < 3 ? "eager" : "lazy"}
-              fetchPriority={index === 0 ? "high" : undefined}
               decoding="async"
             />
           </div>
