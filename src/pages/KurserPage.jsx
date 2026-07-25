@@ -1,10 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { ArrowDown, ArrowUpRight, Calendar, Clock, Mail, MapPin } from "lucide-react";
 import MailtoFallback from "../features/contact/MailtoFallback.jsx";
 import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
 import { useSeo } from "../hooks/useSeo.js";
-import { seoMeta } from "../config/seoMeta.js";
+import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import "./KurserPages.css";
 import "../features/gallery/ImageGallery/Gallery.css";
 
@@ -15,6 +15,10 @@ import mala1Img from "/images/evenemang/mala1.jpg";
 import mala2Img from "/images/evenemang/mala2.jpg";
 import yogaLoftImg from "/images/evenemang/yoga-loft.webp";
 import maleriKursImg from "/images/evenemang/maleri-kurs.webp";
+
+// Module-level so the reference is stable across renders (useSeo dep) and so
+// the same date gating runs client-side as in the prerendered HTML.
+const KURSER_JSONLD = activeJsonLd(seoMeta.kurser);
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
 const CONTACT_SUBJECT = "Anmälan: Yoga på loftet 30/7";
@@ -61,7 +65,10 @@ const RECAP_IMAGES = [
 function KurserPage() {
   const [showMailFallback, setShowMailFallback] = useState(false);
 
-  useSeo({ ...seoMeta.kurser });
+  useSeo({
+    ...seoMeta.kurser,
+    jsonLd: KURSER_JSONLD.length > 0 ? KURSER_JSONLD : undefined,
+  });
 
   const {
     isOpen: showLightbox,
