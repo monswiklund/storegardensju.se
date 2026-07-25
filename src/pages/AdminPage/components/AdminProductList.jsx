@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, Fragment } from "react";
 import { AdminService } from "../../../services/adminService";
 import { useToast } from "../../../contexts/ToastContext";
+import { AdminActionRail, AdminState } from "./ui/AdminUI";
 import "./AdminProductList.css";
 
 export default function AdminProductList({ adminKey, onEdit }) {
@@ -269,8 +270,29 @@ export default function AdminProductList({ adminKey, onEdit }) {
     }
   };
 
-  if (loading) return <div>Laddar produkter...</div>;
-  if (errorMsg) return <div className="error-message">{errorMsg}</div>;
+  if (loading) {
+    return (
+      <AdminState
+        type="loading"
+        title="Laddar produkter"
+        message="Hämtar sortiment, lager och publiceringsstatus."
+      />
+    );
+  }
+  if (errorMsg) {
+    return (
+      <AdminState
+        type="error"
+        title="Produkterna kunde inte hämtas"
+        message={errorMsg}
+        action={
+          <button type="button" className="admin-btn-secondary" onClick={fetchProducts}>
+            Försök igen
+          </button>
+        }
+      />
+    );
+  }
 
   return (
     <div className="admin-section-card admin-product-list">
@@ -339,59 +361,65 @@ export default function AdminProductList({ adminKey, onEdit }) {
             }
             onChange={handleSelectAll}
             disabled={filteredProducts.length === 0}
+            aria-label="Markera alla produkter"
           />
           Markera alla
         </label>
-        <div className="apl-bulk-actions">
-          <select
-            className="admin-select apl-select"
-            value={bulkCategory}
-            onChange={(event) => setBulkCategory(event.target.value)}
-            disabled={selectedIds.size === 0}
-          >
-            <option value="">Bulk: kategori</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-          <input
-            className="admin-input apl-input"
-            type="number"
-            min="0"
-            placeholder="Bulk: lager"
-            value={bulkStock}
-            onChange={(event) => setBulkStock(event.target.value)}
-            disabled={selectedIds.size === 0}
-          />
-          <button
-            type="button"
-            className="admin-btn-secondary apl-btn-apply"
-            onClick={handleBulkUpdate}
-            disabled={selectedIds.size === 0}
-          >
-            Uppdatera valda
-          </button>
-          <button
-            type="button"
-            className="admin-btn-danger apl-btn-archive"
-            onClick={handleBulkArchive}
-            disabled={selectedIds.size === 0}
-          >
-            Arkivera valda
-          </button>
-          <span className="apl-selected-count">
-            {selectedIds.size} valda
-          </span>
-        </div>
       </div>
 
+      <AdminActionRail
+        selectionLabel={
+          selectedIds.size > 0 ? `${selectedIds.size} valda` : ""
+        }
+      >
+        <select
+          className="admin-select apl-select"
+          value={bulkCategory}
+          onChange={(event) => setBulkCategory(event.target.value)}
+          aria-label="Ny kategori för valda produkter"
+        >
+          <option value="">Behåll kategori</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+        <input
+          className="admin-input apl-input"
+          type="number"
+          min="0"
+          placeholder="Behåll lager"
+          aria-label="Nytt lager för valda produkter"
+          value={bulkStock}
+          onChange={(event) => setBulkStock(event.target.value)}
+        />
+        <button
+          type="button"
+          className="admin-btn-secondary"
+          onClick={handleBulkUpdate}
+        >
+          Uppdatera valda
+        </button>
+        <button
+          type="button"
+          className="admin-btn-danger"
+          onClick={handleBulkArchive}
+        >
+          Arkivera valda
+        </button>
+      </AdminActionRail>
+
       {products.length === 0 ? (
-        <div className="admin-soft-empty">
-          <h3 style={{ marginBottom: "0.5rem" }}>Inga produkter ännu</h3>
-          <p>Det verkar som att du inte har lagt till några produkter i butiken än.</p>
-        </div>
+        <AdminState
+          title="Inga produkter ännu"
+          message="Skapa den första produkten för att börja bygga sortimentet."
+        />
+      ) : filteredProducts.length === 0 ? (
+        <AdminState
+          title="Inga produkter matchar"
+          message="Justera sökningen eller filtren för att visa fler produkter."
+        />
       ) : (
         <table className="apl-table">
           <thead>
@@ -414,6 +442,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
                     type="checkbox"
                     checked={selectedIds.has(p.id)}
                     onChange={() => handleToggleSelect(p.id)}
+                    aria-label={`Markera ${p.name}`}
                   />
                 </td>
                 <td data-label="Bild">
@@ -451,7 +480,7 @@ export default function AdminProductList({ adminKey, onEdit }) {
                     onClick={() => handleOpenEdit(p)}
                     className="apl-btn-inline"
                   >
-                    Snabbedit
+                      Snabbredigera
                   </button>
                   {p.active ? (
                     <button

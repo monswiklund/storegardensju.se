@@ -496,6 +496,21 @@
   white-space: pre-line;
 }
 
+/* Badge (spots) — same content as the upcoming-card pill, so past events keep
+   showing it after the event has happened. */
+.past-event-modal-badge {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(95, 111, 82, 0.1);
+  color: var(--primary-hover);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .past-event-modal-title {
   margin: 0 0 18px;
   color: var(--text-main);

@@ -6,64 +6,72 @@
   gap: 2rem;
 }
 
-.coupon-create-section {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.coupon-create-section h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  color: #111827;
-}
-
-.coupon-form {
+/* Live preview inside the "create coupon" drawer */
+.coupon-preview {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  gap: 1rem;
-  align-items: end;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--admin-line);
+  border-radius: var(--admin-radius);
+  background: var(--admin-surface);
 }
 
-.coupon-form .form-group {
+.coupon-preview-code {
+  margin: 0;
+  padding: 12px;
+  border: 1px dashed var(--admin-line-strong);
+  border-radius: var(--admin-radius-sm);
+  background: var(--admin-green-soft);
+  color: var(--admin-green-strong);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+.coupon-preview-discount {
+  margin: 0;
+  color: var(--admin-ink);
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.coupon-preview-example {
+  display: grid;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--admin-line);
+}
+
+.coupon-preview-example-label {
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.coupon-preview-example-math {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.coupon-form label {
+.coupon-preview-before {
+  color: var(--admin-muted);
+  text-decoration: line-through;
+}
+
+.coupon-preview-example-note {
+  margin: 0;
+  color: var(--admin-muted);
   font-size: 0.85rem;
-  font-weight: 500;
-  color: #374151;
-}
-
-.coupon-form input,
-.coupon-form select {
-  padding: 0.6rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 0.95rem;
-}
-
-.create-btn {
-  padding: 0.6rem 1.2rem;
-  background-color: #059669;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.create-btn:disabled {
-  opacity: 0.7;
-}
-
-.create-btn:hover:not(:disabled) {
-  background-color: #047857;
 }
 
 .coupon-list-section {
@@ -76,7 +84,7 @@
 .coupon-list-section h3 {
   padding: 1rem;
   margin: 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--admin-line);
   font-size: 1.1rem;
   color: #111827;
 }
@@ -90,7 +98,7 @@
 .coupon-table td {
   padding: 1rem;
   text-align: left;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--admin-line);
 }
 
 .coupon-table th {
@@ -108,7 +116,7 @@
 .status-active {
   background-color: #dcfce7;
   color: #14532d;
-  border: 1px solid #86efac;
+  border: 1px solid var(--admin-line);
   padding: 0.2rem 0.5rem;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -118,7 +126,7 @@
 .status-archived {
   background-color: #f4efe6;
   color: #6b5b48;
-  border: 1px solid #d6cfc2;
+  border: 1px solid var(--admin-line);
   padding: 0.2rem 0.5rem;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -143,40 +151,25 @@
   color: #dc2626;
 }
 
-@media (max-width: 768px) {
-  .coupon-form {
-    grid-template-columns: 1fr;
-  }
-}
-
 .admin-coupons.admin-workspace {
   max-width: 1100px;
 }
 
-.coupon-create-section.admin-section-card,
 .coupon-list-section.admin-section-card {
   overflow: visible;
   border-radius: 28px;
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
 }
 
-.coupon-create-section .admin-section-card-header h3,
 .coupon-list-section .admin-section-card-header h3 {
   margin: 0;
   padding: 0;
   border-bottom: 0;
 }
 
-.coupon-form .admin-input,
-.coupon-form .admin-select,
 .coupon-filter .admin-select {
   border-radius: 12px;
   min-height: 42px;
-}
-
-.create-btn.admin-btn-primary {
-  min-height: 42px;
-  border-radius: 12px;
 }
 
 .coupon-filter {
@@ -186,7 +179,7 @@
 
 .delete-btn.admin-btn-danger {
   background: #fff1f2;
-  border: 1px solid #fecdd3;
+  border: 1px solid var(--admin-line);
   border-radius: 10px;
   padding: 0.45rem 0.75rem;
   color: #be123c;

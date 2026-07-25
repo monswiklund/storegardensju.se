@@ -11,7 +11,7 @@
   align-items: center;
   padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--admin-line);
   background: #fafafa;
   color: var(--text-secondary);
   font-size: 0.75rem;
@@ -76,12 +76,12 @@
 }
 
 .admin-status-segment:hover {
-  border-color: var(--admin-primary);
+  border-color: var(--admin-line-strong);
   background: var(--admin-primary-soft);
 }
 
 .admin-status-segment.active {
-  border-color: var(--admin-primary);
+  border-color: var(--admin-line-strong);
   background: var(--admin-primary);
   color: #ffffff;
 }

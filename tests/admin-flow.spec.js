@@ -96,12 +96,12 @@ test("admin order status update refreshes list and detail via stubbed API", asyn
 
   await page.goto("/admin?view=orders");
 
-  await expect(page.getByText("Orderlista")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Orderlista" })).toBeVisible();
   await expect(page.locator(".admin-order-email").first()).toHaveText("kund@exempel.se");
   await expect(page.locator("#status")).toHaveValue("new");
 
+  // A pure status change autosaves, so there is no save click to make.
   await page.locator("#status").selectOption("ship");
-  await page.getByRole("button", { name: "Spara ändringar" }).click();
 
   await expect(page.locator("#status")).toHaveValue("ship");
   await expect(page.getByText(/Order uppdaterad|Status uppdaterad/)).toBeVisible();

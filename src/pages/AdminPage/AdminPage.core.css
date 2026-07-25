@@ -27,9 +27,9 @@
 }
 
 .admin-search-input:focus {
-  border-color: var(--primary-color);
+  border-color: var(--admin-line-strong);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(84, 105, 212, 0.15);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.12);
 }
 
 .admin-filters-group {
@@ -49,7 +49,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--admin-line);
   margin-bottom: 1.5rem;
   gap: 1rem;
   padding: 0 0.5rem;
@@ -90,7 +90,7 @@
 
 .admin-tab-link.active {
   color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
+  border-bottom-color: var(--admin-line-strong);
   font-weight: 600;
 }
 
@@ -139,7 +139,7 @@
 
 .admin-count-badge {
   background: var(--admin-primary-soft);
-  border: 1px solid rgba(71, 100, 79, 0.22);
+  border: 1px solid var(--admin-line);
   padding: 2px 8px;
   border-radius: 99px;
   font-size: 0.8rem;

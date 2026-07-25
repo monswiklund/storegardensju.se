@@ -1,6 +1,7 @@
 import { Fragment, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { formatAmount, formatDateTime } from "../adminUtils";
+import { AdminState } from "./ui/AdminUI";
 
 function AdminCustomers({ orders, loading }) {
   const [sortField, setSortField] = useState("totalSpend"); // totalSpend, orderCount, lastOrder
@@ -120,7 +121,13 @@ function AdminCustomers({ orders, loading }) {
   };
 
   if (loading && customers.length === 0) {
-    return <div className="admin-loading-block">Laddar kunder...</div>;
+    return (
+      <AdminState
+        type="loading"
+        title="Laddar kunder"
+        message="Sammanställer kundernas köp och senaste aktivitet."
+      />
+    );
   }
 
   return (
@@ -184,11 +191,11 @@ function AdminCustomers({ orders, loading }) {
         <table className="admin-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort("name")}>Namn</th>
-              <th onClick={() => handleSort("email")}>E-post / Telefon</th>
-              <th onClick={() => handleSort("orderCount")}>Ordrar</th>
-              <th onClick={() => handleSort("totalSpend")}>Totalt Köpt</th>
-              <th onClick={() => handleSort("lastOrder")}>Senaste Köp</th>
+              <th><button type="button" className="admin-table-sort" onClick={() => handleSort("name")}>Namn</button></th>
+              <th><button type="button" className="admin-table-sort" onClick={() => handleSort("email")}>E-post / telefon</button></th>
+              <th><button type="button" className="admin-table-sort" onClick={() => handleSort("orderCount")}>Ordrar</button></th>
+              <th><button type="button" className="admin-table-sort" onClick={() => handleSort("totalSpend")}>Totalt köpt</button></th>
+              <th><button type="button" className="admin-table-sort" onClick={() => handleSort("lastOrder")}>Senaste köp</button></th>
               <th className="admin-table-actions-header">Åtgärder</th>
             </tr>
           </thead>
@@ -293,7 +300,14 @@ function AdminCustomers({ orders, loading }) {
           </tbody>
         </table>
         {customers.length === 0 && (
-          <div className="admin-soft-empty">Inga kunder matchar sökningen.</div>
+          <AdminState
+            title={search ? "Inga kunder matchar" : "Inga kunder ännu"}
+            message={
+              search
+                ? "Prova ett annat namn, en annan e-postadress eller telefon."
+                : "Kunder visas här när den första ordern har kommit in."
+            }
+          />
         )}
       </div>
       </div>

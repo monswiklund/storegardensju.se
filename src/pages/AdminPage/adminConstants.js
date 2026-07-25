@@ -83,19 +83,24 @@ export const AMOUNT_FILTER_OPTIONS = [
 
 export const ADMIN_VIEW_GROUPS = [
   {
+    title: "Daglig drift",
+    options: [
+      { value: "overview", label: "Översikt" },
+      { value: "orders", label: "Ordrar" },
+      { value: "customers", label: "Kunder" },
+    ]
+  },
+  {
     title: "Innehåll",
     options: [
+      { value: "products", label: "Produkter" },
       { value: "events", label: "Evenemang" },
       { value: "gallery", label: "Galleri" },
     ]
   },
   {
-    title: "Butik & Försäljning",
+    title: "Försäljning",
     options: [
-      { value: "overview", label: "Översikt" },
-      { value: "orders", label: "Ordrar" },
-      { value: "customers", label: "Kunder" },
-      { value: "products", label: "Produkter" },
       { value: "coupons", label: "Rabatter" },
       { value: "stats", label: "Statistik" },
     ]

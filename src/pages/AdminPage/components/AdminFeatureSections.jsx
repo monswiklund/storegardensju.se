@@ -37,7 +37,7 @@ export default function AdminFeatureSections({
             />
           )}
 
-          {!isPreview && productViewMode === "list" && (
+          {!isPreview && (
             <div className="admin-workspace admin-products-workspace">
               <div className="admin-workspace-header">
                 <div>
@@ -66,21 +66,18 @@ export default function AdminFeatureSections({
             </div>
           )}
 
-          {!isPreview &&
-            (productViewMode === "create" || productViewMode === "edit") && (
-              <AdminCreateProduct
-                adminKey={adminKey}
-                initialData={productViewMode === "edit" ? editingProduct : null}
-                onCancel={() => {
-                  setEditingProduct(null);
-                  setProductViewMode("list");
-                }}
-                onSuccess={() => {
-                  setEditingProduct(null);
-                  setProductViewMode("list");
-                }}
-              />
-            )}
+          {!isPreview && (
+            <AdminCreateProduct
+              adminKey={adminKey}
+              open={productViewMode !== "list"}
+              /* editingProduct is set (edit) or cleared (create) by the openers
+                 above and deliberately kept while the drawer animates out, so
+                 the form does not visibly reset mid-transition. */
+              initialData={editingProduct}
+              onCancel={() => setProductViewMode("list")}
+              onSuccess={() => setProductViewMode("list")}
+            />
+          )}
         </>
       )}
 

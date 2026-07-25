@@ -106,7 +106,7 @@ test("admin can quick edit and archive a product through stubbed APIs", async ({
   await expect(page.getByText("Produktlista")).toBeVisible();
   await expect(page.getByText("Vas")).toBeVisible();
 
-  await page.getByRole("button", { name: "Snabbedit" }).click();
+  await page.getByRole("button", { name: "Snabbredigera" }).click();
   await page.locator(".apl-edit-row input[type='number']").nth(1).fill("7");
   await page.getByRole("button", { name: "Spara" }).click();
 

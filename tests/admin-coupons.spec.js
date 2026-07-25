@@ -94,9 +94,12 @@ test("admin can create and deactivate a coupon through stubbed APIs", async ({
 
   await page.goto("/admin?view=coupons");
 
+  // The create form now lives in a slide-out drawer, so it has to be opened first.
+  await page.getByRole("button", { name: "+ Skapa rabattkod" }).first().click();
+
   await page.getByPlaceholder("KOD123").fill("SOMMAR20");
   await page.getByPlaceholder("20").fill("20");
-  await page.getByRole("button", { name: "Skapa Kod" }).click();
+  await page.getByRole("button", { name: "Skapa kod" }).click();
 
   await expect(page.getByText('Koden "SOMMAR20" skapad!')).toBeVisible();
   await expect(page.locator("table strong").getByText("SOMMAR20")).toBeVisible();

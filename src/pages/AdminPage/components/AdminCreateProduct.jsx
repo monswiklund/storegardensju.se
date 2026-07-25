@@ -1,8 +1,23 @@
 import { useState, useContext, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+import { Package } from "lucide-react";
 import { ProductContext } from "../../../components/layout/ProductContext/ProductContext";
 import { useToast } from "../../../contexts/ToastContext";
 import { AdminService } from "../../../services/adminService";
+import { AdminDrawer, AdminDrawerSection } from "./ui/AdminUI";
+import AdminProductPreview from "./AdminProductPreview";
 import "./AdminCreateProduct.css";
+
+const PRODUCT_FORM_ID = "admin-product-form";
+const DEFAULT_CATEGORY = "keramik";
+const DEFAULT_ARTIST = "Storegården";
+const DEFAULT_STOCK = "1";
+const CATEGORY_OPTIONS = [
+  { value: "keramik", label: "Keramik" },
+  { value: "konst", label: "Konst" },
+  { value: "textil", label: "Textil" },
+  { value: "ovrigt", label: "Övrigt" },
+];
 
 const HELP_TEXT = {
   name: "Produktens namn som visas i butiken och på kvittot.",
@@ -76,8 +91,19 @@ const compressImage = async (file) => {
   }
 };
 
+const buildFormData = (product) => ({
+  name: product?.name || "",
+  description: product?.description || "",
+  price: product?.price ? (product.price / 100).toString() : "",
+  category: product?.category || DEFAULT_CATEGORY,
+  stock: product?.stock ?? DEFAULT_STOCK,
+  artist: product?.artist || DEFAULT_ARTIST,
+  image: null,
+});
+
 export default function AdminCreateProduct({
   adminKey,
+  open = false,
   initialData = null,
   onCancel,
   onSuccess,
@@ -89,48 +115,22 @@ export default function AdminCreateProduct({
   const [removeImage, setRemoveImage] = useState(false);
   const [imageProcessing, setImageProcessing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  // Controlled so a failed image validation can reveal the section again.
+  const [isImageSectionOpen, setIsImageSectionOpen] = useState(!isEdit);
+  const [imageSectionHasError, setImageSectionHasError] = useState(false);
   const fileInputRef = useRef(null);
 
   // Image preview state
   const [previewUrl, setPreviewUrl] = useState(initialData?.image || null);
 
-  const [formData, setFormData] = useState({
-    name: initialData?.name || "",
-    description: initialData?.description || "",
-    price: initialData?.price ? (initialData.price / 100).toString() : "",
-    category: initialData?.category || "keramik",
-    stock: initialData?.stock || "1",
-    artist: initialData?.artist || "Storegården",
-    image: null,
-  });
+  const [formData, setFormData] = useState(() => buildFormData(initialData));
 
   useEffect(() => {
-    if (initialData) {
-      setFormData({
-        name: initialData?.name || "",
-        description: initialData?.description || "",
-        price: initialData?.price ? (initialData.price / 100).toString() : "",
-        category: initialData?.category || "keramik",
-        stock: initialData?.stock || "1",
-        artist: initialData?.artist || "Storegården",
-        image: null,
-      });
-      setPreviewUrl(initialData?.image || null);
-      setRemoveImage(false);
-      return;
-    }
-
-    setFormData({
-      name: "",
-      description: "",
-      price: "",
-      category: "keramik",
-      stock: "1",
-      artist: "Storegården",
-      image: null,
-    });
-    setPreviewUrl(null);
+    setFormData(buildFormData(initialData));
+    setPreviewUrl(initialData?.image || null);
     setRemoveImage(false);
+    setIsImageSectionOpen(!initialData);
+    setImageSectionHasError(false);
   }, [initialData]);
 
   // Cleanup preview URL on unmount
@@ -201,9 +201,12 @@ export default function AdminCreateProduct({
     // Validation
     if (!isEdit && !formData.image) {
       error("Du måste välja en bild!");
+      setIsImageSectionOpen(true);
+      setImageSectionHasError(true);
       setLoading(false);
       return;
     }
+    setImageSectionHasError(false);
     if (imageProcessing) {
       error("Vänta tills bilden är färdigbehandlad.");
       setLoading(false);
@@ -266,21 +269,12 @@ export default function AdminCreateProduct({
       if (onSuccess) onSuccess();
 
       if (!isEdit) {
-        setFormData({
-          name: "",
-          description: "",
-          price: "",
-          category: "keramik",
-          stock: "1",
-          artist: "Storegården",
-          image: null,
-        });
+        setFormData(buildFormData(null));
         if (previewUrl && isObjectUrl(previewUrl)) {
           URL.revokeObjectURL(previewUrl);
         }
         setPreviewUrl(null);
-        const fileInput = document.getElementById("product-image-input");
-        if (fileInput) fileInput.value = "";
+        if (fileInputRef.current) fileInputRef.current.value = "";
       }
 
       // Refresh products in frontend
@@ -292,29 +286,84 @@ export default function AdminCreateProduct({
     }
   };
 
+  const categoryLabel =
+    CATEGORY_OPTIONS.find((option) => option.value === formData.category)
+      ?.label || formData.category;
+
+  const baseline = buildFormData(initialData);
+  const isDirty =
+    Boolean(formData.image) ||
+    removeImage ||
+    ["name", "description", "price", "category", "stock", "artist"].some(
+      (field) => String(formData[field]) !== String(baseline[field])
+    );
+
+  const handleClose = () => {
+    if (loading || imageProcessing) return;
+    onCancel?.();
+  };
+
+  const priceSummary = [
+    formData.price ? `${formData.price} kr` : "Inget pris",
+    `${formData.stock || 0} i lager`,
+  ].join(" · ");
+
   return (
-    <div className="admin-workspace admin-create-product">
-      <div className="admin-workspace-header admin-cp-header">
-        <div>
-          <p className="admin-workspace-kicker">Produkt</p>
-          <h2>{isEdit ? "Redigera produkt" : "Skapa ny produkt"}</h2>
-          <p className="admin-cp-subtitle">
-            {isEdit
-              ? "Uppdatera information om produkten."
-              : "Lägg till nya varor i butiken. De publiceras direkt."}
-          </p>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="product-form">
-        <div className="admin-section-card form-section">
-          <div className="admin-section-card-header">
-            <div>
-              <h3>Grunduppgifter</h3>
-              <p>Namn och beskrivning som visas i butiken.</p>
-            </div>
-          </div>
-
+    <AdminDrawer
+      open={open}
+      size="wide"
+      title={isEdit ? "Redigera produkt" : "Skapa ny produkt"}
+      description={
+        isEdit
+          ? "Uppdatera information om produkten."
+          : "Lägg till nya varor i butiken. De publiceras direkt."
+      }
+      icon={<Package size={20} aria-hidden="true" />}
+      isDirty={isDirty}
+      onClose={handleClose}
+      preview={
+        <AdminProductPreview
+          name={formData.name}
+          description={formData.description}
+          price={formData.price}
+          categoryLabel={categoryLabel}
+          stock={formData.stock}
+          imageUrl={previewUrl}
+        />
+      }
+      footer={
+        <>
+          <button
+            type="submit"
+            form={PRODUCT_FORM_ID}
+            className="admin-btn-primary"
+            disabled={loading || imageProcessing}
+          >
+            {loading || imageProcessing
+              ? isEdit
+                ? "Sparar..."
+                : "Publicerar..."
+              : isEdit
+              ? "Spara ändringar"
+              : "Publicera produkt"}
+          </button>
+          <button
+            type="button"
+            className="admin-btn-secondary"
+            onClick={handleClose}
+            disabled={loading}
+          >
+            Avbryt
+          </button>
+        </>
+      }
+    >
+      <form
+        id={PRODUCT_FORM_ID}
+        onSubmit={handleSubmit}
+        className="admin-drawer-form"
+      >
+        <AdminDrawerSection title="Grunduppgifter" defaultOpen>
           <div className="form-group">
             <label htmlFor="name">Produktnamn</label>
             <input
@@ -349,9 +398,10 @@ export default function AdminCreateProduct({
               {HELP_TEXT.description}
             </small>
           </div>
-        </div>
+        </AdminDrawerSection>
 
-        <div className="admin-section-card form-row">
+        <AdminDrawerSection title="Pris & lager" summary={priceSummary} defaultOpen>
+          <div className="form-row">
           <div className="form-group">
             <label htmlFor="price">Pris (SEK)</label>
             <input
@@ -390,9 +440,14 @@ export default function AdminCreateProduct({
               {HELP_TEXT.stock}
             </small>
           </div>
-        </div>
+          </div>
+        </AdminDrawerSection>
 
-        <div className="admin-section-card form-row">
+        <AdminDrawerSection
+          title="Kategori & konstnär"
+          summary={`${categoryLabel} · ${formData.artist || "Ingen angiven"}`}
+        >
+          <div className="form-row">
           <div className="form-group">
             <label htmlFor="category">Kategori</label>
             <select
@@ -403,10 +458,11 @@ export default function AdminCreateProduct({
               disabled={loading}
               aria-describedby="product-category-help"
             >
-              <option value="keramik">Keramik</option>
-              <option value="konst">Konst</option>
-              <option value="textil">Textil</option>
-              <option value="ovrigt">Övrigt</option>
+              {CATEGORY_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
             <small id="product-category-help" className="help-text">
               {HELP_TEXT.category}
@@ -429,19 +485,23 @@ export default function AdminCreateProduct({
               {HELP_TEXT.artist}
             </small>
           </div>
-        </div>
-
-        <div className="admin-section-card form-section image-section">
-          <div className="admin-section-card-header">
-            <div>
-              <h3>
-                Produktbild
-                {imageProcessing ? " (bearbetar...)" : ""}
-              </h3>
-              <p>Bilden beskärs och optimeras innan uppladdning.</p>
-            </div>
           </div>
+        </AdminDrawerSection>
+
+        <AdminDrawerSection
+          title={`Produktbild${imageProcessing ? " (bearbetar...)" : ""}`}
+          summary={previewUrl ? "Bild vald" : "Ingen bild"}
+          open={isImageSectionOpen}
+          onOpenChange={(next) => {
+            setIsImageSectionOpen(next);
+            if (next) setImageSectionHasError(false);
+          }}
+          tone={imageSectionHasError ? "error" : "default"}
+        >
           <div className="form-group">
+            <p className="help-text">
+              Bilden beskärs och optimeras innan uppladdning.
+            </p>
             <div
               className={`file-dropzone ${dragActive ? "is-drag" : ""}`}
               onDragOver={(event) => {
@@ -460,7 +520,6 @@ export default function AdminCreateProduct({
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
-                required={!isEdit && !formData.image}
                 className="file-input-hidden"
                 disabled={loading}
                 aria-describedby="product-image-help"
@@ -496,36 +555,17 @@ export default function AdminCreateProduct({
                 <span>Ta bort befintlig bild</span>
               </label>
             )}
-
-            {previewUrl && (
-              <div className="image-preview-container">
-                <img src={previewUrl} alt="Preview" className="image-preview" />
-              </div>
-            )}
           </div>
-        </div>
-
-        <div className="admin-section-card form-actions">
-          <button
-            type="submit"
-            className="save-button"
-            disabled={loading || imageProcessing}
-          >
-            {loading || imageProcessing
-              ? isEdit
-                ? "Sparar..."
-                : "Publicerar..."
-              : isEdit
-              ? "Spara ändringar"
-              : "Publicera Produkt"}
-          </button>
-          {onCancel && (
-            <button type="button" className="cancel-button" onClick={onCancel}>
-              Avbryt
-            </button>
-          )}
-        </div>
+        </AdminDrawerSection>
       </form>
-    </div>
+    </AdminDrawer>
   );
 }
+
+AdminCreateProduct.propTypes = {
+  adminKey: PropTypes.string.isRequired,
+  open: PropTypes.bool,
+  initialData: PropTypes.object,
+  onCancel: PropTypes.func,
+  onSuccess: PropTypes.func,
+};

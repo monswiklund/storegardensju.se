@@ -65,6 +65,6 @@ test("admin falls back to access login on unauthorized session and can recover o
   ordersUnauthorized = false;
   await page.getByRole("button", { name: "Jag är inloggad" }).click();
 
-  await expect(page.getByText("Orderlista")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Orderlista" })).toBeVisible();
 });
 

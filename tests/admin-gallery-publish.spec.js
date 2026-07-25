@@ -110,12 +110,17 @@ test("admin can reorder and publish gallery images through stubbed APIs", async 
   await page.goto("/admin?view=gallery");
 
   await expect(page.getByRole("heading", { name: "Galleriöversikt" })).toBeVisible();
-  await page.locator(".admin-btn-move").nth(1).click();
+  // Move controls live on the image card itself so touch users can reorder.
+  await page
+    .locator(".admin-gallery-image-move")
+    .first()
+    .getByRole("button", { name: "Flytta ner" })
+    .click();
   await expect(page.getByText("Bild flyttad ner.")).toBeVisible();
-  await page.getByRole("button", { name: "Spara ordning" }).click();
+  await page.getByRole("button", { name: "Spara ändringar" }).click();
   await expect(page.getByText(/Ändringar sparade/)).toBeVisible();
 
-  await page.getByLabel("Markera alla bilder").check();
-  await page.getByRole("button", { name: "Publicera markerade" }).click();
+  await page.getByLabel(/Markera alla/).check();
+  await page.getByRole("button", { name: "Publicera", exact: true }).click();
   await expect(page.getByText("Bilder publicerade.")).toBeVisible();
 });

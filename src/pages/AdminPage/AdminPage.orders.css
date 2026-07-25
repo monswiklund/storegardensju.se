@@ -11,7 +11,7 @@
   width: 100%;
   text-align: left;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--admin-line);
   border-radius: 16px;
   padding: 1.25rem;
   cursor: pointer;
@@ -22,21 +22,21 @@
 }
 
 .admin-order-card:hover {
-  border-color: #d1d5db;
+  border-color: var(--admin-line-strong);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .admin-order-card.selected {
-  border-color: var(--primary-color);
+  border-color: var(--admin-line-strong);
   background: #f3fbf7;
-  box-shadow: 0 0 0 2px rgba(84, 105, 212, 0.1);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.12);
 }
 
 .admin-order-card.overview-card {
   padding: 0.5rem;
   border: none;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--admin-line);
   border-radius: 0;
   box-shadow: none;
 }
@@ -77,13 +77,13 @@
 }
 
 .admin-order-card:hover {
-  border-color: var(--primary-color);
+  border-color: var(--admin-line-strong);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
   z-index: 1;
 }
 
 .admin-order-card.selected {
-  border-color: var(--primary-color);
+  border-color: var(--admin-line-strong);
   background: #edf8f0;
   box-shadow: 0 4px 12px rgba(95, 111, 82, 0.1);
   transform: translateX(4px);
@@ -100,7 +100,7 @@
 }
 
 .admin-order-card.is-new {
-  border-left: 5px solid #2563eb;
+  border-left: 5px solid var(--admin-line);
 }
 
 .admin-order-card.is-new.selected {
@@ -108,7 +108,7 @@
 }
 
 .admin-order-card:hover:not(.selected) {
-  border-color: var(--admin-border-strong);
+  border-color: var(--admin-line-strong);
   background: #fbfcfa;
   transform: translateX(2px);
 }
@@ -132,7 +132,7 @@
 .admin-order-footer {
   margin-top: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #f5f5f5;
+  border-top: 1px solid var(--admin-line);
   display: flex;
   gap: 0.35rem;
   flex-wrap: wrap;
@@ -232,7 +232,7 @@
 .admin-order-last-admin {
   color: #2563eb;
   background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  border: 1px solid var(--admin-line);
   border-radius: 999px;
   padding: 3px 8px;
   font-size: 0.72rem;
@@ -271,7 +271,7 @@
 }
 
 .admin-action-btn {
-  border: 1px solid #e5e7eb; /* Light border */
+  border: 1px solid var(--admin-line); /* Light border */
   background: #fff;
   color: #555;
   padding: 6px 12px;
@@ -283,7 +283,7 @@
 }
 
 .admin-action-btn:hover:not(:disabled) {
-  border-color: var(--primary-color);
+  border-color: var(--admin-line-strong);
   color: var(--primary-color);
   background: #fdfdfd;
 }
@@ -317,31 +317,31 @@
 .admin-chip-new {
   background: #eff6ff;
   color: #2563eb;
-  border-color: #bfdbfe;
+  border-color: var(--admin-line-strong);
 }
 
 .admin-chip-ship {
   background: #fffbeb;
   color: #b45309;
-  border-color: #fde68a;
+  border-color: var(--admin-line-strong);
 }
 
 .admin-chip-pickup_ready {
   background: #ecfdf5;
   color: #047857;
-  border-color: #a7f3d0;
+  border-color: var(--admin-line-strong);
 }
 
 .admin-chip-completed {
   background: #dcfce7;
   color: #15803d;
-  border-color: #86efac;
+  border-color: var(--admin-line-strong);
 }
 
 /* Payment Variants - Clean Outline */
 .admin-chip-payment {
   background: transparent;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--admin-line);
   color: #6b7280;
   padding: 3px 8px;
 }
@@ -352,7 +352,7 @@
 
 .admin-chip-paid {
   background: #dcfce7;
-  border: 1px solid #86efac;
+  border: 1px solid var(--admin-line);
   color: #15803d;
   padding: 3px 8px;
 }
@@ -362,7 +362,7 @@
 
 .admin-chip-unpaid {
   background: #fef2f2;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--admin-line);
   color: #dc2626;
   padding: 3px 8px;
 }
@@ -372,13 +372,13 @@
 
 .admin-chip-delivery {
   background: #eff6ff;
-  border-color: #bfdbfe;
+  border-color: var(--admin-line-strong);
   color: #1d4ed8;
 }
 
 .admin-chip-pickup {
   background: #f0fdfa;
-  border-color: #99f6e4;
+  border-color: var(--admin-line-strong);
   color: #0f766e;
 }
 

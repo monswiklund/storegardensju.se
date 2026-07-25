@@ -74,7 +74,7 @@ test("admin can upload an event image and save the event through stubbed APIs", 
     });
   });
 
-  await page.route(/\/admin\/uploads\/images$/, async (route) => {
+  await page.route(/\/admin\/events\/uploads$/, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -99,6 +99,8 @@ test("admin can upload an event image and save the event through stubbed APIs", 
   await page.locator('input[type="datetime-local"]').nth(0).fill("2026-03-20T18:00");
   await page.locator('input[type="datetime-local"]').nth(1).fill("2026-03-20T21:00");
 
+  // The image field sits in a collapsed drawer section; open it like a user would.
+  await page.getByRole("button", { name: /^Bilder/ }).click();
   await page.locator('input[type="file"]').setInputFiles({
     name: "poster.png",
     mimeType: "image/png",
@@ -111,6 +113,6 @@ test("admin can upload an event image and save the event through stubbed APIs", 
 
   await page.getByRole("button", { name: "Spara händelse" }).click();
 
-  await expect(page.getByText("Event skapat.")).toBeVisible();
+  await expect(page.getByText("Evenemang skapat.")).toBeVisible();
   await expect(page.getByRole("button", { name: /Vårsalong/ })).toBeVisible();
 });

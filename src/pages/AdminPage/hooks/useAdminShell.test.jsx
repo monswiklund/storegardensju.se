@@ -5,24 +5,18 @@ vi.mock("../../../config/apiBaseUrl", () => ({
   getApiBaseUrl: vi.fn(() => "https://api.example.com"),
 }));
 
-function installMatchMedia(matches) {
+function createMediaQuery(media, matches) {
   const listeners = new Set();
   const mediaQuery = {
     matches,
-    media: "(max-width: 900px)",
+    media,
     addEventListener: vi.fn((event, callback) => {
-      if (event === "change") {
-        listeners.add(callback);
-      }
+      if (event === "change") listeners.add(callback);
     }),
     removeEventListener: vi.fn((event, callback) => {
-      if (event === "change") {
-        listeners.delete(callback);
-      }
+      if (event === "change") listeners.delete(callback);
     }),
   };
-
-  window.matchMedia = vi.fn(() => mediaQuery);
 
   return {
     mediaQuery,
@@ -30,6 +24,23 @@ function installMatchMedia(matches) {
       mediaQuery.matches = nextMatches;
       listeners.forEach((callback) => callback({ matches: nextMatches }));
     },
+  };
+}
+
+function installMatchMedia(mobileMatches, mediumSidebarMatches = false) {
+  const mobile = createMediaQuery("(max-width: 900px)", mobileMatches);
+  const mediumSidebar = createMediaQuery(
+    "(min-width: 1100px) and (max-width: 1499px)",
+    mediumSidebarMatches
+  );
+
+  window.matchMedia = vi.fn((query) =>
+    query.includes("min-width: 1100px") ? mediumSidebar.mediaQuery : mobile.mediaQuery
+  );
+
+  return {
+    emit: mobile.emit,
+    emitSidebar: mediumSidebar.emit,
   };
 }
 
@@ -45,6 +56,7 @@ function createProps(overrides = {}) {
 describe("useAdminShell", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    window.localStorage.clear();
   });
 
   it("normalizes invalid view params and syncs selected order from url", async () => {
@@ -141,5 +153,30 @@ describe("useAdminShell", () => {
     expect(result.current.requiresAccessLogin).toBe(false);
     expect(result.current.previewMode).toBe(false);
     expect(result.current.selectedId).toBe("");
+  });
+
+  it("V24 defaults to a rail at medium widths and persists the user choice", async () => {
+    installMatchMedia(false, true);
+
+    const { result, unmount } = renderHook(() => useAdminShell(createProps()));
+
+    await waitFor(() => {
+      expect(result.current.isSidebarCollapsed).toBe(true);
+    });
+
+    act(() => {
+      result.current.handleToggleSidebarCollapsed();
+    });
+
+    expect(result.current.isSidebarCollapsed).toBe(false);
+    expect(
+      window.localStorage.getItem("storegarden-admin-sidebar-collapsed")
+    ).toBe("false");
+
+    unmount();
+    const nextRender = renderHook(() => useAdminShell(createProps()));
+    await waitFor(() => {
+      expect(nextRender.result.current.isSidebarCollapsed).toBe(false);
+    });
   });
 });

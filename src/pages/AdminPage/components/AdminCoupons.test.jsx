@@ -32,7 +32,7 @@ describe("AdminCoupons", () => {
       expect(AdminService.getCoupons).toHaveBeenCalledWith("session", {});
     });
 
-    fireEvent.change(screen.getAllByRole("combobox")[1], {
+    fireEvent.change(screen.getByLabelText("Visa"), {
       target: { value: "inactive" },
     });
 

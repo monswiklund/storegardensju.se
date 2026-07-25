@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { ADMIN_VIEW_OPTIONS } from "../adminConstants";
-import { RefreshCw, User, ArrowLeft } from "lucide-react";
+import PropTypes from "prop-types";
+import { ExternalLink, Menu, UserRound } from "lucide-react";
 
 const ADMIN_VIEW_COPY = {
   overview: {
-    title: "Admin",
-    subtitle: "Snabb översikt av ordrar, statistik och status.",
+    title: "Översikt",
+    subtitle: "Dagens läge för försäljning, ordrar och lager.",
   },
   stats: {
     title: "Statistik",
@@ -38,74 +38,62 @@ const ADMIN_VIEW_COPY = {
 };
 function AdminHeader({
   isPreview,
-  listLoading,
-
-  onRefresh,
   onSwitchAccount,
   adminView,
-  onViewChange,
+  onToggleSidebar,
 }) {
   const copy = ADMIN_VIEW_COPY[adminView] || ADMIN_VIEW_COPY.overview;
   return (
-    <>
+    <header className="admin-header">
       {isPreview && (
         <div className="admin-preview-banner">
-          <strong>Demo-läge:</strong> Detta är en förhandsvisning med
-          exempeldata.
+          Demo – exempeldata
         </div>
       )}
-      <div className="admin-header">
+      <button
+        type="button"
+        className="admin-mobile-menu"
+        onClick={onToggleSidebar}
+        aria-label="Öppna adminmenyn"
+      >
+        <Menu size={20} aria-hidden="true" />
+      </button>
+      <div className="admin-header-main">
         <div className="admin-header-title-group">
-          <div>
-            <h1>{copy.title}</h1>
-            <p className="admin-header-subtitle">{copy.subtitle}</p>
-          </div>
+          <span className="admin-header-context">Arbetsyta</span>
+          <h1>{copy.title}</h1>
+          <p className="admin-header-subtitle">{copy.subtitle}</p>
         </div>
         <div className="admin-actions">
           <button
             type="button"
-            className="admin-btn-secondary admin-icon-btn"
-            onClick={onRefresh}
-            disabled={listLoading}
-            title="Uppdatera"
-          >
-            <RefreshCw size={18} className={listLoading ? "spin" : ""} />
-            <span className="admin-btn-text">{listLoading ? "Uppdaterar..." : "Uppdatera"}</span>
-          </button>
-
-          <button
-            type="button"
-            className="admin-btn-tertiary admin-icon-btn"
+            className="admin-header-action"
             onClick={onSwitchAccount}
             title="Byt konto"
           >
-            <User size={18} />
+            <UserRound size={18} aria-hidden="true" />
             <span className="admin-btn-text">Byt konto</span>
           </button>
 
-          <Link to="/" className="admin-btn-tertiary admin-icon-btn admin-home-link" title="Till hemsidan">
-            <ArrowLeft size={18} />
-            <span className="admin-btn-text">Till hemsidan</span>
+          <Link
+            to="/"
+            className="admin-header-action"
+            title="Öppna webbplatsen"
+          >
+            <ExternalLink size={18} aria-hidden="true" />
+            <span className="admin-btn-text">Visa webbplatsen</span>
           </Link>
         </div>
       </div>
-
-      <div className="admin-view-tabs">
-        {ADMIN_VIEW_OPTIONS.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            className={`admin-view-tab ${
-              adminView === option.value ? "active" : ""
-            }`}
-            onClick={() => onViewChange(option.value)}
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
-    </>
+    </header>
   );
 }
+
+AdminHeader.propTypes = {
+  isPreview: PropTypes.bool,
+  onSwitchAccount: PropTypes.func.isRequired,
+  adminView: PropTypes.string.isRequired,
+  onToggleSidebar: PropTypes.func.isRequired,
+};
 
 export default AdminHeader;

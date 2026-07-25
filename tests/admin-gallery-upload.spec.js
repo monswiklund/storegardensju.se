@@ -63,7 +63,7 @@ test("admin can upload a gallery image and refresh the category list", async ({
     });
   });
 
-  await page.route(/\/admin\/uploads\/images$/, async (route) => {
+  await page.route(/\/admin\/gallery\/uploads$/, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -115,5 +115,8 @@ test("admin can upload a gallery image and refresh the category list", async ({
   });
 
   await expect(page.getByText("Uppladdning klar.")).toBeVisible();
-  await expect(page.locator('input[value="vas"]').first()).toBeVisible();
+
+  // The alt-text field lives in the image editor drawer, opened from the card.
+  await page.locator(".admin-gallery-image-preview").first().click();
+  await expect(page.getByLabel("Alternativtext")).toHaveValue("vas");
 });

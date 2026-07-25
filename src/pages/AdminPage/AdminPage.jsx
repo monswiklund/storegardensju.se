@@ -16,7 +16,7 @@ import AdminPackingSlip from "./components/AdminPackingSlip";
 import AdminSidebar from "./components/AdminSidebar";
 import AdminFeatureSections from "./components/AdminFeatureSections";
 import AdminOrdersSection from "./components/AdminOrdersSection";
-import { PageSection } from "../../components";
+import AdminOverviewQueue from "./components/AdminOverviewQueue";
 import { useAdminOrders } from "./hooks/useAdminOrders";
 import { useAdminStats } from "./hooks/useAdminStats";
 import { useAdminOrderDetail } from "./hooks/useAdminOrderDetail";
@@ -55,6 +55,8 @@ function AdminPage() {
     isPreview,
     isSidebarOpen,
     setIsSidebarOpen,
+    isSidebarCollapsed,
+    handleToggleSidebarCollapsed,
     selectedId,
     setSelectedId,
     isMobile,
@@ -178,6 +180,10 @@ function AdminPage() {
     resetDetailState();
   }, [resetDetailState, resetOrdersState, resetShellState, resetStatsState]);
 
+  const handleCloseSidebar = useCallback(() => {
+    setIsSidebarOpen(false);
+  }, [setIsSidebarOpen]);
+
   const handleInactivityLogout = useCallback(() => {
     handleLogout();
     info("Utloggad pga inaktivitet.");
@@ -197,7 +203,6 @@ function AdminPage() {
   }, [adminKey, previewMode, resetDetailState, resetOrdersState, resetStatsState]);
 
   const {
-    handleRefresh,
     handleCustomerFilter,
     handleExport,
     handleQuickStatus,
@@ -278,39 +283,39 @@ function AdminPage() {
 
   return (
     <main role="main" id="main-content" className="admin-app">
-      {!isSidebarOpen && (
-        <button 
-          className="admin-fixed-hamburger" 
-          onClick={() => setIsSidebarOpen(true)}
-          aria-label="Öppna admin-meny"
+      <div className="admin-shell">
+        <div
+          className={`admin-layout ${
+            isSidebarCollapsed ? "is-sidebar-collapsed" : ""
+          }`}
         >
-          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
-      )}
-      <PageSection background="alt" spacing="default">
-        <div className="admin-layout">
           <AdminSidebar 
             adminView={adminView} 
             onViewChange={handleAdminViewChange}
             isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
+            onClose={handleCloseSidebar}
+            isCollapsed={isSidebarCollapsed}
+            onToggleCollapsed={handleToggleSidebarCollapsed}
           />
           <div className="admin-container">
             <AdminHeader
               isPreview={isPreview}
-              listLoading={listLoading}
-              onRefresh={handleRefresh}
               onSwitchAccount={handleSwitchAccount}
               adminView={adminView}
-              onViewChange={handleAdminViewChange}
               onToggleSidebar={() => setIsSidebarOpen(true)}
             />
 
             <AdminPackingSlip order={selectedOrder} />
+
+            {adminView === "overview" && (
+              <AdminOverviewQueue
+                counts={counts}
+                onOpen={(filter) => {
+                  setFulfillmentFilter(filter);
+                  handleAdminViewChange("orders");
+                }}
+              />
+            )}
 
             {showStatsSection && (
               <AdminStats
@@ -401,7 +406,7 @@ function AdminPage() {
             />
           </div>
         </div>
-      </PageSection>
+      </div>
     </main>
   );
 }

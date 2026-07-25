@@ -1,8 +1,67 @@
 import PropTypes from "prop-types";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import {
+  BarChart3,
+  CalendarDays,
+  ChevronRight,
+  GalleryHorizontal,
+  House,
+  LayoutDashboard,
+  Package,
+  PanelLeftClose,
+  PanelLeftOpen,
+  ReceiptText,
+  ShoppingBag,
+  Tags,
+  UsersRound,
+  X,
+} from "lucide-react";
 import { ADMIN_VIEW_GROUPS } from "../adminConstants";
 
-function AdminSidebar({ adminView, onViewChange, isOpen, onClose }) {
+const NAV_ICONS = {
+  overview: LayoutDashboard,
+  orders: ReceiptText,
+  customers: UsersRound,
+  products: Package,
+  events: CalendarDays,
+  gallery: GalleryHorizontal,
+  coupons: Tags,
+  stats: BarChart3,
+};
+
+function AdminSidebar({
+  adminView,
+  onViewChange,
+  isOpen,
+  onClose,
+  isCollapsed,
+  onToggleCollapsed,
+}) {
+  const closeButtonRef = useRef(null);
+  const restoreFocusRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    restoreFocusRef.current = document.activeElement;
+    closeButtonRef.current?.focus();
+    document.body.classList.add("admin-sidebar-drawer-open");
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.classList.remove("admin-sidebar-drawer-open");
+      restoreFocusRef.current?.focus?.();
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, onClose]);
+
   return (
     <>
       <div 
@@ -10,19 +69,46 @@ function AdminSidebar({ adminView, onViewChange, isOpen, onClose }) {
         onClick={onClose}
         aria-hidden="true"
       />
-      <aside className={`admin-sidebar ${isOpen ? "open" : ""}`} aria-label="Admin navigation">
+      <aside
+        className={`admin-sidebar ${isOpen ? "open" : ""}`}
+        aria-label="Admin navigation"
+      >
         <div className="admin-sidebar-header">
-          <div>
-            <h2>Admin</h2>
-            <p>Hantera butiken</p>
+          <div className="admin-sidebar-brand">
+            <img
+              className="admin-sidebar-logo"
+              src="/images/logoTransp_cropped.png"
+              alt="Storegården 7"
+            />
+            <span className="admin-sidebar-rail-mark" aria-hidden="true">
+              S7
+            </span>
+            <span className="admin-sidebar-brand-caption">Administration</span>
           </div>
-          <button className="admin-sidebar-close" onClick={onClose} aria-label="Stäng meny">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            className="admin-sidebar-close"
+            onClick={onClose}
+            aria-label="Stäng adminmenyn"
+          >
+            <X size={20} aria-hidden="true" />
           </button>
         </div>
+        <button
+          type="button"
+          className="admin-sidebar-toggle"
+          onClick={onToggleCollapsed}
+          aria-label={isCollapsed ? "Expandera sidomenyn" : "Minimera sidomenyn"}
+          aria-expanded={!isCollapsed}
+          title={isCollapsed ? "Expandera sidomenyn" : "Minimera sidomenyn"}
+        >
+          {isCollapsed ? (
+            <PanelLeftOpen size={17} aria-hidden="true" />
+          ) : (
+            <PanelLeftClose size={17} aria-hidden="true" />
+          )}
+        </button>
         
         <div className="admin-sidebar-groups">
           {ADMIN_VIEW_GROUPS.map((group) => (
@@ -30,28 +116,43 @@ function AdminSidebar({ adminView, onViewChange, isOpen, onClose }) {
               <h3 className="admin-sidebar-group-title">{group.title}</h3>
               <nav className="admin-sidebar-nav">
                 {group.options.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    className={`admin-sidebar-link ${
-                      adminView === option.value ? "active" : ""
-                    }`}
-                    onClick={() => onViewChange(option.value)}
-                  >
-                    {option.label}
-                  </button>
+                  (() => {
+                    const Icon = NAV_ICONS[option.value] || ShoppingBag;
+                    const isActive = adminView === option.value;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        className={`admin-sidebar-link ${isActive ? "active" : ""}`}
+                        onClick={() => onViewChange(option.value)}
+                        aria-label={option.label}
+                        aria-current={isActive ? "page" : undefined}
+                        title={isCollapsed ? option.label : undefined}
+                      >
+                        <Icon size={18} aria-hidden="true" />
+                        <span>{option.label}</span>
+                        <ChevronRight
+                          className="admin-sidebar-chevron"
+                          size={16}
+                          aria-hidden="true"
+                        />
+                      </button>
+                    );
+                  })()
                 ))}
               </nav>
             </div>
           ))}
 
-          <div className="admin-sidebar-group" style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid #f3f4f6' }}>
-            <Link to="/" className="admin-sidebar-link" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280' }}>
-              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-              Tillbaka till Storegården 7
+          <div className="admin-sidebar-footer">
+            <Link
+              to="/"
+              className="admin-sidebar-link admin-sidebar-home"
+              aria-label="Till webbplatsen"
+              title={isCollapsed ? "Till webbplatsen" : undefined}
+            >
+              <House size={18} aria-hidden="true" />
+              <span>Till webbplatsen</span>
             </Link>
           </div>
         </div>
@@ -65,6 +166,8 @@ AdminSidebar.propTypes = {
   onViewChange: PropTypes.func.isRequired,
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
+  isCollapsed: PropTypes.bool,
+  onToggleCollapsed: PropTypes.func,
 };
 
 export default AdminSidebar;

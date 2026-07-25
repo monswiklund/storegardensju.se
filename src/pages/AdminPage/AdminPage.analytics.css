@@ -48,13 +48,13 @@
   padding: 4px 10px;
   font-size: 0.8rem;
   background: #444;
-  border-color: #555;
+  border-color: var(--admin-line-strong);
   color: #fff;
 }
 
 .admin-btn-sm:hover:not(:disabled) {
   background: #555;
-  border-color: #666;
+  border-color: var(--admin-line-strong);
   color: #fff;
   transform: none;
 }
@@ -142,7 +142,7 @@
 
 .admin-tech-block-content {
   padding: 0 1.25rem 1.25rem;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--admin-line);
   margin-top: -1px;
   background: #fcfcfc;
 }
@@ -165,7 +165,7 @@
   padding: 1rem 0;
   margin-bottom: 2rem;
   overflow-x: auto;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--admin-line);
 }
 
 .chart-bar-container {

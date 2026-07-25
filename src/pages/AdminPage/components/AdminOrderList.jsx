@@ -11,6 +11,7 @@ import {
 import Skeleton from "../../../components/ui/Skeleton.jsx";
 import { formatAmount, formatDateTime, formatListEventLabel } from "../adminUtils";
 import { CopyIcon } from "./AdminIcons";
+import { AdminActionRail, AdminState } from "./ui/AdminUI";
 
 function AdminOrderList({
   adminView,
@@ -100,7 +101,7 @@ function AdminOrderList({
               className="admin-btn-secondary admin-btn-sm"
               onClick={onExport}
             >
-              Export CSV
+              Exportera CSV
             </button>
           </div>
         )}
@@ -267,19 +268,11 @@ function AdminOrderList({
             </div>
           )}
 
-          {someSelected && (
-            <div className="admin-bulk-actions fade-in">
-              <div className="admin-bulk-info">
-                <span>{selectedOrderIds.size} valda</span>
-                <button
-                  type="button"
-                  className="admin-link-btn"
-                  onClick={() => onSelectAll(true)}
-                >
-                  Avbryt
-            </button>
-          </div>
-          <div className="admin-bulk-controls">
+          <AdminActionRail
+            selectionLabel={
+              someSelected ? `${selectedOrderIds.size} valda` : ""
+            }
+          >
             {bulkActionLoading ? (
               <span className="admin-muted">Uppdaterar...</span>
             ) : (
@@ -298,15 +291,26 @@ function AdminOrderList({
                 >
                   Markera &quot;Klar&quot;
                 </button>
+                <button
+                  type="button"
+                  className="admin-btn-tertiary admin-btn-sm"
+                  onClick={() => onSelectAll(true)}
+                >
+                  Avbryt
+                </button>
               </>
             )}
-          </div>
-        </div>
-      )}
+          </AdminActionRail>
       </>
       )}
 
-      {listError && <p className="admin-error">{listError}</p>}
+      {listError && (
+        <AdminState
+          type="error"
+          title="Ordrarna kunde inte hämtas"
+          message={listError}
+        />
+      )}
 
       {listLoading && ordersCount === 0 && (
         <div className="admin-order-list">
@@ -339,19 +343,25 @@ function AdminOrderList({
       )}
 
       {!listLoading && filteredOrders.length === 0 && (
-        <div className="admin-empty">
-          <p>Inga ordrar matchar filtren.</p>
-          {hasActiveFilters && (
+        <AdminState
+          title={hasActiveFilters ? "Inga ordrar matchar" : "Inga ordrar ännu"}
+          message={
+            hasActiveFilters
+              ? "Justera filtren eller visa hela orderlistan."
+              : "Nya beställningar visas här automatiskt."
+          }
+          action={
+            hasActiveFilters ? (
             <button
               type="button"
               className="admin-btn-secondary admin-btn-sm"
               onClick={onClearFilters}
-              style={{ marginTop: "1rem" }}
             >
               Visa alla ordrar
             </button>
-          )}
-        </div>
+            ) : null
+          }
+        />
       )}
 
       <div className="admin-order-list">

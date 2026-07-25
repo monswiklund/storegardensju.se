@@ -1,6 +1,7 @@
 import { STATS_RANGE_OPTIONS } from "../adminConstants";
 import LoadingSpinner from "../../../components/ui/LoadingSpinner.jsx";
 import { formatPrice } from "../../../services/stripeService";
+import { AdminState } from "./ui/AdminUI";
 
 function AdminStats({
   adminView,
@@ -77,12 +78,21 @@ function AdminStats({
       {statsExpanded && (
         <>
           {statsLoading && (
-            <div className="admin-loading-block">
-              <LoadingSpinner size="small" text="Laddar statistik..." />
-            </div>
+            <AdminState
+              type="loading"
+              title="Laddar statistik"
+              message="Sammanställer försäljning och produktdata för vald period."
+              action={<LoadingSpinner size="small" />}
+            />
           )}
 
-          {statsError && <p className="admin-error">{statsError}</p>}
+          {statsError && (
+            <AdminState
+              type="error"
+              title="Statistiken kunde inte hämtas"
+              message={statsError}
+            />
+          )}
 
           <div className="admin-stats admin-dashboard-grid">
             <div className="admin-stat-card">
@@ -134,7 +144,11 @@ function AdminStats({
                   <p>Omsättning och ordervolym för vald period.</p>
                 </div>
               </div>
-              <div className="admin-chart">
+              <div
+                className="admin-chart"
+                role="img"
+                aria-label={`Försäljning över tid för ${statsRangeLabel.toLowerCase()}`}
+              >
                 {(() => {
                   const maxRevenue =
                     Math.max(...statsSummary.series.map((s) => s.revenue)) || 1;

@@ -49,6 +49,34 @@
   letter-spacing: 0.04em;
 }
 
+/* Filter cards. The active state is carried by background and text only —
+   V25 forbids coloured rings (AdminEdgePolicy.test.js). */
+.admin-gallery-overview-card.is-filter {
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.admin-gallery-overview-card.is-filter:hover {
+  transform: translateY(-2px);
+}
+
+.admin-gallery-overview-card.is-filter.is-active {
+  background: linear-gradient(180deg, #2f6f73 0%, #24585c 100%);
+  color: #ffffff;
+}
+
+.admin-gallery-overview-card.is-filter.is-active .admin-gallery-overview-label,
+.admin-gallery-overview-card.is-filter.is-active small {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.admin-gallery-overview-card.is-filter.is-warning:not(.is-active) strong {
+  color: #b45309;
+}
+
 .admin-gallery-sidebar,
 .admin-gallery-content {
   display: flex;
@@ -84,7 +112,7 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.85rem 1rem;
-  border: 1px solid #d8dee9;
+  border: 1px solid var(--admin-line);
   border-radius: 12px;
   background-color: #ffffff;
   color: #111827;
@@ -101,15 +129,15 @@
 }
 
 .admin-gallery-category-dropdown-trigger:hover:not(:disabled) {
-  border-color: #bfc9d8;
+  border-color: var(--admin-line-strong);
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
   transform: translateY(-1px);
 }
 
 .admin-gallery-category-dropdown-trigger:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(84, 105, 212, 0.14);
+  border-color: var(--admin-line-strong);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
   background-color: #ffffff;
 }
 
@@ -138,8 +166,8 @@
 .admin-gallery-category-dropdown-caret {
   width: 8px;
   height: 8px;
-  border-right: 2px solid #5b6472;
-  border-bottom: 2px solid #5b6472;
+  border-right: 2px solid var(--admin-line);
+  border-bottom: 2px solid var(--admin-line);
   transform: rotate(45deg) translateY(-1px);
   flex: 0 0 auto;
   transition: transform 0.18s ease;
@@ -158,7 +186,7 @@
   display: grid;
   gap: 0.35rem;
   padding: 0.5rem;
-  border: 1px solid #d8dee9;
+  border: 1px solid var(--admin-line);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 18px 36px rgba(15, 23, 42, 0.14);
@@ -184,14 +212,14 @@
 }
 
 .admin-gallery-category-option:hover {
-  border-color: #bfc9d8;
+  border-color: var(--admin-line-strong);
   background: #f1f5f9;
   transform: translateY(-1px);
 }
 
 .admin-gallery-category-option.active {
   background: #e5f4f2;
-  border-color: #2f6f73;
+  border-color: var(--admin-line-strong);
   color: #174f52;
 }
 
@@ -216,7 +244,7 @@
 }
 
 .admin-gallery-category-card {
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--admin-line);
   border-radius: 12px;
   padding: 1rem;
   background: #ffffff;
@@ -245,40 +273,55 @@
   justify-content: flex-end;
 }
 
-.admin-gallery-create {
+/* Live preview for the "new category" drawer */
+.admin-gallery-category-preview {
   display: grid;
-  gap: 0.6rem;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--admin-line);
+  border-radius: var(--admin-radius);
+  background: var(--admin-surface);
 }
 
-.admin-gallery-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1200;
-  padding: 1rem;
-}
-
-.admin-gallery-modal {
-  width: min(100%, 520px);
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.22);
-  padding: 1rem;
-}
-
-.admin-gallery-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.admin-gallery-modal-header h4 {
+.admin-gallery-category-preview-name {
   margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.admin-gallery-category-preview-url {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--admin-radius-sm);
+  background: var(--admin-green-soft);
+  color: var(--admin-green-strong);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.admin-gallery-category-preview-meta {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--admin-line);
+}
+
+.admin-gallery-category-preview-meta dt {
+  color: var(--admin-muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.admin-gallery-category-preview-meta dd {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
 }
 
 .admin-gallery-upload {
@@ -286,11 +329,72 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border: 1px dashed #d7d7d7;
+  border: 1px dashed var(--admin-line);
   border-radius: 12px;
   padding: 1rem;
   background: #fafafa;
   flex-wrap: wrap;
+  transition: background 160ms ease;
+}
+
+/* Drop target. Only the background shifts — a coloured border would break V25. */
+.admin-gallery-upload.is-drop-active {
+  background: #e8f4f2;
+}
+
+.admin-gallery-upload-drop-hint,
+.admin-gallery-upload-queue {
+  flex: 1 0 100%;
+  margin: 0;
+}
+
+.admin-gallery-upload-drop-hint {
+  color: var(--primary-hover);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.admin-gallery-upload-queue {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-gallery-upload-queue-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.85rem;
+}
+
+.admin-gallery-upload-queue-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-gallery-upload-queue-status {
+  flex: 0 0 auto;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.admin-gallery-upload-queue-item.is-uploading .admin-gallery-upload-queue-status {
+  color: var(--primary-hover);
+}
+
+.admin-gallery-upload-queue-item.is-done .admin-gallery-upload-queue-status {
+  color: #047857;
+}
+
+.admin-gallery-upload-queue-item.is-failed .admin-gallery-upload-queue-status {
+  color: #b91c1c;
 }
 
 .admin-gallery-content-header {
@@ -338,7 +442,7 @@
 }
 
 .admin-gallery-image-card {
-  border: 1px solid #ececec;
+  border: 1px solid var(--admin-line);
   border-radius: 12px;
   overflow: hidden;
   background: #ffffff;
@@ -354,10 +458,12 @@
 }
 
 .admin-gallery-image-card.is-selected {
-  border-color: var(--primary-color);
+  border-color: var(--admin-line-strong);
   box-shadow: 0 10px 24px rgba(84, 105, 212, 0.12);
 }
 
+/* The whole thumbnail is the edit trigger, so it is a real button — keyboard
+   users get it for free instead of via role="button" + key handlers. */
 .admin-gallery-image-preview {
   width: 100%;
   aspect-ratio: 1 / 1; /* Square for better grid feel */
@@ -367,6 +473,9 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
 }
 
 .admin-gallery-image-preview img {
@@ -389,7 +498,7 @@
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  border: 2px solid rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--admin-line);
   background: rgba(15, 23, 42, 0.45);
   color: #ffffff;
   width: 34px;
@@ -410,7 +519,7 @@
 
 .admin-gallery-image-select.is-selected {
   background: #10b981;
-  border-color: #ffffff;
+  border-color: var(--admin-line-strong);
   box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
 }
 
@@ -426,13 +535,103 @@
   background: rgba(17, 24, 39, 0.8);
 }
 
+.admin-gallery-image-meta {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.6rem 0.75rem 0;
+  min-width: 0;
+}
+
+.admin-gallery-image-meta-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-gallery-image-meta-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.admin-gallery-image-status {
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-gallery-image-status.is-published {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.admin-gallery-image-status.is-draft {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.admin-gallery-image-status.is-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Ordering controls sit on the card and are always visible: drag-and-drop has no
+   touch equivalent, so mobile needs a tap path to reorder. */
+.admin-gallery-image-move {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  /* Wraps instead of clipping: cards get narrow in dense grids and on phones. */
+  flex-wrap: wrap;
+  padding: 0.6rem 0.75rem 0.75rem;
+}
+
+.admin-gallery-image-move .admin-btn-move {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+}
+
+.admin-gallery-image-move .admin-btn-tertiary {
+  margin-left: auto;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* Sticky so bulk actions and search stay reachable while scrolling long grids. */
 .admin-gallery-image-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding: 0.4rem 0.2rem;
+  padding: 0.6rem 0.2rem;
   flex-wrap: wrap;
+  background: var(--admin-surface, #ffffff);
+}
+
+.admin-gallery-image-search {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1 1 220px;
+  min-width: 0;
+  color: #6b7280;
+}
+
+.admin-gallery-image-search input {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .admin-gallery-bulk-actions {
@@ -451,7 +650,7 @@
   font-weight: 700;
   color: #92400e;
   background: #fef3c7;
-  border: 1px solid #fcd34d;
+  border: 1px solid var(--admin-line);
 }
 
 .admin-gallery-feedback {
@@ -463,7 +662,7 @@
   font-weight: 700;
   color: #065f46;
   background: #d1fae5;
-  border: 1px solid #6ee7b7;
+  border: 1px solid var(--admin-line);
   animation: adminFeedbackPop 180ms ease;
 }
 
@@ -478,16 +677,24 @@
   }
 }
 
-.admin-gallery-image-form {
-  padding: 0.75rem;
+/* Preview column of the image editor drawer. */
+.admin-gallery-image-preview-pane {
   display: grid;
-  gap: 0.6rem;
+  gap: 0.75rem;
 }
 
-.admin-gallery-image-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.6rem;
+.admin-gallery-image-preview-pane img {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #f3f4f6;
+  max-height: 46vh;
+}
+
+.admin-gallery-image-preview-caption {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
 }
 
 .admin-gallery-category-checklist {
@@ -499,7 +706,7 @@
 
 .admin-gallery-category-checkbox {
   background: #f8f8f8;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--admin-line);
   border-radius: 8px;
   padding: 0.35rem 0.45rem;
 }
@@ -557,93 +764,10 @@
     transition: all 0.2s ease;
   }
 
-  .admin-gallery-image-card.is-expanded {
-    grid-column: span 2;
-    z-index: 10;
-    margin: 0.5rem -0.25rem;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  }
-
-  .admin-gallery-image-preview {
-    aspect-ratio: 1 / 1;
-    cursor: pointer;
-  }
-
-  .admin-gallery-image-card.is-expanded .admin-gallery-image-preview {
-    aspect-ratio: 16 / 10;
-  }
-
-  .admin-gallery-image-card.is-collapsed .admin-gallery-image-form {
-    display: none;
-  }
-
-  .admin-gallery-image-mobile-info {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    padding: 0.7rem 0.75rem 0.65rem;
-    color: #ffffff;
-    background: linear-gradient(
-      to top,
-      rgba(17, 24, 39, 0.88),
-      rgba(17, 24, 39, 0.5) 65%,
-      rgba(17, 24, 39, 0) 100%
-    );
-    pointer-events: none;
-  }
-
-  .admin-gallery-image-mobile-title {
-    font-size: 0.7rem;
-    font-weight: 600;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .admin-gallery-image-form {
-    padding: 1.25rem;
-    background: #ffffff;
-  }
-
   .admin-gallery-image-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
-  }
-
-  .admin-gallery-image-actions button:last-child {
-    grid-column: span 2;
-    margin-top: 0.25rem;
-  }
-}
-
-.mobile-only {
-  display: none;
-}
-
-.admin-gallery-image-form-header h4 {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: #111827;
-}
-
-@media (min-width: 1025px) {
-  .admin-gallery-image-mobile-info {
-    display: none;
-  }
-  .admin-gallery-image-form-header {
-    display: none;
   }
 }
 
@@ -776,55 +900,9 @@
     padding: 0;
   }
 
-  .admin-gallery-image-card.is-expanded {
-    grid-column: auto;
-    margin: 0;
-    border-radius: 12px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-  }
-
-  .admin-gallery-image-preview,
-  .admin-gallery-image-card.is-expanded .admin-gallery-image-preview {
-    aspect-ratio: 1 / 1;
-  }
-
-  .admin-gallery-image-form {
-    display: grid;
-    align-content: start;
-    gap: 0.6rem;
-    padding: 0 0.85rem;
-    background: #ffffff;
-    border-top: 1px solid transparent;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition:
-      max-height 0.28s ease,
-      opacity 0.2s ease,
-      padding 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .admin-gallery-image-card.is-collapsed .admin-gallery-image-form {
-    display: grid;
-  }
-
-  .admin-gallery-image-card.is-expanded .admin-gallery-image-form {
-    max-height: 1600px;
-    opacity: 1;
-    overflow: auto;
-    padding: 0.85rem;
-    border-top-color: #e5e7eb;
-  }
-
   .admin-gallery-image-actions {
     display: grid;
     grid-template-columns: 1fr;
-  }
-
-  .admin-gallery-image-actions button:last-child {
-    grid-column: auto;
-    margin-top: 0;
   }
 
   .admin-gallery-category-checklist {
@@ -848,17 +926,6 @@
     padding: 1.2rem;
   }
 
-  .mobile-only {
-    display: inline-flex;
-  }
-
-  .admin-gallery-image-mobile-info {
-    display: flex;
-  }
-
-  .admin-gallery-image-mobile-title {
-    max-width: calc(100% - 24px);
-  }
 }
 
 .admin-order-card {
@@ -871,5 +938,5 @@
 
 .admin-order-card.checked {
   background: #f0f7ff;
-  border-color: #cce5ff;
+  border-color: var(--admin-line-strong);
 }
