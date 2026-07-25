@@ -717,11 +717,11 @@
 .admin-events-list-panel {
   min-width: 0;
   display: grid;
-  gap: 1rem;
+  gap: 1.1rem;
   border: 1px solid var(--admin-border);
-  border-radius: 26px;
-  background: linear-gradient(180deg, #ffffff 0%, #fffaf1 100%);
-  box-shadow: 0 18px 45px rgba(71, 61, 43, 0.1);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 14px 40px rgba(24, 35, 29, 0.06);
 }
 
 .admin-events-list-header {
@@ -729,7 +729,7 @@
   justify-content: space-between;
   gap: 1rem;
   align-items: flex-start;
-  padding: 1rem 1rem 0;
+  padding: 1.25rem 1.25rem 0;
 }
 
 .admin-events-list-header h3 {
@@ -782,8 +782,9 @@
 
 .admin-events-list-tools {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 240px);
   gap: 0.7rem;
-  padding: 0 1rem;
+  padding: 0 1.25rem;
 }
 
 .admin-events-search {
@@ -792,8 +793,8 @@
   gap: 0.55rem;
   padding: 0.65rem 0.75rem;
   border: 1px solid var(--admin-border);
-  border-radius: 16px;
-  background: #fffdf8;
+  border-radius: 10px;
+  background: #ffffff;
   color: var(--admin-muted);
 }
 
@@ -820,70 +821,199 @@
 
 .admin-events-manager-list {
   display: grid;
-  gap: 0.65rem;
-  padding: 0 1rem 1rem;
-  overflow-y: auto;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  align-items: stretch;
+  gap: 1rem;
+  padding: 0.1rem 1.25rem 1.25rem;
 }
 
 .admin-events-manager-list-item {
   text-align: left;
-  display: grid;
-  gap: 0.35rem;
-  padding: 0.9rem;
+  display: flex;
+  min-width: 0;
+  min-height: 390px;
+  padding: 0;
+  flex-direction: column;
   position: relative;
-  border-radius: 18px;
+  overflow: hidden;
+  border-radius: 14px;
   border: 1px solid var(--admin-border);
-  background: #fffdf8;
+  background: #ffffff;
   color: var(--admin-slate);
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(71, 61, 43, 0.05);
+  box-shadow: 0 6px 18px rgba(24, 35, 29, 0.05);
   transition:
-    background 0.18s ease,
     border-color 0.18s ease,
     box-shadow 0.18s ease,
     transform 0.18s ease;
 }
 
 .admin-events-manager-list-item:hover {
-  background: #ffffff;
   border-color: var(--admin-line-strong);
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
-}
-
-.admin-events-manager-list-item p {
-  margin: 0.35rem 0 0;
-  font-size: 0.8rem;
-  color: #6b7280;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(24, 35, 29, 0.12);
 }
 
 .admin-events-manager-list-item.active {
   border-color: var(--admin-line-strong);
-  background: #f3f7e6;
-  box-shadow: 0 16px 34px rgba(107, 123, 63, 0.18);
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.08),
+    0 16px 34px rgba(0, 0, 0, 0.14);
 }
 
 .admin-events-manager-list-item.active::before {
-  content: "";
+  display: none;
+}
+
+.admin-events-card-visual {
+  position: relative;
+  min-height: 176px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--admin-line);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), transparent 52%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 27px,
+      rgba(49, 93, 70, 0.055) 28px
+    ),
+    #e3eee7;
+}
+
+.admin-events-card-visual.has-image {
+  background: #dfe5df;
+}
+
+.admin-events-card-visual > img {
+  width: 100%;
+  height: 100%;
+  min-height: 176px;
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 5px;
-  border-radius: 18px 0 0 18px;
-  background: #6b7b3f;
+  inset: 0;
+  object-fit: cover;
+  transition: transform 280ms ease;
 }
 
-.admin-events-card-date,
-.admin-events-card-location {
-  color: #6b7280;
-  font-size: 0.78rem;
-  font-weight: 600;
+.admin-events-manager-list-item:hover .admin-events-card-visual > img {
+  transform: scale(1.035);
 }
 
-.admin-events-card-badges {
+.admin-events-card-visual.has-image::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(180deg, rgba(17, 28, 21, 0.08), rgba(17, 28, 21, 0.38));
+}
+
+.admin-events-card-date-sheet {
+  position: absolute;
+  z-index: 1;
+  left: 18px;
+  bottom: 16px;
+  display: grid;
+  width: 112px;
+  min-height: 118px;
+  padding: 12px 10px;
+  place-content: center;
+  border: 1px solid var(--admin-line);
+  border-radius: 10px;
+  color: var(--admin-green-strong, #315d46);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 20px rgba(24, 35, 29, 0.1);
+  text-align: center;
+}
+
+.admin-events-card-date-sheet span {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.admin-events-card-date-sheet strong {
+  margin: 1px 0;
+  font-family: var(--font-heading, Georgia, serif);
+  font-size: 2.3rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.admin-events-card-bucket {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+}
+
+.admin-events-card-content {
   display: flex;
+  min-width: 0;
+  padding: 16px;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.admin-events-card-kicker {
+  display: flex;
+  margin: 0 0 9px;
+  align-items: center;
+  gap: 5px;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.2rem;
+  color: var(--admin-green-strong, #315d46);
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.admin-events-card-title {
+  color: var(--admin-ink, #18231d);
+  font-family: var(--font-heading, Georgia, serif);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.admin-events-card-location {
+  display: inline-flex;
+  margin-top: 7px;
+  align-items: center;
+  gap: 5px;
+  color: var(--admin-muted);
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+
+.admin-events-card-description {
+  display: -webkit-box;
+  margin: 12px 0 16px;
+  overflow: hidden;
+  color: var(--admin-muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.admin-events-card-footer {
+  display: flex;
+  margin-top: auto;
+  padding-top: 13px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid var(--admin-line);
+}
+
+.admin-events-card-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--admin-green-strong, #315d46);
+  font-size: 0.74rem;
+  font-weight: 800;
 }
 
 .admin-events-status {
@@ -1055,9 +1185,26 @@
   padding: 24px 24px 8px;
 }
 
+@media (max-width: 1100px) {
+  .admin-events-manager-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 720px) {
   .admin-events-list-panel {
     border-radius: 8px;
+  }
+
+  .admin-events-list-tools,
+  .admin-events-manager-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-events-list-header,
+  .admin-events-list-tools,
+  .admin-events-manager-list {
+    padding-inline: 14px;
   }
 
   .admin-events-time-grid {

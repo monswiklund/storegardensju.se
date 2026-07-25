@@ -5,12 +5,11 @@ import {
   BarChart3,
   CalendarDays,
   ChevronRight,
+  Flower2,
   GalleryHorizontal,
   House,
   LayoutDashboard,
   Package,
-  PanelLeftClose,
-  PanelLeftOpen,
   ReceiptText,
   ShoppingBag,
   Tags,
@@ -25,6 +24,7 @@ const NAV_ICONS = {
   customers: UsersRound,
   products: Package,
   events: CalendarDays,
+  yoga: Flower2,
   gallery: GalleryHorizontal,
   coupons: Tags,
   stats: BarChart3,
@@ -35,8 +35,8 @@ function AdminSidebar({
   onViewChange,
   isOpen,
   onClose,
-  isCollapsed,
-  onToggleCollapsed,
+  isExpanded,
+  onExpandedChange,
 }) {
   const closeButtonRef = useRef(null);
   const restoreFocusRef = useRef(null);
@@ -72,17 +72,29 @@ function AdminSidebar({
       <aside
         className={`admin-sidebar ${isOpen ? "open" : ""}`}
         aria-label="Admin navigation"
+        data-state={isExpanded ? "expanded" : "collapsed"}
+        onPointerEnter={() => onExpandedChange(true)}
+        onPointerLeave={() => onExpandedChange(false)}
+        onFocus={() => onExpandedChange(true)}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            onExpandedChange(false);
+          }
+        }}
       >
         <div className="admin-sidebar-header">
           <div className="admin-sidebar-brand">
             <img
-              className="admin-sidebar-logo"
+              className="admin-sidebar-logo admin-sidebar-logo-full"
               src="/images/logoTransp_cropped.png"
               alt="Storegården 7"
             />
-            <span className="admin-sidebar-rail-mark" aria-hidden="true">
-              S7
-            </span>
+            <img
+              className="admin-sidebar-logo admin-sidebar-logo-mini"
+              src="/images/logoTransp_cropped.png"
+              alt=""
+              aria-hidden="true"
+            />
             <span className="admin-sidebar-brand-caption">Administration</span>
           </div>
           <button
@@ -95,21 +107,6 @@ function AdminSidebar({
             <X size={20} aria-hidden="true" />
           </button>
         </div>
-        <button
-          type="button"
-          className="admin-sidebar-toggle"
-          onClick={onToggleCollapsed}
-          aria-label={isCollapsed ? "Expandera sidomenyn" : "Minimera sidomenyn"}
-          aria-expanded={!isCollapsed}
-          title={isCollapsed ? "Expandera sidomenyn" : "Minimera sidomenyn"}
-        >
-          {isCollapsed ? (
-            <PanelLeftOpen size={17} aria-hidden="true" />
-          ) : (
-            <PanelLeftClose size={17} aria-hidden="true" />
-          )}
-        </button>
-        
         <div className="admin-sidebar-groups">
           {ADMIN_VIEW_GROUPS.map((group) => (
             <div key={group.title} className="admin-sidebar-group">
@@ -127,7 +124,7 @@ function AdminSidebar({
                         onClick={() => onViewChange(option.value)}
                         aria-label={option.label}
                         aria-current={isActive ? "page" : undefined}
-                        title={isCollapsed ? option.label : undefined}
+                        title={!isExpanded ? option.label : undefined}
                       >
                         <Icon size={18} aria-hidden="true" />
                         <span>{option.label}</span>
@@ -149,7 +146,7 @@ function AdminSidebar({
               to="/"
               className="admin-sidebar-link admin-sidebar-home"
               aria-label="Till webbplatsen"
-              title={isCollapsed ? "Till webbplatsen" : undefined}
+              title={!isExpanded ? "Till webbplatsen" : undefined}
             >
               <House size={18} aria-hidden="true" />
               <span>Till webbplatsen</span>
@@ -166,8 +163,8 @@ AdminSidebar.propTypes = {
   onViewChange: PropTypes.func.isRequired,
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
-  isCollapsed: PropTypes.bool,
-  onToggleCollapsed: PropTypes.func,
+  isExpanded: PropTypes.bool,
+  onExpandedChange: PropTypes.func,
 };
 
 export default AdminSidebar;

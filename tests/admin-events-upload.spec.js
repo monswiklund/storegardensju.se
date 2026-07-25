@@ -93,7 +93,7 @@ test("admin can upload an event image and save the event through stubbed APIs", 
   await page.goto("/admin?view=events");
 
   await expect(page.getByText("Evenemangslista")).toBeVisible();
-  await page.getByRole("button", { name: "+ Nytt" }).click();
+  await page.getByRole("button", { name: "Nytt" }).click();
 
   await page.locator('input[class="admin-input"]').first().fill("Vårsalong");
   await page.locator('input[type="datetime-local"]').nth(0).fill("2026-03-20T18:00");

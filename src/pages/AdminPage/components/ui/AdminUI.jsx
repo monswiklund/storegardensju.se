@@ -90,6 +90,7 @@ export function AdminDrawer({
   size = "standard",
   preview,
   previewLabel = DRAWER_PREVIEW_LABEL,
+  previewOnly = false,
   icon,
   headerActions,
   isDirty = false,
@@ -161,6 +162,9 @@ export function AdminDrawer({
     restoreFocusRef.current = document.activeElement;
     closeButtonRef.current?.focus();
     document.body.classList.add(DRAWER_BODY_LOCK_CLASS);
+    document.documentElement.classList.add(DRAWER_BODY_LOCK_CLASS);
+    const lenis = window.storegardenLenis;
+    lenis?.stop?.();
     setMobileTab(DRAWER_TAB_FORM);
 
     const handleKeyDown = (event) => {
@@ -193,6 +197,8 @@ export function AdminDrawer({
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.classList.remove(DRAWER_BODY_LOCK_CLASS);
+      document.documentElement.classList.remove(DRAWER_BODY_LOCK_CLASS);
+      if (window.storegardenLenis === lenis) lenis?.start?.();
       restoreFocusRef.current?.focus?.();
     };
   }, [isMounted, open]);
@@ -203,7 +209,8 @@ export function AdminDrawer({
     "admin-ui-drawer-layer",
     isWide ? "is-wide" : "is-standard",
     isEntered ? "is-entered" : "is-leaving",
-    hasPreview ? `is-tab-${mobileTab}` : "",
+    previewOnly ? "is-preview-only" : "",
+    hasPreview && !previewOnly ? `is-tab-${mobileTab}` : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -222,6 +229,7 @@ export function AdminDrawer({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        data-lenis-prevent
       >
         <header>
           <div className="admin-ui-drawer-heading">
@@ -249,7 +257,7 @@ export function AdminDrawer({
           </div>
         </header>
 
-        {hasPreview && (
+        {hasPreview && !previewOnly && (
           <div className="admin-ui-drawer-tabs" role="tablist">
             <button
               type="button"
@@ -273,7 +281,9 @@ export function AdminDrawer({
         )}
 
         <div className="admin-ui-drawer-body">
-          <div className="admin-ui-drawer-content">{children}</div>
+          {!previewOnly && (
+            <div className="admin-ui-drawer-content">{children}</div>
+          )}
           {hasPreview && (
             <div className="admin-ui-drawer-preview">
               <p className="admin-ui-drawer-preview-label">
@@ -296,11 +306,12 @@ AdminDrawer.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   onClose: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   footer: PropTypes.node,
   size: PropTypes.oneOf(["standard", "wide"]),
   preview: PropTypes.node,
   previewLabel: PropTypes.string,
+  previewOnly: PropTypes.bool,
   icon: PropTypes.node,
   headerActions: PropTypes.node,
   isDirty: PropTypes.bool,

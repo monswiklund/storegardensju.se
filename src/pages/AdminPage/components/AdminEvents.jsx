@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import {
+  ArrowUpRight,
   CalendarDays,
+  Clock3,
+  MapPin,
   Plus,
   Save,
   Search,
@@ -67,6 +70,47 @@ const formatTime = (value) => {
     minute: "2-digit",
     hour12: false,
   });
+};
+
+const getEventDateParts = (value) => {
+  const date = new Date(value || "");
+  if (Number.isNaN(date.getTime())) {
+    return { day: "–", month: "Datum saknas", year: "" };
+  }
+  return {
+    day: date.toLocaleDateString("sv-SE", { day: "numeric" }),
+    month: date.toLocaleDateString("sv-SE", { month: "short" }).replace(".", ""),
+    year: date.toLocaleDateString("sv-SE", { year: "numeric" }),
+  };
+};
+
+const getEventScheduleLabel = (item) => {
+  const start = formatTime(item.startAt);
+  const end = formatTime(item.endAt);
+  const startDate = new Date(item.startAt || "");
+  const endDate = new Date(item.endAt || "");
+  const spansMultipleDays =
+    !Number.isNaN(startDate.getTime()) &&
+    !Number.isNaN(endDate.getTime()) &&
+    startDate.toDateString() !== endDate.toDateString();
+  if (start && end && spansMultipleDays) {
+    const sameMonth =
+      startDate.getMonth() === endDate.getMonth() &&
+      startDate.getFullYear() === endDate.getFullYear();
+    const dateRange = sameMonth
+      ? `${startDate.getDate()}–${formatDate(item.endAt)}`
+      : `${formatDate(item.startAt)}–${formatDate(item.endAt)}`;
+    return `${dateRange} · ${start}–${end}`;
+  }
+  const time = start && end ? `${start}–${end}` : start || end || "Tid saknas";
+  return `${time} · ${formatDate(item.startAt) || "Datum saknas"}`;
+};
+
+const getEventImageSrc = (item) => {
+  const image = [...(item.images || [])]
+    .sort((a, b) => Number(a?.order || 0) - Number(b?.order || 0))
+    .find((candidate) => candidate?.url || candidate?.src);
+  return image?.url || image?.src || "";
 };
 
 const toLocalDateTimeInput = (value) => {
@@ -462,7 +506,7 @@ function AdminEvents({ adminKey = "" }) {
 
   return (
     <div className="admin-events-manager">
-      <aside className="admin-events-list-panel" aria-label="Evenemangslista">
+      <section className="admin-events-list-panel" aria-label="Evenemangslista">
         <div className="admin-events-list-header">
           <div>
             <p className="admin-events-eyebrow">Innehåll</p>
@@ -475,7 +519,7 @@ function AdminEvents({ adminKey = "" }) {
             onClick={handleCreateNew}
           >
             <Plus size={16} />
-            + Nytt
+            Nytt
           </button>
         </div>
 
@@ -523,26 +567,73 @@ function AdminEvents({ adminKey = "" }) {
             />
           ) : filteredEvents.length > 0 ? (
             filteredEvents.map((item) => {
-              const date = formatDate(item.startAt);
+              const date = getEventDateParts(item.startAt);
+              const schedule = getEventScheduleLabel(item);
+              const imageSrc = getEventImageSrc(item);
               return (
                 <button
                   key={item.id}
                   type="button"
                   className={`admin-events-manager-list-item ${
-                    item.id === selectedId ? "active" : ""
+                    isEditorOpen && item.id === selectedId ? "active" : ""
                   }`}
                   onClick={() => handleSelect(item)}
+                  aria-label={`Redigera ${item.title || "namnlöst evenemang"}`}
                 >
-                  <span className="admin-events-card-date">{date || "Datum saknas"}</span>
-                  <strong>{item.title}</strong>
-                  {item.location && <span className="admin-events-card-location">{item.location}</span>}
-                  <div className="admin-events-card-badges">
-                    <span className={`admin-events-status admin-events-status--${item.status === "published" ? "published" : "draft"}`}>
-                      {getStatusLabel(item.status)}
-                    </span>
-                    <span className={`admin-events-status admin-events-status--${item.computedBucket === "upcoming" ? "upcoming" : "past"}`}>
+                  <div
+                    className={`admin-events-card-visual ${
+                      imageSrc ? "has-image" : ""
+                    }`}
+                  >
+                    {imageSrc && <img src={imageSrc} alt="" />}
+                    <time
+                      className="admin-events-card-date-sheet"
+                      dateTime={item.startAt || undefined}
+                    >
+                      <span>{date.month}</span>
+                      <strong>{date.day}</strong>
+                      <span>{date.year}</span>
+                    </time>
+                    <span
+                      className={`admin-events-status admin-events-status--${
+                        item.computedBucket === "upcoming" ? "upcoming" : "past"
+                      } admin-events-card-bucket`}
+                    >
                       {getBucketLabel(item.computedBucket)}
                     </span>
+                  </div>
+                  <div className="admin-events-card-content">
+                    <p className="admin-events-card-kicker">
+                      <Clock3 size={14} aria-hidden="true" />
+                      {schedule}
+                    </p>
+                    <strong className="admin-events-card-title">
+                      {item.title || "Namnlöst evenemang"}
+                    </strong>
+                    {item.location && (
+                      <span className="admin-events-card-location">
+                        <MapPin size={14} aria-hidden="true" />
+                        {item.location}
+                      </span>
+                    )}
+                    {item.description && (
+                      <p className="admin-events-card-description">
+                        {item.description}
+                      </p>
+                    )}
+                    <div className="admin-events-card-footer">
+                      <span
+                        className={`admin-events-status admin-events-status--${
+                          item.status === "published" ? "published" : "draft"
+                        }`}
+                      >
+                        {getStatusLabel(item.status)}
+                      </span>
+                      <span className="admin-events-card-edit">
+                        Redigera
+                        <ArrowUpRight size={15} aria-hidden="true" />
+                      </span>
+                    </div>
                   </div>
                 </button>
               );
@@ -555,7 +646,7 @@ function AdminEvents({ adminKey = "" }) {
             </div>
           )}
         </div>
-      </aside>
+      </section>
 
       <AdminDrawer
         open={isEditorOpen}

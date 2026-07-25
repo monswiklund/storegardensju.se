@@ -7,32 +7,91 @@
 
 .kurser-hero {
   position: relative;
-  min-height: min(72vh, 720px);
+  min-height: min(78vh, 760px);
   display: flex;
   align-items: flex-end;
-  background-position: center;
-  background-size: cover;
   color: #ffffff;
+  overflow: hidden;
 }
 
-.kurser-hero::before {
-  content: "";
+.kurser-hero__bg {
+  position: absolute;
+  inset: -5%;
+  width: 110%;
+  height: 110%;
+  background-position: center;
+  background-size: cover;
+  animation: heroBreathing 12s ease-in-out infinite alternate;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.kurser-hero__overlay {
   position: absolute;
   inset: 0;
   background:
     linear-gradient(
       180deg,
-      rgba(18, 23, 17, 0.1) 15%,
-      rgba(18, 23, 17, 0.72) 100%
+      rgba(24, 34, 26, 0.25) 0%,
+      rgba(24, 34, 26, 0.45) 50%,
+      rgba(18, 26, 20, 0.85) 100%
     );
+  z-index: 1;
+}
+
+@keyframes heroBreathing {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
 }
 
 .kurser-hero__inner {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: min(100% - 40px, 1120px);
   margin: 0 auto;
-  padding: 110px 0 72px;
+  padding: 120px 0 80px;
+}
+
+.kurser-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+}
+
+.kurser-hero__badge-pulse {
+  width: 8px;
+  height: 8px;
+  background-color: #71cf97;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(113, 207, 151, 0.7);
+  animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(113, 207, 151, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(113, 207, 151, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(113, 207, 151, 0);
+  }
 }
 
 .kurser-eyebrow,
@@ -120,11 +179,16 @@
 .kurser-recap__gallery {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 20px;
 }
 
 .kurser-recap__image {
   margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-surface, #f5f4f0);
+  min-height: 280px;
+  position: relative;
 }
 
 .kurser-recap__image--large {
@@ -133,10 +197,17 @@
 
 .kurser-recap__image img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  min-height: 280px;
   aspect-ratio: 4 / 5;
   display: block;
   object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.4s ease;
+}
+
+.kurser-recap__image:hover img {
+  transform: scale(1.02);
 }
 
 .kurser-interest {
@@ -193,8 +264,97 @@
   outline-offset: 6px;
 }
 
+.kurser-details {
+  width: min(100% - 40px, 1120px);
+  margin: 0 auto;
+  padding: clamp(60px, 8vw, 100px) 0;
+  border-bottom: 1px solid rgba(95, 111, 82, 0.18);
+}
+
+.kurser-details__container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: clamp(40px, 6vw, 80px);
+  align-items: center;
+}
+
+.kurser-details__info h2 {
+  margin: 12px 0 16px;
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.kurser-details__description {
+  max-width: 580px;
+  margin-bottom: 28px;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.kurser-details__meta {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.kurser-details__meta li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-main);
+  font-size: 1.05rem;
+}
+
+.kurser-details__meta li svg {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.kurser-action-card {
+  background: var(--bg-surface, #f9f8f6);
+  padding: clamp(28px, 4vw, 40px);
+  border-radius: 12px;
+  border: 1px solid rgba(95, 111, 82, 0.15);
+}
+
+.kurser-action-card h3 {
+  margin: 0 0 10px;
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+
+.kurser-details__extra {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: rgba(95, 111, 82, 0.08);
+  border-radius: 8px;
+}
+
+.kurser-details__extra p {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .kurser-details__container {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
 @media (max-width: 760px) {
   .kurser-hero {
+
     min-height: 660px;
     background-position: 56% center;
   }

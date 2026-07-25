@@ -519,6 +519,94 @@
   object-fit: cover;
 }
 
+/* Project Card inside Modal (when no image source) */
+.portfolio-modal-project-card {
+  background: #ffffff;
+  color: var(--text-main);
+  padding: 40px;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.portfolio-project-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--background-alt);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.portfolio-modal-project-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+  color: var(--text-main);
+}
+
+.portfolio-modal-project-card p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.portfolio-project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.portfolio-project-tag {
+  background: var(--background-alt);
+  color: var(--primary-hover);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.portfolio-project-link-btn {
+  display: inline-block;
+  background: var(--primary-color);
+  color: #ffffff;
+  padding: 10px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.portfolio-project-link-btn:hover {
+  background: var(--primary-hover);
+}
+
+.thumb-project-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 4px;
+  line-height: 1.1;
+}
+
 /* Responsiveness for Modal */
 @media (max-width: 768px) {
   .portfolio-modal {
@@ -548,5 +636,11 @@
   }
   .portfolio-modal-main-image img {
     max-height: 45vh;
+  }
+  .portfolio-modal-project-card {
+    padding: 24px 16px;
+  }
+  .portfolio-modal-project-card h3 {
+    font-size: 1.4rem;
   }
 }

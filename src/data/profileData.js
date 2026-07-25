@@ -24,32 +24,7 @@ export const profiles = {
       "Konstprojekt",
     ],
     imageSrc: "/images/ann-profile.webp",
-    portfolio: [
-      {
-        src: "/images/portfolio/ann-1.webp",
-        alt: "",
-        title: "",
-        caption: "",
-      },
-      {
-        src: "/images/portfolio/ann-2.webp",
-        alt: "",
-        title: "",
-        caption: "",
-      },
-      {
-        src: "/images/portfolio/ann-3.webp",
-        alt: "",
-        title: "",
-        caption: "",
-      },
-      {
-        src: "/images/portfolio/ann-4.webp",
-        alt: "",
-        title: "",
-        caption: "",
-      },
-    ],
+    portfolio: [],
   },
 
   carl: {
@@ -100,12 +75,11 @@ export const profiles = {
   },
   mans: {
     title: "Måns Wiklund",
-    about: "Junior Fullstack & DevOps",
+    about: "Junior Fullstack & DevOps (Sportson)",
     contact: {
       email: "monswiklund99@gmail.com",
       github: "github.com/monswiklund",
       linkedin: "www.linkedin.com/in/monswiklund/",
-      instagram: "www.instagram.com/monswiklund/",
     },
     listItems: [
       "Backend: Go · C# · .NET Core",
@@ -115,6 +89,38 @@ export const profiles = {
       "DB: Postgres",
     ],
     imageSrc: "/images/mans-profile.webp",
-    portfolio: [],
+    portfolioUrl: "/om-oss/portfolj/mans",
+    portfolio: [
+      {
+        title: "Storegården 7 Webbsida",
+        caption: "Officiell webbplats och e-handelsplattform för eventlokal, workshops och butik med responsiv UI.",
+        tags: ["React", "Vite", "Node.js", "E-handel"],
+      },
+      {
+        title: "Padelcompanion & Padel Score",
+        caption: "Applikation för smartklockor (watchOS & Wear OS) och mobil att spåra padelmatcher i realtid.",
+        tags: ["Swift", "Kotlin", "TypeScript", "quicktype"],
+      },
+      {
+        title: "Padel Companion Site",
+        caption: "Webbportal och landningssida med PostgreSQL-backend, SvelteKit och Tailwind CSS.",
+        tags: ["SvelteKit", "TypeScript", "PostgreSQL", "Tailwind"],
+      },
+      {
+        title: "Vad Händer Sidan",
+        caption: "Karta- och eventplattform för lokala evenemang med interaktiv Leaflet-kartvy och Firebase.",
+        tags: ["SvelteKit", "TypeScript", "Leaflet", "Firebase"],
+      },
+      {
+        title: "Foderstallet",
+        caption: "Mobil- och webbapplikation för stallhantering, foderstyrning, QR-koder och offline-SQLite-stöd.",
+        tags: ["React Native", "Expo", "Expo Router", "SQLite"],
+      },
+      {
+        title: "ViHop",
+        caption: "Samåknings- och samordningsplattform för smidigare gemensamma resor.",
+        tags: ["React", "Cloud", "Fullstack"],
+      },
+    ],
   },
 };

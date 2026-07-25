@@ -68,33 +68,7 @@ function GalleryLightbox({
   //   return () => clearTimeout(timer);
   // }, [currentIndex]);
 
-  // Keyboard Navigation
-  useEffect(() => {
-    if (!isOpen) return;
 
-    const handleKeyDown = (e) => {
-      switch (e.key) {
-        case "ArrowRight":
-          onNext();
-          break;
-        case "ArrowLeft":
-          onPrevious();
-          break;
-        case "Escape":
-          onClose();
-          break;
-        case " ": // Spacebar
-          e.preventDefault();
-          setImmersive((prev) => !prev);
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onNext, onPrevious, onClose]);
 
   // Swipe Handlers
   const onTouchStart = (e) => {

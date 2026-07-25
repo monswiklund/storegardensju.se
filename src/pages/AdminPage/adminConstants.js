@@ -94,6 +94,7 @@ export const ADMIN_VIEW_GROUPS = [
     title: "Innehåll",
     options: [
       { value: "products", label: "Produkter" },
+      { value: "yoga", label: "Yoga & Kurser" },
       { value: "events", label: "Evenemang" },
       { value: "gallery", label: "Galleri" },
     ]

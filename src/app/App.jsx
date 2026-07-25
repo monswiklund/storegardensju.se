@@ -26,6 +26,7 @@ const MohippaPage = lazy(() => import("../pages/MohippaPage.jsx"));
 const ArtPage = lazy(() => import("../pages/ArtPage.jsx"));
 const GalleriPage = lazy(() => import("../pages/GalleriPage.jsx"));
 const TeamPage = lazy(() => import("../pages/TeamPage.jsx"));
+const MansPortfolioPage = lazy(() => import("../pages/MansPortfolioPage.jsx"));
 const KurserPage = lazy(() => import("../pages/KurserPage.jsx"));
 const AdminPage = lazy(() => import("../pages/AdminPage/AdminPage.jsx"));
 // BUTIK
@@ -134,7 +135,7 @@ function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isHomePage = location.pathname === "/";
-  const isTeamPage = location.pathname === "/om-oss";
+  const isTeamPage = location.pathname.startsWith("/om-oss");
   const eventRoute = appRoutes.find((route) => route.path === "/event");
   const eventPaths = eventRoute
     ? [
@@ -176,6 +177,7 @@ function AppContent() {
         <Route path="/success" element={<SuccessPage />} />
         <Route path="/cancel" element={<CancelPage />} />
         <Route path="/om-oss" element={<TeamPage />} />
+        <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
       </Suspense>
@@ -187,12 +189,12 @@ function AppContent() {
       {!isAdminRoute && !isTeamPage && (
         <SectionDivider above="alt" below="green" variant="wave" />
       )}
-      {!isAdminRoute && (
+      {!isAdminRoute && !isTeamPage && (
         <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
           <HomeInstagramSection />
         </FadeInSection>
       )}
-      {!isAdminRoute && (
+      {!isAdminRoute && !isTeamPage && (
         <SectionDivider above="green" below="alt" variant="hill" />
       )}
       {!isAdminRoute && <Footer />}

@@ -85,6 +85,34 @@ const isCourseDayEvent = (event) =>
   event?.id === COURSE_DAY_EVENT.id ||
   event?.startAt === COURSE_DAY_EVENT.startAt;
 
+const FALLBACK_YOGA_EVENT = {
+  id: "yoga-pa-loftet-2026-07-30",
+  title: "Yoga på loftet med Lina Wiklund",
+  spots: "150 kr / person – Drop-in (Betalas på plats)",
+  startAt: "2026-07-30T18:00:00+02:00",
+  endAt: "2026-07-30T19:30:00+02:00",
+  description:
+    "90 minuter med guidning och vila i fridfull miljö på loftet. Välkommen från 17:30 för att landa. Pris: 150 kr / person, betalas på plats. Ingen föranmälan behövs, yogamattor finns på plats!",
+  artists: "Lina Wiklund",
+  location: "Storegården 7, Rackeby (Lidköping)",
+  links: [
+    {
+      href: "/kurser",
+      label: "Läs mer om yogan",
+    },
+  ],
+  images: [
+    {
+      url: "/images/evenemang/lina-yoga-header.jpg",
+      alt: "Yoga på loftet med Lina Wiklund på Storegården 7",
+    },
+    {
+      url: "/images/evenemang/lina-yoga.jpg",
+      alt: "Yoga på loftet event i Lidköping",
+    },
+  ],
+};
+
 function HomePage() {
   useSeo(seoMeta.home);
   const navigate = useNavigate();
@@ -107,7 +135,10 @@ function HomePage() {
         });
       } catch {
         if (!active) return;
-        setError("Kunde inte hämta evenemang just nu.");
+        setEventsData({
+          upcoming: [FALLBACK_YOGA_EVENT],
+          past: [],
+        });
       } finally {
         if (active) {
           setLoading(false);
@@ -122,7 +153,10 @@ function HomePage() {
   }, []);
 
   const upcomingEvents = useMemo(() => {
-    const fetched = eventsData.upcoming
+    const rawUpcoming =
+      eventsData.upcoming.length > 0 ? eventsData.upcoming : [FALLBACK_YOGA_EVENT];
+
+    const fetched = rawUpcoming
       .filter((event) => !isCourseDayEvent(event))
       .sort((a, b) => new Date(a.startAt || 0) - new Date(b.startAt || 0))
       .map(toUiEvent);

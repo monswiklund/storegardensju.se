@@ -7,9 +7,12 @@ import { normalizeGalleryData } from "../../../features/gallery/normalizeGallery
 import {
   ArrowDown,
   ArrowUp,
+  Columns2,
+  Columns3,
   FolderPlus,
   Image as ImageIcon,
   Link as LinkIcon,
+  ListOrdered,
   Search,
 } from "lucide-react";
 import {
@@ -125,6 +128,43 @@ const getImageCategoryOrders = (image) => {
   }, {});
 };
 
+/* Renumbering in steps leaves room between neighbours, so a later insert does not
+   have to rewrite the whole sequence. */
+const ORDER_STEP = 10;
+
+/** The order an image has inside one specific category, staged edits first. */
+const resolveOrderInCategory = (image, categoryId, imageEdits) => {
+  const staged = imageEdits?.[image?.id]?.categoryOrders?.[categoryId];
+  if (Number.isFinite(Number(staged))) return Number(staged);
+  const stored = getImageCategoryOrders(image)[categoryId];
+  if (Number.isFinite(Number(stored))) return Number(stored);
+  /* `image.order` is category-scoped in the API response, so it is the right
+     fallback for the category the copy came from — and the only one available
+     for a membership that has no explicit order yet. */
+  return Number.isFinite(Number(image?.order)) ? Number(image.order) : 0;
+};
+
+const sortCategoryImages = (images, categoryId, imageEdits) =>
+  [...images].sort((a, b) => {
+    const orderA = resolveOrderInCategory(a, categoryId, imageEdits);
+    const orderB = resolveOrderInCategory(b, categoryId, imageEdits);
+    if (orderA === orderB) {
+      return (a.createdAt || 0) - (b.createdAt || 0);
+    }
+    return orderA - orderB;
+  });
+
+const captureOrderEdits = (imageEdits) =>
+  Object.entries(imageEdits).reduce((snapshot, [imageId, edits]) => {
+    if (
+      edits?.categoryOrders &&
+      Object.keys(edits.categoryOrders).length > 0
+    ) {
+      snapshot[imageId] = { ...edits.categoryOrders };
+    }
+    return snapshot;
+  }, {});
+
 const SUPPORTED_GALLERY_MIME_TYPES = new Set([
   "image/jpeg",
   "image/png",
@@ -153,6 +193,9 @@ function AdminGallery({ adminKey }) {
   const [draggingId, setDraggingId] = useState("");
   const [isCreateCategoryOpen, setIsCreateCategoryOpen] = useState(false);
   const [showCategorySettings, setShowCategorySettings] = useState(false);
+  const [isOrderingOpen, setIsOrderingOpen] = useState(false);
+  const [previewColumns, setPreviewColumns] = useState(3);
+  const [orderingBaseline, setOrderingBaseline] = useState({});
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [lastActionMessage, setLastActionMessage] = useState("");
   const [editingImageId, setEditingImageId] = useState("");
@@ -160,6 +203,7 @@ function AdminGallery({ adminKey }) {
   const [statusFilter, setStatusFilter] = useState(IMAGE_FILTER_ALL);
   const [uploadQueue, setUploadQueue] = useState([]);
   const [isDropActive, setIsDropActive] = useState(false);
+  const [dragOverId, setDragOverId] = useState("");
   const feedbackTimerRef = useRef(null);
   const categoryPickerRef = useRef(null);
   // Anchor for shift-click range selection.
@@ -228,26 +272,10 @@ function AdminGallery({ adminKey }) {
     [activeCategory]
   );
 
-  const sortedActiveImages = useMemo(() => {
-    return [...activeImages].sort((a, b) => {
-      const editedOrderA = a?.id ? imageEdits[a.id]?.order : undefined;
-      const editedOrderB = b?.id ? imageEdits[b.id]?.order : undefined;
-      const orderA = Number.isFinite(Number(editedOrderA))
-        ? Number(editedOrderA)
-        : Number.isFinite(Number(a.order))
-          ? Number(a.order)
-          : 0;
-      const orderB = Number.isFinite(Number(editedOrderB))
-        ? Number(editedOrderB)
-        : Number.isFinite(Number(b.order))
-          ? Number(b.order)
-          : 0;
-      if (orderA === orderB) {
-        return (a.createdAt || 0) - (b.createdAt || 0);
-      }
-      return orderA - orderB;
-    });
-  }, [activeImages, imageEdits]);
+  const sortedActiveImages = useMemo(
+    () => sortCategoryImages(activeImages, activeCategoryId, imageEdits),
+    [activeCategoryId, activeImages, imageEdits]
+  );
 
   const getImageValue = useCallback(
     (image, field) => {
@@ -311,6 +339,14 @@ function AdminGallery({ adminKey }) {
     [getImageValue, sortedActiveImages]
   );
 
+  const publishedActiveImages = useMemo(
+    () =>
+      sortedActiveImages.filter(
+        (image) => getImageValue(image, "published") !== false
+      ),
+    [getImageValue, sortedActiveImages]
+  );
+
   const selectableImageIds = useMemo(
     () => visibleImages.map((image) => image.id).filter(Boolean),
     [visibleImages]
@@ -366,12 +402,65 @@ function AdminGallery({ adminKey }) {
       }
     : null;
 
+  const editingCategoryIds = editingValues?.categoryIds;
+  /* One row per membership, each with that category's full sequence, so the
+     drawer can show and set the position independently per category. Alla bilder
+     comes first because it is the default tab on the public page. */
+  const editingOrderRows = useMemo(() => {
+    if (!editingImageId || !Array.isArray(editingCategoryIds)) return [];
+    const membershipIds = [
+      ...(allImagesCategoryId ? [allImagesCategoryId] : []),
+      ...editingCategoryIds.filter((id) => id !== allImagesCategoryId),
+    ];
+    return membershipIds
+      .map((categoryId) => {
+        const category = categories.find((item) => item.id === categoryId);
+        if (!category) return null;
+        const sequence = sortCategoryImages(
+          category.images || [],
+          categoryId,
+          imageEdits
+        );
+        const index = sequence.findIndex((image) => image.id === editingImageId);
+        if (index === -1) return null;
+        return {
+          categoryId,
+          name: category.name || categoryId,
+          sequence,
+          index,
+          total: sequence.length,
+        };
+      })
+      .filter(Boolean);
+  }, [
+    allImagesCategoryId,
+    categories,
+    editingCategoryIds,
+    editingImageId,
+    imageEdits,
+  ]);
+
   const pendingImageChangesCount = useMemo(
     () =>
       Object.values(imageEdits).filter(
         (edits) => edits && Object.keys(edits).length > 0
       ).length,
     [imageEdits]
+  );
+  const pendingOrderChangesCount = useMemo(
+    () =>
+      Object.values(imageEdits).filter(
+        (edits) =>
+          edits?.categoryOrders &&
+          Object.keys(edits.categoryOrders).length > 0
+      ).length,
+    [imageEdits]
+  );
+  const isOrderingDirty = useMemo(
+    () =>
+      JSON.stringify(captureOrderEdits(imageEdits)) !==
+      JSON.stringify(orderingBaseline),
+    [imageEdits, orderingBaseline]
   );
 
   const showActionFeedback = useCallback((message) => {
@@ -573,35 +662,40 @@ function AdminGallery({ adminKey }) {
     handleImageEditChange(imageId, "categoryIds", nextIds);
   };
 
-  const stageOrderForImages = useCallback(
-    (orderedImages) => {
-      setImageEdits((prev) => {
-        const next = { ...prev };
-        orderedImages.forEach((image, index) => {
-          const imageId = image?.id;
-          if (!imageId) return;
-          const nextOrder = (index + 1) * 10;
-          const baseOrder = Number.isFinite(Number(image.order))
-            ? Number(image.order)
-            : 0;
-          const prevEntry = next[imageId] || {};
-          const updated = { ...prevEntry };
-          if (nextOrder === baseOrder) {
-            delete updated.order;
-          } else {
-            updated.order = nextOrder;
-          }
-          if (Object.keys(updated).length === 0) {
-            delete next[imageId];
-          } else {
-            next[imageId] = updated;
-          }
-        });
-        return next;
+  /* Staged orders are keyed by category: the same image can sit in position 3 in
+     Loftet and position 12 in Alla bilder, and saving must not let one overwrite
+     the other. */
+  const stageOrderForImages = useCallback((orderedImages, categoryId) => {
+    if (!categoryId) return;
+    setImageEdits((prev) => {
+      const next = { ...prev };
+      orderedImages.forEach((image, index) => {
+        const imageId = image?.id;
+        if (!imageId) return;
+        const nextOrder = (index + 1) * ORDER_STEP;
+        const storedOrder = getImageCategoryOrders(image)[categoryId];
+        const prevEntry = next[imageId] || {};
+        const nextOrders = { ...(prevEntry.categoryOrders || {}) };
+        if (Number.isFinite(Number(storedOrder)) && Number(storedOrder) === nextOrder) {
+          delete nextOrders[categoryId];
+        } else {
+          nextOrders[categoryId] = nextOrder;
+        }
+        const updated = { ...prevEntry };
+        if (Object.keys(nextOrders).length === 0) {
+          delete updated.categoryOrders;
+        } else {
+          updated.categoryOrders = nextOrders;
+        }
+        if (Object.keys(updated).length === 0) {
+          delete next[imageId];
+        } else {
+          next[imageId] = updated;
+        }
       });
-    },
-    []
-  );
+      return next;
+    });
+  }, []);
 
   const buildImageUpdate = useCallback(
     (imageId, edits) => {
@@ -635,39 +729,34 @@ function AdminGallery({ adminKey }) {
             ? [...assignedCategoryIds, allImagesCategoryId]
             : assignedCategoryIds;
         const baseCategoryOrders = getImageCategoryOrders(image);
+        const stagedCategoryOrders =
+          edits.categoryOrders && typeof edits.categoryOrders === "object"
+            ? edits.categoryOrders
+            : {};
+        /* Only the categories the image belongs to are persisted, and each keeps
+           its own sequence: a staged position wins, otherwise the stored one is
+           carried over untouched. `image.order` is never written into a category
+           it did not come from — that value belongs to one sequence only. */
         const persistedCategoryOrders = validCategoryIds.reduce((acc, id) => {
-          if (Number.isFinite(Number(baseCategoryOrders[id]))) {
-            acc[id] = Number(baseCategoryOrders[id]);
+          const staged = Number(stagedCategoryOrders[id]);
+          if (Number.isFinite(staged)) {
+            acc[id] = staged;
+            return acc;
+          }
+          const stored = Number(baseCategoryOrders[id]);
+          if (Number.isFinite(stored)) {
+            acc[id] = stored;
           }
           return acc;
         }, {});
-        /* Falls back to the stored order of the category being viewed, never to
-           `image.order` alone — that value belongs to whichever category the copy
-           in hand came from, and writing it into another category's sequence
-           would scramble it. */
-        const activeStoredOrder = Number.isFinite(
-          Number(baseCategoryOrders[activeCategoryId])
-        )
-          ? Number(baseCategoryOrders[activeCategoryId])
-          : undefined;
-        const effectiveOrder = Number.isFinite(Number(edits.order))
-          ? Number(edits.order)
-          : activeStoredOrder !== undefined
-            ? activeStoredOrder
-            : Number.isFinite(Number(image.order))
-              ? Number(image.order)
-              : 0;
-        // Reordering writes to the category being viewed — including Alla bilder,
-        // whose sequence is independent of the specific categories.
-        if (activeCategoryId && validCategoryIds.includes(activeCategoryId)) {
-          persistedCategoryOrders[activeCategoryId] = effectiveOrder;
-        }
         // The primary category is never "Alla bilder": it drives `categoryId`
         // and primary_flag in the join table.
         const primaryCategoryId = assignedCategoryIds[0];
         const primaryOrder = Number.isFinite(Number(persistedCategoryOrders[primaryCategoryId]))
           ? Number(persistedCategoryOrders[primaryCategoryId])
-          : effectiveOrder;
+          : Number.isFinite(Number(image.order))
+            ? Number(image.order)
+            : 0;
 
         const payload = {
           title: edits.title ?? image.title ?? image.displayName ?? "",
@@ -709,6 +798,51 @@ function AdminGallery({ adminKey }) {
       await loadGallery();
     } catch (err) {
       error(err?.message || "Kunde inte spara bildändringar.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveOrderChanges = async () => {
+    const updates = Object.entries(imageEdits)
+      .filter(
+        ([, edits]) =>
+          edits?.categoryOrders &&
+          Object.keys(edits.categoryOrders).length > 0
+      )
+      .map(([imageId, edits]) =>
+        buildImageUpdate(imageId, { categoryOrders: edits.categoryOrders })
+      )
+      .filter(Boolean);
+
+    if (updates.length === 0) {
+      info("Inga ändringar i bildordningen att spara.");
+      return false;
+    }
+
+    setSaving(true);
+    try {
+      await applyImageUpdates(updates);
+      setImageEdits((prev) => {
+        const next = { ...prev };
+        updates.forEach(({ id }) => {
+          const entry = { ...(next[id] || {}) };
+          delete entry.categoryOrders;
+          if (Object.keys(entry).length === 0) {
+            delete next[id];
+          } else {
+            next[id] = entry;
+          }
+        });
+        return next;
+      });
+      success(`Bildordningen sparad (${updates.length} bilder).`);
+      showActionFeedback(`Sparade ordningen för ${updates.length} bilder`);
+      await loadGallery();
+      return true;
+    } catch (err) {
+      error(err?.message || "Kunde inte spara bildordningen.");
+      return false;
     } finally {
       setSaving(false);
     }
@@ -858,36 +992,97 @@ function AdminGallery({ adminKey }) {
     [adminKey]
   );
 
-  const handleReorder = (targetId) => {
-    if (!draggingId || draggingId === targetId) return;
-    const ordered = [...sortedActiveImages];
-    const dragIndex = ordered.findIndex((img) => img.id === draggingId);
-    const targetIndex = ordered.findIndex((img) => img.id === targetId);
-    if (dragIndex === -1 || targetIndex === -1) return;
-
-    const dragged = ordered[dragIndex];
-    const remaining = ordered.filter((img) => img.id !== draggingId);
-    let insertIndex = targetIndex;
-    if (dragIndex < targetIndex) {
-      insertIndex = Math.max(0, targetIndex - 1);
-    }
-    remaining.splice(insertIndex, 0, dragged);
-    stageOrderForImages(remaining);
-    showActionFeedback("Ordning ändrad, spara för att publicera");
-    setDraggingId("");
+  /* Moves the edited image inside one named category, leaving every other
+     category's sequence untouched. `row` comes from editingOrderRows. */
+  const moveImageToPosition = (row, targetIndex) => {
+    const clamped = Math.max(0, Math.min(row.total - 1, targetIndex));
+    if (!Number.isFinite(clamped) || clamped === row.index) return;
+    const reordered = [...row.sequence];
+    const [moved] = reordered.splice(row.index, 1);
+    reordered.splice(clamped, 0, moved);
+    stageOrderForImages(reordered, row.categoryId);
+    showActionFeedback(
+      `Position ${clamped + 1} i ${row.name}, spara för att publicera`
+    );
   };
 
-  const handleMoveImage = (imageId, direction) => {
-    const currentIndex = sortedActiveImages.findIndex((image) => image.id === imageId);
+  const movePreviewImageToPosition = (imageId, targetPosition) => {
+    const currentIndex = publishedActiveImages.findIndex(
+      (image) => image.id === imageId
+    );
     if (currentIndex === -1) return;
-    const nextIndex = currentIndex + direction;
-    if (nextIndex < 0 || nextIndex >= sortedActiveImages.length) return;
-    const reordered = [...sortedActiveImages];
-    const [moved] = reordered.splice(currentIndex, 1);
-    reordered.splice(nextIndex, 0, moved);
-    stageOrderForImages(reordered);
-    success(direction < 0 ? "Bild flyttad upp." : "Bild flyttad ner.");
-    showActionFeedback(direction < 0 ? "Flyttade bild upp, spara ändringar" : "Flyttade bild ner, spara ändringar");
+    const numericPosition = Number(targetPosition);
+    if (!Number.isFinite(numericPosition)) return;
+    const targetIndex = Math.max(
+      0,
+      Math.min(publishedActiveImages.length - 1, Math.round(numericPosition) - 1)
+    );
+    if (targetIndex === currentIndex) return;
+    const reorderedPublished = [...publishedActiveImages];
+    const [moved] = reorderedPublished.splice(currentIndex, 1);
+    reorderedPublished.splice(targetIndex, 0, moved);
+    let publishedIndex = 0;
+    const reordered = sortedActiveImages.map((image) =>
+      getImageValue(image, "published") !== false
+        ? reorderedPublished[publishedIndex++]
+        : image
+    );
+    stageOrderForImages(reordered, activeCategoryId);
+    showActionFeedback(
+      `Flyttade bilden till plats ${targetIndex + 1} i ${activeCategory?.name}`
+    );
+  };
+
+  const handlePreviewReorder = (targetId) => {
+    if (!draggingId || draggingId === targetId) return;
+    const currentIndex = publishedActiveImages.findIndex(
+      (image) => image.id === draggingId
+    );
+    const targetIndex = publishedActiveImages.findIndex(
+      (image) => image.id === targetId
+    );
+    if (currentIndex === -1 || targetIndex === -1) return;
+    const reorderedPublished = [...publishedActiveImages];
+    const [moved] = reorderedPublished.splice(currentIndex, 1);
+    reorderedPublished.splice(targetIndex, 0, moved);
+    let publishedIndex = 0;
+    const reordered = sortedActiveImages.map((image) =>
+      getImageValue(image, "published") !== false
+        ? reorderedPublished[publishedIndex++]
+        : image
+    );
+    stageOrderForImages(reordered, activeCategoryId);
+    showActionFeedback("Ordning ändrad i förhandsvisningen");
+    setDraggingId("");
+    setDragOverId("");
+  };
+
+  const openOrderingWorkspace = () => {
+    setOrderingBaseline(captureOrderEdits(imageEdits));
+    setIsOrderingOpen(true);
+  };
+
+  const cancelOrderingWorkspace = () => {
+    setImageEdits((prev) => {
+      const next = {};
+      Object.entries(prev).forEach(([imageId, edits]) => {
+        const preserved = { ...edits };
+        delete preserved.categoryOrders;
+        if (Object.keys(preserved).length > 0) {
+          next[imageId] = preserved;
+        }
+      });
+      Object.entries(orderingBaseline).forEach(([imageId, categoryOrders]) => {
+        next[imageId] = {
+          ...(next[imageId] || {}),
+          categoryOrders: { ...categoryOrders },
+        };
+      });
+      return next;
+    });
+    setDraggingId("");
+    setDragOverId("");
+    setIsOrderingOpen(false);
   };
 
   const validateUploadFiles = (files) =>
@@ -1306,16 +1501,26 @@ function AdminGallery({ adminKey }) {
 
           <div className="admin-gallery-content">
             <div className="admin-gallery-content-header">
-              <h3>
-                {activeCategory ? activeCategory.name : "Ingen kategori vald"}
-              </h3>
-              <p className="admin-muted">
-                {galleryOverview.activeImageCount} bilder i vald kategori
-                {galleryOverview.selectedImageCount > 0
-                  ? ` • ${galleryOverview.selectedImageCount} markerade`
-                  : ""}
-                {isFiltering ? " • Ordning låst medan filter är aktivt" : ""}
-              </p>
+              <div>
+                <h3>
+                  {activeCategory ? activeCategory.name : "Ingen kategori vald"}
+                </h3>
+                <p className="admin-muted">
+                  {galleryOverview.activeImageCount} bilder i vald kategori
+                  {galleryOverview.selectedImageCount > 0
+                    ? ` • ${galleryOverview.selectedImageCount} markerade`
+                    : ""}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="admin-btn-primary admin-gallery-order-launch"
+                onClick={openOrderingWorkspace}
+                disabled={!activeCategory || sortedActiveImages.length < 2}
+              >
+                <ListOrdered size={17} aria-hidden="true" />
+                Ordna bilder
+              </button>
             </div>
             {activeCategoryIsAssignable ? (
             <div
@@ -1400,7 +1605,7 @@ function AdminGallery({ adminKey }) {
             ) : (
               <AdminState
                 title="Uppladdning sker i en kategori"
-                message="Välj en specifik kategori för att ladda upp. Ordningen här i Alla bilder kan du ändra direkt."
+                message="Välj en specifik kategori för att ladda upp. Använd Ordna bilder för att ändra placeringen."
               />
             )}
 
@@ -1539,10 +1744,6 @@ function AdminGallery({ adminKey }) {
                   const orderIndex = sortedActiveImages.findIndex(
                     (candidate) => candidate === image
                   );
-                  // Every category has its own sequence, Alla bilder included.
-                  // Only an active filter blocks reordering: moving inside a
-                  // subset would rewrite positions relative to hidden images.
-                  const canReorder = !isFiltering && Boolean(image.id);
 
                   return (
                     <div
@@ -1550,20 +1751,6 @@ function AdminGallery({ adminKey }) {
                       className={`admin-gallery-image-card ${
                         isSelected ? "is-selected" : ""
                       }`}
-                      draggable={canReorder}
-                      onDragStart={() => {
-                        if (!canReorder) return;
-                        setDraggingId(image.id);
-                      }}
-                      onDragEnd={() => setDraggingId("")}
-                      onDragOver={(event) => {
-                        if (!canReorder) return;
-                        event.preventDefault();
-                      }}
-                      onDrop={() => {
-                        if (!canReorder) return;
-                        handleReorder(image.id);
-                      }}
                     >
                       <button
                         type="button"
@@ -1625,31 +1812,7 @@ function AdminGallery({ adminKey }) {
                         </span>
                       </div>
 
-                      {/* Move buttons live on the card, not in the editor: reordering is
-                          a list-level task and drag-and-drop does not work on touch. */}
-                      <div className="admin-gallery-image-move">
-                        <button
-                          type="button"
-                          className="admin-btn-secondary admin-btn-move"
-                          onClick={() => handleMoveImage(image.id, -1)}
-                          disabled={saving || !canReorder || orderIndex === 0}
-                          aria-label="Flytta upp"
-                        >
-                          <ArrowUp size={16} aria-hidden="true" />
-                        </button>
-                        <button
-                          type="button"
-                          className="admin-btn-secondary admin-btn-move"
-                          onClick={() => handleMoveImage(image.id, 1)}
-                          disabled={
-                            saving ||
-                            !canReorder ||
-                            orderIndex === sortedActiveImages.length - 1
-                          }
-                          aria-label="Flytta ner"
-                        >
-                          <ArrowDown size={16} aria-hidden="true" />
-                        </button>
+                      <div className="admin-gallery-image-actions">
                         <button
                           type="button"
                           className="admin-btn-tertiary admin-btn-sm"
@@ -1886,47 +2049,275 @@ function AdminGallery({ adminKey }) {
             <AdminDrawerSection
               title="Ordning"
               summary={
-                editingImageIndex >= 0
-                  ? `Position ${editingImageIndex + 1} av ${sortedActiveImages.length}`
+                editingOrderRows.length > 0
+                  ? editingOrderRows
+                      .map((row) => `${row.name} ${row.index + 1}`)
+                      .join(" · ")
                   : "Okänd"
               }
             >
               <p className="admin-muted">
-                Positionen gäller i {activeCategory?.name || "vald kategori"}.
-                Varje kategori har en egen ordning.
+                Varje kategori har en egen ordning — sätt positionen per kategori.
+                Ändringen sparas med bilden.
               </p>
-              {isFiltering ? (
+              {editingOrderRows.length === 0 ? (
                 <p className="admin-muted">
-                  Rensa filtret för att kunna flytta bilden.
+                  Spara bilden först, så går den att positionera i sina
+                  kategorier.
                 </p>
               ) : (
-                <div className="admin-gallery-image-actions">
-                  <button
-                    type="button"
-                    className="admin-btn-secondary admin-btn-sm"
-                    onClick={() => handleMoveImage(editingImageId, -1)}
-                    disabled={saving || editingImageIndex <= 0}
-                  >
-                    Flytta upp
-                  </button>
-                  <button
-                    type="button"
-                    className="admin-btn-secondary admin-btn-sm"
-                    onClick={() => handleMoveImage(editingImageId, 1)}
-                    disabled={
-                      saving ||
-                      editingImageIndex < 0 ||
-                      editingImageIndex === sortedActiveImages.length - 1
-                    }
-                  >
-                    Flytta ner
-                  </button>
-                </div>
+                <ul className="admin-gallery-order-rows">
+                  {editingOrderRows.map((row) => (
+                    <li key={row.categoryId} className="admin-gallery-order-row">
+                      <span className="admin-gallery-order-row-name">
+                        {row.name}
+                      </span>
+                      <div className="admin-gallery-order-row-controls">
+                        <input
+                          className="admin-gallery-order-row-field"
+                          type="number"
+                          min={1}
+                          max={row.total}
+                          aria-label={`Position i ${row.name}`}
+                          /* Uncontrolled and re-keyed on the resolved position: a
+                             controlled value would restage the whole sequence on
+                             every keystroke. Commit happens on blur/Enter. */
+                          key={`${row.categoryId}-${row.index}`}
+                          defaultValue={row.index + 1}
+                          disabled={saving}
+                          onBlur={(event) =>
+                            moveImageToPosition(row, Number(event.target.value) - 1)
+                          }
+                          onKeyDown={(event) => {
+                            if (event.key !== "Enter") return;
+                            event.preventDefault();
+                            moveImageToPosition(
+                              row,
+                              Number(event.currentTarget.value) - 1
+                            );
+                          }}
+                        />
+                        <span className="admin-muted">av {row.total}</span>
+                        <button
+                          type="button"
+                          className="admin-btn-secondary admin-btn-sm"
+                          onClick={() => moveImageToPosition(row, row.index - 1)}
+                          disabled={saving || row.index === 0}
+                          aria-label={`Flytta upp i ${row.name}`}
+                        >
+                          <ArrowUp size={14} aria-hidden="true" />
+                        </button>
+                        <button
+                          type="button"
+                          className="admin-btn-secondary admin-btn-sm"
+                          onClick={() => moveImageToPosition(row, row.index + 1)}
+                          disabled={saving || row.index === row.total - 1}
+                          aria-label={`Flytta ner i ${row.name}`}
+                        >
+                          <ArrowDown size={14} aria-hidden="true" />
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               )}
             </AdminDrawerSection>
           </form>
         )}
       </AdminDrawer>
+      <AdminDrawer
+        open={isOrderingOpen}
+        size="wide"
+        title={`Ordna bilder · ${activeCategory?.name || ""}`}
+        description="Dra bilderna till rätt plats eller skriv in ett positionsnummer."
+        icon={<ListOrdered size={20} />}
+        isDirty={isOrderingDirty}
+        dirtyMessage="Du har en osparad bildordning. Vill du stänga utan att spara?"
+        onClose={cancelOrderingWorkspace}
+        previewOnly
+        previewLabel={`Publik förhandsvisning · ${activeCategory?.name || "Galleri"}`}
+        preview={
+          <div className="admin-gallery-public-preview">
+            <div className="admin-gallery-public-preview-browser">
+              <span aria-hidden="true" />
+              <span>{`${GALLERY_PUBLIC_PATH}${
+                isAllImagesCategory(activeCategory)
+                  ? ""
+                  : `/${activeCategory?.slug || activeCategory?.id || ""}`
+              }`}</span>
+            </div>
+            <div className="admin-gallery-public-preview-heading">
+              <span>GALLERI</span>
+              <h3>Bildgalleri</h3>
+              <p>
+                Så här visas ordningen för besökare i kategorin{" "}
+                <strong>{activeCategory?.name}</strong>.
+              </p>
+            </div>
+            <div
+              className="admin-gallery-public-preview-categories"
+              aria-label="Förhandsvisa kategori"
+            >
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  className={
+                    category.id === activeCategoryId ? "is-active" : ""
+                  }
+                  aria-pressed={category.id === activeCategoryId}
+                  onClick={() => {
+                    setActiveCategoryId(category.id);
+                    setDraggingId("");
+                    setDragOverId("");
+                  }}
+                >
+                  <span>{category.name}</span>
+                  <small>{category.images?.length || 0}</small>
+                </button>
+              ))}
+            </div>
+            <div
+              className="admin-gallery-public-preview-view"
+              role="group"
+              aria-label="Antal kolumner i förhandsvisningen"
+            >
+              <span>Kolumner</span>
+              <button
+                type="button"
+                aria-label="Visa 2 kolumner"
+                aria-pressed={previewColumns === 2}
+                className={previewColumns === 2 ? "is-active" : ""}
+                onClick={() => setPreviewColumns(2)}
+              >
+                <Columns2 size={15} aria-hidden="true" />
+                2
+              </button>
+              <button
+                type="button"
+                aria-label="Visa 3 kolumner"
+                aria-pressed={previewColumns === 3}
+                className={previewColumns === 3 ? "is-active" : ""}
+                onClick={() => setPreviewColumns(3)}
+              >
+                <Columns3 size={15} aria-hidden="true" />
+                3
+              </button>
+            </div>
+            <div
+              className={`admin-gallery-public-preview-grid is-${previewColumns}-columns`}
+            >
+              {publishedActiveImages.map((image, index) => (
+                  <figure
+                    key={image.id || image.filename || index}
+                    className={`${draggingId === image.id ? "is-dragging" : ""} ${
+                      dragOverId === image.id ? "is-drag-target" : ""
+                    }`}
+                    draggable={Boolean(image.id)}
+                    aria-label={`Flytta ${getImageLabel(image)}, plats ${
+                      index + 1
+                    }`}
+                    onDragStart={(event) => {
+                      event.dataTransfer.effectAllowed = "move";
+                      setDraggingId(image.id);
+                    }}
+                    onDragEnd={() => {
+                      setDraggingId("");
+                      setDragOverId("");
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      event.dataTransfer.dropEffect = "move";
+                      setDragOverId(image.id);
+                    }}
+                    onDrop={(event) => {
+                      event.preventDefault();
+                      handlePreviewReorder(image.id);
+                    }}
+                  >
+                    {getImageSrc(image) ? (
+                      <img
+                        src={getImageSrc(image)}
+                        alt={getImageLabel(image)}
+                        draggable={Boolean(image.id)}
+                        onDragStart={(event) => {
+                          event.stopPropagation();
+                          event.dataTransfer.effectAllowed = "move";
+                          setDraggingId(image.id);
+                        }}
+                      />
+                    ) : (
+                      <div className="admin-gallery-image-placeholder">
+                        <ImageIcon size={24} aria-hidden="true" />
+                      </div>
+                    )}
+                    <figcaption>
+                      <input
+                        key={`${activeCategoryId}-${image.id}-${index}`}
+                        type="number"
+                        min={1}
+                        max={publishedActiveImages.length}
+                        defaultValue={index + 1}
+                        draggable="false"
+                        aria-label={`Placering för ${getImageLabel(image)} i ${activeCategory?.name}`}
+                        onDragStart={(event) => event.stopPropagation()}
+                        onBlur={(event) =>
+                          movePreviewImageToPosition(
+                            image.id,
+                            event.target.value
+                          )
+                        }
+                        onKeyDown={(event) => {
+                          if (event.key !== "Enter") return;
+                          event.preventDefault();
+                          movePreviewImageToPosition(
+                            image.id,
+                            event.currentTarget.value
+                          );
+                        }}
+                      />
+                      <span>{getImageLabel(image)}</span>
+                    </figcaption>
+                  </figure>
+                ))}
+            </div>
+            {publishedActiveCount === 0 && (
+              <p className="admin-gallery-public-preview-empty">
+                Inga publicerade bilder i den här kategorin.
+              </p>
+            )}
+          </div>
+        }
+        footer={
+          <div className="admin-gallery-order-footer">
+            <span>
+              {pendingOrderChangesCount > 0
+                ? `${pendingOrderChangesCount} bilder har en ny placering`
+                : `Ordningen i ${activeCategory?.name || "kategorin"} är sparad`}
+            </span>
+            <div>
+              <button
+                type="button"
+                className="admin-btn-secondary"
+                onClick={cancelOrderingWorkspace}
+              >
+                Avbryt
+              </button>
+              <button
+                type="button"
+                className="admin-btn-primary"
+                disabled={saving || pendingOrderChangesCount === 0}
+                onClick={async () => {
+                  const saved = await handleSaveOrderChanges();
+                  if (saved) setIsOrderingOpen(false);
+                }}
+              >
+                {saving ? "Sparar..." : "Spara ordning"}
+              </button>
+            </div>
+          </div>
+        }
+      />
       <AdminDrawer
         open={isCreateCategoryOpen}
         size="wide"

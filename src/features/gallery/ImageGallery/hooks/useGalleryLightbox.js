@@ -219,7 +219,6 @@ function useGalleryLightbox(images, categoryKey) {
 
   useEffect(() => {
     preloadedSourcesRef.current.clear();
-    setCurrentIndex(0); // Reset index when category changes
   }, [categoryKey]);
 
   useEffect(() => {

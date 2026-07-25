@@ -7,6 +7,47 @@ import "../../PastEvents/PastEvents.css";
 function PastEventsAccordion({ events }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  // Scroll-listener that calculates which past event item is closest to the vertical center of the screen
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleScroll = () => {
+      const elements = document.querySelectorAll(".past-event-item");
+      if (!elements.length) return;
+
+      const viewportCenter = window.innerHeight / 2;
+      let closestIdx = null;
+      let minDistance = Infinity;
+
+      elements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const itemCenter = rect.top + rect.height / 2;
+        const distance = Math.abs(itemCenter - viewportCenter);
+
+        // Only consider elements that are reasonably within the viewport area
+        if (rect.bottom > 100 && rect.top < window.innerHeight - 100) {
+          if (distance < minDistance) {
+            minDistance = distance;
+            const idx = Number(el.getAttribute("data-index"));
+            if (!Number.isNaN(idx)) {
+              closestIdx = idx;
+            }
+          }
+        }
+      });
+
+      if (closestIdx !== null) {
+        setActiveIndex(closestIdx);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial check on load
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [showAll, events.length]);
 
   // Close modal on Escape key
   useEffect(() => {
@@ -95,9 +136,10 @@ function PastEventsAccordion({ events }) {
               return (
                 <article
                   key={`${event.title}-${index}`}
+                  data-index={index}
                   className={`past-event-item ${
                     thumbImage?.src ? "" : "past-event-item--no-image"
-                  }`}
+                  } ${activeIndex === index ? "is-highlighted" : ""}`}
                   aria-labelledby={`past-event-title-${index}`}
                   onClick={() => setSelectedEvent(event)}
                   role="button"

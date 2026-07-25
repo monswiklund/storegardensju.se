@@ -110,12 +110,50 @@
   grid-template-columns: 60px 30px 100px 1fr auto;
   gap: 20px;
   align-items: start;
-  padding: 24px 0;
-  border: none;
+  padding: 24px 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
   background: transparent;
   color: inherit;
   cursor: pointer;
   text-align: left;
+  transition: background-color 0.6s ease-out, border-color 0.6s ease-out, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease-out;
+}
+
+.past-event-item:hover,
+.past-event-item.is-highlighted {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(95, 111, 82, 0.18);
+  transform: translateX(3px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+}
+
+.past-event-item:hover .timeline-marker-dot,
+.past-event-item.is-highlighted .timeline-marker-dot {
+  transform: scale(1.3);
+  background: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(95, 111, 82, 0.18);
+}
+
+.past-event-item:hover .past-event-thumbnail img,
+.past-event-item.is-highlighted .past-event-thumbnail img {
+  transform: scale(1.05);
+}
+
+.past-event-item:hover .past-event-open-link,
+.past-event-item.is-highlighted .past-event-open-link {
+  transform: translateX(4px);
+  color: var(--primary-color);
+}
+
+.past-event-item:hover .past-event-open-link::after,
+.past-event-item.is-highlighted .past-event-open-link::after {
+  width: 100%;
+}
+
+.past-event-item:hover .past-event-open-link svg,
+.past-event-item.is-highlighted .past-event-open-link svg {
+  transform: translate(3px, -2px);
 }
 
 .past-event-item--no-image {
@@ -173,6 +211,7 @@
   z-index: 2;
   margin-top: 14px; /* aligned with time / title top line */
   box-shadow: 0 0 0 3px var(--background-alt); /* hides line behind dot */
+  transition: transform 0.6s ease-out, background-color 0.6s ease-out, box-shadow 0.6s ease-out;
 }
 
 .timeline-marker-line {
@@ -268,6 +307,7 @@
 }
 
 .past-event-open-link {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -275,7 +315,25 @@
   font-size: 0.85rem;
   font-weight: 700;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  padding: 4px 0;
+  background: transparent;
+  transition: color 0.4s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.past-event-open-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: var(--primary-color);
+  border-radius: 1px;
+  transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.past-event-open-link svg {
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .past-event-open-link span {

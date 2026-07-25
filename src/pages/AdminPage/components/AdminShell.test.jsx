@@ -13,8 +13,8 @@ describe("admin shell", () => {
           onViewChange={vi.fn()}
           isOpen
           onClose={vi.fn()}
-          isCollapsed={false}
-          onToggleCollapsed={vi.fn()}
+          isExpanded
+          onExpandedChange={vi.fn()}
         />
       </MemoryRouter>
     );
@@ -24,6 +24,8 @@ describe("admin shell", () => {
       "aria-current",
       "page"
     );
+    expect(screen.getByRole("img", { name: "Storegården 7" })).toBeInTheDocument();
+    expect(screen.queryByText("S7")).not.toBeInTheDocument();
   });
 
   it("V15 has no duplicate global refresh action", () => {
@@ -54,26 +56,54 @@ describe("admin shell", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("V24 toggles the sidebar and closes the mobile drawer with Escape", () => {
-    const onToggleCollapsed = vi.fn();
+  it("locks page scrolling while keeping drawer scrolling native", () => {
+    const stop = vi.fn();
+    const start = vi.fn();
+    window.storegardenLenis = { stop, start };
+
+    const { unmount } = render(
+      <AdminDrawer open title="Inställningar" onClose={vi.fn()}>
+        <p>Innehåll</p>
+      </AdminDrawer>
+    );
+
+    expect(document.documentElement).toHaveClass("admin-drawer-open");
+    expect(document.body).toHaveClass("admin-drawer-open");
+    expect(screen.getByRole("dialog")).toHaveAttribute("data-lenis-prevent");
+    expect(stop).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(document.documentElement).not.toHaveClass("admin-drawer-open");
+    expect(document.body).not.toHaveClass("admin-drawer-open");
+    expect(start).toHaveBeenCalledTimes(1);
+    delete window.storegardenLenis;
+  });
+
+  it("V24 auto-expands the sidebar and closes the mobile drawer with Escape", () => {
+    const onExpandedChange = vi.fn();
     const onClose = vi.fn();
-    render(
+    const { container } = render(
       <MemoryRouter>
         <AdminSidebar
           adminView="overview"
           onViewChange={vi.fn()}
           isOpen
           onClose={onClose}
-          isCollapsed
-          onToggleCollapsed={onToggleCollapsed}
+          isExpanded={false}
+          onExpandedChange={onExpandedChange}
         />
       </MemoryRouter>
     );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Expandera sidomenyn" })
-    );
-    expect(onToggleCollapsed).toHaveBeenCalledTimes(1);
+    const sidebar = container.querySelector(".admin-sidebar");
+    fireEvent.pointerEnter(sidebar);
+    expect(onExpandedChange).toHaveBeenLastCalledWith(true);
+
+    fireEvent.pointerLeave(sidebar);
+    expect(onExpandedChange).toHaveBeenLastCalledWith(false);
+
+    fireEvent.focus(screen.getByRole("button", { name: "Översikt" }));
+    expect(onExpandedChange).toHaveBeenLastCalledWith(true);
 
     fireEvent.keyDown(document, { key: "Escape" });
     expect(onClose).toHaveBeenCalledTimes(1);

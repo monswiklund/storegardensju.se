@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   ChevronLeft,
@@ -83,6 +83,29 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
   const scrollToContact = useScrollToSelector(".contact-container");
   const scrollToPastEvents = useScrollToSelector("#past-events");
   const [currentUpcomingIndex, setCurrentUpcomingIndex] = useState(0);
+  const [isCentered, setIsCentered] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleScroll = () => {
+      const section = document.getElementById("events-section");
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const viewportCenter = window.innerHeight / 2;
+      const sectionCenter = rect.top + rect.height / 2;
+
+      // Section is considered centered when its center is close to viewport center (within 250px)
+      const distance = Math.abs(sectionCenter - viewportCenter);
+      setIsCentered(distance < 280);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const activeEvent = upcomingEvents[currentUpcomingIndex] || null;
   const primaryLink = activeEvent?.links?.[0] || { href: "/kurser", label: "Läs mer & anmäl dig" };
@@ -98,7 +121,240 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
   };
 
   return (
-    <div id="events-section" className="events-section">
+    <div id="events-section" className={`events-section ${isCentered ? "is-centered" : ""}`}>
+      {/* Background Botanical Vines with Rich Flowers for Entire Component */}
+      <svg
+        className="section-botanical-vine section-vine-left"
+        viewBox="-40 -20 240 380"
+        aria-hidden="true"
+      >
+        <path
+          d="M 10,320 Q 70,220 90,140 T 170,30"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+        {/* Secondary branch line */}
+        <path
+          d="M 55,200 Q 15,160 30,120"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        {/* Leaf details */}
+        <path d="M 45,240 Q 25,220 20,228 C 18,238 38,246 45,240 Z" fill="currentColor" />
+        <path d="M 78,165 Q 55,148 48,158 C 46,168 64,175 78,165 Z" fill="currentColor" />
+        <path d="M 118,82 Q 102,62 92,72 C 90,84 108,90 118,82 Z" fill="currentColor" />
+
+        {/* 6-Petal Flower 1 (Large - Bottom Left) */}
+        <g transform="translate(38, 270) scale(0.65)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 2 (Medium - Mid-lower) */}
+        <g transform="translate(62, 195) scale(0.48)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 3 (Branch Flower - Left cluster) */}
+        <g transform="translate(28, 120) scale(0.45)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 4 (Medium - Center) */}
+        <g transform="translate(95, 125) scale(0.55)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 5 (Small - Upper stem) */}
+        <g transform="translate(132, 75) scale(0.42)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 6 (Small - Top Tip) */}
+        <g transform="translate(162, 38) scale(0.38)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+      </svg>
+
+      {/* 3rd Flower Cluster SVG (Top-Center / Interstitial placement) */}
+      <svg
+        className="section-botanical-vine section-vine-center"
+        viewBox="-40 -20 200 280"
+        aria-hidden="true"
+      >
+        <path
+          d="M 10,240 Q 80,180 100,100 T 150,10"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        />
+        <path d="M 50,180 Q 30,160 25,168 C 23,178 43,186 50,180 Z" fill="currentColor" />
+        <path d="M 85,120 Q 65,102 58,112 C 56,122 74,130 85,120 Z" fill="currentColor" />
+
+        {/* 6-Petal Flower 1 */}
+        <g transform="translate(45, 200) scale(0.55)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 2 */}
+        <g transform="translate(95, 95) scale(0.48)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 3 */}
+        <g transform="translate(142, 20) scale(0.38)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+      </svg>
+      <svg
+        className="section-botanical-vine section-vine-right"
+        viewBox="-40 -20 240 380"
+        aria-hidden="true"
+      >
+        <path
+          d="M 180,30 Q 110,120 90,200 T 10,340"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+        {/* Secondary branch line */}
+        <path
+          d="M 125,140 Q 165,180 150,220"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        {/* Leaf details */}
+        <path d="M 125,100 Q 145,120 150,112 C 152,102 132,94 125,100 Z" fill="currentColor" />
+        <path d="M 98,175 Q 120,192 128,182 C 130,172 112,165 98,175 Z" fill="currentColor" />
+
+        {/* 6-Petal Flower 1 (Large - Top Right) */}
+        <g transform="translate(145, 60) scale(0.65)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 2 (Medium - Upper mid) */}
+        <g transform="translate(118, 135) scale(0.48)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 3 (Branch Flower - Right cluster) */}
+        <g transform="translate(150, 220) scale(0.45)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 4 (Medium - Center Right) */}
+        <g transform="translate(75, 220) scale(0.55)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 5 (Small - Lower mid) */}
+        <g transform="translate(45, 275) scale(0.42)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+
+        {/* 6-Petal Flower 6 (Small - Bottom Right Tip) */}
+        <g transform="translate(22, 320) scale(0.38)" fill="currentColor">
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(60)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(120)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(180)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(240)" />
+          <path d="M 0,-24 C -6,-24 -10,-14 0,-4 C 10,-14 6,-24 0,-24 Z" transform="rotate(300)" />
+          <circle cx="0" cy="-4" r="5" fill="#ffffff" />
+        </g>
+      </svg>
+
       <div className="events-container">
 
 
@@ -146,30 +402,6 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
                 {activeEvent && (
                   <div className="upcoming-event-carousel">
                     <EventCard event={activeEvent} />
-
-                    {/* Carousel Navigation (Dots & Chevrons) */}
-                    <div className="carousel-controls-row">
-                      <div className="carousel-dots-indicator">
-                        {upcomingEvents.map((_, idx) => (
-                          <button
-                            key={idx}
-                            className={`carousel-dot-indicator ${idx === currentUpcomingIndex ? "active" : ""}`}
-                            onClick={() => setCurrentUpcomingIndex(idx)}
-                            aria-label={`Visa evenemang ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-                      {upcomingEvents.length > 1 && (
-                        <div className="carousel-nav-arrows">
-                          <button className="carousel-nav-arrow" onClick={prevUpcoming} aria-label="Föregående">
-                            <ChevronLeft size={18} />
-                          </button>
-                          <button className="carousel-nav-arrow" onClick={nextUpcoming} aria-label="Nästa">
-                            <ChevronRight size={18} />
-                          </button>
-                        </div>
-                      )}
-                    </div>
                   </div>
                 )}
               </div>

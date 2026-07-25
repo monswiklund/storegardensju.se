@@ -25,15 +25,25 @@ function GalleryGrid({ images, onImageSelect }) {
       {images.map((image, index) => {
         const seed = image.filename || image.original || String(index);
         
-        // Generate deterministic styles for scrapbook look
-        const rotVal = (getSeededValue(seed + "-rot") * 4 - 2).toFixed(2); // -2.0deg to +2.0deg
-        const yOffsetVal = (getSeededValue(seed + "-y") * 24 - 8).toFixed(1); // -8px to +16px
-        const tapeRotVal = (getSeededValue(seed + "-tape") * 6 - 3).toFixed(2); // -3.0deg to +3.0deg
-        const tapeWidthVal = Math.floor(getSeededValue(seed + "-width") * 16 + 60); // 60px to 76px
+        // Alternating sign pattern based on index (+ vs -) so adjacent items always tilt in opposite directions
+        const directionMultiplier = index % 2 === 0 ? 1 : -1;
         
-        // Scrapbook size variations (84% to 100% width) and horizontal position within the column
-        const widthVal = Math.floor(getSeededValue(seed + "-width-pct") * 16 + 84); // 84% to 100%
-        const alignRand = getSeededValue(seed + "-align");
+        // Generate rotation magnitude between 0.8deg and 2.0deg (max 2.0deg)
+        const magRand = getSeededValue(seed + "-rot-mag-" + index);
+        const rotMagnitude = 0.8 + magRand * 1.2; // 0.8deg to 2.0deg max
+        const rotVal = (directionMultiplier * rotMagnitude).toFixed(2);
+
+        // Tejpbitens rotation lutar åt motsatt håll (0.5deg till 2.0deg max)
+        const tapeMagRand = getSeededValue(seed + "-tape-" + index);
+        const tapeRotVal = (-directionMultiplier * (0.5 + tapeMagRand * 1.5)).toFixed(2);
+        const tapeWidthVal = Math.floor(getSeededValue(seed + "-width-" + index) * 16 + 60); // 60px to 76px
+        
+        // Vertikal förskjutning (-8px till +16px)
+        const yOffsetVal = (getSeededValue(seed + "-y-" + index) * 24 - 8).toFixed(1);
+        
+        // Scrapbook size variations (82% to 100% width) and horizontal position within the column
+        const widthVal = Math.floor(getSeededValue(seed + "-width-pct-" + index) * 18 + 82); // 82% to 100%
+        const alignRand = getSeededValue(seed + "-align-" + index);
         const alignVal = alignRand < 0.33 ? "flex-start" : alignRand < 0.66 ? "center" : "flex-end";
 
         return (

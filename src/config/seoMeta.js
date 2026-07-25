@@ -37,120 +37,26 @@ export const seoMeta = {
     path: "/event",
   },
   kurser: {
-    title: "Yoga & måleri på Storegården 7 | Tidigare kursdag",
+    title: "Yoga på loftet i Lidköping | Storegården 7",
     description:
-      "En återblick på en dag med yoga, måleri och gemenskap på Storegården 7 utanför Lidköping.",
+      "Välkommen på Yoga på loftet med Lina Wiklund på Storegården 7 utanför Lidköping. Torsdag 30 juli kl 18:00. Lugn och härlig yoga i lantlig gårdsmiljö.",
     path: "/kurser",
-    ogTitle: "Yoga & måleri på Storegården 7",
+    ogTitle: "Yoga på loftet på Storegården 7",
     ogDescription:
-      "Bilder och berättelse från en tidigare dag med yoga och måleri på Storegården 7.",
+      "Yoga på loftet torsdag 30 juli kl 18:00 med Lina Wiklund på Storegården 7 i Lidköping/Rackeby.",
     image: COURSE_IMAGE,
     jsonLd: [
       {
         "@context": "https://schema.org",
-        "@type": "Course",
-        name: "Yogakurs i Lidköping",
-        description:
-          "Yogapass nära Lidköping med fokus på andning, närvaro och återhämtning. Passar både nybörjare och vana deltagare.",
-        provider: {
-          "@type": "Organization",
-          name: "Storegården 7",
-          sameAs: SITE_URL,
-        },
-        image: COURSE_IMAGE,
-        inLanguage: "sv-SE",
-        areaServed: {
-          "@type": "City",
-          name: "Lidköping",
-        },
-        courseMode: "onsite",
-        hasCourseInstance: {
-          "@type": "CourseInstance",
-          name: "Yogapass på Storegården 7",
-          courseMode: "onsite",
-          location: {
-            "@type": "Place",
-            name: "Storegården 7",
-            address: {
-              "@type": "PostalAddress",
-              streetAddress: "Storegården 7",
-              addressLocality: "Rackeby",
-              addressRegion: "Västra Götaland",
-              postalCode: "531 96",
-              addressCountry: "SE",
-            },
-          },
-          instructor: {
-            "@type": "Person",
-            name: "Lina Wiklund",
-          },
-          offers: {
-            "@type": "Offer",
-            price: "200",
-            priceCurrency: "SEK",
-            availability: "https://schema.org/InStock",
-            url: canonicalUrl("/kurser"),
-          },
-        },
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "Course",
-        name: "Målarkurs i Lidköping",
-        description:
-          "Glädjefylld målarkurs nära Lidköping med akvarell och akryl. Passar både nybörjare och vana deltagare som vill måla i lugn gårdsmiljö.",
-        provider: {
-          "@type": "Organization",
-          name: "Storegården 7",
-          sameAs: SITE_URL,
-        },
-        image: PAINTING_COURSE_IMAGE,
-        inLanguage: "sv-SE",
-        areaServed: {
-          "@type": "City",
-          name: "Lidköping",
-        },
-        courseMode: "onsite",
-        hasCourseInstance: {
-          "@type": "CourseInstance",
-          name: "Målarkurs på Storegården 7",
-          courseMode: "onsite",
-          location: {
-            "@type": "Place",
-            name: "Storegården 7",
-            address: {
-              "@type": "PostalAddress",
-              streetAddress: "Storegården 7",
-              addressLocality: "Rackeby",
-              addressRegion: "Västra Götaland",
-              postalCode: "531 96",
-              addressCountry: "SE",
-            },
-          },
-          instructor: {
-            "@type": "Person",
-            name: "Ann Wiklund",
-          },
-          offers: {
-            "@type": "Offer",
-            price: "600",
-            priceCurrency: "SEK",
-            availability: "https://schema.org/InStock",
-            url: `${canonicalUrl("/kurser")}#maleri`,
-          },
-        },
-      },
-      {
-        "@context": "https://schema.org",
         "@type": "Event",
-        name: "Heldag med yoga & måleri på Storegården 7",
+        name: "Yoga på loftet på Storegården 7",
         description:
-          "Kursdag utanför Lidköping: yogapass med Lina Wiklund på förmiddagen och målarkurs i akvarell och akryl med Ann Wiklund på eftermiddagen.",
-        startDate: "2026-07-13T10:00:00+02:00",
-        endDate: "2026-07-13T17:30:00+02:00",
+          "Lugnt och avslappnande yogapass med Lina Wiklund på loftet på Storegården 7 utanför Lidköping. Du är välkommen 30 min innan (17:30) för att landa. Yogamattor finns på plats.",
+        startDate: "2026-07-30T18:00:00+02:00",
+        endDate: "2026-07-30T19:30:00+02:00",
         eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
         eventStatus: "https://schema.org/EventScheduled",
-        image: [EVENT_IMAGE],
+        image: [COURSE_IMAGE, `${SITE_URL}/images/evenemang/lina-yoga.jpg`],
         location: {
           "@type": "Place",
           name: "Storegården 7",
@@ -168,39 +74,57 @@ export const seoMeta = {
           name: "Storegården 7",
           url: SITE_URL,
         },
-        performer: [
-          { "@type": "Person", name: "Lina Wiklund" },
-          { "@type": "Person", name: "Ann Wiklund" },
-        ],
-        offers: [
-          {
-            "@type": "Offer",
-            name: "Yogapass",
-            price: "200",
-            priceCurrency: "SEK",
-            availability: "https://schema.org/InStock",
-            validFrom: "2026-07-06",
-            url: `${canonicalUrl("/kurser")}#yoga`,
+        performer: {
+          "@type": "Person",
+          name: "Lina Wiklund",
+        },
+        offers: {
+          "@type": "Offer",
+          name: "Yoga på loftet pass",
+          availability: "https://schema.org/InStock",
+          url: canonicalUrl("/kurser"),
+        },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        name: "Yogakurs & Yogapass i Lidköping",
+        description:
+          "Yogapass nära Lidköping med fokus på andning, närvaro och återhämtning. Passar både nybörjare och vana deltagare.",
+        provider: {
+          "@type": "Organization",
+          name: "Storegården 7",
+          sameAs: SITE_URL,
+        },
+        image: COURSE_IMAGE,
+        inLanguage: "sv-SE",
+        areaServed: {
+          "@type": "City",
+          name: "Lidköping",
+        },
+        courseMode: "onsite",
+        hasCourseInstance: {
+          "@type": "CourseInstance",
+          name: "Yoga på loftet",
+          startDate: "2026-07-30T18:00:00+02:00",
+          courseMode: "onsite",
+          location: {
+            "@type": "Place",
+            name: "Storegården 7",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "Storegården 7",
+              addressLocality: "Rackeby",
+              addressRegion: "Västra Götaland",
+              postalCode: "531 96",
+              addressCountry: "SE",
+            },
           },
-          {
-            "@type": "Offer",
-            name: "Målarkurs",
-            price: "600",
-            priceCurrency: "SEK",
-            availability: "https://schema.org/InStock",
-            validFrom: "2026-07-06",
-            url: `${canonicalUrl("/kurser")}#maleri`,
+          instructor: {
+            "@type": "Person",
+            name: "Lina Wiklund",
           },
-          {
-            "@type": "Offer",
-            name: "Heldagspaket med lunch",
-            price: "900",
-            priceCurrency: "SEK",
-            availability: "https://schema.org/InStock",
-            validFrom: "2026-07-06",
-            url: `${canonicalUrl("/kurser")}#heldag`,
-          },
-        ],
+        },
       },
       {
         "@context": "https://schema.org",
@@ -208,42 +132,42 @@ export const seoMeta = {
         mainEntity: [
           {
             "@type": "Question",
-            name: "Var finns yogakursen och målarkursen?",
+            name: "När är nästa yoga på Storegården 7?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Yogakursen och målarkursen hålls på Storegården 7 i Rackeby, cirka 15 minuter från Lidköping.",
+              text: "Nästa yogapass 'Yoga på loftet' hålls torsdagen den 30 juli kl 18:00 med Lina Wiklund.",
             },
           },
           {
             "@type": "Question",
-            name: "Passar yogan nybörjare?",
+            name: "Behöver jag ta med egen yogamatta?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Ja, passen är lugna och passar både nybörjare och vana deltagare.",
+              text: "Yogamattor finns att låna på plats, men om du har en egen matta får du gärna ta med den.",
             },
           },
           {
             "@type": "Question",
-            name: "Passar målarkursen nybörjare?",
+            name: "När bör man komma till yogan?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Ja, målarkursen är prestationsfri och passar både nybörjare och vana deltagare som vill måla med akvarell och akryl.",
+              text: "Du är varmt välkommen 30 minuter innan passet startar (från kl 17:30) för att landa och förbereda dig i lugn och ro.",
             },
           },
           {
             "@type": "Question",
-            name: "Vad kostar yoga och målarkurs?",
+            name: "Passar yogan för nybörjare?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Yogapasset kostar 200 kr per person, målarkursen kostar 600 kr per person och heldag med yoga, måleri, lunch och fika kostar 900 kr per person.",
+              text: "Ja, Yoga på loftet innehåller guidning och vila som passar både nybörjare och vana utövare.",
             },
           },
           {
             "@type": "Question",
-            name: "Kan man boka yoga för en privat grupp?",
+            name: "Var ligger Storegården 7?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Ja, det går att höra av sig om privat yogapass, målarkurs, gruppbokning eller heldag med yoga och måleri.",
+              text: "Storegården 7 ligger i Rackeby, ca 15 minuter utanför Lidköping.",
             },
           },
         ],
@@ -273,6 +197,12 @@ export const seoMeta = {
     description:
       "Möt familjen bakom Storegården 7 utanför Lidköping - Ann, Carl, Lina och Måns Wiklund.",
     path: "/om-oss",
+  },
+  mansPortfolio: {
+    title: "Måns Wiklund | Portfolio & Projekt | Storegården 7",
+    description:
+      "Måns Wiklund - Junior Fullstack & DevOps-utvecklare. Utforska projekt som Storegården 7 webbsida, Padelcompanion, Vad Händer Sidan, Foderstallet och ViHop.",
+    path: "/om-oss/portfolj/mans",
   },
   butik: {
     title: "Butik - Keramik & konst | Storegården 7",

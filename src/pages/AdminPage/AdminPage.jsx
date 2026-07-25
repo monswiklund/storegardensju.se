@@ -55,8 +55,8 @@ function AdminPage() {
     isPreview,
     isSidebarOpen,
     setIsSidebarOpen,
-    isSidebarCollapsed,
-    handleToggleSidebarCollapsed,
+    isSidebarExpanded,
+    setIsSidebarExpanded,
     selectedId,
     setSelectedId,
     isMobile,
@@ -286,7 +286,7 @@ function AdminPage() {
       <div className="admin-shell">
         <div
           className={`admin-layout ${
-            isSidebarCollapsed ? "is-sidebar-collapsed" : ""
+            isSidebarExpanded ? "is-sidebar-expanded" : ""
           }`}
         >
           <AdminSidebar 
@@ -294,8 +294,8 @@ function AdminPage() {
             onViewChange={handleAdminViewChange}
             isOpen={isSidebarOpen}
             onClose={handleCloseSidebar}
-            isCollapsed={isSidebarCollapsed}
-            onToggleCollapsed={handleToggleSidebarCollapsed}
+            isExpanded={isSidebarExpanded}
+            onExpandedChange={setIsSidebarExpanded}
           />
           <div className="admin-container">
             <AdminHeader
@@ -335,6 +335,7 @@ function AdminPage() {
             <AdminFeatureSections
               showCustomersSection={showCustomersSection}
               showProductsSection={showProductsSection}
+              showYogaSection={adminView === "yoga"}
               showGallerySection={showGallerySection}
               showEventsSection={showEventsSection}
               showCouponsSection={showCouponsSection}

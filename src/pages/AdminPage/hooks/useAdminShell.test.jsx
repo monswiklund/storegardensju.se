@@ -27,20 +27,12 @@ function createMediaQuery(media, matches) {
   };
 }
 
-function installMatchMedia(mobileMatches, mediumSidebarMatches = false) {
+function installMatchMedia(mobileMatches) {
   const mobile = createMediaQuery("(max-width: 900px)", mobileMatches);
-  const mediumSidebar = createMediaQuery(
-    "(min-width: 1100px) and (max-width: 1499px)",
-    mediumSidebarMatches
-  );
-
-  window.matchMedia = vi.fn((query) =>
-    query.includes("min-width: 1100px") ? mediumSidebar.mediaQuery : mobile.mediaQuery
-  );
+  window.matchMedia = vi.fn(() => mobile.mediaQuery);
 
   return {
     emit: mobile.emit,
-    emitSidebar: mediumSidebar.emit,
   };
 }
 
@@ -155,28 +147,17 @@ describe("useAdminShell", () => {
     expect(result.current.selectedId).toBe("");
   });
 
-  it("V24 defaults to a rail at medium widths and persists the user choice", async () => {
-    installMatchMedia(false, true);
+  it("V24 defaults to a rail and exposes transient expansion state", () => {
+    installMatchMedia(false);
 
-    const { result, unmount } = renderHook(() => useAdminShell(createProps()));
+    const { result } = renderHook(() => useAdminShell(createProps()));
 
-    await waitFor(() => {
-      expect(result.current.isSidebarCollapsed).toBe(true);
-    });
+    expect(result.current.isSidebarExpanded).toBe(false);
 
     act(() => {
-      result.current.handleToggleSidebarCollapsed();
+      result.current.setIsSidebarExpanded(true);
     });
 
-    expect(result.current.isSidebarCollapsed).toBe(false);
-    expect(
-      window.localStorage.getItem("storegarden-admin-sidebar-collapsed")
-    ).toBe("false");
-
-    unmount();
-    const nextRender = renderHook(() => useAdminShell(createProps()));
-    await waitFor(() => {
-      expect(nextRender.result.current.isSidebarCollapsed).toBe(false);
-    });
+    expect(result.current.isSidebarExpanded).toBe(true);
   });
 });

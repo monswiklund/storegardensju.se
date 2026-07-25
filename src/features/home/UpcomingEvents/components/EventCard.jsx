@@ -46,12 +46,6 @@ function EventCard({ event }) {
         </div>
         
         <div className="upcoming-card-details">
-          {spots && (
-            <span className="upcoming-spots-pill">
-              {spots}
-            </span>
-          )}
-          
           <h3 className="upcoming-event-title">{title}</h3>
           
           <div className="upcoming-event-meta">
@@ -65,6 +59,11 @@ function EventCard({ event }) {
               <div className="upcoming-meta-item">
                 <MapPin size={16} />
                 <span>{location}</span>
+              </div>
+            )}
+            {spots && (
+              <div className="upcoming-meta-item upcoming-meta-spots">
+                <span>{spots}</span>
               </div>
             )}
           </div>

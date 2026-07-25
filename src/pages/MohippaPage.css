@@ -60,39 +60,68 @@
 }
 
 .mohippa-hero h1 {
-  max-width: 650px;
-  font-size: clamp(3.2rem, 7.2vw, 6.2rem);
-  line-height: 0.92;
+  max-width: 780px;
+  font-size: clamp(2.8rem, 6.5vw, 5.8rem);
+  line-height: 1.1;
 }
 
 .mohippa-word-switch {
   display: inline-block;
-  height: 0.92em;
+  height: 1.15em;
   overflow: hidden;
   vertical-align: bottom;
-  line-height: 0.92;
+  line-height: 1.15;
+  position: relative;
+  padding: 0 4px;
 }
 
 .mohippa-word-switch__track {
   display: block;
   will-change: transform;
-  animation: mohippaWordSwitch 10s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+  animation: mohippaWordSwitchVaried 9s cubic-bezier(0.68, -0.5, 0.32, 1.5) infinite;
 }
 
 .mohippa-word-switch__track span {
   display: block;
-  height: 0.92em;
-  line-height: 0.92;
+  height: 1.15em;
+  line-height: 1.15;
   white-space: nowrap;
+  padding-bottom: 2px;
+  color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color) 0%, #2d4a3e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-@keyframes mohippaWordSwitch {
-  0%, 16% { transform: translateY(0); }
-  20%, 36% { transform: translateY(-0.92em); }
-  40%, 56% { transform: translateY(-1.84em); }
-  60%, 76% { transform: translateY(-2.76em); }
-  80%, 96% { transform: translateY(-3.68em); }
-  100% { transform: translateY(-4.6em); }
+@keyframes mohippaWordSwitchVaried {
+  /* 1. Möhippa */
+  0%, 16% {
+    transform: translateY(0) scale(1);
+  }
+  
+  /* 2. Svensexa */
+  20%, 36% {
+    transform: translateY(-1.15em) scale(1.02);
+  }
+  
+  /* 3. Teambuilding */
+  40%, 56% {
+    transform: translateY(-2.30em) scale(1);
+  }
+  
+  /* 4. Afterwork */
+  60%, 76% {
+    transform: translateY(-3.45em) scale(1.03);
+  }
+  
+  /* 5. Workshop */
+  80%, 96% {
+    transform: translateY(-4.60em) scale(1);
+  }
+  
+  100% {
+    transform: translateY(-5.75em) scale(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

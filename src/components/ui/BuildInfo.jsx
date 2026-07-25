@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './BuildInfo.css';
 
 function BuildInfo() {
     const [buildInfo, setBuildInfo] = useState(null);
+    const navigate = useNavigate();
+    const clickCountRef = useRef(0);
+    const resetTimerRef = useRef(null);
 
     useEffect(() => {
         // Try to load build info
@@ -18,16 +22,36 @@ function BuildInfo() {
             });
     }, []);
 
+    const handleBuildClick = (e) => {
+        e.preventDefault();
+        clickCountRef.current += 1;
+
+        if (resetTimerRef.current) {
+            clearTimeout(resetTimerRef.current);
+        }
+
+        if (clickCountRef.current >= 3) {
+            clickCountRef.current = 0;
+            navigate('/admin');
+        } else {
+            resetTimerRef.current = setTimeout(() => {
+                clickCountRef.current = 0;
+            }, 1000);
+        }
+    };
+
     if (!buildInfo) return null;
 
     return (
         <div className="build-info">
-            <span className="build-version">v{buildInfo.version}</span>
-            {process.env.NODE_ENV === 'development' && (
-                <span className="build-details">
-                    Build #{buildInfo.buildNumber} | {new Date(buildInfo.buildTime).toLocaleDateString('sv-SE')}
-                </span>
-            )}
+            <span
+                className="build-version"
+                onClick={handleBuildClick}
+                style={{ cursor: 'pointer', userSelect: 'none' }}
+                title="Klicka 3 gånger för Admin"
+            >
+                v{buildInfo.version}
+            </span>
             <span className="build-credit">
                 Skapad av Måns Wiklund
             </span>
@@ -35,4 +59,4 @@ function BuildInfo() {
     );
 }
 
-export default BuildInfo
+export default BuildInfo;

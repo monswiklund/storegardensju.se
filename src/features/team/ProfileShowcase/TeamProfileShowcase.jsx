@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
 import "./ProfileShowcase.css";
@@ -107,7 +108,16 @@ const TeamProfileShowcase = ({ profile }) => {
           <ActionButtons actions={profile.actions} />
         )}
 
-        {hasPortfolio && (
+        {profile.portfolioUrl ? (
+          <Link
+            to={profile.portfolioUrl}
+            className="team-card-portfolio-btn"
+            aria-label={`Visa portfolio för ${profile.title}`}
+          >
+            <ImageIcon size={16} />
+            <span>Visa Portfolio</span>
+          </Link>
+        ) : hasPortfolio && (
           <button
             className="team-card-portfolio-btn"
             onClick={() => openModal(0)}
@@ -126,16 +136,45 @@ const TeamProfileShowcase = ({ profile }) => {
           </button>
           
           <div className="portfolio-modal-wrapper" onClick={(e) => e.stopPropagation()}>
-            <button className="portfolio-modal-nav prev" onClick={prevImage} aria-label="Föregående bild">
-              <ChevronLeft size={36} />
-            </button>
+            {profile.portfolio.length > 1 && (
+              <button className="portfolio-modal-nav prev" onClick={prevImage} aria-label="Föregående projekt">
+                <ChevronLeft size={36} />
+              </button>
+            )}
             
             <div className="portfolio-modal-main-image">
-              <img
-                src={profile.portfolio[activeImageIndex].src}
-                alt={profile.portfolio[activeImageIndex].alt || `Portföljbild ${activeImageIndex + 1}`}
-              />
-              {(profile.portfolio[activeImageIndex].title || profile.portfolio[activeImageIndex].caption) && (
+              {profile.portfolio[activeImageIndex].src ? (
+                <img
+                  src={profile.portfolio[activeImageIndex].src}
+                  alt={profile.portfolio[activeImageIndex].alt || profile.portfolio[activeImageIndex].title || `Portföljbild ${activeImageIndex + 1}`}
+                />
+              ) : (
+                <div className="portfolio-modal-project-card">
+                  <div className="portfolio-project-icon">
+                    <ImageIcon size={48} />
+                  </div>
+                  <h3>{profile.portfolio[activeImageIndex].title}</h3>
+                  <p>{profile.portfolio[activeImageIndex].caption}</p>
+                  {profile.portfolio[activeImageIndex].tags && (
+                    <div className="portfolio-project-tags">
+                      {profile.portfolio[activeImageIndex].tags.map((tag, i) => (
+                        <span key={i} className="portfolio-project-tag">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                  {profile.portfolio[activeImageIndex].link && (
+                    <a
+                      href={profile.portfolio[activeImageIndex].link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="portfolio-project-link-btn"
+                    >
+                      Besök projekt
+                    </a>
+                  )}
+                </div>
+              )}
+              {profile.portfolio[activeImageIndex].src && (profile.portfolio[activeImageIndex].title || profile.portfolio[activeImageIndex].caption) && (
                 <div className="portfolio-modal-caption">
                   {profile.portfolio[activeImageIndex].title && <h4>{profile.portfolio[activeImageIndex].title}</h4>}
                   {profile.portfolio[activeImageIndex].caption && <p>{profile.portfolio[activeImageIndex].caption}</p>}
@@ -143,21 +182,27 @@ const TeamProfileShowcase = ({ profile }) => {
               )}
             </div>
 
-            <button className="portfolio-modal-nav next" onClick={nextImage} aria-label="Nästa bild">
-              <ChevronRight size={36} />
-            </button>
+            {profile.portfolio.length > 1 && (
+              <button className="portfolio-modal-nav next" onClick={nextImage} aria-label="Nästa projekt">
+                <ChevronRight size={36} />
+              </button>
+            )}
           </div>
 
           {profile.portfolio.length > 1 && (
             <div className="portfolio-modal-thumbnails" onClick={(e) => e.stopPropagation()}>
-              {profile.portfolio.map((img, idx) => (
+              {profile.portfolio.map((item, idx) => (
                 <button
                   key={idx}
                   className={`portfolio-modal-thumb-btn ${idx === activeImageIndex ? "active" : ""}`}
                   onClick={() => setActiveImageIndex(idx)}
-                  aria-label={`Visa bild ${idx + 1}`}
+                  aria-label={`Visa ${item.title || `objekt ${idx + 1}`}`}
                 >
-                  <img src={img.src} alt="" loading="lazy" decoding="async" />
+                  {item.src ? (
+                    <img src={item.src} alt="" loading="lazy" decoding="async" />
+                  ) : (
+                    <span className="thumb-project-title">{item.title || idx + 1}</span>
+                  )}
                 </button>
               ))}
             </div>
@@ -196,10 +241,12 @@ TeamProfileShowcase.propTypes = {
     ),
     portfolio: PropTypes.arrayOf(
       PropTypes.shape({
-        src: PropTypes.string.isRequired,
+        src: PropTypes.string,
         alt: PropTypes.string,
         caption: PropTypes.string,
         title: PropTypes.string,
+        tags: PropTypes.arrayOf(PropTypes.string),
+        link: PropTypes.string,
       }),
     ),
   }).isRequired,

@@ -60,7 +60,7 @@
 }
 
 .admin-layout {
-  --admin-current-sidebar-width: var(--admin-sidebar-width);
+  --admin-current-sidebar-width: var(--admin-sidebar-rail-width);
   display: grid;
   grid-template-columns: var(--admin-current-sidebar-width) minmax(0, 1fr);
   gap: 0;
@@ -68,11 +68,6 @@
   max-width: none;
   min-height: 100vh;
   margin: 0;
-  transition: grid-template-columns var(--admin-rail-transition) var(--admin-rail-ease);
-}
-
-.admin-layout.is-sidebar-collapsed {
-  --admin-current-sidebar-width: var(--admin-sidebar-rail-width);
 }
 
 .admin-container,
@@ -249,7 +244,13 @@ body:has(.admin-app) .scroll-to-top {
   transform: none;
   transition:
     width var(--admin-rail-transition) var(--admin-rail-ease),
-    transform var(--admin-rail-transition) var(--admin-rail-ease);
+    transform var(--admin-rail-transition) var(--admin-rail-ease),
+    box-shadow var(--admin-rail-transition) ease;
+}
+
+.admin-layout.is-sidebar-expanded .admin-sidebar {
+  width: var(--admin-sidebar-width);
+  box-shadow: 18px 0 42px rgba(0, 0, 0, 0.1);
 }
 
 .admin-sidebar-header {
@@ -264,6 +265,7 @@ body:has(.admin-app) .scroll-to-top {
 
 .admin-sidebar-brand {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   width: 154px;
 }
@@ -277,8 +279,9 @@ body:has(.admin-app) .scroll-to-top {
   filter: invert(20%) sepia(14%) saturate(1135%) hue-rotate(95deg) brightness(92%);
 }
 
-.admin-sidebar-rail-mark {
+.admin-sidebar-logo-mini {
   display: none;
+  filter: none;
 }
 
 /* Labels fade rather than disappear, and they keep their grid cell in both
@@ -340,7 +343,7 @@ body:has(.admin-app) .scroll-to-top {
   gap: 10px;
   width: 100%;
   min-height: 44px;
-  padding: 0 10px;
+  padding: 0 13px;
   border: 0;
   border-radius: 9px;
   color: #3f604c;
@@ -392,36 +395,6 @@ body:has(.admin-app) .scroll-to-top {
   color: var(--admin-sidebar-muted);
 }
 
-/* Kept inside the sidebar box: the old `right: -15px` overhang made the
-   sidebar's own scroll container overflow horizontally. */
-.admin-sidebar-toggle {
-  position: absolute;
-  top: 92px;
-  right: 14px;
-  transition:
-    right var(--admin-rail-transition) var(--admin-rail-ease),
-    transform var(--admin-rail-transition) var(--admin-rail-ease),
-    border-color 160ms ease,
-    background 160ms ease;
-  z-index: 2;
-  display: inline-grid;
-  width: 30px;
-  height: 30px;
-  place-items: center;
-  padding: 0;
-  border: 1px solid var(--admin-line-strong);
-  border-radius: 50%;
-  color: var(--admin-sidebar-ink);
-  background: #ffffff;
-  box-shadow: 0 4px 14px rgba(36, 77, 54, 0.14);
-  cursor: pointer;
-}
-
-.admin-sidebar-toggle:hover {
-  border-color: var(--admin-line-strong);
-  background: #f8fbf9;
-}
-
 .admin-sidebar-close {
   display: none;
 }
@@ -433,90 +406,48 @@ body:has(.admin-app) .scroll-to-top {
 @media (min-width: 1100px) {
   /* Same header height as expanded, so the brand mark, the toggle and the first
      nav row do not jump vertically when collapsing. */
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-header {
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-header {
     min-height: 132px;
     justify-content: center;
     padding: 26px 8px 22px;
   }
 
-  /* Fixed to the rail mark's width so the mark stays centered while the label
-     column is still fading out. */
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-brand {
-    width: 42px;
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-brand {
+    width: 60px;
     justify-items: center;
   }
 
-  /* Zero width, not just transparent: a nowrap label still contributes its
-     intrinsic width and would stretch the group wider than the rail, pushing the
-     icons past the edge. */
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-brand-caption,
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-group-title {
-    width: 0;
-    padding: 0;
-    overflow: hidden;
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-logo-full {
+    display: none;
   }
 
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-logo {
-    width: 0;
-    opacity: 0;
-  }
-
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-rail-mark {
-    display: grid;
-    width: 42px;
-    height: 42px;
-    place-items: center;
-    border: 1px solid var(--admin-line);
-    border-radius: 12px 12px 4px 12px;
-    color: var(--admin-sidebar-ink);
-    background: rgba(255, 255, 255, 0.52);
-    font-size: 0.78rem;
-    font-weight: 900;
-    letter-spacing: -0.04em;
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-logo-mini {
+    display: block;
+    width: 60px;
+    opacity: 1;
   }
 
   /* Faded out, not removed: the label keeps its grid cell so row heights and the
      group rhythm stay identical to the expanded state. */
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-brand-caption,
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-group-title,
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-link > span,
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-chevron {
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-brand-caption,
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-group-title,
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-link > span,
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-chevron {
     opacity: 0;
     pointer-events: none;
   }
 
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-groups {
-    padding: 24px 12px 16px;
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-groups {
+    padding: 24px 14px 16px;
     overflow-x: clip;
   }
 
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-nav,
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-footer {
-    justify-items: center;
-  }
-
-  /* The label column collapses to zero width instead of being dropped, which is
-     what keeps the icon on the same baseline as in the expanded rail. */
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-link {
-    grid-template-columns: 20px 0 0;
-    gap: 0;
-    width: 48px;
-    padding: 0 14px;
+  /* Keep the same tracks and insets in both states. Labels fade and are clipped
+     by the shrinking rail without changing their starting position. */
+  .admin-layout:not(.is-sidebar-expanded) .admin-sidebar-link {
     overflow: hidden;
   }
 
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-home {
-    grid-template-columns: 20px 0;
-    gap: 0;
-    width: 48px;
-    padding: 0 14px;
-    overflow: hidden;
-  }
-
-  .admin-layout.is-sidebar-collapsed .admin-sidebar-toggle {
-    right: 50%;
-    transform: translateX(50%);
-  }
 }
 
 /* Shared structure */
@@ -913,15 +844,16 @@ body:has(.admin-app) .scroll-to-top {
 }
 
 .admin-gallery-layout {
-  grid-template-columns: 260px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 0;
   margin-top: 18px;
   border-top: 1px solid var(--admin-line);
 }
 
 .admin-gallery-sidebar {
-  padding: 18px;
-  border-right: 1px solid var(--admin-line);
+  padding: 14px 20px;
+  border-right: 0;
+  border-bottom: 1px solid var(--admin-line);
   background: var(--admin-surface-subtle);
 }
 
@@ -936,8 +868,7 @@ body:has(.admin-app) .scroll-to-top {
   background: var(--admin-surface-subtle);
 }
 
-/* 200px min: the card now carries a title, status pills and 44px move buttons,
-   which do not fit in the old 155px track. */
+/* The management grid stays dense; ordering lives in its dedicated preview. */
 .admin-gallery-image-grid {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
@@ -985,7 +916,7 @@ body:has(.admin-app) .scroll-to-top {
   }
 
   .admin-gallery-layout {
-    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .admin-gallery-image-grid {
@@ -1046,8 +977,10 @@ body:has(.admin-app) .scroll-to-top {
 }
 
 /* Drawer primitive */
+html.admin-drawer-open,
 body.admin-drawer-open {
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .admin-ui-drawer-layer {
@@ -1080,6 +1013,7 @@ body.admin-drawer-open {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
   color: var(--admin-ink);
   background: #ffffff;
   box-shadow: -24px 0 70px rgba(16, 24, 19, 0.18);
@@ -1167,9 +1101,21 @@ body.admin-drawer-open {
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
 }
 
+.admin-ui-drawer-layer.is-preview-only .admin-ui-drawer-body {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-ui-drawer-layer.is-preview-only .admin-ui-drawer-preview {
+  border-left: 0;
+}
+
 .admin-ui-drawer-content {
+  min-height: 0;
   padding: 22px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-ui-drawer-preview {
@@ -1199,6 +1145,9 @@ body.admin-drawer-open {
   min-height: 0;
   padding: 22px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-ui-drawer-tabs {
@@ -1355,7 +1304,7 @@ body.admin-drawer-open {
   }
 
   .admin-layout,
-  .admin-layout.is-sidebar-collapsed {
+  .admin-layout.is-sidebar-expanded {
     display: block;
   }
 
@@ -1395,10 +1344,6 @@ body.admin-drawer-open {
 
   .admin-sidebar.open {
     transform: translateX(0);
-  }
-
-  .admin-sidebar-toggle {
-    display: none;
   }
 
   .admin-sidebar-overlay {

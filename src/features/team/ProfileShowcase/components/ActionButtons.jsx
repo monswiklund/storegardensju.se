@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 function ActionButtons({ actions }) {
   if (!actions || actions.length === 0) {
@@ -7,17 +8,32 @@ function ActionButtons({ actions }) {
 
   return (
     <div className="profile-actions">
-      {actions.map((action) => (
-        <a
-          key={action.label}
-          href={action.href}
-          className={`profile-action-btn ${action.primary ? "primary" : "secondary"}`}
-          target={action.external ? "_blank" : undefined}
-          rel={action.external ? "noopener noreferrer" : undefined}
-        >
-          {action.label}
-        </a>
-      ))}
+      {actions.map((action) => {
+        const isInternal = action.href.startsWith("/") && !action.external;
+        if (isInternal) {
+          return (
+            <Link
+              key={action.label}
+              to={action.href}
+              className={`profile-action-btn ${action.primary ? "primary" : "secondary"}`}
+            >
+              {action.label}
+            </Link>
+          );
+        }
+
+        return (
+          <a
+            key={action.label}
+            href={action.href}
+            className={`profile-action-btn ${action.primary ? "primary" : "secondary"}`}
+            target={action.external ? "_blank" : undefined}
+            rel={action.external ? "noopener noreferrer" : undefined}
+          >
+            {action.label}
+          </a>
+        );
+      })}
     </div>
   );
 }

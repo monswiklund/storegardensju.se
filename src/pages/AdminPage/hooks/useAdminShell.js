@@ -3,20 +3,6 @@ import { getApiBaseUrl } from "../../../config/apiBaseUrl";
 import { ADMIN_VIEW_OPTIONS } from "../adminConstants";
 import { isLoopbackHost } from "../adminAuthConstants";
 
-const SIDEBAR_PREFERENCE_KEY = "storegarden-admin-sidebar-collapsed";
-
-const readSidebarPreference = () => {
-  if (typeof window === "undefined") return null;
-  try {
-    const stored = window.localStorage.getItem(SIDEBAR_PREFERENCE_KEY);
-    if (stored === "true") return true;
-    if (stored === "false") return false;
-  } catch {
-    // Storage can be unavailable in privacy-restricted browser contexts.
-  }
-  return null;
-};
-
 export function useAdminShell({
   initialAdminKey,
   searchParams,
@@ -28,31 +14,12 @@ export function useAdminShell({
   const [requiresAccessLogin, setRequiresAccessLogin] = useState(false);
   const [previewMode, setPreviewMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [sidebarPreference, setSidebarPreference] = useState(readSidebarPreference);
-  const [isMediumSidebar, setIsMediumSidebar] = useState(false);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [selectedId, setSelectedId] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [viewMode, setViewMode] = useState("list");
 
   const isPreview = previewMode && !adminKey;
-  const isSidebarCollapsed = sidebarPreference ?? isMediumSidebar;
-
-  const handleToggleSidebarCollapsed = useCallback(() => {
-    setSidebarPreference((currentPreference) => {
-      const currentValue = currentPreference ?? isMediumSidebar;
-      const nextValue = !currentValue;
-      try {
-        window.localStorage.setItem(
-          SIDEBAR_PREFERENCE_KEY,
-          String(nextValue)
-        );
-      } catch {
-        // The preference remains active for this session when storage is unavailable.
-      }
-      return nextValue;
-    });
-  }, [isMediumSidebar]);
-
   const resetShellState = useCallback(() => {
     setAdminKey("");
     setRequiresAccessLogin(false);
@@ -147,21 +114,6 @@ export function useAdminShell({
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [selectedId]);
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) {
-      return undefined;
-    }
-
-    const mediaQuery = window.matchMedia(
-      "(min-width: 1100px) and (max-width: 1499px)"
-    );
-    const handleChange = (event) => setIsMediumSidebar(event.matches);
-
-    setIsMediumSidebar(mediaQuery.matches);
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
   const handleOpenAccessLogin = useCallback(() => {
     if (typeof window === "undefined") return;
     const apiBaseUrl = getApiBaseUrl();
@@ -215,8 +167,8 @@ export function useAdminShell({
     isPreview,
     isSidebarOpen,
     setIsSidebarOpen,
-    isSidebarCollapsed,
-    handleToggleSidebarCollapsed,
+    isSidebarExpanded,
+    setIsSidebarExpanded,
     selectedId,
     setSelectedId,
     isMobile,

@@ -3,12 +3,14 @@ import AdminCreateProduct from "./AdminCreateProduct";
 import AdminProductList from "./AdminProductList";
 import AdminGallery from "./AdminGallery";
 import AdminEvents from "./AdminEvents";
+import AdminYoga from "./AdminYoga";
 import AdminCoupons from "./AdminCoupons";
 import AdminPreviewPanel from "./AdminPreviewPanel";
 
 export default function AdminFeatureSections({
   showCustomersSection,
   showProductsSection,
+  showYogaSection,
   showGallerySection,
   showEventsSection,
   showCouponsSection,
@@ -90,6 +92,19 @@ export default function AdminFeatureSections({
             />
           ) : (
             <AdminGallery adminKey={adminKey} />
+          )}
+        </>
+      )}
+
+      {showYogaSection && (
+        <>
+          {isPreview ? (
+            <AdminPreviewPanel
+              message="Demo-läge: logga in för att hantera yogapass."
+              onLogin={onLogin}
+            />
+          ) : (
+            <AdminYoga adminKey={adminKey} />
           )}
         </>
       )}
