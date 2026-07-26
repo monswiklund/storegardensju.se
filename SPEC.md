@@ -66,6 +66,7 @@ V30: React 19.2 upgrade preserves existing public/admin behavior, uses the moder
 V31: While a gallery lightbox is open, browser/system Back closes it without changing route; later Back retains normal route history.
 V32: React 19.2 effect events use current callback/state without listener re-registration; ref-as-prop preserves rendered behavior.
 V33: Dev startup re-optimizes Vite dependencies after React upgrades; context providers retain cross-major `.Provider` syntax so stale runtimes cannot interpret provider children as consumers.
+V34: While a public past-event or past-pass overlay is open, browser/system Back closes it without changing route; later Back retains normal route history.
 
 ## §T Tasks
 id|status|task|cites
@@ -103,6 +104,7 @@ T31|x|frontend: upgrade React/React DOM/types to 19.2, migrate removed defaults,
 T32|x|frontend: integrate gallery lightbox with browser history + hook regression test|V18,V31
 T33|x|frontend: adopt React 19.2 effect events + ref-as-prop; update hooks lint; regression test listener stability|V10,V14,V16,V18,V24,V30,V32
 T34|x|frontend: force Vite dependency re-optimization on dev start; restore cross-major context `.Provider`; regression test|V30,V33
+T35|x|frontend: integrate home and course-recap overlays with browser history + regression tests|V18,V34
 
 ## §B Bugs
 id|date|cause|fix
@@ -127,3 +129,4 @@ B18|2026-07-25|gallery lightbox lived only in React state, so browser/system Bac
 B19|2026-07-26|Vite dev server kept React 18.3.1 optimized cache after React 19 install; React 19 context shorthand hot update rendered as React 18 consumers and crashed|V33
 B20|2026-07-26|notification admin styling used green border values and violated the neutral edge policy|V25
 B21|2026-07-26|notification tests combined promise-driven rendering with fake timers and timed out before async queries settled|use real timers for promise-driven component tests
+B22|2026-07-27|home past-event query replaced the current entry and course recap overlays used local state only, so Back navigated away instead of dismissing the overlay|V34

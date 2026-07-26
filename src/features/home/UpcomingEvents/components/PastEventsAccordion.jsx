@@ -1,12 +1,20 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { ArrowUpRight, Calendar } from "lucide-react";
 import PastEventModal from "./PastEventModal.jsx";
 import "../../PastEvents/PastEvents.css";
 
+const pastEventHistoryStateKey = "__storegardenPastEvent";
+
 function PastEventsAccordion({ events }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
@@ -18,12 +26,22 @@ function PastEventsAccordion({ events }) {
 
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set("pastEvent", event.id);
-    setSearchParams(nextParams, { replace: true });
+    setSearchParams(nextParams, {
+      state: {
+        ...(location.state || {}),
+        [pastEventHistoryStateKey]: true,
+      },
+    });
   };
 
   const closeEvent = () => {
     setSelectedEvent(null);
     if (!requestedEventId) return;
+
+    if (location.state?.[pastEventHistoryStateKey]) {
+      navigate(-1);
+      return;
+    }
 
     const nextParams = new URLSearchParams(searchParams);
     nextParams.delete("pastEvent");
@@ -31,7 +49,10 @@ function PastEventsAccordion({ events }) {
   };
 
   useEffect(() => {
-    if (!requestedEventId) return;
+    if (!requestedEventId) {
+      setSelectedEvent(null);
+      return;
+    }
     const requestedEvent = events.find(
       (event) => event.id === requestedEventId
     );

@@ -12,7 +12,7 @@
 //
 // Styling stays in KurserPages.css under the existing kurser-* class names:
 // the markup is the same, so a rename would only churn the stylesheet.
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Calendar,
@@ -38,6 +38,7 @@ import { toUiEvent } from "../home/UpcomingEvents/toUiEvent.js";
 import "../../pages/KurserPages.css";
 
 const fullAddress = `${COURSE_LOCATION.streetAddress}, ${COURSE_LOCATION.postalCode} ${COURSE_LOCATION.locality}`;
+const pastPassHistoryStateKey = "__storegardenPastPass";
 
 /**
  * Full-bleed colour band with a width-constrained inner column.
@@ -423,6 +424,46 @@ export function PastPassesSection({
   variant = "timeline",
 }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const ownsHistoryEntryRef = useRef(false);
+
+  const openEvent = useCallback((event) => {
+    window.history.pushState(
+      {
+        ...window.history.state,
+        [pastPassHistoryStateKey]: true,
+      },
+      ""
+    );
+    ownsHistoryEntryRef.current = true;
+    setSelectedEvent(event);
+  }, []);
+
+  const closeEvent = useCallback(() => {
+    setSelectedEvent(null);
+
+    if (
+      ownsHistoryEntryRef.current &&
+      window.history.state?.[pastPassHistoryStateKey]
+    ) {
+      ownsHistoryEntryRef.current = false;
+      window.history.back();
+      return;
+    }
+
+    ownsHistoryEntryRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (!selectedEvent) return;
+
+    const handleHistoryBack = () => {
+      ownsHistoryEntryRef.current = false;
+      setSelectedEvent(null);
+    };
+
+    window.addEventListener("popstate", handleHistoryBack);
+    return () => window.removeEventListener("popstate", handleHistoryBack);
+  }, [selectedEvent]);
 
   if (passes.length === 0) return null;
 
@@ -461,7 +502,7 @@ export function PastPassesSection({
                         <button
                           type="button"
                           className="kurser-past__title-button"
-                          onClick={() => setSelectedEvent(eventDetail)}
+                          onClick={() => openEvent(eventDetail)}
                         >
                           {pass.title}
                         </button>
@@ -481,7 +522,7 @@ export function PastPassesSection({
                     {eventDetail && (
                       <button
                         type="button"
-                        onClick={() => setSelectedEvent(eventDetail)}
+                        onClick={() => openEvent(eventDetail)}
                         className="kurser-past__detail-link"
                       >
                         {pass.recapLabel || "Se återblicken"}
@@ -497,10 +538,7 @@ export function PastPassesSection({
       </CourseBand>
 
       {selectedEvent && (
-        <PastEventModal
-          event={selectedEvent}
-          onClose={() => setSelectedEvent(null)}
-        />
+        <PastEventModal event={selectedEvent} onClose={closeEvent} />
       )}
     </>
   );
