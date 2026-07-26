@@ -460,4 +460,47 @@ export const AdminService = {
       "Failed to create event upload"
     );
   },
+
+  getNotifications: async (key) => {
+    const res = await fetch(`${API_URL}/admin/notifications`, {
+      headers: getHeaders(key),
+      credentials: "include",
+    });
+    return handleJSONResponse(res, "Failed to fetch notifications");
+  },
+
+  createNotification: async (key, data) => {
+    const res = await fetch(`${API_URL}/admin/notifications`, {
+      method: "POST",
+      headers: getHeaders(key, {
+        includeJsonContentType: true,
+        idempotencyKey: createIdempotencyKey(),
+      }),
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
+    return handleJSONResponse(res, "Failed to create notification");
+  },
+
+  updateNotification: async (key, id, data) => {
+    const res = await fetch(`${API_URL}/admin/notifications/${id}`, {
+      method: "PUT",
+      headers: getHeaders(key, {
+        includeJsonContentType: true,
+        idempotencyKey: createIdempotencyKey(),
+      }),
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
+    return handleJSONResponse(res, "Failed to update notification");
+  },
+
+  deleteNotification: async (key, id) => {
+    const res = await fetch(`${API_URL}/admin/notifications/${id}`, {
+      method: "DELETE",
+      headers: getHeaders(key),
+      credentials: "include",
+    });
+    return handleJSONResponse(res, "Failed to delete notification");
+  },
 };

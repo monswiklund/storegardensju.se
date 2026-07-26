@@ -31,6 +31,10 @@ const ADMIN_VIEW_COPY = {
     title: "Evenemang",
     subtitle: "Hantera kommande och tidigare händelser.",
   },
+  notifications: {
+    title: "Notiser",
+    subtitle: "Publicera tidsstyrda nyheter i webbplatsens klocka.",
+  },
   coupons: {
     title: "Rabatter",
     subtitle: "Skapa och arkivera rabattkoder.",

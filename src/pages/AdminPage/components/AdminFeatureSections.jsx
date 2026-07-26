@@ -6,6 +6,7 @@ import AdminEvents from "./AdminEvents";
 import AdminYoga from "./AdminYoga";
 import AdminCoupons from "./AdminCoupons";
 import AdminPreviewPanel from "./AdminPreviewPanel";
+import AdminNotifications from "./AdminNotifications";
 
 export default function AdminFeatureSections({
   showCustomersSection,
@@ -13,6 +14,7 @@ export default function AdminFeatureSections({
   showYogaSection,
   showGallerySection,
   showEventsSection,
+  showNotificationsSection,
   showCouponsSection,
   orders,
   listLoading,
@@ -118,6 +120,19 @@ export default function AdminFeatureSections({
             />
           ) : (
             <AdminEvents adminKey={adminKey} />
+          )}
+        </>
+      )}
+
+      {showNotificationsSection && (
+        <>
+          {isPreview ? (
+            <AdminPreviewPanel
+              message="Demo-läge: logga in för att hantera notiser."
+              onLogin={onLogin}
+            />
+          ) : (
+            <AdminNotifications adminKey={adminKey} />
           )}
         </>
       )}

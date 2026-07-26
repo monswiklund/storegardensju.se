@@ -5,6 +5,7 @@ import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
 import { appRoutes, normalizePath } from "../../../config/routes.js";
 import CartBadge from "./CartBadge.jsx";
+import NotificationBell from "./NotificationBell.jsx";
 
 const NAV_ITEMS = appRoutes.filter(route => !route.hidden);
 
@@ -95,8 +96,8 @@ function Navbar() {
           />
         </div>
 
-        {/* BUTIK - Avkommentera för att visa varukorgsikonen */}
         <div className="navbar-right">
+          <NotificationBell />
           <CartBadge />
           <button
             ref={triggerRef}

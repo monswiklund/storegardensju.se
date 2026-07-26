@@ -96,6 +96,7 @@ export const ADMIN_VIEW_GROUPS = [
       { value: "products", label: "Produkter" },
       { value: "yoga", label: "Yoga & Kurser" },
       { value: "events", label: "Evenemang" },
+      { value: "notifications", label: "Notiser" },
       { value: "gallery", label: "Galleri" },
     ]
   },

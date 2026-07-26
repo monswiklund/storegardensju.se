@@ -248,6 +248,7 @@ function AdminPage() {
   const showCustomersSection = adminView === "customers";
   const showProductsSection = adminView === "products";
   const showEventsSection = adminView === "events";
+  const showNotificationsSection = adminView === "notifications";
   const showGallerySection = adminView === "gallery";
 
   const showCouponsSection = adminView === "coupons";
@@ -338,6 +339,7 @@ function AdminPage() {
               showYogaSection={adminView === "yoga"}
               showGallerySection={showGallerySection}
               showEventsSection={showEventsSection}
+              showNotificationsSection={showNotificationsSection}
               showCouponsSection={showCouponsSection}
               orders={orders}
               listLoading={listLoading}

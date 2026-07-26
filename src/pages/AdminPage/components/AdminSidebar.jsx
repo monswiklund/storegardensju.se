@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   BarChart3,
+  Bell,
   CalendarDays,
   ChevronRight,
   Flower2,
@@ -24,6 +25,7 @@ const NAV_ICONS = {
   customers: UsersRound,
   products: Package,
   events: CalendarDays,
+  notifications: Bell,
   yoga: Flower2,
   gallery: GalleryHorizontal,
   coupons: Tags,
