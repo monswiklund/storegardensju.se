@@ -98,6 +98,28 @@ const weddingJsonLd = [
   },
 ];
 
+const contactJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${canonicalUrl("/kontakt")}#business`,
+    name: COURSE_LOCATION.name,
+    url: canonicalUrl("/kontakt"),
+    image: absoluteUrl("/images/event/hero/hero.webp"),
+    email: "storegardensju@gmail.com",
+    address: schemaPlace.address,
+    areaServed: {
+      "@type": "City",
+      name: "Lidköping",
+    },
+    hasMap: COURSE_LOCATION.mapsUrl,
+    sameAs: [
+      "https://www.instagram.com/storegarden7/",
+      "https://www.facebook.com/profile.php?id=61564642647081",
+    ],
+  },
+];
+
 // --- Hub copy ---------------------------------------------------------------
 //
 // One entry per course track. The prose lives here rather than in courseEvents
@@ -502,6 +524,21 @@ export const seoMeta = {
         "Storegården 7 ligger i Rackeby, 15 minuter från Lidköpings centrum. På gården finns en renoverad lada med loft, en ateljé och en gårdsbutik.",
       ],
     },
+  },
+  kontakt: {
+    title: "Kontakt & hitta hit | Storegården 7 i Rackeby",
+    description:
+      "Kontakta Storegården 7 och hitta till gården i Rackeby, 15 minuter från Lidköping. Vägbeskrivning, besöksadress och frågor om event, kurser och butik.",
+    path: "/kontakt",
+    image: absoluteUrl("/images/event/hero/hero.webp"),
+    staticContent: {
+      h1: "Kontakta Storegården 7",
+      paragraphs: [
+        "Storegården 7 ligger på Storegården 7, 531 96 Rackeby, cirka 15 minuter med bil från Lidköpings centrum.",
+        "Hör av dig om du vill boka bröllop, fest, gruppdag, yoga, måleri eller keramik, eller om du vill planera ett besök på gården.",
+      ],
+    },
+    jsonLd: contactJsonLd,
   },
   mansPortfolio: {
     title: "Måns Wiklund | Portfolio & Projekt | Storegården 7",

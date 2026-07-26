@@ -111,10 +111,10 @@ const leafIcon = (
   </svg>
 );
 
-function ContactSection() {
+function ContactSection({ defaultOpen = false }) {
   const [subjectValue, setSubjectValue] = useState("");
   const [fallbackText, setFallbackText] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   useEffect(() => {
     const handleExpand = () => {

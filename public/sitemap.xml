@@ -106,6 +106,18 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Contact Page -->
+  <url>
+    <loc>https://storegardensju.se/kontakt/</loc>
+    <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://storegardensju.se/images/event/hero/hero.webp</image:loc>
+      <image:title>Storegården 7 i Rackeby utanför Lidköping</image:title>
+    </image:image>
+  </url>
+
   <!-- Måns Portfolio Page -->
   <url>
     <loc>https://storegardensju.se/om-oss/portfolj/mans/</loc>

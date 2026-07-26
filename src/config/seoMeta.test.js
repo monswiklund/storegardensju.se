@@ -178,6 +178,29 @@ describe("kurser index", () => {
   });
 });
 
+describe("contact page", () => {
+  it("publishes the address and canonical contact URL as LocalBusiness data", () => {
+    const [business] = byType(
+      activeJsonLd(seoMeta.kontakt, BEFORE_JULY_30),
+      "LocalBusiness"
+    );
+
+    expect(business.name).toBe("Storegården 7");
+    expect(business.url).toBe(canonicalUrl("/kontakt"));
+    expect(business.email).toBe("storegardensju@gmail.com");
+    expect(business.address.streetAddress).toBe("Storegården 7");
+    expect(business.address.addressLocality).toBe("Rackeby");
+  });
+
+  it("keeps crawlable contact copy aligned with the visible location details", () => {
+    const copy = seoMeta.kontakt.staticContent.paragraphs.join(" ");
+
+    expect(seoMeta.kontakt.path).toBe("/kontakt");
+    expect(copy).toContain("531 96 Rackeby");
+    expect(copy).toContain("15 minuter");
+  });
+});
+
 describe("event hubs", () => {
   it("keeps generic event intent on the hub and wedding intent on its child", () => {
     expect(seoMeta.event.path).toBe("/event");

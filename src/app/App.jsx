@@ -33,6 +33,7 @@ const TeamPage = lazy(() => import("../pages/TeamPage.jsx"));
 const MansPortfolioPage = lazy(() => import("../pages/MansPortfolioPage.jsx"));
 const KurserPage = lazy(() => import("../pages/KurserPage.jsx"));
 const KurserIndexPage = lazy(() => import("../pages/KurserIndexPage.jsx"));
+const ContactPage = lazy(() => import("../pages/ContactPage.jsx"));
 const AdminPage = lazy(() => import("../pages/AdminPage/AdminPage.jsx"));
 // BUTIK
 const ButikPage = lazy(() => import("../pages/ButikPage.jsx"));
@@ -141,6 +142,7 @@ function AppContent() {
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isHomePage = location.pathname === "/";
   const isTeamPage = location.pathname.startsWith("/om-oss");
+  const isContactPage = location.pathname.startsWith("/kontakt");
   // Any top-level route with children gets a subnav bar, not just /event.
   const isSubnavSection =
     isHomePage || sectionForPath(location.pathname) !== null;
@@ -189,11 +191,12 @@ function AppContent() {
             <Route path="/cancel" element={<CancelPage />} />
             <Route path="/om-oss" element={<TeamPage />} />
             <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
+            <Route path="/kontakt" element={<ContactPage />} />
             <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </PageTransition>
       </Suspense>
-      {!isAdminRoute && !isTeamPage && (
+      {!isAdminRoute && !isTeamPage && !isContactPage && (
         <div id={isHomePage ? "home-contact" : undefined}>
           <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
             <ContactSection />

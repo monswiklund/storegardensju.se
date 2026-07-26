@@ -30,6 +30,7 @@ const NAV_ROUTES = [
   { path: "/galleri", label: "Bildgalleri" },
   { path: "/butik", label: "Butik" },
   { path: "/om-oss", label: "Om oss" },
+  { path: "/kontakt", label: "Kontakt och hitta hit" },
 ];
 
 const ROOT_PLACEHOLDER = '<div id="root"></div>';

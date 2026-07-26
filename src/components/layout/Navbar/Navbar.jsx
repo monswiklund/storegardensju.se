@@ -7,10 +7,11 @@ import { appRoutes, normalizePath } from "../../../config/routes.js";
 import CartBadge from "./CartBadge.jsx";
 import NotificationBell from "./NotificationBell.jsx";
 
-const NAV_ITEMS = appRoutes.filter(route => !route.hidden);
+const ALL_NAV_ITEMS = appRoutes.filter((route) => !route.hidden);
+const NAV_ITEMS = ALL_NAV_ITEMS.filter((route) => !route.headerHidden);
 
 const getCurrentTitle = (pathname) => {
-  for (const item of NAV_ITEMS) {
+  for (const item of ALL_NAV_ITEMS) {
     const children = item.children ?? [];
     const child = children.find(route => route.path === pathname);
     if (child) return child.label;
@@ -88,13 +89,32 @@ function Navbar() {
           <img src="/images/logoTransp_cropped.png" alt="Storegården 7" className="navbar-logo" />
         </Link>
 
-        <div ref={menuRef} className={`nav-menu ${isOpen ? "open" : ""}`}>
+        <div
+          id="mobile-navigation"
+          ref={menuRef}
+          className={`nav-menu ${isOpen ? "open" : ""}`}
+          aria-label="Meny"
+        >
+          <div className="nav-menu-header" tabIndex="-1">
+            <span className="nav-menu-title">Meny</span>
+            <span className="nav-menu-subtitle">Utforska Storegården 7</span>
+          </div>
           <NavLinks
             items={NAV_ITEMS}
             currentPath={currentPath}
             onNavigate={handleNavigate}
           />
         </div>
+
+        {isOpen && (
+          <button
+            type="button"
+            className="nav-overlay"
+            aria-label="Stäng meny"
+            tabIndex="-1"
+            onClick={close}
+          />
+        )}
 
         <div className="navbar-right">
           <NotificationBell />
@@ -103,8 +123,9 @@ function Navbar() {
             ref={triggerRef}
             className={`hamburger ${isOpen ? "open" : ""}`}
             onClick={toggle}
-            aria-label="Toggle navigation menu"
+            aria-label={isOpen ? "Stäng meny" : "Öppna meny"}
             aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
             type="button"
           >
             <span />

@@ -30,5 +30,9 @@ export const appRoutes = [
   },
   { path: "/galleri", label: "Galleri" },
   { path: "/butik", label: "Butik" },
-  { path: "/om-oss", label: "Om Oss" },
+  {
+    path: "/om-oss",
+    label: "Om Oss",
+    children: [{ path: "/kontakt", label: "Kontakt" }],
+  },
 ];

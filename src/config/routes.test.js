@@ -66,4 +66,13 @@ describe("appRoutes", () => {
       expect(normalizePath(route.path), route.path).toBe(route.path);
     }
   });
+
+  it("groups Contact under Om Oss without changing its SEO URL", () => {
+    const about = appRoutes.find((route) => route.path === "/om-oss");
+    const contact = about.children.find((route) => route.path === "/kontakt");
+
+    expect(contact.label).toBe("Kontakt");
+    expect(contact.hidden).not.toBe(true);
+    expect(appRoutes.some((route) => route.path === "/kontakt")).toBe(false);
+  });
 });
