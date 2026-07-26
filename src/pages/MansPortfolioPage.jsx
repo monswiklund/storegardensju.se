@@ -46,7 +46,7 @@ function MansPortfolioPage() {
               <section className="retro-section">
                 <h2>Om mig</h2>
                 <p>
-                  Junior Fullstack- & DevOps-utvecklare, verksam på Sportson. Arbetar med Go, C# (.NET Core), SvelteKit, React / React Native, TypeScript, Postgres, SQLite samt moln- & containerinfrastruktur.
+                  Junior Fullstack- & DevOps-utvecklare. Arbetar med Go, C# (.NET Core), SvelteKit, React / React Native, TypeScript, Postgres, SQLite samt moln- & containerinfrastruktur.
                 </p>
               </section>
 

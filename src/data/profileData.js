@@ -76,7 +76,7 @@ export const profiles = {
   },
   mans: {
     title: "Måns Wiklund",
-    about: "Junior fullstack- och DevOps-utvecklare på Sportson",
+    about: "Junior fullstack- och DevOps-utvecklare",
     contact: {
       email: "monswiklund99@gmail.com",
       github: "github.com/monswiklund",

@@ -511,7 +511,7 @@ export const seoMeta = {
     staticContent: {
       h1: "Måns Wiklund - Portfolio",
       paragraphs: [
-        "Junior Fullstack- och DevOps-utvecklare, verksam på Sportson. Arbetar med Go, C# (.NET Core), SvelteKit, React och React Native, TypeScript, Postgres, SQLite samt moln- och containerinfrastruktur.",
+        "Junior Fullstack- och DevOps-utvecklare. Arbetar med Go, C# (.NET Core), SvelteKit, React och React Native, TypeScript, Postgres, SQLite samt moln- och containerinfrastruktur.",
         "Utvalda projekt: Storegården 7 webbsida, Padelcompanion, Vad Händer Sidan, Foderstallet och ViHop.",
       ],
     },

@@ -14,11 +14,13 @@
   --background-color: #f0fdf4; /* Fallback light green if needed */
   --background-alt: #FDFCF9; /* Soft lighter brown/beige */
   --background-green: #F8FBF9; /* Soft sage green tint */
+  --bg-surface: #f9f8f6;
   --overlay-dark: rgba(28, 28, 28, 0.4); /* Dark overlay for images */
 
   --text-main: #000000; /* Black */
   --text-secondary: #333333;
   --text-light: #f9f7f2;
+  --dark-color: #1a2519;
 
   /* Typography */
   --font-heading: "Playfair Display", Georgia, serif;
@@ -263,5 +265,4 @@ html.lenis body {
   background: var(--primary-hover);
   opacity: 0.5;
 }
-
 
