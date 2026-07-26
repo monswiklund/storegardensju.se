@@ -2,16 +2,16 @@
 export const profiles = {
   ann: {
     title: "Ann Wiklund",
-    about: "Konstnär & Keramiker",
+    about: "Konstnär och keramiker",
     contact: {
       email: "ann.wiklund.design@gmail.com ",
       instagram: "www.instagram.com/annwiklundstudio/",
     },
     texts: [
-      "Jag bor i Rackeby, på Storegården 7 utanför Lidköping där jag har min atelje, kurs/festlokal och en keramikbutik.",
-      "Har kurser i teckning, måleri och keramik både i egen regi och för studieförbundet NBV.",
-      "Driver egna företaget Ann Wiklund Studio med försäljning av konst, keramik, kurser, workshops, skapande skolauppdrag samt andra kreativa uppdrag.",
-      "Medlem i Sjölundagruppen och konstnärskollektivet Alea som både skapar och ställer ut tillsammans.",
+      "Jag bor på Storegården 7 i Rackeby utanför Lidköping. Här har jag min ateljé, kurs- och festlokal samt en liten keramikbutik.",
+      "Jag håller kurser i teckning, måleri och keramik, både i egen regi och för studieförbundet NBV.",
+      "I mitt företag Ann Wiklund Studio säljer jag konst och keramik och arbetar med kurser, workshops, Skapande skola och andra konstnärliga uppdrag.",
+      "Jag är medlem i Sjölundagruppen och konstnärskollektivet Alea. Vi arbetar och ställer ut tillsammans.",
     ],
     listItems: [
       "Keramik",
@@ -29,22 +29,22 @@ export const profiles = {
 
   carl: {
     title: "Carl Wiklund",
-    about: "Event & Restaurang Konsult",
+    about: "Event- och restaurangkonsult",
     contact: {
       email: "storegardensju@gmail.com",
       instagram: "www.instagram.com/_wiklund_",
     },
     texts: [
-      "Planering och genomförande av bröllop, fester & event DJ",
+      "Jag arbetar med planering och genomförande av bröllop, fester och event. På gården hjälper jag också till med musik, teknik, bar och det praktiska runt festen.",
     ],
     listItems: [
-        "Planering och genomförande av bröllop, fester & event",
+        "Planering och genomförande av bröllop, fester och event",
         "DJ",
         "Ljud, ljus och teknik",
         "Bartender och servering",
-        "Bar & dryckeskoncept",
-        "Festdekoration & miljöskapande",
-        "Byggnationer och snickeri"
+        "Bar och dryckeskoncept",
+        "Dekoration och möblering",
+        "Byggnationer och snickeri",
     ],
     imageSrc: "/images/carl-profile.webp",
     portfolio: [],
@@ -52,30 +52,31 @@ export const profiles = {
 
   lina: {
     title: "Lina Wiklund",
-    about: "Planering, Event & Design",
+    about: "Planering, event och design · utbildad yogainstruktör",
     contact: {
       email: "storegardensju@gmail.com",
     },
     texts: [
-      "Jag jobbar med att skapa unika och minnesvärda upplevelser genom bröllop, födelsedagsfester och event – både stora och små. Med 3 års erfarenhet som ansvarig för bröllop och fester i Stockholm och över 5 år inom restaurang och bar, har jag en stark känsla för både service, flöde och atmosfär.",
-      "Utöver event erbjuder jag även tjänster inom digital design och illustration – som till exempel personligt utformade namnskyltar, menyer och annat tryckt material som lyfter känslan på just din tillställning.",
-      "Jag hjälper till att bygga upp rätt miljö för rätt tillfälle – från idé till färdigt event.",
-      "Jag kan erbjuda:",
+      "Jag arbetar med bröllop, födelsedagsfester och andra event, både stora och små. Tidigare har jag varit ansvarig för bröllop och fester i Stockholm i tre år och arbetat inom restaurang och bar i över fem år.",
+      "Jag arbetar också med digital design och illustration, till exempel personliga namnskyltar, menyer och annat tryckt material till festen.",
+      "På Storegården 7 hjälper jag till med planering, möblering och det praktiska under dagen. Jag leder även yogan på loftet.",
+      "Det här kan jag hjälpa till med:",
     ],
 
     listItems: [
-      "Planering och genomförande av bröllop, fester & event",
+      "Planering och genomförande av bröllop, fester och event",
       "Bartender och servering",
-      "Bar & dryckeskoncept",
-      "Festdekoration & miljöskapande",
-      "Digital design & illustration",
+      "Bar och dryckeskoncept",
+      "Dekoration och möblering",
+      "Digital design och illustration",
+      "Yoga på loftet",
     ],
     imageSrc: "/images/lina-profile.webp",
     portfolio: [],
   },
   mans: {
     title: "Måns Wiklund",
-    about: "Junior Fullstack & DevOps (Sportson)",
+    about: "Junior fullstack- och DevOps-utvecklare på Sportson",
     contact: {
       email: "monswiklund99@gmail.com",
       github: "github.com/monswiklund",
@@ -92,33 +93,33 @@ export const profiles = {
     portfolioUrl: "/om-oss/portfolj/mans",
     portfolio: [
       {
-        title: "Storegården 7 Webbsida",
-        caption: "Officiell webbplats och e-handelsplattform för eventlokal, workshops och butik med responsiv UI.",
+        title: "Storegården 7 webbplats",
+        caption: "Webbplats och webbutik för Storegården 7, byggd för att fungera på både mobil och dator.",
         tags: ["React", "Vite", "Node.js", "E-handel"],
       },
       {
         title: "Padelcompanion & Padel Score",
-        caption: "Applikation för smartklockor (watchOS & Wear OS) och mobil att spåra padelmatcher i realtid.",
+        caption: "App för smartklockor och mobil som håller reda på poängen under en padelmatch.",
         tags: ["Swift", "Kotlin", "TypeScript", "quicktype"],
       },
       {
         title: "Padel Companion Site",
-        caption: "Webbportal och landningssida med PostgreSQL-backend, SvelteKit och Tailwind CSS.",
+        caption: "Webbportal och produktsida byggd med PostgreSQL, SvelteKit och Tailwind CSS.",
         tags: ["SvelteKit", "TypeScript", "PostgreSQL", "Tailwind"],
       },
       {
         title: "Vad Händer Sidan",
-        caption: "Karta- och eventplattform för lokala evenemang med interaktiv Leaflet-kartvy och Firebase.",
+        caption: "Karta över lokala evenemang, byggd med Leaflet och Firebase.",
         tags: ["SvelteKit", "TypeScript", "Leaflet", "Firebase"],
       },
       {
         title: "Foderstallet",
-        caption: "Mobil- och webbapplikation för stallhantering, foderstyrning, QR-koder och offline-SQLite-stöd.",
+        caption: "Mobil- och webbapp för stall, utfodring och QR-koder som även fungerar utan internet.",
         tags: ["React Native", "Expo", "Expo Router", "SQLite"],
       },
       {
         title: "ViHop",
-        caption: "Samåknings- och samordningsplattform för smidigare gemensamma resor.",
+        caption: "Tjänst för att planera samåkning och gemensamma resor.",
         tags: ["React", "Cloud", "Fullstack"],
       },
     ],

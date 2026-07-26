@@ -65,7 +65,7 @@ const contactConfig = [
   },
 ];
 
-function ContactList({ contact }) {
+function ContactList({ contact = null }) {
   if (!contact || Object.keys(contact).length === 0) {
     return null;
   }
@@ -112,10 +112,6 @@ ContactList.propTypes = {
     instagram: PropTypes.string,
     webpage: PropTypes.string,
   }),
-};
-
-ContactList.defaultProps = {
-  contact: null,
 };
 
 export default ContactList;

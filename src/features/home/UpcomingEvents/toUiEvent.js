@@ -38,6 +38,7 @@ export const toUiEvent = (item) => {
   );
 
   return {
+    id: item?.id || "",
     title: item?.title || "",
     spots: item?.spots || "",
     date,

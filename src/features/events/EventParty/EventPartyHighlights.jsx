@@ -5,10 +5,10 @@ function EventPartyHighlights() {
   return (
     <div id="event-party-section" className="event-party-section">
       <div className="event-party-container">
-        <h2 id="event-party-heading">Event & Fest</h2>
+        <h2 id="event-party-heading">Event och fest</h2>
         <div className="event-party-content"></div>
 <div className="event-types">
-    <h4>Perfekt för:</h4>
+    <h4>Lokalen passar för:</h4>
     <div className="types-grid">
         {eventTypesData.map((type, index) => (
             <div key={index} className="type-item">
@@ -18,7 +18,7 @@ function EventPartyHighlights() {
     </div>
 </div>
         <div className="event-party-cta">
-          <h3>Intresserad av att boka lokalen?</h3>
+          <h3>Vill du fråga om ett datum?</h3>
             <button
                 className="contact-button"
                 onClick={() => {

@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
+const lightboxHistoryStateKey = "__storegardenGalleryLightbox";
+
 const focusableSelector = [
   "a[href]",
   "area[href]",
@@ -27,6 +29,7 @@ function useGalleryLightbox(images, categoryKey) {
   const closeButtonRef = useRef(null);
   const previouslyFocusedRef = useRef(null);
   const preloadedSourcesRef = useRef(new Set());
+  const ownsHistoryEntryRef = useRef(false);
 
   const hasImages = images.length > 0;
 
@@ -35,6 +38,14 @@ function useGalleryLightbox(images, categoryKey) {
       if (!hasImages) return;
       previouslyFocusedRef.current = document.activeElement;
       setCurrentIndex(clampIndex(index, images.length));
+      window.history.pushState(
+        {
+          ...window.history.state,
+          [lightboxHistoryStateKey]: true,
+        },
+        ""
+      );
+      ownsHistoryEntryRef.current = true;
       setIsOpen(true);
     },
     [hasImages, images.length]
@@ -42,6 +53,17 @@ function useGalleryLightbox(images, categoryKey) {
 
   const closeLightbox = useCallback(() => {
     setIsOpen(false);
+
+    if (
+      ownsHistoryEntryRef.current &&
+      window.history.state?.[lightboxHistoryStateKey]
+    ) {
+      ownsHistoryEntryRef.current = false;
+      window.history.back();
+      return;
+    }
+
+    ownsHistoryEntryRef.current = false;
   }, []);
 
   const goToImage = useCallback(
@@ -123,6 +145,21 @@ function useGalleryLightbox(images, categoryKey) {
       document.removeEventListener("keydown", handleEscape);
     };
   }, [isOpen, closeLightbox]);
+
+  // Browser and system Back dismiss the lightbox's transient history entry.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleHistoryBack = () => {
+      ownsHistoryEntryRef.current = false;
+      setIsOpen(false);
+    };
+
+    window.addEventListener("popstate", handleHistoryBack);
+    return () => {
+      window.removeEventListener("popstate", handleHistoryBack);
+    };
+  }, [isOpen]);
 
   // Arrow-key navigation and Home/End shortcuts.
   useEffect(() => {

@@ -30,8 +30,8 @@ const HERO_FACTS = [
 
 const BASE_FEATURES = [
   {
-    title: "Konsultation",
-    text: "Möte på Storegården 7 där vi planerar och styr upp er gruppdag.",
+    title: "Planeringsmöte",
+    text: "Vi ses på Storegården 7 och går igenom hur ni vill lägga upp dagen.",
     icon: <Calendar size={20} />,
   },
   {
@@ -40,8 +40,8 @@ const BASE_FEATURES = [
     icon: <Heart size={20} />,
   },
   {
-    title: "Miljö",
-    text: "Uppdukat och dekorerat inomhus med tillgång till ladan, loftet och uteplatserna.",
+    title: "Dukning och lokaler",
+    text: "Vi dukar och dekorerar inomhus. Ni får använda ladan, loftet och uteplatserna.",
     icon: <Sparkles size={20} />,
   },
   {
@@ -77,8 +77,8 @@ const ACTIVITIES = [
   },
   {
     id: "farg",
-    title: "Skapande med färg",
-    tone: "Kreativt pass",
+    title: "Måla med färg",
+    tone: "Målarpass",
     description:
       "Måla din egen tavla och testa olika tekniker. Tavla, färg och utrustning ingår.",
     price: "300 kr/person",
@@ -88,10 +88,10 @@ const ACTIVITIES = [
   },
   {
     id: "collage",
-    title: "Skapa ditt eget collage",
+    title: "Gör ett eget collage",
     tone: "Moodboard",
     description:
-      "Bläddra igenom tidningar, böcker och klipp. Klistra, bygg moodboard och skapa en egen vision.",
+      "Bläddra i tidningar och böcker, välj bilder och bygg ett eget collage eller en moodboard.",
     price: "100 kr/person",
     priceVal: 100,
     category: "lugn",
@@ -151,14 +151,13 @@ function MohippaPage() {
     const subject = encodeURIComponent("Förfrågan gruppdag på Storegården 7");
     const body = encodeURIComponent(
       `Hej Storegården 7!\n\n` +
-      `Vi vill gärna skicka en förfrågan om en gruppdag hos er.\n\n` +
-      `Här är våra önskemål:\n` +
+      `Vi är intresserade av en gruppdag hos er.\n\n` +
       `- Antal personer: ${guestCount} st\n` +
       `- Paket: Baspaket (500 kr/person)\n` +
       `- Valda aktiviteter:\n${activitiesText}\n\n` +
       `Uppskattad totalkostnad: ${grandTotal.toLocaleString("sv-SE")} kr (${totalPerPerson} kr/person)\n\n` +
-      `Vi önskar preliminärt datum: [Fyll i önskat datum här]\n\n` +
-      `Hör gärna av er med förslag på upplägg och tillgänglighet!\n\n` +
+      `Önskat datum: [Fyll i datum här]\n\n` +
+      `Hör gärna av er och berätta om datumet är ledigt.\n\n` +
       `Med vänliga hälsningar,\n` +
       `[Ditt namn]\n` +
       `[Ditt telefonnummer]`
@@ -270,8 +269,8 @@ function MohippaPage() {
                   på Storegården 7
                 </h1>
                 <p>
-                  En färdig grund för dagen, med lokal, hjälp på plats och
-                  kreativa tillval som gör er sammankomst personlig.
+                  Boka ladan och loftet från 10:00 till 22:00. Vi hjälper till
+                  med det praktiska, och ni kan lägga till aktiviteter om ni vill.
                 </p>
 
                 <div className="mohippa-hero__facts" aria-label="Snabbfakta">
@@ -313,7 +312,7 @@ function MohippaPage() {
               <div className="mohippa-hero__media" aria-hidden="true">
                 <img src="/images/evenemang/slide2.webp" alt="" />
                 <div className="mohippa-hero__note">
-                  <strong>Skapa eran dag</strong>
+                  <strong>Planera er dag</strong>
                 </div>
               </div>
             </div>
@@ -440,7 +439,7 @@ function MohippaPage() {
                             <Heart size={18} />
                             <span className="section-ornament-line"></span>
                           </div>
-                          <h2 id="mohippa-package-heading">Allt ni behöver som grund</h2>
+                          <h2 id="mohippa-package-heading">Det här ingår i baspaketet</h2>
                           <p>
                             Ni får tillgång till vår lokal, både ladan och loftet samt
                             tillhörande uteplatser. Ni har tillgång 10:00-22:00.
@@ -478,7 +477,7 @@ function MohippaPage() {
                     {mainTab === "aktiviteter" && (
                       <div className="mohippa-tab-content-pane">
                         <div className="mohippa-section-heading">
-                          <span className="mohippa-eyebrow">Tillval & aktiviteter</span>
+                          <span className="mohippa-eyebrow">Tillval och aktiviteter</span>
                           <div className="section-ornament align-left" aria-hidden="true">
                             <span className="section-ornament-line"></span>
                             <Palette size={18} />
@@ -488,9 +487,9 @@ function MohippaPage() {
                             Lägg till det som passar gruppen
                           </h2>
                           <p>
-                            Välj en lugn start, ett kreativt pass eller något mer
-                            festligt. Vi hjälper er att sätta ihop ett upplägg som passar
-                            dagen. Kryssa i tillvalen nedan för att lägga till dem i kalkylen till vänster!
+                            Välj de aktiviteter som gruppen vill göra. När ni
+                            klickar på ett tillval läggs det direkt till i
+                            prisberäkningen.
                           </p>
                         </div>
 
@@ -507,21 +506,21 @@ function MohippaPage() {
                             className={`mohippa-tab-btn ${activeTab === "lugn" ? "active" : ""}`}
                             onClick={() => setActiveTab("lugn")}
                           >
-                            Lugn & Fokus
+                            Lugnt
                           </button>
                           <button
                             type="button"
                             className={`mohippa-tab-btn ${activeTab === "kreativt" ? "active" : ""}`}
                             onClick={() => setActiveTab("kreativt")}
                           >
-                            Kreativt skapande
+                            Måleri och keramik
                           </button>
                           <button
                             type="button"
                             className={`mohippa-tab-btn ${activeTab === "festligt" ? "active" : ""}`}
                             onClick={() => setActiveTab("festligt")}
                           >
-                            Mat, dryck & fest
+                            Mat, dryck och fest
                           </button>
                         </div>
 
@@ -594,7 +593,7 @@ function MohippaPage() {
               <FadeInSection>
                 <HomeServicesSection
                   excludeId="mohippa"
-                  title="Planera mer på gården"
+                  title="Se mer på gården"
                   eyebrow="FLER AKTIVITETER"
                 />
               </FadeInSection>

@@ -75,8 +75,8 @@ function HomeInstagramSection() {
           </div>
           <h2 id="instagram-heading">Följ oss på Instagram</h2>
           <p className="instagram-subtitle">
-            Följ vår vardag på Storegården 7 – få en inblick i event, kurser,
-            skapande och livet på gården.
+            Där lägger vi upp bilder från gården, kurserna och det som händer
+            i ladan och ateljén.
           </p>
         </header>
 

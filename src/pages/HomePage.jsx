@@ -11,112 +11,52 @@ import { fetchPublicEvents } from "../services/eventsService";
 import { toUiEvent } from "../features/home/UpcomingEvents/toUiEvent.js";
 import PastEventsAccordion from "../features/home/UpcomingEvents/components/PastEventsAccordion.jsx";
 import { useSeo } from "../hooks/useSeo.js";
+import {
+  COURSE_LOCATION,
+  allUpcomingPasses,
+  passHref,
+  trackById,
+} from "../data/courseEvents.js";
 import { seoMeta } from "../config/seoMeta.js";
-
-const COURSE_DAY_EVENT = {
-  id: "heldag-yoga-maleri-2026-07-13",
-  title: "Heldag med yoga & måleri",
-  spots: "Passade alla",
-  startAt: "2026-07-13T10:00:00+02:00",
-  endAt: "2026-07-13T17:30:00+02:00",
-  description:
-    "Den 13 juli hade vi yoga med Lina och måleri med Ann på Storegården 7. Under dagen åt vi också lunch och fikade tillsammans.",
-  moments: [
-    {
-      time: "Kl 10:00",
-      title: "Välkommen & Landa",
-      description:
-        "Dörrarna öppnas på gården. Välkommen av Lina Wiklund att kliva in i lugn och ro, rulla ut din matta på anvisad plats och göra dig hemmastadd.",
-      tone: "yoga",
-    },
-    {
-      time: "Kl 10:30–12:00",
-      title: "Yoga – Mind, Body & Breath",
-      description:
-        "Yogapass lett av Lina Wiklund. Fokus på andning, närvaro och rörelse. Passar både nybörjare och vana utövare.",
-      tone: "yoga",
-    },
-    {
-      time: "Kl 12:00–13:30",
-      title: "Gemensam Lunch",
-      description:
-        "En härlig, näringsrik lunch serveras på gården. En stund för vila, trevliga samtal och återhämtning i gårdsmiljön.",
-      tone: "creative",
-    },
-    {
-      time: "Kl 13:30–17:30",
-      title: "Måleri – Glädjefylld Målarkurs",
-      description:
-        "Kreativ målarkurs ledd av Ann Wiklund. Vi gör roliga, prestationsfria uppvärmningsövningar och målar fritt med akvarell och akryl.",
-      tone: "creative",
-    },
-    {
-      time: "Kl 17:30",
-      title: "Kaffe, Fika & Avslutning",
-      description:
-        "Vi avrundar dagen tillsammans och njuter av gott hembakat fika, kaffe och te.",
-      tone: "creative",
-    },
-  ],
-  location: "Storegården 7, Rackeby",
-  links: [
-    {
-      href: "/kurser",
-      label: "Se återblicken",
-    },
-  ],
-  images: [
-    {
-      url: "/images/evenemang/yoga-loft.webp",
-      alt: "Yoga på loftet på Storegården 7",
-    },
-    {
-      url: "/images/evenemang/maleri-kurs.webp",
-      alt: "Målarkurs på Storegården 7",
-    },
-    {
-      url: "/images/evenemang/heldag-paket.webp",
-      alt: "Heldag med yoga och måleri på Storegården 7",
-    },
-  ],
-};
+import { COURSE_DAY_EVENT } from "../data/featuredPastEvents.js";
 
 const isCourseDayEvent = (event) =>
   event?.id === COURSE_DAY_EVENT.id ||
   event?.startAt === COURSE_DAY_EVENT.startAt;
 
-const FALLBACK_YOGA_EVENT = {
-  id: "yoga-pa-loftet-2026-07-30",
-  title: "Yoga på loftet med Lina Wiklund",
-  spots: "150 kr / person – Drop-in (Betalas på plats)",
-  startAt: "2026-07-30T18:00:00+02:00",
-  endAt: "2026-07-30T19:30:00+02:00",
-  description:
-    "90 minuter med guidning och vila i fridfull miljö på loftet. Välkommen från 17:30 för att landa. Pris: 150 kr / person, betalas på plats. Ingen föranmälan behövs, yogamattor finns på plats!",
-  artists: "Lina Wiklund",
-  location: "Storegården 7, Rackeby (Lidköping)",
-  links: [
-    {
-      href: "/kurser",
-      label: "Läs mer om yogan",
-    },
-  ],
-  images: [
-    {
-      url: "/images/evenemang/lina-yoga-header.jpg",
-      alt: "Yoga på loftet med Lina Wiklund på Storegården 7",
-    },
-    {
-      url: "/images/evenemang/lina-yoga.jpg",
-      alt: "Yoga på loftet event i Lidköping",
-    },
-  ],
-};
+// Derived from the course hubs' own data rather than a second hardcoded copy:
+// two literals describing the same pass drift apart the moment one is updated.
+// Covers both tracks, so a maleri course shows up here too.
+// Used only when /api/events is unreachable or returns nothing upcoming.
+const courseFallbackEvents = () =>
+  allUpcomingPasses().map((pass) => {
+    const track = trackById(pass.primaryTrack);
+
+    return {
+      id: pass.id,
+      title: `${pass.title} med ${track.instructor.name}`,
+      spots: pass.price
+        ? `${pass.price} kr / person${pass.dropIn ? " – Drop-in (Betalas på plats)" : ""}`
+        : "",
+      startAt: pass.startAt,
+      endAt: pass.endAt,
+      description: pass.description,
+      artists: track.instructor.name,
+      location: `${COURSE_LOCATION.name}, ${COURSE_LOCATION.locality} (Lidköping)`,
+      links: [
+        {
+          // Anchor straight to the pass section on its own hub.
+          href: passHref(pass, null),
+          label: `Läs mer om ${track.hubLabel}`,
+        },
+      ],
+      images: pass.images,
+    };
+  });
 
 function HomePage() {
   useSeo(seoMeta.home);
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("top");
   const [eventsData, setEventsData] = useState({ upcoming: [], past: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -136,7 +76,7 @@ function HomePage() {
       } catch {
         if (!active) return;
         setEventsData({
-          upcoming: [FALLBACK_YOGA_EVENT],
+          upcoming: courseFallbackEvents(),
           past: [],
         });
       } finally {
@@ -154,7 +94,9 @@ function HomePage() {
 
   const upcomingEvents = useMemo(() => {
     const rawUpcoming =
-      eventsData.upcoming.length > 0 ? eventsData.upcoming : [FALLBACK_YOGA_EVENT];
+      eventsData.upcoming.length > 0
+        ? eventsData.upcoming
+        : courseFallbackEvents();
 
     const fetched = rawUpcoming
       .filter((event) => !isCourseDayEvent(event))
@@ -187,115 +129,8 @@ function HomePage() {
     navigate("/galleri");
   };
 
-  // Scroll spy listener to update floating navigation dots based on scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 3;
-
-      const heroSection = document.getElementById("home-hero");
-      const welcomeSection = document.getElementById("home-welcome");
-      const eventsSection = document.getElementById("home-events");
-      const pastSection = document.getElementById("past-events");
-      const servicesSection = document.getElementById("home-services");
-      const contactSection = document.querySelector(".contact-container");
-
-      const getAbsTop = (el) => el ? el.getBoundingClientRect().top + window.pageYOffset : 0;
-
-      if (contactSection && scrollPosition >= getAbsTop(contactSection)) {
-        setActiveSection("contact");
-      } else if (servicesSection && scrollPosition >= getAbsTop(servicesSection)) {
-        setActiveSection("services");
-      } else if (pastSection && scrollPosition >= getAbsTop(pastSection)) {
-        setActiveSection("past");
-      } else if (eventsSection && scrollPosition >= getAbsTop(eventsSection)) {
-        setActiveSection("events");
-      } else if (welcomeSection && scrollPosition >= getAbsTop(welcomeSection)) {
-        setActiveSection("welcome");
-      } else {
-        setActiveSection("top");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Trigger once on mount
-    
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToSection = (id) => {
-    let element = document.getElementById(id);
-    if (!element && id === "home-contact") {
-      element = document.querySelector(".contact-container");
-    }
-    if (element) {
-      const yOffset = -70; // offset for fixed header
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  };
-
   return (
     <div className="home-page">
-      {/* Floating Scroll Indicator Dot Navigation (Scroll Spy) */}
-      <nav className="scroll-indicator-nav" aria-label="Sidinnehåll">
-        <ul>
-          <li>
-            <button
-              onClick={() => scrollToSection("home-hero")}
-              className={`scroll-dot ${activeSection === "top" ? "active" : ""}`}
-              title="Till toppen"
-            >
-              <span className="dot-label">Start</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("home-welcome")}
-              className={`scroll-dot ${activeSection === "welcome" ? "active" : ""}`}
-              title="Välkommen till oss"
-            >
-              <span className="dot-label">Välkommen</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("home-events")}
-              className={`scroll-dot ${activeSection === "events" ? "active" : ""}`}
-              title="Kommande evenemang"
-            >
-              <span className="dot-label">Kommande</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("past-events")}
-              className={`scroll-dot ${activeSection === "past" ? "active" : ""}`}
-              title="Tidigare evenemang"
-            >
-              <span className="dot-label">Tidigare</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("home-services")}
-              className={`scroll-dot ${activeSection === "services" ? "active" : ""}`}
-              title="Vad vi erbjuder"
-            >
-              <span className="dot-label">Vad vi erbjuder</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("home-contact")}
-              className={`scroll-dot ${activeSection === "contact" ? "active" : ""}`}
-              title="Hitta hit & kontakt"
-            >
-              <span className="dot-label">Hitta Hit & Kontakt</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-
       <header role="banner" id="home-hero">
         <PageSection background="alt" spacing="none" ariaLabel="hero-heading">
           <HomeHeroSection />

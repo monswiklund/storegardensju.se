@@ -53,6 +53,27 @@
   padding: 0 20px;
 }
 
+/* The photo meets the white section below on a curve instead of a hard edge -
+   a SectionDivider cannot be used here because it would lay a pale strip on
+   top of the photo rather than cut into it. */
+.art-hero__curve {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px; /* Overlap the seam so no hairline shows at odd zoom levels. */
+  z-index: 3;
+  display: block;
+  width: 100%;
+  height: 52px;
+  color: #ffffff; /* Matches the white band that follows. */
+}
+
+@media (max-width: 640px) {
+  .art-hero__curve {
+    height: 32px;
+  }
+}
+
 .art-eyebrow {
   display: inline-block;
   font-size: 0.9rem;
@@ -155,9 +176,20 @@
   }
 }
 
+@media (min-width: 768px) {
+  /* Room for the staggered cards to hang below the row. */
+  .art-offerings-grid {
+    padding-bottom: 24px;
+  }
+}
+
+/* Hand-thrown rather than machine-cut: each card gets a different asymmetric
+   radius and sits at a slightly different height, so the row of four reads as
+   objects on a table instead of a grid of boxes. */
 .art-offering-card {
+  position: relative;
   background: white;
-  border-radius: 16px;
+  border-radius: 26px 16px 26px 16px;
   padding: 35px 24px;
   box-shadow: var(--shadow-sm);
   transition: var(--transition-smooth);
@@ -165,10 +197,53 @@
   text-align: center;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.art-offering-card:nth-child(even) {
+  border-radius: 16px 26px 16px 26px;
+}
+
+/* A band of the card's own accent along the top edge, clipped by the card's
+   asymmetric radius. Full width so it reads as part of the card - an inset
+   stroke floats loose when the card and the section behind it are both white. */
+.art-offering-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: currentColor;
+  opacity: 0.5;
+  transition: var(--transition-smooth);
+}
+
+.art-offering-card:hover::before {
+  opacity: 0.9;
+}
+
+@media (min-width: 768px) {
+  .art-offering-card:nth-child(even) {
+    transform: translateY(18px);
+  }
+
+  .art-offering-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .art-offering-card:nth-child(even):hover {
+    transform: translateY(12px);
+  }
+}
+
+@media (max-width: 767px) {
+  .art-offering-card:hover {
+    transform: translateY(-6px);
+  }
 }
 
 .art-offering-card:hover {
-  transform: translateY(-6px);
   box-shadow: var(--shadow-md);
 }
 
@@ -198,7 +273,21 @@
   flex-grow: 1;
 }
 
-/* Card Accents */
+/* Card Accents. The card's own `color` drives the top brushstroke
+   (::before uses currentColor); h3/p set their colours explicitly. */
+.offering-terracotta {
+  color: var(--accent-color);
+}
+.offering-green {
+  color: var(--primary-color);
+}
+.offering-slate {
+  color: var(--dark-color);
+}
+.offering-gold {
+  color: #c59b27;
+}
+
 .offering-terracotta .offering-icon-wrapper {
   background-color: rgba(185, 148, 112, 0.1);
   color: var(--accent-color);
@@ -236,7 +325,9 @@
   background: linear-gradient(135deg, #1e251c 0%, #121711 100%);
   color: white;
   padding: 60px 40px;
-  border-radius: 20px;
+  /* Asymmetric, like the offering cards - nothing on this page is a plain
+     rectangle. */
+  border-radius: 34px 20px 34px 20px;
   text-align: center;
   box-shadow: var(--shadow-lg);
   position: relative;
@@ -244,6 +335,8 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Paint spilled into the dark banner: soft blooms in the studio palette
+   (terracotta, green, gold) rather than one grey glow. */
 .art-cta-banner::before {
   content: "";
   position: absolute;
@@ -251,7 +344,23 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at center, rgba(185, 148, 112, 0.12) 0%, transparent 70%);
+  background:
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(185, 148, 112, 0.22) 0%,
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 88% 78%,
+      rgba(95, 111, 82, 0.28) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 72% 12%,
+      rgba(212, 175, 55, 0.14) 0%,
+      transparent 38%
+    ),
+    radial-gradient(circle at center, rgba(185, 148, 112, 0.1) 0%, transparent 70%);
   pointer-events: none;
 }
 

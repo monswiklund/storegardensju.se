@@ -5,7 +5,6 @@ import {
   Clock3,
   GripVertical,
   Image as ImageIcon,
-  MapPin,
   Plus,
   Save,
   Trash2,
@@ -183,7 +182,7 @@ export default function AdminYoga({ adminKey }) {
         item => item.title?.toLowerCase().includes("yoga") || item.category === "yoga"
       );
       setYogaEvents(filtered.length > 0 ? filtered : DEFAULT_YOGA_EVENTS);
-    } catch (err) {
+    } catch {
       setYogaEvents(DEFAULT_YOGA_EVENTS);
     } finally {
       setLoading(false);

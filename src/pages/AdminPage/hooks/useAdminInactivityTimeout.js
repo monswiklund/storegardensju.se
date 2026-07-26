@@ -1,15 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useEffectEvent, useRef } from "react";
 import { IDLE_TIMEOUT_MS } from "../adminAuthConstants";
 
 const ACTIVITY_EVENTS = ["mousemove", "keydown", "pointerdown", "touchstart"];
 
 export function useAdminInactivityTimeout({ active, onTimeout }) {
   const timerRef = useRef(null);
-  const onTimeoutRef = useRef(onTimeout);
-
-  useEffect(() => {
-    onTimeoutRef.current = onTimeout;
-  }, [onTimeout]);
+  const handleTimeout = useEffectEvent(() => {
+    if (typeof onTimeout === "function") {
+      onTimeout();
+    }
+  });
 
   useEffect(() => {
     if (!active || typeof window === "undefined") return undefined;
@@ -19,9 +19,7 @@ export function useAdminInactivityTimeout({ active, onTimeout }) {
         window.clearTimeout(timerRef.current);
       }
       timerRef.current = window.setTimeout(() => {
-        if (typeof onTimeoutRef.current === "function") {
-          onTimeoutRef.current();
-        }
+        handleTimeout();
       }, IDLE_TIMEOUT_MS);
     };
 

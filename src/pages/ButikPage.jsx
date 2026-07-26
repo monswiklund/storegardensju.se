@@ -91,7 +91,7 @@ function ButikPage() {
             <span className="section-ornament-line"></span>
           </div>
           <h1>Butik</h1>
-          <p>Handgjord konst och keramik från lokala konstnärer</p>
+          <p>Konst och handgjord keramik från gårdens ateljé</p>
         </div>
 
         {/* Kategorifilter - visa bara om det finns produkter */}
@@ -133,7 +133,7 @@ function ButikPage() {
         {!loading && !error && products.length === 0 && (
           <div className="products-empty">
             <p>Inga produkter tillgängliga just nu.</p>
-            <p>Kom tillbaka snart!</p>
+            <p>Sortimentet fylls på när det finns nya saker från ateljén.</p>
           </div>
         )}
 

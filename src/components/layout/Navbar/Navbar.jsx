@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
-import { appRoutes } from "../../../config/routes.js";
+import { appRoutes, normalizePath } from "../../../config/routes.js";
 import CartBadge from "./CartBadge.jsx";
 
 const NAV_ITEMS = appRoutes.filter(route => !route.hidden);
@@ -23,7 +23,9 @@ function Navbar() {
   const location = useLocation();
   const { isOpen, toggle, close, menuRef, triggerRef } = useNavbarToggle();
   const pendingScrollTargetRef = useRef(null);
-  const currentTitle = getCurrentTitle(location.pathname);
+  // Trailing slash: GitHub Pages serves /kurser/ but appRoutes holds /kurser.
+  const currentPath = normalizePath(location.pathname);
+  const currentTitle = getCurrentTitle(currentPath);
 
   const scrollToHeroTitle = () => {
     if (typeof window === "undefined") return;
@@ -88,7 +90,7 @@ function Navbar() {
         <div ref={menuRef} className={`nav-menu ${isOpen ? "open" : ""}`}>
           <NavLinks
             items={NAV_ITEMS}
-            currentPath={location.pathname}
+            currentPath={currentPath}
             onNavigate={handleNavigate}
           />
         </div>

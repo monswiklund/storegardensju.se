@@ -53,7 +53,7 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
   }, []);
 
   const activeEvent = upcomingEvents[0] || null;
-  const primaryLink = activeEvent?.links?.[0] || { href: "/kurser", label: "Läs mer & anmäl dig" };
+  const primaryLink = activeEvent?.links?.[0] || { href: "/kurser/yoga", label: "Läs mer & anmäl dig" };
 
   return (
     <div id="events-section" className={`events-section ${isCentered ? "is-centered" : ""}`}>
@@ -316,10 +316,10 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
                   <Calendar size={18} />
                   <span className="section-ornament-line"></span>
                 </div>
-                <h2 className="events-heading-large">Nästa grej på Storegården</h2>
+                <h2 className="events-heading-large">Nästa datum på Storegården</h2>
                 <p className="events-description-large">
-                  Här samlar vi kommande kurser, öppna ateljékvällar och andra
-                  tillfällen att mötas och skapa på gården.
+                  Här hittar du kommande kurser, öppna ateljékvällar och andra
+                  aktiviteter på gården.
                 </p>
                 
                 <div className="upcoming-desktop-actions desktop-only">
@@ -346,8 +346,8 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
               <span className="events-empty-kicker">Just nu</span>
               <h2>Inget nytt datum än.</h2>
               <p>
-                Vill ni samla ett gäng på gården ordnar vi gärna en privat
-                workshop eller en egen dag tillsammans.
+                Det går fortfarande att fråga om en privat workshop eller
+                gruppdag.
               </p>
               <div className="events-empty-actions">
                 <button

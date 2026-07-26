@@ -2,7 +2,7 @@ import "./Services.css";
 import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import { services as servicesData } from "../../../data/homeContent.js";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useEffectEvent } from "react";
 
 const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "VAD VI HAR" }) => {
   const [activeDomIndex, setActiveDomIndex] = useState(0);
@@ -88,24 +88,24 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
     return () => container.removeEventListener("wheel", handleWheel);
   }, [L]);
 
-  // Handle browser window resize to keep the active card centered
-  useEffect(() => {
-    const handleResize = () => {
-      const container = containerRef.current;
-      if (container && L > 0) {
-        const step = getStepSize(container);
-        if (step > 0) {
-          const currentActiveMappedIndex = activeDomIndex % L;
-          const newDomIndex = L + currentActiveMappedIndex;
-          teleport(container, newDomIndex * step);
-          setActiveDomIndex(newDomIndex);
-        }
+  const handleResize = useEffectEvent(() => {
+    const container = containerRef.current;
+    if (container && L > 0) {
+      const step = getStepSize(container);
+      if (step > 0) {
+        const currentActiveMappedIndex = activeDomIndex % L;
+        const newDomIndex = L + currentActiveMappedIndex;
+        teleport(container, newDomIndex * step);
+        setActiveDomIndex(newDomIndex);
       }
-    };
+    }
+  });
 
+  // Keep the active card centered without re-registering on every scroll.
+  useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [activeDomIndex, L]);
+  }, []);
 
   // If the view has drifted into an outer copy, snap back (invisibly) to the
   // middle copy and remap the active index. Returns the index shift applied

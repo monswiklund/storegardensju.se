@@ -19,7 +19,7 @@ export const products = [
     name: "Handgjord Keramikvas - Blå",
     price: 150,
     description: "Elegant handgjord vas i blå glasyr",
-    longDescription: "Denna vackra vas är handgjord av lokal keramiker. Varje vas är unik med små variationer i glasyr och form. Perfekt för både torkade och färska blommor.",
+    longDescription: "Vasen är handgjord av en lokal keramiker. Små variationer i glasyr och form förekommer. Den kan användas till både torkade och färska blommor.",
     images: [
       "/images/products/taxam-1.webp",
       "/images/products/vas-bla-2.jpg"

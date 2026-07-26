@@ -1,25 +1,35 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { PartyPopper, Wine, Maximize2, Sparkles } from "lucide-react";
-import { PageSection, SectionDivider } from "../../components";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  ArrowUpRight,
+  Building2,
+  CalendarCheck,
+  Heart,
+  Maximize2,
+  PartyPopper,
+  Sparkles,
+  UsersRound,
+  Wine,
+} from "lucide-react";
+import { PageSection, ScrollSpyNav, SectionDivider } from "../../components";
 import { HomeServicesSection } from "../../features/home";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import { useSeo } from "../../hooks/useSeo.js";
+import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
 import { seoMeta } from "../../config/seoMeta.js";
 import "./EventPage.css";
 
-const eventFacts = [
+const EVENT_FACTS = [
   {
     value: "360 kvm",
-    label: "Inomhusyta fördelad på två våningar, lada och loft.",
+    label: "Inomhus på två våningar: ladan och loftet.",
   },
   {
     value: "150+",
-    label: "Sittande gäster på loftet, med plats för större mingel.",
+    label: "Sittande gäster på loftet.",
   },
   {
     value: "Bar, kök",
-    label: "Långbord, soffor, dansgolv, toaletter och förvaring intill.",
+    label: "Kök med arbetsytor, handdisk samt varmt och kallt vatten.",
   },
   {
     value: "Personal",
@@ -27,110 +37,86 @@ const eventFacts = [
   },
 ];
 
+const EVENT_STEPS = [
+  {
+    title: "Berätta vad ni planerar",
+    body: "Skicka datum, ungefärligt antal gäster och vad ni vill ordna.",
+  },
+  {
+    title: "Gå igenom det praktiska",
+    body: "Vi går igenom lokalerna, dukningen, maten, drycken och vilken hjälp ni behöver.",
+  },
+  {
+    title: "Kom till gården",
+    body: "När dagen kommer är ladan i ordning för det upplägg vi har kommit överens om.",
+  },
+];
+
+const EVENT_TYPES = [
+  {
+    title: "Bröllop",
+    description:
+      "Hyr ladan och loftet för bröllopsmiddag och fest. Ni får ta med egen mat och dryck.",
+    to: "/event/brollop",
+    linkLabel: "Läs om bröllop",
+    variant: "wedding",
+    image: "/images/event/hero/hero-2.webp",
+    imageAlt: "Dukade långbord på loftet inför ett bröllop",
+    Icon: Heart,
+  },
+  {
+    title: "Fest & företagsevent",
+    description:
+      "Födelsedag, jubileum, afterwork eller företagsfest med två flexibla våningar.",
+    href: "#event-loft-section",
+    linkLabel: "Se lokalens möjligheter",
+    variant: "celebration",
+    Icon: Building2,
+  },
+  {
+    title: "Gruppdagar",
+    description:
+      "Ett färdigt upplägg för möhippa, svensexa, teambuilding eller en dag med vänner.",
+    to: "/gruppdagar",
+    linkLabel: "Planera en gruppdag",
+    variant: "group",
+    image: "/images/evenemang/heldag-paket.webp",
+    imageAlt: "Samlingsplats utomhus vid ladan",
+    Icon: UsersRound,
+  },
+];
+
+// The rail follows EventPage's own sections. The global contact and Instagram
+// bands belong to the shared page shell and should not change this page's map.
+const SPY_SECTIONS = [
+  { id: "event-hero", label: "Start" },
+  { id: "event-details-section", label: "Välj event" },
+  { id: "event-loft-section", label: "Kapacitet" },
+  { id: "event-amenities-section", label: "Möjligheter" },
+  { id: "event-planning-section", label: "Planering" },
+  { id: "event-services-recommendation", label: "Mer på gården" },
+];
+
+// Navbar (60px) plus the section subnav (48px), with breathing room for the
+// heading so a dot click never hides it behind the fixed navigation.
+const SPY_OFFSET = 130;
+
 function EventPage() {
   useSeo(seoMeta.event);
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("top");
+  const {
+    timelineRef,
+    activeSteps: activeTimelineSteps,
+    progress: timelineProgress,
+  } = useSequentialScrollTimeline(EVENT_STEPS.length);
 
   const handleGalleryClick = () => {
     navigate("/galleri");
   };
 
-  // Scroll spy listener to update floating navigation dots based on scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 3;
-
-      const detailsSection = document.getElementById("event-details-section");
-      const loftSection = document.getElementById("event-loft-section");
-      const amenitiesSection = document.getElementById("event-amenities-section");
-      const contactSection = document.querySelector(".contact-container");
-
-      const getAbsTop = (el) => el ? el.getBoundingClientRect().top + window.pageYOffset : 0;
-
-      if (contactSection && scrollPosition >= getAbsTop(contactSection)) {
-        setActiveSection("contact");
-      } else if (amenitiesSection && scrollPosition >= getAbsTop(amenitiesSection)) {
-        setActiveSection("amenities");
-      } else if (loftSection && scrollPosition >= getAbsTop(loftSection)) {
-        setActiveSection("loft");
-      } else if (detailsSection && scrollPosition >= getAbsTop(detailsSection)) {
-        setActiveSection("details");
-      } else {
-        setActiveSection("top");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Trigger once on mount
-    
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToSection = (id) => {
-    let element = document.getElementById(id);
-    if (!element && id === "event-contact") {
-      element = document.querySelector(".contact-container");
-    }
-    if (element) {
-      const yOffset = -70; // offset for fixed header
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  };
-
   return (
     <div className="event-page-container">
-      {/* Floating Scroll Indicator Dot Navigation (Scroll Spy) */}
-      <nav className="scroll-indicator-nav" aria-label="Sidinnehåll">
-        <ul>
-          <li>
-            <button
-              onClick={() => scrollToSection("event-hero")}
-              className={`scroll-dot ${activeSection === "top" ? "active" : ""}`}
-              title="Start"
-            >
-              <span className="dot-label">Start</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("event-details-section")}
-              className={`scroll-dot ${activeSection === "details" ? "active" : ""}`}
-              title="Bröllop & Fest"
-            >
-              <span className="dot-label">Bröllop & Fest</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("event-loft-section")}
-              className={`scroll-dot ${activeSection === "loft" ? "active" : ""}`}
-              title="Kapacitet"
-            >
-              <span className="dot-label">Kapacitet</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("event-amenities-section")}
-              className={`scroll-dot ${activeSection === "amenities" ? "active" : ""}`}
-              title="Möjligheter"
-            >
-              <span className="dot-label">Möjligheter</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("event-contact")}
-              className={`scroll-dot ${activeSection === "contact" ? "active" : ""}`}
-              title="Kontakt"
-            >
-              <span className="dot-label">Kontakt</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
+      <ScrollSpyNav sections={SPY_SECTIONS} offset={SPY_OFFSET} />
 
       <main role="main" id="main-content" className="event-page">
         {/* Hero Section */}
@@ -147,33 +133,106 @@ function EventPage() {
               <PartyPopper size={20} />
               <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
             </div>
-            <h1 id="event-heading">Bröllop, Event & Fest</h1>
-            <p>Skapa minnesvärda stunder på vackra Storegården 7</p>
+            <h1 id="event-heading">Event på Storegården 7</h1>
+            <p>Lada och loft för bröllop, fest och företagsevent</p>
           </div>
+
+          {/* The curve belongs on the photo so the hero keeps its full image;
+              placing a separate divider here would add a pale strip over it. */}
+          <svg
+            className="event-hero__curve"
+            viewBox="0 0 1200 48"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M0,24 C300,42 450,6 600,24 C750,42 900,6 1200,24 L1200,48 L0,48 Z"
+              fill="currentColor"
+            />
+          </svg>
         </section>
 
-        {/* Detaljer & Fakta Sektion */}
         <div id="event-details-section">
-          <PageSection background="white" spacing="default">
+          <PageSection background="alt" spacing="default">
             <FadeInSection>
               <div className="event-section-intro">
-                <span className="event-section-eyebrow">Unik lokal för alla tillfällen</span>
+                <span className="event-section-eyebrow">Bröllop, fest eller gruppdag</span>
                 <div className="section-ornament" aria-hidden="true">
                   <span className="section-ornament-line"></span>
                   <Wine size={20} />
                   <span className="section-ornament-line"></span>
                 </div>
-                <h2>Bröllop, fest eller afterwork</h2>
+                <h2>Vad vill ni ordna?</h2>
                 <p className="event-section-lead">
-                  Vår gård passar lika bra för ett stort firande som för ett mer
-                  personligt event. Här får ni en lokal med gott om yta, rätt
-                  utrustning och en stämningsfull miljö som känns varm direkt när gästerna kliver in.
+                  Här finns plats för bröllop, privata fester, företagsevent och
+                  gruppdagar i en renoverad lada strax utanför Lidköping.
                 </p>
               </div>
 
+              <div className="event-types-grid">
+                {EVENT_TYPES.map(
+                  ({
+                    Icon,
+                    description,
+                    href,
+                    image,
+                    imageAlt,
+                    linkLabel,
+                    title,
+                    to,
+                    variant,
+                  }, index) => {
+                    const content = (
+                      <>
+                        {image && (
+                          <img
+                            className="event-type-card__image"
+                            src={image}
+                            alt={imageAlt}
+                            loading="lazy"
+                          />
+                        )}
+                        <span className="event-type-card__index" aria-hidden="true">
+                          0{index + 1}
+                        </span>
+                        <div className="event-type-card__content">
+                          <span className="event-type-card__icon" aria-hidden="true">
+                            <Icon size={23} />
+                          </span>
+                          <h3>{title}</h3>
+                          <p>{description}</p>
+                          <span className="event-type-card__link">
+                            {linkLabel}
+                            <ArrowUpRight size={16} aria-hidden="true" />
+                          </span>
+                        </div>
+                      </>
+                    );
+                    const className = [
+                      "event-type-card",
+                      `event-type-card--${variant}`,
+                      image ? "event-type-card--image" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ");
+
+                    return to ? (
+                      <Link key={title} className={className} to={to}>
+                        {content}
+                      </Link>
+                    ) : (
+                      <a key={title} className={className} href={href}>
+                        {content}
+                      </a>
+                    );
+                  }
+                )}
+              </div>
+
               <div className="event-facts-grid">
-                {eventFacts.map((fact, index) => (
-                  <article key={index} className="event-fact-card">
+                {EVENT_FACTS.map((fact) => (
+                  <article key={fact.value} className="event-fact-card">
                     <strong>{fact.value}</strong>
                     <p>{fact.label}</p>
                   </article>
@@ -194,66 +253,32 @@ function EventPage() {
           </PageSection>
         </div>
 
-        <SectionDivider above="white" below="green" variant="wave" />
+        <SectionDivider above="alt" below="white" variant="valley" />
 
-        {/* Sektion: Ytor & Kapacitet (Alternativ A - hero-2.webp) */}
         <div id="event-loft-section">
-          <PageSection background="green" spacing="default">
+          <PageSection background="white" spacing="default">
             <FadeInSection>
               <div className="event-split-layout">
                 <div className="event-split-image">
                   <img src="/images/event/hero/hero-2.webp" alt="Dukade bord för fest på loftet" />
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">Ytor & Kapacitet</span>
+                  <span className="event-section-eyebrow">Ytor och kapacitet</span>
                   <div className="section-ornament align-left" aria-hidden="true">
                     <span className="section-ornament-line"></span>
                     <Maximize2 size={18} />
                     <span className="section-ornament-line"></span>
                   </div>
-                  <h2>Stora sällskap eller mindre sammankomster</h2>
+                  <h2>Plats för både middag och mingel</h2>
                   <p>
-                    Med totalt 360 kvm inomhusyta fördelat på två våningar i vår omsorgsfullt renoverade lada
-                    har ni all flexibilitet ni behöver för ert arrangemang. 
+                    Ladan och loftet ger er totalt 360 kvm inomhus på två
+                    våningar. Ni kan använda en våning eller låta gästerna röra
+                    sig mellan båda.
                   </p>
                   <ul className="event-bullets">
-                    <li><strong>Loftet:</strong> Plats för 150+ sittande gäster – idealiskt för bröllopsmiddagar, festmåltider eller föreläsningar.</li>
-                    <li><strong>Ladan:</strong> Plats för 50+ sittande gäster – en rustik och intim miljö på bottenvåningen.</li>
-                    <li><strong>Mingel:</strong> Lokalen rymmer totalt 300+ gäster för stående tillställningar och festmingel.</li>
-                  </ul>
-                </div>
-              </div>
-            </FadeInSection>
-          </PageSection>
-        </div>
-
-        <SectionDivider above="green" below="white" variant="hill" />
-
-        {/* Sektion: Möjligheter & Utrustning (Alternativ A - hero-3.webp) */}
-        <div id="event-amenities-section">
-          <PageSection background="white" spacing="default">
-            <FadeInSection>
-              <div className="event-split-layout event-split-layout--reverse">
-                <div className="event-split-image">
-                  <img src="/images/event/hero/hero-3.webp" alt="Detaljbild från baren i ladan" />
-                </div>
-                <div className="event-split-content">
-                  <span className="event-section-eyebrow">Allt är förberett</span>
-                  <div className="section-ornament align-left" aria-hidden="true">
-                    <span className="section-ornament-line"></span>
-                    <Sparkles size={18} />
-                    <span className="section-ornament-line"></span>
-                  </div>
-                  <h2>Vi har allt som behövs för ett lyckat event</h2>
-                  <p>
-                    Vi vill göra det så enkelt och bekymmersfritt som möjligt för er att arrangera er fest. 
-                    Därför ingår allt det praktiska ni behöver i hyran.
-                  </p>
-                  <ul className="event-bullets">
-                    <li><strong>Dukning & möbler:</strong> Glas, tallrikar, bestick, bord och stolar finns färdigt för alla gäster.</li>
-                    <li><strong>Bekvämligheter:</strong> Mysig lounge med soffor, dansgolv, bar samt ett utrustat kök och toaletter i anslutning.</li>
-                    <li><strong>Ljud & Ljus:</strong> Professionell ljudanläggning och festbelysning är installerat och klart att använda.</li>
-                    <li><strong>Egen dryck & mat:</strong> Ni har full frihet att ta med egen mat och dryck. Vi hjälper gärna till att boka serveringspersonal, bar eller DJ om så önskas.</li>
+                    <li><strong>Loftet:</strong> Plats för 150+ sittande gäster vid middag eller föreläsning.</li>
+                    <li><strong>Ladan:</strong> Plats för 50+ sittande gäster på bottenvåningen.</li>
+                    <li><strong>Mingel:</strong> Tillsammans rymmer lokalerna 300+ stående gäster.</li>
                   </ul>
                 </div>
               </div>
@@ -263,9 +288,93 @@ function EventPage() {
 
         <SectionDivider above="white" below="green" variant="wave" />
 
-        {/* Andra erbjudanden */}
-        <div id="event-services-recommendation">
+        <div id="event-amenities-section">
           <PageSection background="green" spacing="default">
+            <FadeInSection>
+              <div className="event-split-layout event-split-layout--reverse">
+                <div className="event-split-image">
+                  <img src="/images/event/hero/hero-3.webp" alt="Detaljbild från baren i ladan" />
+                </div>
+                <div className="event-split-content">
+                  <span className="event-section-eyebrow">Det här finns på plats</span>
+                  <div className="section-ornament align-left" aria-hidden="true">
+                    <span className="section-ornament-line"></span>
+                    <Sparkles size={18} />
+                    <span className="section-ornament-line"></span>
+                  </div>
+                  <h2>Möbler, bar, ljud och köksytor</h2>
+                  <p>
+                    Mycket av det praktiska finns redan här och ingår i hyran.
+                    Ni får också ta med egen mat och dryck.
+                  </p>
+                  <ul className="event-bullets">
+                    <li><strong>Dukning & möbler:</strong> Glas, tallrikar, bestick, bord och stolar finns färdigt för alla gäster.</li>
+                    <li><strong>Kök:</strong> Bra arbetsytor, handdisk samt varmt och kallt vatten. Muurikka-hällar kan hyras.</li>
+                    <li><strong>Övriga ytor:</strong> Lounge med soffor, dansgolv, bar och toaletter.</li>
+                    <li><strong>Ljud och ljus:</strong> Ljudanläggning och festbelysning är installerade.</li>
+                    <li><strong>Mat och dryck:</strong> Ni får ta med egen mat och dryck. Vid behov kan vi hjälpa till att ordna serveringspersonal, bar eller DJ.</li>
+                  </ul>
+                </div>
+              </div>
+            </FadeInSection>
+          </PageSection>
+        </div>
+
+        <SectionDivider above="green" below="alt" variant="hill" />
+
+        <div id="event-planning-section">
+          <PageSection background="alt" spacing="default">
+            <FadeInSection>
+              <div className="event-planning">
+                <div className="event-section-intro event-section-intro--compact">
+                  <span className="event-section-eyebrow">Så går planeringen till</span>
+                  <div className="section-ornament" aria-hidden="true">
+                    <span className="section-ornament-line"></span>
+                    <CalendarCheck size={20} />
+                    <span className="section-ornament-line"></span>
+                  </div>
+                  <h2>Vi planerar det praktiska tillsammans</h2>
+                  <p className="event-section-lead">
+                    Ni sätter tonen och vi hjälper er att få lokalerna och det
+                    praktiska på plats.
+                  </p>
+                </div>
+
+                <ol
+                  className="event-timeline event-timeline--scroll"
+                  ref={timelineRef}
+                  style={{
+                    "--event-timeline-progress": timelineProgress,
+                  }}
+                >
+                  {EVENT_STEPS.map((step, index) => (
+                    <li
+                      key={step.title}
+                      className={`event-timeline__item${
+                        index < activeTimelineSteps
+                          ? " event-timeline__item--active"
+                          : ""
+                      }`}
+                    >
+                      <span className="event-timeline__number" aria-hidden="true">
+                        {index + 1}
+                      </span>
+                      <div className="event-timeline__content">
+                        <h3>{step.title}</h3>
+                        <p>{step.body}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </FadeInSection>
+          </PageSection>
+        </div>
+
+        <SectionDivider above="alt" below="white" variant="wave" />
+
+        <div id="event-services-recommendation">
+          <PageSection background="white" spacing="none">
             <FadeInSection>
               <HomeServicesSection
                 excludeId="event-fest"
@@ -276,7 +385,7 @@ function EventPage() {
           </PageSection>
         </div>
 
-        <SectionDivider above="green" below="alt" variant="hill" />
+        <SectionDivider above="white" below="alt" variant="valley" />
       </main>
     </div>
   );

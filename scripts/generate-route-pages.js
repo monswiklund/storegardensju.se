@@ -20,16 +20,24 @@ const escapeHtml = (value) =>
 // because the SPA shell contains no links until JS has run.
 const NAV_ROUTES = [
   { path: "/", label: "Start" },
-  { path: "/event", label: "Bröllop, event & fest" },
+  { path: "/event", label: "Eventlokal i Lidköping" },
+  { path: "/event/brollop", label: "Bröllopslokal i Lidköping" },
   { path: "/gruppdagar", label: "Gruppdagar" },
-  { path: "/konst", label: "Konst & keramik" },
-  { path: "/kurser", label: "Yoga & kurser" },
+  // Anchor text is a ranking signal, so each hub is linked by what it targets.
+  { path: "/kurser", label: "Kurser i Lidköping" },
+  { path: "/kurser/yoga", label: "Yoga på loftet" },
+  { path: "/kurser/konst", label: "Målarkurs & keramikkurs" },
   { path: "/galleri", label: "Bildgalleri" },
   { path: "/butik", label: "Butik" },
   { path: "/om-oss", label: "Om oss" },
 ];
 
 const ROOT_PLACEHOLDER = '<div id="root"></div>';
+
+// How long the shell stays invisible before fading in. Long enough that a
+// normal mount (~200-400ms on the built bundle) never paints it, short enough
+// that a slow connection still gets content instead of a blank page.
+const SHELL_REVEAL_DELAY = "600ms";
 
 // Rendered into #root, which createRoot() replaces on mount - so this is
 // pre-hydration content, not hidden text. Copy must match what the React
@@ -47,16 +55,51 @@ const buildShell = (meta) => {
     })
     .join("");
 
+  // Optional Q&A block. On the course hubs this mirrors the FAQ the React page renders
+  // and the FAQPage JSON-LD declares, so all three agree even for a crawler
+  // that never executes the bundle.
+  const faq = Array.isArray(content?.faq) ? content.faq : [];
+  const faqBlock =
+    faq.length > 0
+      ? [
+          "<section><h2>Vanliga frågor</h2><dl>",
+          faq
+            .map(
+              ({ question, answer }) =>
+                `<dt>${escapeHtml(question)}</dt><dd>${escapeHtml(answer)}</dd>`
+            )
+            .join(""),
+          "</dl></section>",
+        ].join("")
+      : "";
+
   return [
-    // Inline so the pre-hydration flash stays readable without blocking on
-    // the stylesheet; React removes the whole block on mount.
-    "<style>.prerender-shell{max-width:44rem;margin:0 auto;padding:3rem 1.25rem;" +
-      "font-family:system-ui,-apple-system,sans-serif;line-height:1.6;color:#2c2c2c}" +
-      ".prerender-shell nav ul{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.75rem}" +
+    // Inline so the block is styled without waiting for the stylesheet.
+    // opacity starts at 0 and only fades in after SHELL_REVEAL_DELAY, so a
+    // normal-speed mount replaces it before anything is painted - no flash of
+    // bare text. animation-fill-mode: forwards ends at opacity 1, so the text
+    // is fully visible to Googlebot's renderer and is not hidden content.
+    "<style>" +
+      "@keyframes prerenderShellIn{from{opacity:0}to{opacity:1}}" +
+      ".prerender-shell{max-width:40rem;margin:0 auto;padding:18vh 1.5rem 3rem;" +
+      "font-family:'Lato',Helvetica,Arial,sans-serif;line-height:1.65;color:#333;" +
+      "text-align:center;opacity:0;" +
+      `animation:prerenderShellIn .4s ease ${SHELL_REVEAL_DELAY} forwards}` +
+      ".prerender-shell h1{font-family:'Playfair Display',Georgia,serif;color:#000;" +
+      "font-weight:600;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:1rem}" +
+      ".prerender-shell p{margin-bottom:1rem}" +
+      ".prerender-shell h2{font-family:'Playfair Display',Georgia,serif;color:#000;" +
+      "font-weight:600;font-size:1.2rem;margin:2rem 0 1rem}" +
+      ".prerender-shell dt{font-weight:700;margin-top:1rem}" +
+      ".prerender-shell dd{margin:.25rem 0 0}" +
+      ".prerender-shell nav ul{list-style:none;padding:0;margin-top:2rem;display:flex;" +
+      "flex-wrap:wrap;gap:.5rem 1.25rem;justify-content:center}" +
+      ".prerender-shell nav a{color:hsl(160,35%,42%);text-decoration:none}" +
       "</style>",
     '<div class="prerender-shell">',
     `<h1>${escapeHtml(heading)}</h1>`,
     paragraphs,
+    faqBlock,
     '<nav aria-label="Sidor på Storegården 7"><ul>',
     links,
     "</ul></nav>",
@@ -144,6 +187,40 @@ for (const meta of Object.values(seoMeta)) {
   mkdirSync(`dist${meta.path}`, { recursive: true });
   writeFileSync(`dist${meta.path}/index.html`, routeHtml);
   console.log(`generated dist${meta.path}/index.html`);
+}
+
+// Legacy URLs that moved. GitHub Pages serves static files only - it cannot
+// 301 - so the old path keeps returning 200 with a redirect page: canonical and
+// og:url point at the new URL, a meta refresh moves real visitors, and the body
+// carries a plain link for anyone (or anything) that ignores the refresh.
+// Deliberately not noindex: Google treats meta-refresh + canonical as a soft
+// redirect and consolidates the old URL's signals into the new one, which
+// noindex would block.
+const LEGACY_REDIRECTS = [{ from: "/konst", to: "/kurser/konst" }];
+
+for (const { from, to } of LEGACY_REDIRECTS) {
+  const target = canonicalUrl(to);
+  const redirectHtml = [
+    "<!doctype html>",
+    '<html lang="sv">',
+    "  <head>",
+    '    <meta charset="utf-8" />',
+    '    <meta name="viewport" content="width=device-width, initial-scale=1" />',
+    `    <meta http-equiv="refresh" content="0; url=${target}" />`,
+    `    <link rel="canonical" href="${target}" />`,
+    `    <title>Sidan har flyttat till ${escapeHtml(to)}/</title>`,
+    "  </head>",
+    "  <body>",
+    `    <p>Sidan har flyttat. <a href="${target}">Fortsätt till ${escapeHtml(to)}/</a></p>`,
+    `    <script>window.location.replace(${JSON.stringify(`${to}/`)});</script>`,
+    "  </body>",
+    "</html>",
+    "",
+  ].join("\n");
+
+  mkdirSync(`dist${from}`, { recursive: true });
+  writeFileSync(`dist${from}/index.html`, redirectHtml);
+  console.log(`generated dist${from}/index.html (redirect -> ${to}/)`);
 }
 
 // The home page keeps dist/index.html's own meta but needs the same crawlable

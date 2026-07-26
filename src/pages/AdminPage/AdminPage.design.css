@@ -1013,6 +1013,8 @@ body.admin-drawer-open {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
   overflow: hidden;
   color: var(--admin-ink);
   background: #ffffff;
@@ -1044,6 +1046,8 @@ body.admin-drawer-open {
   align-items: center;
   border-top: 1px solid var(--admin-line);
   border-bottom: 0;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  background: #ffffff;
 }
 
 .admin-ui-drawer h2 {

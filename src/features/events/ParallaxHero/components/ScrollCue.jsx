@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { ChevronDown } from "lucide-react";
 
-function ScrollCue({ onClick }) {
+function ScrollCue({ onClick = undefined }) {
   return (
     <button
       className="scroll-indicator"
@@ -16,10 +16,6 @@ function ScrollCue({ onClick }) {
 
 ScrollCue.propTypes = {
   onClick: PropTypes.func,
-};
-
-ScrollCue.defaultProps = {
-  onClick: undefined,
 };
 
 export default ScrollCue;

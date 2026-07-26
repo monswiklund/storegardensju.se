@@ -13,6 +13,9 @@ export default defineConfig({
     })
   ],
   base: '/',
+  optimizeDeps: {
+    force: true,
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

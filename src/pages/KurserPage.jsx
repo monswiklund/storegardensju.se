@@ -1,28 +1,80 @@
 import { useState } from "react";
-import { ArrowDown, ArrowUpRight, Calendar, Clock, Mail, MapPin } from "lucide-react";
-import MailtoFallback from "../features/contact/MailtoFallback.jsx";
+import { ArrowDown } from "lucide-react";
 import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
+import { ScrollSpyNav, SectionDivider } from "../components";
+import {
+  ContactSection,
+  CourseBand,
+  DirectionsSection,
+  FaqSection,
+  InstructorSection,
+  NoUpcomingSection,
+  OtherHubLink,
+  PassSection,
+  PastPassesSection,
+} from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
+import {
+  COURSE_LOCATION,
+  TRACKS,
+  YOGA_TRACK_ID,
+  formatPassDate,
+  nextPass,
+  passAnchor,
+  pastPasses,
+  resolvedFaq,
+  upcomingPasses,
+} from "../data/courseEvents.js";
 import "./KurserPages.css";
 import "../features/gallery/ImageGallery/Gallery.css";
 
 import linaYogaHeaderImg from "/images/evenemang/lina-yoga-header.jpg";
 import linaYogaImg from "/images/evenemang/lina-yoga.jpg";
 import linaYogaYta2Img from "/images/evenemang/lina-yoga-yta2.jpg";
-import mala1Img from "/images/evenemang/mala1.jpg";
-import mala2Img from "/images/evenemang/mala2.jpg";
 import yogaLoftImg from "/images/evenemang/yoga-loft.webp";
 import maleriKursImg from "/images/evenemang/maleri-kurs.webp";
 
 // Module-level so the reference is stable across renders (useSeo dep) and so
 // the same date gating runs client-side as in the prerendered HTML.
-const KURSER_JSONLD = activeJsonLd(seoMeta.kurser);
+const KURSER_JSONLD = activeJsonLd(seoMeta.kurserYoga);
 
-const CONTACT_EMAIL = "bylinawiklund@gmail.com";
-const CONTACT_SUBJECT = "Anmälan: Yoga på loftet 30/7";
+// Evaluated once per page load. The passes are known at build time, so there is
+// nothing to re-render on - and a stable value keeps useSeo from re-running.
+const UPCOMING_PASSES = upcomingPasses(YOGA_TRACK_ID);
+const PAST_PASSES = pastPasses(YOGA_TRACK_ID);
+const NEXT_PASS = nextPass(YOGA_TRACK_ID);
+const FAQ = resolvedFaq(YOGA_TRACK_ID);
 
+const YOGA_TRACK = TRACKS[YOGA_TRACK_ID];
+const INSTRUCTOR = YOGA_TRACK.instructor;
+const CONTACT_SUBJECT = NEXT_PASS
+  ? `Fråga om ${NEXT_PASS.title} ${formatPassDate(NEXT_PASS)}`
+  : "Fråga om yoga på Storegården 7";
+
+// The dash rail on the right. Module-level so the array reference is stable
+// across renders (ScrollSpyNav keys its scroll listener on it). Ids that are
+// not in the DOM (no upcoming pass, no past passes) are skipped at runtime.
+const SPY_SECTIONS = [
+  { id: "kurser-hero", label: "Start" },
+  ...(NEXT_PASS
+    ? [{ id: passAnchor(NEXT_PASS), label: "Nästa pass" }]
+    : [{ id: "kommande", label: "Kommande" }]),
+  { id: "om-lina", label: `Om ${INSTRUCTOR.name.split(" ")[0]}` },
+  { id: "fragor-och-svar", label: "Frågor" },
+  { id: "gardens-atmosfar", label: "Bilder" },
+  { id: "hitta-hit", label: "Hitta hit" },
+  { id: "tidigare-pass", label: "Tidigare" },
+  { id: "kontakt", label: "Kontakt" },
+];
+
+// Navbar (60px) plus the section subnav (48px) - the same clearance the anchors
+// use, so a dot click lands with the heading visible.
+const SPY_OFFSET = 130;
+
+// Yoga imagery only - the painting shots belong on /kurser/konst, which is its
+// own hub for maleri and keramik.
 const RECAP_IMAGES = [
   {
     original: linaYogaImg,
@@ -37,36 +89,23 @@ const RECAP_IMAGES = [
     originalAlt: "Yogapass på loftet på Storegården 7",
   },
   {
-    original: mala1Img,
-    thumbnail: mala1Img,
-    description: "Målarkurs och skapande på Storegården 7",
-    originalAlt: "Målarkurs och skapande på Storegården 7",
-  },
-  {
-    original: mala2Img,
-    thumbnail: mala2Img,
-    description: "Konst och måleri i ateljén på Storegården 7",
-    originalAlt: "Konst och måleri i ateljén på Storegården 7",
-  },
-  {
     original: yogaLoftImg,
     thumbnail: yogaLoftImg,
-    description: "Yoga i stämningsfull gårdsmiljö på Storegården 7",
-    originalAlt: "Yoga i stämningsfull gårdsmiljö på Storegården 7",
-  },
-  {
-    original: maleriKursImg,
-    thumbnail: maleriKursImg,
-    description: "Skapande och kurser på Storegården 7 nära Lidköping",
-    originalAlt: "Skapande och kurser på Storegården 7 nära Lidköping",
+    description: "Yoga på loftet på Storegården 7",
+    originalAlt: "Yoga på loftet på Storegården 7",
   },
 ];
 
+// Colour spine: photo hero -> alt -> white -> green -> white -> alt -> green ->
+// white, with a SectionDivider on every colour change. /kurser/konst runs the
+// colours and the layout variants in the opposite order on purpose, so the two
+// hubs do not read as one template with the nouns swapped.
 function KurserPage() {
   const [showMailFallback, setShowMailFallback] = useState(false);
+  const onContactClick = () => setShowMailFallback(true);
 
   useSeo({
-    ...seoMeta.kurser,
+    ...seoMeta.kurserYoga,
     jsonLd: KURSER_JSONLD.length > 0 ? KURSER_JSONLD : undefined,
   });
 
@@ -85,8 +124,10 @@ function KurserPage() {
 
   return (
     <div className="kurser-page">
+      <ScrollSpyNav sections={SPY_SECTIONS} offset={SPY_OFFSET} />
+
       <main id="main-content">
-        <header className="kurser-hero">
+        <header className="kurser-hero" id="kurser-hero">
           <div
             className="kurser-hero__bg"
             style={{
@@ -95,80 +136,78 @@ function KurserPage() {
           />
           <div className="kurser-hero__overlay" />
           <div className="kurser-hero__inner">
-            <div className="kurser-hero__badge">
-              <span className="kurser-hero__badge-pulse" />
-              <span>Nästa tillfälle: Torsdag 30 juli</span>
-            </div>
+            {NEXT_PASS && (
+              <div className="kurser-hero__badge">
+                <span className="kurser-hero__badge-pulse" />
+                <span>Nästa tillfälle: {formatPassDate(NEXT_PASS)}</span>
+              </div>
+            )}
             <h1>Yoga på loftet</h1>
             <p>
-              Välkommen på en lugn och skön yogastund i vår stämningsfulla gårdsmiljö tillsammans med Lina Wiklund.
+              Yoga i lugnt tempo med {INSTRUCTOR.name} på loftet på Storegården 7,{" "}
+              {COURSE_LOCATION.travelNote}.
             </p>
-            <a className="kurser-hero__link" href="#anmalan">
-              Boka / Anmäl intresse
+            <a
+              className="kurser-hero__link"
+              href={NEXT_PASS ? `#${passAnchor(NEXT_PASS)}` : "#kontakt"}
+            >
+              {NEXT_PASS ? "Se nästa pass" : "Hör av dig"}
               <ArrowDown size={16} aria-hidden="true" />
             </a>
           </div>
         </header>
 
-        <section id="anmalan" className="kurser-details">
-          <div className="kurser-details__container">
-            <div className="kurser-details__info">
-              <span className="kurser-label">Nästa event</span>
-              <h2>Yoga på loftet med Lina Wiklund</h2>
-              <p className="kurser-details__description">
-                Välkommen på ett 90 minuters yogapass med guidning och skön vila i den fridfulla miljö på loftet på Storegården 7.
-              </p>
-              
-              <ul className="kurser-details__meta">
-                <li>
-                  <Calendar size={20} aria-hidden="true" />
-                  <span><strong>Torsdag 30 juli</strong></span>
-                </li>
-                <li>
-                  <Clock size={20} aria-hidden="true" />
-                  <span><strong>Klockan 18:00</strong> (Välkommen från 17:30 för att landa och förbereda dig)</span>
-                </li>
-                <li>
-                  <MapPin size={20} aria-hidden="true" />
-                  <span>Storegården 7, Rackeby (Lidköping)</span>
-                </li>
-              </ul>
+        {/* No divider straight after the hero: the photo already closes the
+            section, and a curve would only lay a pale strip across it. */}
+        {UPCOMING_PASSES.length === 0 && (
+          <NoUpcomingSection
+            trackId={YOGA_TRACK_ID}
+            background="alt"
+            heading="Inget pass inbokat just nu"
+            body={`Vi har för tillfället inget yogapass i kalendern. Håll utkik här, eller hör av dig till ${INSTRUCTOR.name} så berättar hon när nästa tillfälle släpps.`}
+          />
+        )}
 
-              <div className="kurser-details__extra">
-                <p><strong>Pris: 150:- /person</strong></p>
-                <p style={{ marginTop: "4px" }}>Betalning sker på plats, ingen föranmälan behövs.</p>
-                <p style={{ marginTop: "12px", opacity: 0.9 }}><strong>Yogamattor finns på plats.</strong> Har du en egen matta får du självklart gärna ta med den!</p>
-              </div>
-            </div>
+        {UPCOMING_PASSES.map((pass) => (
+          <PassSection
+            key={pass.id}
+            pass={pass}
+            trackId={YOGA_TRACK_ID}
+            background="alt"
+            variant="split"
+            sticky
+            contactSubject={CONTACT_SUBJECT}
+            onContactClick={onContactClick}
+            showMailFallback={showMailFallback}
+          />
+        ))}
 
-            <div className="kurser-details__action">
-              <div className="kurser-action-card">
-                <h3>Frågor & Kontakt</h3>
-                <p>Ingen föranmälan krävs (drop-in), men har du funderingar eller vill kontakta Lina inför passet?</p>
-                <a
-                  className="kurser-interest__link"
-                  href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(CONTACT_SUBJECT)}`}
-                  onClick={() => setShowMailFallback(true)}
-                >
-                  <Mail size={17} aria-hidden="true" />
-                  Skicka ett meddelande
-                  <ArrowUpRight size={15} aria-hidden="true" />
-                </a>
-                {showMailFallback && (
-                  <MailtoFallback
-                    email={CONTACT_EMAIL}
-                    copyText={`Till: ${CONTACT_EMAIL}\nÄmne: ${CONTACT_SUBJECT}`}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
+        <SectionDivider above="alt" below="white" variant="valley" />
 
-        <section id="kursdagen" className="kurser-recap">
+        {/* No portrait here by request - the section runs as text only. */}
+        <InstructorSection
+          id="om-lina"
+          instructor={INSTRUCTOR}
+          label="Vem leder passen"
+          background="white"
+          variant="split"
+        />
+
+        <SectionDivider above="white" below="green" variant="wave" />
+
+        <FaqSection
+          faq={FAQ}
+          heading="Vanliga frågor om yogan"
+          background="green"
+          variant="columns"
+        />
+
+        <SectionDivider above="green" below="white" variant="hill" />
+
+        <CourseBand id="gardens-atmosfar" background="white" className="kurser-recap">
           <div className="kurser-recap__copy">
-            <span className="kurser-label">Gårdens atmosfär</span>
-            <h2>Sköna stunder och yoga i Lidköping.</h2>
+            <span className="kurser-label">Bilder från loftet</span>
+            <h2>Loftet på Storegården 7</h2>
           </div>
 
           <div className="kurser-recap__gallery">
@@ -188,14 +227,59 @@ function KurserPage() {
                   }
                 }}
               >
-                <img
-                  src={imgItem.thumbnail}
-                  alt={imgItem.originalAlt}
-                />
+                <img src={imgItem.thumbnail} alt={imgItem.originalAlt} />
               </figure>
             ))}
           </div>
-        </section>
+        </CourseBand>
+
+        <DirectionsSection
+          background="white"
+          variant="split-reverse"
+          description={`Yogan hålls på loftet på ${COURSE_LOCATION.name} i ${COURSE_LOCATION.locality}, ${COURSE_LOCATION.travelNote}. Kör mot Rackeby och följ skyltningen till gården — det finns gott om parkering på grusplanen intill ladan.`}
+        />
+
+        <SectionDivider above="white" below="alt" variant="wave" />
+
+        <PastPassesSection
+          passes={PAST_PASSES}
+          trackId={YOGA_TRACK_ID}
+          heading="Tidigare pass på gården"
+          background="alt"
+          variant="timeline"
+        />
+
+        <SectionDivider above="alt" below="green" variant="hill" />
+
+        {/* Kept off the very bottom on purpose: the global contact section that
+            App.jsx renders below is a centred block, so a second centred contact
+            block right above it read as the same section twice. */}
+        <ContactSection
+          heading="Frågor om yogan?"
+          body={`Hör av dig till ${INSTRUCTOR.name} — hon svarar gärna på frågor om passen, nivån eller vad du behöver ta med.`}
+          email={INSTRUCTOR.email}
+          subject={CONTACT_SUBJECT}
+          background="green"
+          variant="split"
+          onContactClick={onContactClick}
+        />
+
+        <SectionDivider above="green" below="white" variant="valley" />
+
+        <OtherHubLink
+          href={`${TRACKS.maleri.hubPath}/`}
+          background="white"
+          variant="band"
+          image={maleriKursImg}
+          imageAlt="Målarkurs i ateljén på Storegården 7"
+          eyebrow="Mer att göra på gården"
+          heading="Måla eller dreja i ateljén"
+          body={`I gårdsateljén håller ${TRACKS.maleri.instructor.name} kurser i måleri och keramik, både på fasta datum och som privat kurs för grupper.`}
+          linkLabel="Se kurser i måleri och keramik"
+        />
+
+        {/* White -> alt for the global contact section below. */}
+        <SectionDivider above="white" below="alt" variant="wave" />
 
         {/* Lightbox / Bildvisare */}
         <GalleryLightbox
@@ -216,4 +300,3 @@ function KurserPage() {
 }
 
 export default KurserPage;
-

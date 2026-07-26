@@ -149,8 +149,8 @@ function ContactSection() {
         </div>
         <h2 id="contact-heading">Kontakta oss</h2>
         <p className="contact-subtitle">
-          Har du frågor eller vill boka in ditt nästa evenemang? <br />
-          Tveka inte att höra av dig – vi svarar så snart vi kan.
+          Har du frågor, vill boka en kurs eller funderar på ett datum för fest? <br />
+          Berätta vad du planerar, så återkommer vi så snart vi kan.
         </p>
 
         <div className="contact-trigger-wrapper">
@@ -161,7 +161,7 @@ function ContactSection() {
             aria-controls="contact-collapsible-content"
             onClick={() => setIsOpen((prev) => !prev)}
           >
-            {isOpen ? "Dölj kontaktformulär" : "Visa kontaktformulär & info"}
+            {isOpen ? "Dölj kontaktformuläret" : "Öppna kontaktformuläret"}
             <svg
               className={`contact-toggle-chevron ${isOpen ? "contact-toggle-chevron--open" : ""}`}
               xmlns="http://www.w3.org/2000/svg"
@@ -255,7 +255,7 @@ function ContactSection() {
                   id="contact-message"
                   name="message"
                   rows={5}
-                  placeholder="Berätta gärna mer om ditt evenemang eller din förfrågan..."
+                  placeholder="Berätta vad du vill boka och ungefär hur många ni blir."
                   required
                 />
               </div>
@@ -263,9 +263,9 @@ function ContactSection() {
               <div className="contact-note">
                 <span className="contact-note-icon">{leafIcon}</span>
                 <p>
-                  <strong>Vi gör vårt bästa för att återkomma inom 24 timmar.</strong>
+                  <strong>Vi brukar svara inom 24 timmar.</strong>
                   <br />
-                  Tack för att du hör av dig till Storegården 7!
+                  Tack för att du hör av dig.
                 </p>
               </div>
 

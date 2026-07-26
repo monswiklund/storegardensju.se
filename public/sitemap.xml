@@ -14,6 +14,18 @@
     </image:image>
   </url>
 
+  <!-- Wedding landing page -->
+  <url>
+    <loc>https://storegardensju.se/event/brollop/</loc>
+    <lastmod>2026-07-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://storegardensju.se/images/event/hero/hero-2.webp</image:loc>
+      <image:title>Bröllopslokal på Storegården 7 utanför Lidköping</image:title>
+    </image:image>
+  </url>
+
   <!-- Event Page -->
   <url>
     <loc>https://storegardensju.se/event/</loc>
@@ -26,27 +38,39 @@
     </image:image>
   </url>
 
-  <!-- Konst & Keramik Page -->
-  <url>
-    <loc>https://storegardensju.se/konst/</loc>
-    <lastmod>2025-03-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://storegardensju.se/images/konst-keramik/slide16.jpg</image:loc>
-      <image:title>Konst och keramik på Storegården 7</image:title>
-    </image:image>
-  </url>
-
-  <!-- Kurser Page -->
+  <!-- Kurser index - links onward to the two hubs -->
   <url>
     <loc>https://storegardensju.se/kurser/</loc>
+    <lastmod>2026-07-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Yoga hub (was /kurser/ before the split) -->
+  <url>
+    <loc>https://storegardensju.se/kurser/yoga/</loc>
     <lastmod>2026-07-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
       <image:loc>https://storegardensju.se/images/evenemang/lina-yoga-header.jpg</image:loc>
       <image:title>Yoga på loftet med Lina Wiklund på Storegården 7</image:title>
+    </image:image>
+  </url>
+
+  <!-- Maleri & keramik hub (was /konst/ before the split) -->
+  <url>
+    <loc>https://storegardensju.se/kurser/konst/</loc>
+    <lastmod>2026-07-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://storegardensju.se/images/evenemang/maleri-kurs.webp</image:loc>
+      <image:title>Målarkurs med Ann Wiklund på Storegården 7</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://storegardensju.se/images/konst-keramik/slide16.webp</image:loc>
+      <image:title>Konst och keramik på Storegården 7</image:title>
     </image:image>
   </url>
 

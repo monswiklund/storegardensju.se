@@ -12,7 +12,7 @@ function VenueIntroSection() {
       </div>
       <ul
         className="venue-intro__highlights"
-        aria-label="Vad som gör platsen unik"
+        aria-label="Praktisk information om platsen"
       >
         {highlights.map((highlight) => (
           <li key={highlight} className="venue-intro__highlight">

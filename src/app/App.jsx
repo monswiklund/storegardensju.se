@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
   useLocation,
 } from "react-router-dom";
 import {
@@ -14,21 +15,24 @@ import {
   SectionDivider,
 } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
-import EventSubnav from "../components/layout/Navbar/EventSubnav.jsx";
+import SectionSubnav, {
+  sectionForPath,
+} from "../components/layout/Navbar/SectionSubnav.jsx";
 import PageTransition from "../components/layout/PageTransition/PageTransition.jsx";
 import HomeInstagramSection from "../features/home/InstagramFeed/HomeInstagramSection.jsx";
 import { ToastProvider } from "../contexts/ToastContext";
-import { appRoutes } from "../config/routes.js";
 
 // Pages — HomePage eager (initial route/LCP), rest lazy per route
 import HomePage from "../pages/HomePage.jsx";
 const EventPage = lazy(() => import("../pages/EventPage/EventPage.jsx"));
+const WeddingPage = lazy(() => import("../pages/EventPage/WeddingPage.jsx"));
 const MohippaPage = lazy(() => import("../pages/MohippaPage.jsx"));
 const ArtPage = lazy(() => import("../pages/ArtPage.jsx"));
 const GalleriPage = lazy(() => import("../pages/GalleriPage.jsx"));
 const TeamPage = lazy(() => import("../pages/TeamPage.jsx"));
 const MansPortfolioPage = lazy(() => import("../pages/MansPortfolioPage.jsx"));
 const KurserPage = lazy(() => import("../pages/KurserPage.jsx"));
+const KurserIndexPage = lazy(() => import("../pages/KurserIndexPage.jsx"));
 const AdminPage = lazy(() => import("../pages/AdminPage/AdminPage.jsx"));
 // BUTIK
 const ButikPage = lazy(() => import("../pages/ButikPage.jsx"));
@@ -137,39 +141,44 @@ function AppContent() {
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isHomePage = location.pathname === "/";
   const isTeamPage = location.pathname.startsWith("/om-oss");
-  const eventRoute = appRoutes.find((route) => route.path === "/event");
-  const eventPaths = eventRoute
-    ? [
-        eventRoute.path,
-        ...(eventRoute.children ?? []).map((child) => child.path),
-      ]
-    : [];
-  const isEventSection = eventPaths.includes(location.pathname);
+  // Any top-level route with children gets a subnav bar, not just /event.
+  const isSubnavSection =
+    isHomePage || sectionForPath(location.pathname) !== null;
 
   useLayoutEffect(() => {
-    if (isEventSection && !isAdminRoute) {
+    if (isSubnavSection && !isAdminRoute) {
       document.body.classList.add("event-subnav-active");
     } else {
       document.body.classList.remove("event-subnav-active");
     }
-  }, [isEventSection, isAdminRoute]);
+  }, [isSubnavSection, isAdminRoute]);
 
   return (
     <div
       className={isAdminRoute ? "admin-app" : isHomePage ? "home-app" : "page-app"}
     >
       {!isAdminRoute && <Navbar />}
-      {!isAdminRoute && <EventSubnav isActive={isEventSection} />}
+      {!isAdminRoute && <SectionSubnav />}
       {!isAdminRoute && <CartDrawer />}
       <Suspense fallback={null}>
         <PageTransition>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/event" element={<EventPage />} />
+            <Route path="/event/brollop" element={<WeddingPage />} />
             <Route path="/gruppdagar" element={<MohippaPage />} />
             <Route path="/mohippa" element={<MohippaPage />} />
-            <Route path="/konst" element={<ArtPage />} />
-            <Route path="/kurser" element={<KurserPage />} />
+            {/* /konst was the maleri & keramik hub before the two course hubs
+                got a shared parent. GitHub Pages cannot 301, so the old URL is
+                forwarded here (and by a static redirect page in dist/konst/
+                for direct hits). */}
+            <Route
+              path="/konst"
+              element={<Navigate to="/kurser/konst" replace />}
+            />
+            <Route path="/kurser" element={<KurserIndexPage />} />
+            <Route path="/kurser/yoga" element={<KurserPage />} />
+            <Route path="/kurser/konst" element={<ArtPage />} />
             <Route path="/galleri" element={<GalleriPage />} />
             {/* BUTIK */}
             <Route path="/butik" element={<ButikPage />} />
@@ -185,9 +194,11 @@ function AppContent() {
         </PageTransition>
       </Suspense>
       {!isAdminRoute && !isTeamPage && (
-        <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
-          <ContactSection />
-        </FadeInSection>
+        <div id={isHomePage ? "home-contact" : undefined}>
+          <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
+            <ContactSection />
+          </FadeInSection>
+        </div>
       )}
       {!isAdminRoute && !isTeamPage && (
         <SectionDivider above="alt" below="green" variant="wave" />

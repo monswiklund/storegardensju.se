@@ -1,0 +1,195 @@
+.event-hero--wedding {
+  background-position: center 56%;
+}
+
+.wedding-hero__ornament {
+  color: var(--primary-color);
+}
+
+.wedding-hero__ornament .section-ornament-line {
+  background: var(--primary-color);
+}
+
+.wedding-intro__image {
+  aspect-ratio: 5 / 4;
+}
+
+.wedding-spaces-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+  padding-bottom: var(--event-card-offset);
+}
+
+.wedding-space-card {
+  position: relative;
+  min-height: 300px;
+  padding: 32px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--text-main) 9%, transparent);
+  border-radius: var(--event-radius-organic);
+  background: var(--event-surface);
+  box-shadow: 0 16px 44px color-mix(in srgb, var(--text-main) 7%, transparent);
+}
+
+.wedding-space-card__icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--background-green);
+  color: var(--primary-hover);
+}
+
+.wedding-space-card__value {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--primary-hover);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.wedding-space-card h3 {
+  margin: 0 0 12px;
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+}
+
+.wedding-space-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* Offset and mirrored corners make the capacity row read as a composition,
+   not three cloned cards. The extra grid padding preserves the lower edge. */
+.wedding-space-card:nth-child(even) {
+  transform: translateY(var(--event-card-offset));
+  border-radius: var(--event-radius-organic-mirrored);
+}
+
+.wedding-timeline .event-timeline__number {
+  background: var(--background-green);
+}
+
+.wedding-freedom__image {
+  aspect-ratio: 4 / 5;
+}
+
+.wedding-cta {
+  position: relative;
+  max-width: 920px;
+  padding: clamp(44px, 7vw, 76px);
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 18px 56px 20px 48px;
+  background: var(--background-green);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.wedding-cta h2 {
+  max-width: 680px;
+  margin: 0 auto 18px;
+  font-size: clamp(2rem, 4vw, 3.1rem);
+}
+
+.wedding-cta p {
+  max-width: 620px;
+  margin: 0 auto 30px;
+  color: var(--text-secondary);
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.wedding-cta .event-gallery-button {
+  gap: 9px;
+}
+
+.wedding-faq__intro {
+  margin-bottom: 42px;
+}
+
+.wedding-faq-grid {
+  display: grid;
+  max-width: 1040px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+  margin: 0 auto;
+}
+
+.wedding-faq-card {
+  padding: 30px;
+  border: 1px solid color-mix(in srgb, var(--text-main) 9%, transparent);
+  border-radius: var(--event-radius-organic-mirrored);
+  background: var(--event-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.wedding-faq-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.3rem;
+}
+
+.wedding-faq-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* The variant follows the base rule so equal specificity cannot erase the
+   mirrored treatment, the same cascade trap the course FAQ once hit. */
+.wedding-faq-card:nth-child(even) {
+  border-radius: var(--event-radius-organic);
+}
+
+@media (max-width: 900px) {
+  .wedding-spaces-grid,
+  .wedding-faq-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wedding-spaces-grid {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .wedding-space-card {
+    min-height: 0;
+  }
+
+  .wedding-freedom__image,
+  .wedding-intro__image {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 767px) {
+  .wedding-space-card:nth-child(even) {
+    transform: none;
+  }
+
+  .wedding-cta {
+    padding: 40px 24px;
+    border-radius: 14px 34px 16px 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .event-hero--wedding {
+    background-position: center;
+  }
+
+  .wedding-freedom__image,
+  .wedding-intro__image {
+    aspect-ratio: 4 / 3;
+  }
+
+  .wedding-space-card,
+  .wedding-faq-card {
+    padding: 24px;
+  }
+}

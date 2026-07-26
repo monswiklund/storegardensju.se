@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function ActionButtons({ actions }) {
+function ActionButtons({ actions = null }) {
   if (!actions || actions.length === 0) {
     return null;
   }
@@ -47,10 +47,6 @@ ActionButtons.propTypes = {
       external: PropTypes.bool,
     }),
   ),
-};
-
-ActionButtons.defaultProps = {
-  actions: null,
 };
 
 export default ActionButtons;

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Info } from "lucide-react";
 
-function InfoCallout({ onContact }) {
+function InfoCallout({ onContact = undefined }) {
   return (
     <aside className="info-box" aria-label="Information om evenemang">
       <Info className="info-icon" size={20} aria-hidden="true" />
@@ -23,10 +23,6 @@ function InfoCallout({ onContact }) {
 
 InfoCallout.propTypes = {
   onContact: PropTypes.func,
-};
-
-InfoCallout.defaultProps = {
-  onContact: undefined,
 };
 
 export default InfoCallout;

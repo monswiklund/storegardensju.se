@@ -280,3 +280,31 @@ test("the ordering workspace previews, drags and saves one category", async ({
   expect(loftet.categoryOrders).toEqual({ overvaning: 10, alla: 30 });
   expect(loftet.categoryIds).toEqual(["overvaning", "alla"]);
 });
+
+test("the ordering actions stay visible on a phone viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 700 });
+  await page.addInitScript(() => window.localStorage.setItem("admin_key", "dev"));
+  await page.route(/\/admin\/gallery$/, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(gallery()),
+    })
+  );
+
+  await page.goto("/admin?view=gallery");
+  await page.getByRole("button", { name: "Ordna bilder" }).click();
+
+  const dialog = page.getByRole("dialog");
+  await expect(
+    dialog.getByRole("button", { name: "Avbryt", exact: true })
+  ).toBeVisible();
+  await expect(
+    dialog.getByRole("button", { name: "Spara ordning" })
+  ).toBeVisible();
+
+  const footerBottom = await dialog
+    .locator("footer")
+    .evaluate((footer) => footer.getBoundingClientRect().bottom);
+  expect(footerBottom).toBeLessThanOrEqual(700);
+});

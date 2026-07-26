@@ -1,11 +1,10 @@
 export const heroContent = {
   title: "Välkommen till Storegården\xa07",
-  subtitle: "En plats för kreativt nöje!",
+  subtitle: "En gård för fest, kurser och konst",
   paragraphs: [
-    "En ständigt växande plats där tanken är att det ska finnas något för alla.",
-    "Hyr vår fina lokal till att anordna kalas, bröllop, eller fest.",
-    "Konstnärliga kurser i att måla och att skapa med keramik.",
-    "Loppis har vi även emellanåt och det finns en gårdsbutik med konst, keramik och en ateljé för inspiration.",
+    "Här i Rackeby, 15 minuter från Lidköping, driver vi Storegården 7 tillsammans.",
+    "I ladan och på loftet ordnas bröllop, kalas och andra fester. I ateljén håller vi kurser i måleri och keramik.",
+    "På gården finns också en liten butik med konst och keramik. Ibland har vi loppis, yoga och andra aktiviteter.",
   ],
   primaryCta: {
     label: "Kontakta oss",
@@ -37,14 +36,14 @@ export const services = [
     meta: "Loft 150+ sittande · Lada 50+ sittande · Mingel 300+",
     route: "/event",
     image: "/images/event/hero/hero.webp",
-    ctaLabel: "Utforska event",
+    ctaLabel: "Se eventlokalen",
   },
   {
     id: "mohippa",
     kicker: "Samla gruppen på gården",
     title: "Gruppdagar",
     description:
-      "För möhippa, svensexa, teambuilding, afterwork och workshop – med lokal, hjälp på plats och kreativa tillval.",
+      "För möhippa, svensexa, teambuilding, afterwork och workshop. Lokal och hjälp på plats ingår, och ni väljer själva vilka aktiviteter ni vill lägga till.",
     meta: "Lokal 10:00-22:00 · Tillval per aktivitet",
     route: "/gruppdagar",
     image: "/images/evenemang/slide10.webp",
@@ -53,42 +52,42 @@ export const services = [
   {
     id: "skapande",
     kicker: "Ateljé och lera",
-    title: "Kurser & skapande",
+    title: "Måleri & keramik",
     description:
-      "Målning, keramik, drejning och privata workshops för nybörjare, vänner, kollegor och kreativa grupper.",
+      "Kurser i måleri, keramik och drejning för både nybörjare och vana. Det går också att boka ateljén för en egen grupp.",
     meta: "Målning · Keramik · Privata workshops",
-    route: "/konst",
+    route: "/kurser/konst",
     image: "/images/portfolio/ann-2.webp",
     ctaLabel: "Se kurser",
   },
   {
     id: "kurser-heldagar",
-    kicker: "Närvaro & återhämtning",
+    kicker: "På loftet",
     title: "Yoga & heldagar",
     description:
-      "Följ med på harmoniska heldagar med en härlig kombination av yoga, skapande, fika och vegetarisk lunch på gården.",
+      "Yoga i lugnt tempo på loftet och heldagar där yoga varvas med måleri, fika och vegetarisk lunch.",
     meta: "Heldagar · Yoga · Lunch ingår",
-    route: "/kurser",
+    route: "/kurser/yoga",
     image: "/images/evenemang/heldag-paket.webp",
     ctaLabel: "Se heldagar",
   },
   {
     id: "galleri",
-    kicker: "Bilder & inspiration",
+    kicker: "Se gården",
     title: "Bildgalleri",
     description:
       "Kika in i vårt galleri för att se bilder från gården, ateljén, festdukningar och tidigare evenemang.",
     meta: "Foton · Inspiration · Ladan & loftet",
     route: "/galleri",
     image: "/images/event/hero/hero-2.webp",
-    ctaLabel: "Utforska galleriet",
+    ctaLabel: "Se bilderna",
   },
   {
     id: "om-platsen",
     kicker: "Människorna bakom",
     title: "Om platsen & oss",
     description:
-      "Lär känna Storegården 7, människorna bakom ateljén och hur den gamla gården blivit en plats för möten.",
+      "Läs om oss som driver Storegården 7 och om vad som finns här på gården.",
     meta: "15 min från Lidköping · Ateljé · Gårdsbutik",
     route: "/om-oss",
     image: "/images/lokal/slide23.webp",
@@ -99,7 +98,7 @@ export const services = [
 export const venueIntro = {
   title: "Om platsen",
   description:
-    "Storegården 7 ligger bara 15 minuter utanför Lidköpings centrum i en lantlig omgivning, långt från stadens brus. En plats där dina gäster kan koppla av och uppleva något unikt. Vi har tagit vara på den gamla gårdens charm och kombinerat den med moderna bekvämligheter.",
+    "Storegården 7 ligger i Rackeby, 15 minuter från Lidköpings centrum. Här finns en renoverad lada med loft, en ateljé och en gårdsbutik, med gott om plats både inne och ute.",
   highlights: [],
 };
 
@@ -108,24 +107,24 @@ export const featuredGalleryImages = [
 ];
 
 export const creationContent = {
-  title: "Skapande - Målning & Lera",
+  title: "Måleri och keramik",
   sections: [
     {
-      heading: "Kreativa workshops i inspirerande miljö",
+      heading: "Prova måleri eller keramik",
       body: [
-        "Upptäck din kreativa sida med våra kurser i målning och keramik. I vår ljusa och välkomnande lokal får du skapa konst under professionell guidning – oavsett om du är nybörjare eller mer erfaren.",
+        "I ateljén håller Ann kurser i måleri och keramik. Du får hjälp under hela passet och behöver inte ha provat tidigare.",
       ],
     },
     {
-      heading: "Kurser & Workshops",
+      heading: "Kurser och workshops",
       body: [
-        "Hos oss kan du fördjupa dig i keramik, målning och drejning. Boka en plats för dig själv – eller upplev skapandet tillsammans med vänner, kollegor, på en möhippa eller svensexa.",
+        "Du kan boka en plats på en kurs i måleri, keramik eller drejning. Vi tar också emot privata grupper, till exempel kompisgäng, kollegor, möhippor och svensexor.",
       ],
     },
     {
       heading: "Utställningar",
       body: [
-        "I vår charmiga ladugård arrangerar vi även utställningar. Här kan du visa upp ditt eget skapande, ordna en loppis eller inspireras av andras konst. Kontakta oss för mer information.",
+        "I ladan ordnar vi ibland utställningar och loppisar. Hör av dig om du vill ställa ut egen konst eller har en idé som skulle passa här.",
       ],
     },
   ],

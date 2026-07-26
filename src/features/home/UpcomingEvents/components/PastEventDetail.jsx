@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
+  ArrowUpRight,
   ChevronLeft,
   ChevronRight,
   ExternalLink,
@@ -194,33 +196,46 @@ function PastEventDetail({
             <strong>Konstnärer:</strong> {event.artists}
           </p>
         )}
+
+        {links.length > 0 && (
+          <div className="past-event-modal-actions">
+            {links.map((link, index) => {
+              const isMapLink = link.href?.includes(MAPS_HOST);
+              const isInternalLink = link.href?.startsWith("/");
+
+              if (isInternalLink) {
+                return (
+                  <Link
+                    key={link.href || index}
+                    to={link.href}
+                    className="past-event-modal-button"
+                  >
+                    <ArrowUpRight size={16} aria-hidden="true" />
+                    {link.label || DEFAULT_LINK_LABEL}
+                  </Link>
+                );
+              }
+
+              return (
+                <a
+                  key={link.href || index}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="past-event-modal-button"
+                >
+                  {isMapLink ? (
+                    <MapPin size={16} aria-hidden="true" />
+                  ) : (
+                    <ExternalLink size={16} aria-hidden="true" />
+                  )}
+                  {link.label || DEFAULT_LINK_LABEL}
+                </a>
+              );
+            })}
+          </div>
+        )}
       </div>
-
-      {links.length > 0 && (
-        <div className="past-event-modal-actions">
-          {links.map((link, index) => {
-            const isMapLink = link.href?.includes(MAPS_HOST);
-
-            return (
-              <a
-                key={link.href || index}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="past-event-modal-button"
-              >
-                {isMapLink ? (
-                  <MapPin size={16} aria-hidden="true" />
-                ) : (
-                  <ExternalLink size={16} aria-hidden="true" />
-                )}
-                {link.label || DEFAULT_LINK_LABEL}{" "}
-                {!isMapLink && !link.label?.includes("→") && "→"}
-              </a>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }

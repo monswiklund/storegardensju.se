@@ -1,13 +1,45 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { ArrowUpRight, Calendar } from "lucide-react";
-import PastEventDetail from "./PastEventDetail";
+import PastEventModal from "./PastEventModal.jsx";
 import "../../PastEvents/PastEvents.css";
 
 function PastEventsAccordion({ events }) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
+  const requestedEventId = searchParams.get("pastEvent");
+
+  const openEvent = (event) => {
+    setSelectedEvent(event);
+    if (!event.id) return;
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set("pastEvent", event.id);
+    setSearchParams(nextParams, { replace: true });
+  };
+
+  const closeEvent = () => {
+    setSelectedEvent(null);
+    if (!requestedEventId) return;
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete("pastEvent");
+    setSearchParams(nextParams, { replace: true });
+  };
+
+  useEffect(() => {
+    if (!requestedEventId) return;
+    const requestedEvent = events.find(
+      (event) => event.id === requestedEventId
+    );
+    if (!requestedEvent) return;
+
+    setShowAll(true);
+    setSelectedEvent(requestedEvent);
+  }, [events, requestedEventId]);
 
   // Scroll-listener that calculates which past event item is closest to the vertical center of the screen
   useEffect(() => {
@@ -49,33 +81,6 @@ function PastEventsAccordion({ events }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [showAll, events.length]);
 
-  // Close modal on Escape key
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") setSelectedEvent(null);
-    };
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, []);
-
-  // Prevent scrolling when modal is open
-  useEffect(() => {
-    if (selectedEvent) {
-      document.body.style.overflow = "hidden";
-      document.documentElement.style.overflow = "hidden";
-      document.documentElement.classList.add("lenis-stopped"); // Stop Lenis
-    } else {
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
-      document.documentElement.classList.remove("lenis-stopped");
-    }
-    return () => {
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
-      document.documentElement.classList.remove("lenis-stopped");
-    };
-  }, [selectedEvent]);
-
   const visibleEvents = showAll ? events : events.slice(0, 4);
 
   return (
@@ -98,7 +103,7 @@ function PastEventsAccordion({ events }) {
         {/* Left Column (Desktop only) */}
         <div className="past-events-info-col desktop-only">
           <span className="past-events-eyebrow">TIDIGARE EVENEMANG</span>
-          <h2 className="past-events-heading">Det som redan har hänt</h2>
+          <h2 className="past-events-heading">Tidigare på gården</h2>
           <p className="past-events-intro">
             Ett urval av kurser, öppna ateljékvällar och samarbeten.
           </p>
@@ -135,19 +140,19 @@ function PastEventsAccordion({ events }) {
 
               return (
                 <article
-                  key={`${event.title}-${index}`}
+                  key={event.id || `${event.title}-${index}`}
                   data-index={index}
                   className={`past-event-item ${
                     thumbImage?.src ? "" : "past-event-item--no-image"
                   } ${activeIndex === index ? "is-highlighted" : ""}`}
                   aria-labelledby={`past-event-title-${index}`}
-                  onClick={() => setSelectedEvent(event)}
+                  onClick={() => openEvent(event)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      setSelectedEvent(event);
+                      openEvent(event);
                     }
                   }}
                 >
@@ -210,15 +215,7 @@ function PastEventsAccordion({ events }) {
 
       {/* Modal */}
       {selectedEvent && (
-        <div
-          className="past-event-modal-overlay"
-          onClick={() => setSelectedEvent(null)}
-        >
-          <PastEventDetail
-            event={selectedEvent}
-            onClose={() => setSelectedEvent(null)}
-          />
-        </div>
+        <PastEventModal event={selectedEvent} onClose={closeEvent} />
       )}
     </div>
   );
@@ -227,6 +224,7 @@ function PastEventsAccordion({ events }) {
 PastEventsAccordion.propTypes = {
   events: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.string,
       title: PropTypes.string.isRequired,
       date: PropTypes.string.isRequired,
       time: PropTypes.string,

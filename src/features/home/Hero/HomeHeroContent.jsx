@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import { forwardRef } from "react";
 import { Calendar, Image, MapPin, Mail } from "lucide-react";
 import HomeHeroCarousel from "./HomeHeroCarousel";
 
@@ -41,18 +40,16 @@ const getIcon = (label) => {
   return null;
 };
 
-const HomeHeroContent = forwardRef(function HomeHeroContent(
-  {
-    title,
-    subtitle,
-    paragraphs,
-    primaryCta,
-    secondaryCtas,
-    onPrimaryClick,
-    onRouteClick,
-  },
-  ref
-) {
+function HomeHeroContent({
+  title = "",
+  subtitle = "",
+  paragraphs = [],
+  primaryCta = null,
+  secondaryCtas = [],
+  onPrimaryClick = undefined,
+  onRouteClick = undefined,
+  ref = undefined,
+}) {
   const handleRouteCta = (to) => {
     if (!to || typeof onRouteClick !== "function") return;
     onRouteClick(to);
@@ -132,7 +129,7 @@ const HomeHeroContent = forwardRef(function HomeHeroContent(
       )}
     </div>
   );
-});
+}
 
 HomeHeroContent.propTypes = {
   title: PropTypes.string,
@@ -153,16 +150,7 @@ HomeHeroContent.propTypes = {
   ),
   onPrimaryClick: PropTypes.func,
   onRouteClick: PropTypes.func,
-};
-
-HomeHeroContent.defaultProps = {
-  title: "",
-  subtitle: "",
-  paragraphs: [],
-  primaryCta: null,
-  secondaryCtas: [],
-  onPrimaryClick: undefined,
-  onRouteClick: undefined,
+  ref: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 export default HomeHeroContent;

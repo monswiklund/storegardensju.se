@@ -30,7 +30,7 @@ const Footer = () => {
       <div className="footer-content">
         <div className="footer-brand">
           <h2 className="footer-logo">Storegården 7</h2>
-          <p className="footer-tagline">En plats för kreativt nöje</p>
+          <p className="footer-tagline">Fest, kurser och konst på landet</p>
         </div>
 
         <nav className="footer-nav" aria-label="Footer Navigation">
@@ -75,9 +75,9 @@ const Footer = () => {
           <div className="footer-collaboration">
             <h3 className="footer-collab-title">Samarbeta med oss</h3>
             <p className="footer-collab-text">
-              Vi samarbetar gärna med andra som har idéer eller vill ställa ut konst, arrangera evenemang eller skapa något kreativt.{" "}
+              Vill du ställa ut konst, ordna ett evenemang eller har du en idé som skulle passa på gården?{" "}
               <a href="mailto:storegardensju@gmail.com?subject=Samarbete med Storegården 7" className="footer-collab-link">
-                Hör av dig till oss!
+                Hör av dig till oss.
               </a>
             </p>
           </div>

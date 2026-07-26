@@ -1,5 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// reuseExistingServer means anything already listening on 5173 is treated as
+// the app - including an unrelated container. Set PLAYWRIGHT_BASE_URL to point
+// the suite at a server you started yourself (e.g. `vite preview` on a free
+// port); the managed dev server is then skipped.
+const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
+const baseURL = externalBaseURL || 'http://localhost:5173';
+
 export default defineConfig({
   testDir: './tests',
   timeout: 30000,
@@ -12,7 +19,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : 1,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -23,10 +30,14 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'npm run dev:frontend',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+  ...(externalBaseURL
+    ? {}
+    : {
+        webServer: {
+          command: 'npm run dev:frontend',
+          url: baseURL,
+          reuseExistingServer: !process.env.CI,
+          timeout: 120 * 1000,
+        },
+      }),
 });

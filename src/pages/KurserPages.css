@@ -147,10 +147,46 @@
   border-bottom-color: transparent;
 }
 
-.kurser-recap {
+/* ==========================================================================
+   Colour bands
+   ==========================================================================
+   Three background tokens rotate down each course page (white / --background-alt
+   / --background-green) with an SVG SectionDivider on every colour change, so a
+   visitor never scrolls through five identical white blocks. The colour sits on
+   a full-bleed section while the content stays in the 1120px column, and the
+   anchor id sits on the same full-bleed element - scroll-margin-top has to apply
+   there for deep links to clear the navbar and subnav. */
+
+.kurser-band {
+  width: 100%;
+}
+
+.kurser-band--white {
+  background: #ffffff;
+}
+
+.kurser-band--alt {
+  background: var(--background-alt);
+}
+
+.kurser-band--green {
+  background: var(--background-green);
+}
+
+.kurser-band__inner {
   width: min(100% - 40px, 1120px);
   margin: 0 auto;
-  padding: clamp(80px, 10vw, 140px) 0;
+  padding: clamp(48px, 6vw, 80px) 0;
+}
+
+/* Only needed where two neighbouring bands share a colour - elsewhere the colour
+   change plus the divider is the separation. */
+.kurser-band--divided .kurser-band__inner {
+  border-bottom: 1px solid rgba(95, 111, 82, 0.18);
+}
+
+.kurser-recap {
+  padding-bottom: clamp(8px, 2vw, 24px);
 }
 
 .kurser-recap__copy {
@@ -210,15 +246,22 @@
   transform: scale(1.02);
 }
 
-.kurser-interest {
-  width: min(100% - 40px, 1120px);
+.kurser-interest__inner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 40px;
   align-items: end;
-  margin: 0 auto;
-  padding: clamp(70px, 9vw, 120px) 0;
-  border-top: 1px solid rgba(95, 111, 82, 0.18);
+}
+
+/* Centred closing statement, for the hub that ends on a colour band. */
+.kurser-interest--center .kurser-interest__inner {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+}
+
+.kurser-interest--center .kurser-interest__copy p {
+  margin-inline: auto;
 }
 
 .kurser-interest h2 {
@@ -264,18 +307,89 @@
   outline-offset: 6px;
 }
 
-.kurser-details {
-  width: min(100% - 40px, 1120px);
-  margin: 0 auto;
-  padding: clamp(60px, 8vw, 100px) 0;
-  border-bottom: 1px solid rgba(95, 111, 82, 0.18);
-}
-
 .kurser-details__container {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
   gap: clamp(40px, 6vw, 80px);
   align-items: center;
+}
+
+/* Mirrored: card left, copy right. The two hubs use opposite variants for the
+   same section so clicking between them does not feel like one template. */
+.kurser-details__container--split-reverse {
+  grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.2fr);
+}
+
+.kurser-details__container--split-reverse .kurser-details__info {
+  order: 2;
+}
+
+.kurser-details__container--split-reverse .kurser-details__action {
+  order: 1;
+}
+
+/* The card stays in view while the long pass description scrolls past. */
+.kurser-details__container--sticky {
+  align-items: start;
+}
+
+.kurser-details__container--sticky .kurser-details__action {
+  position: sticky;
+  top: 140px;
+}
+
+/* Portrait beside the bio, deliberately taller than its column so it breaks the
+   band's top edge. */
+.kurser-details__container--portrait {
+  grid-template-columns: minmax(240px, 0.62fr) minmax(0, 1fr);
+  align-items: center;
+}
+
+.kurser-instructor__portrait {
+  margin: clamp(-72px, -6vw, -32px) 0 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(24, 34, 26, 0.16);
+}
+
+.kurser-instructor__portrait img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.kurser-instructor__centered {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.kurser-instructor__centered .kurser-details__description {
+  max-width: none;
+}
+
+.kurser-instructor__centered .kurser-details__meta {
+  align-items: center;
+}
+
+.kurser-instructor__avatar {
+  width: clamp(120px, 16vw, 168px);
+  margin: 0 auto 26px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(24, 34, 26, 0.14);
+}
+
+.kurser-instructor__avatar img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.kurser-details__info--wide .kurser-details__description {
+  max-width: 720px;
 }
 
 .kurser-details__info h2 {
@@ -389,7 +503,7 @@
     aspect-ratio: 4 / 5;
   }
 
-  .kurser-interest {
+  .kurser-interest__inner {
     grid-template-columns: 1fr;
     align-items: start;
   }
@@ -408,8 +522,7 @@
     font-size: clamp(2.8rem, 14vw, 4rem);
   }
 
-  .kurser-recap,
-  .kurser-interest {
+  .kurser-band__inner {
     width: min(100% - 32px, 1120px);
   }
 
@@ -419,5 +532,499 @@
   .kurser-hero__link,
   .kurser-interest__link {
     transition: none;
+  }
+}
+
+/* ==========================================================================
+   Anchored pass sections, FAQ, directions and past-pass recap
+   ========================================================================== */
+
+/* Navbar is fixed at 60px, so anchor targets need clearance or the heading
+   lands underneath it. */
+.kurser-details--anchored,
+.kurser-faq,
+.kurser-past,
+.kurser-past__item {
+  scroll-margin-top: 80px;
+}
+
+/* The course hubs sit in a section with a subnav bar (48px) under the navbar,
+   so anchors there need to clear both. ScrollToTop measures the same bar for
+   the Lenis path, which ignores scroll-margin-top. */
+.event-subnav-active .kurser-details--anchored,
+.event-subnav-active .kurser-faq,
+.event-subnav-active .kurser-past,
+.event-subnav-active .kurser-past__item {
+  scroll-margin-top: 130px;
+}
+
+.kurser-faq__inner {
+  max-width: 780px;
+}
+
+
+.kurser-faq h2 {
+  margin: 12px 0 32px;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.kurser-faq__list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Two columns turn a long list into a block that reads as a different section
+   than the stacked FAQ on the other hub. */
+.kurser-faq__inner--columns {
+  max-width: none;
+}
+
+.kurser-faq__list--columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(40px, 6vw, 88px);
+  row-gap: 28px;
+}
+
+.kurser-faq__inner--centered {
+  text-align: center;
+}
+
+.kurser-faq__inner--centered .kurser-faq__item {
+  text-align: left;
+}
+
+.kurser-faq__item {
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(95, 111, 82, 0.12);
+}
+
+.kurser-faq__item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.kurser-faq__item dt {
+  margin-bottom: 8px;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.kurser-faq__item dd {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.kurser-details__info address {
+  font-style: normal;
+}
+
+.kurser-past__inner {
+  max-width: 780px;
+}
+
+.kurser-past__inner--cards {
+  max-width: none;
+}
+
+.kurser-past h2 {
+  margin: 12px 0 32px;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.kurser-past__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Timeline: the year sets the rhythm down the left, the rule joins the entries. */
+.kurser-past__list--timeline {
+  gap: 0;
+}
+
+.kurser-past__list--timeline .kurser-past__item {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: clamp(16px, 3vw, 32px);
+  padding: 28px 0;
+  border-top: 1px solid rgba(95, 111, 82, 0.16);
+}
+
+.kurser-past__list--timeline .kurser-past__item:last-child {
+  border-bottom: 1px solid rgba(95, 111, 82, 0.16);
+}
+
+.kurser-past__year {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 500;
+  line-height: 1;
+  color: rgba(95, 111, 82, 0.42);
+}
+
+/* Cards: same data, grid instead of a rail. */
+.kurser-past__list--cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(20px, 3vw, 32px);
+}
+
+.kurser-past__list--cards .kurser-past__item {
+  padding: clamp(24px, 3vw, 32px);
+  background: #ffffff;
+  border: 1px solid rgba(95, 111, 82, 0.15);
+  border-radius: 14px;
+}
+
+.kurser-past__item h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+/* A pass owned by the other hub links there instead of duplicating the anchor,
+   so it needs a visible affordance. */
+.kurser-past__item h3 a,
+.kurser-past__title-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--primary-hover);
+  text-underline-offset: 4px;
+  transition: color 0.2s ease;
+}
+
+.kurser-past__item h3 a:hover,
+.kurser-past__item h3 a:focus-visible,
+.kurser-past__title-button:hover,
+.kurser-past__title-button:focus-visible {
+  color: var(--primary-hover);
+}
+
+.kurser-past__item p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.kurser-past__detail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--primary-hover);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.94rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.kurser-past__detail-link svg {
+  transition: transform 0.2s ease;
+}
+
+.kurser-past__detail-link:hover svg,
+.kurser-past__detail-link:focus-visible svg {
+  transform: translate(2px, -2px);
+}
+
+.kurser-past__date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px !important;
+  color: var(--primary-hover) !important;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.kurser-past__date svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+  /* Stagger, overlap and multi-column layouts all collapse - on a phone they
+     would only produce cramped columns and clipped portraits. */
+  .kurser-faq__list--columns,
+  .kurser-past__list--cards {
+    grid-template-columns: 1fr;
+  }
+
+  .kurser-details__container--portrait {
+    grid-template-columns: 1fr;
+  }
+
+  .kurser-instructor__portrait {
+    margin-top: 0;
+    max-width: 340px;
+  }
+
+  .kurser-details__container--sticky .kurser-details__action {
+    position: static;
+  }
+
+  .kurser-past__list--timeline .kurser-past__item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+/* --- Kurser index (/kurser) ------------------------------------------------
+ *
+ * The index deliberately looks nothing like a hub: no photo hero, no anchored
+ * pass sections, no FAQ. It is a chooser - a typographic header plus one card
+ * per subject - so a visitor (and Google) can tell within a second that this
+ * page is not the yoga page it used to be. Skipping the hero image also keeps
+ * the LCP text-only on the page most likely to be a waypoint rather than a
+ * destination.
+ */
+.kurser-index__intro .kurser-band__inner {
+  padding: clamp(120px, 14vw, 180px) 0 clamp(56px, 7vw, 88px);
+}
+
+.kurser-index__intro-copy {
+  text-align: center;
+}
+
+.kurser-index__intro-copy h1 {
+  margin: 14px auto 20px;
+  max-width: 20ch;
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.kurser-index__lead {
+  max-width: 62ch;
+  margin: 0 auto;
+  color: var(--text-secondary);
+  font-size: clamp(1.02rem, 1.6vw, 1.15rem);
+  line-height: 1.7;
+}
+
+.kurser-index__facts {
+  list-style: none;
+  padding: 0;
+  margin: 32px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 28px;
+}
+
+.kurser-index__facts li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text-main);
+  font-size: 0.97rem;
+}
+
+.kurser-index__facts svg {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.kurser-index__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(24px, 3vw, 36px);
+  align-items: start;
+}
+
+/* Offset the second card so the pair reads as a composition rather than a row of
+   two identical boxes. */
+@media (min-width: 900px) {
+  .kurser-index__grid > :nth-child(even) {
+    transform: translateY(48px);
+  }
+
+  .kurser-index__grid {
+    padding-bottom: 48px;
+  }
+}
+
+.kurser-index__card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-surface, #f9f8f6);
+  border: 1px solid rgba(95, 111, 82, 0.15);
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.kurser-index__card:hover,
+.kurser-index__card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(24, 34, 26, 0.12);
+}
+
+.kurser-index__card:focus-visible {
+  outline: 2px solid rgba(95, 111, 82, 0.36);
+  outline-offset: 4px;
+}
+
+.kurser-index__card-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.kurser-index__card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.kurser-index__card:hover .kurser-index__card-media img {
+  transform: scale(1.04);
+}
+
+.kurser-index__card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: clamp(24px, 3vw, 34px);
+}
+
+.kurser-index__card-body h2 {
+  margin: 12px 0 14px;
+  font-family: var(--font-heading);
+  font-size: clamp(1.7rem, 2.6vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.kurser-index__card-body p {
+  margin: 0 0 20px;
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.kurser-index__card-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kurser-index__card-meta li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.97rem;
+  color: var(--text-main);
+}
+
+.kurser-index__card-meta svg {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.kurser-index__card-cta {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kurser-index__card,
+  .kurser-index__card-media img {
+    transition: none;
+  }
+
+  .kurser-index__card:hover {
+    transform: none;
+  }
+
+  .kurser-index__card:hover .kurser-index__card-media img {
+    transform: none;
+  }
+}
+
+/* --- Cross-link band -------------------------------------------------------
+ * Full-width statement with one photo, used on the hub whose neighbouring
+ * sections are already split layouts. */
+.kurser-crosslink__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+
+.kurser-crosslink__media {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.kurser-crosslink__media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+}
+
+.kurser-crosslink__copy h2 {
+  margin: 12px 0 14px;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.kurser-crosslink__copy p {
+  max-width: 560px;
+  margin: 0 0 22px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+@media (max-width: 760px) {
+  .kurser-crosslink__inner {
+    grid-template-columns: 1fr;
   }
 }

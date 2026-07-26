@@ -6,3 +6,4 @@ export { default as PageSection } from "./layout/PageSection/PageSection.jsx";
 export { default as Footer } from "./layout/Footer/Footer.jsx";
 export { default as BuildInfo } from "./ui/BuildInfo.jsx";
 export { default as SectionDivider } from "./ui/SectionDivider/SectionDivider.jsx";
+export { default as ScrollSpyNav } from "./ui/ScrollSpyNav/ScrollSpyNav.jsx";
