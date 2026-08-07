@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Clock, MapPin, ArrowUpRight } from "lucide-react";
+import { Clock, MapPin, Calendar, ArrowUpRight } from "lucide-react";
 
 const splitDateString = (dateStr) => {
   if (!dateStr) return { day: "", month: "", year: "" };
@@ -64,6 +64,12 @@ function EventCard({ event }) {
             {spots && (
               <div className="upcoming-meta-item upcoming-meta-spots">
                 <span>{spots}</span>
+              </div>
+            )}
+            {event.seriesText && (
+              <div className="upcoming-meta-item upcoming-meta-series">
+                <Calendar size={16} />
+                <span>Alla pass: {event.seriesText}</span>
               </div>
             )}
           </div>

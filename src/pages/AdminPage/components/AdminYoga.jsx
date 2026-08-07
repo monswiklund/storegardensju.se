@@ -554,6 +554,62 @@ export default function AdminYoga({ adminKey }) {
             </div>
           </AdminDrawerSection>
 
+          <AdminDrawerSection title="Snabbmallar (Passtyper)">
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" }}>
+              <button
+                type="button"
+                className="admin-btn-secondary"
+                style={{ fontSize: "0.82rem", padding: "6px 12px" }}
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    title: "Yoga på loftet (90 min)",
+                    durationMinutes: 90,
+                    price: 150,
+                    dropIn: false,
+                    startTime: "18:00",
+                  }))
+                }
+              >
+                Tisdag 90m (150 kr, Föranmälan)
+              </button>
+              <button
+                type="button"
+                className="admin-btn-secondary"
+                style={{ fontSize: "0.82rem", padding: "6px 12px" }}
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    title: "Yoga på loftet (60 min)",
+                    durationMinutes: 60,
+                    price: 100,
+                    dropIn: true,
+                    startTime: "18:00",
+                  }))
+                }
+              >
+                Onsdag 60m (100 kr, Drop-in)
+              </button>
+              <button
+                type="button"
+                className="admin-btn-secondary"
+                style={{ fontSize: "0.82rem", padding: "6px 12px" }}
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    title: "Yoga på loftet (60 min)",
+                    durationMinutes: 60,
+                    price: 100,
+                    dropIn: true,
+                    startTime: "18:00",
+                  }))
+                }
+              >
+                Torsdag 60m (100 kr, Drop-in)
+              </button>
+            </div>
+          </AdminDrawerSection>
+
           <AdminDrawerSection title="Tid & Plats">
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
               <div className="admin-form-group">
@@ -577,6 +633,43 @@ export default function AdminYoga({ adminKey }) {
                   onChange={(e) => setForm({ ...form, startTime: e.target.value })}
                   required
                 />
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "14px" }}>
+              <div className="admin-form-group">
+                <label htmlFor="yoga-duration">Längd (min)</label>
+                <select
+                  id="yoga-duration"
+                  className="admin-select"
+                  value={form.durationMinutes || 90}
+                  onChange={(e) => setForm({ ...form, durationMinutes: parseInt(e.target.value, 10) })}
+                >
+                  <option value={60}>60 min</option>
+                  <option value={90}>90 min</option>
+                </select>
+              </div>
+              <div className="admin-form-group">
+                <label htmlFor="yoga-price">Pris (SEK)</label>
+                <input
+                  id="yoga-price"
+                  type="number"
+                  className="admin-input"
+                  value={form.price || 150}
+                  onChange={(e) => setForm({ ...form, price: parseInt(e.target.value, 10) })}
+                />
+              </div>
+              <div className="admin-form-group">
+                <label htmlFor="yoga-dropin">Bokningstyp</label>
+                <select
+                  id="yoga-dropin"
+                  className="admin-select"
+                  value={form.dropIn ? "dropin" : "signup"}
+                  onChange={(e) => setForm({ ...form, dropIn: e.target.value === "dropin" })}
+                >
+                  <option value="signup">Föranmälan</option>
+                  <option value="dropin">Drop-in</option>
+                </select>
               </div>
             </div>
 

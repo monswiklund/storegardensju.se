@@ -542,13 +542,22 @@ body:has(.admin-app) .scroll-to-top {
   border: 1px solid var(--admin-line);
   border-radius: 14px;
   color: #ffffff;
-  background: #223129;
+  background: var(--admin-green);
   box-shadow: var(--admin-shadow-float);
 }
 
 .admin-ui-action-rail > div {
   display: flex;
   gap: 8px;
+}
+
+.admin-ui-action-rail .admin-btn-tertiary {
+  color: #ffffff;
+}
+
+.admin-ui-action-rail .admin-btn-tertiary:hover:not(:disabled) {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .admin-ui-state {

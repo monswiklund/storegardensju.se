@@ -5,8 +5,10 @@ import {
   TRACKS,
   YOGA_TRACK_ID,
   allUpcomingPasses,
+  apiEventToCoursePass,
   formatPassDate,
   formatPassTime,
+  mergeCoursePasses,
   nextPass,
   ownedUpcomingPasses,
   passAnchor,
@@ -33,6 +35,12 @@ describe("pass date split", () => {
 
     expect(upcoming.map((pass) => pass.id)).toEqual([
       "yoga-pa-loftet-2026-07-30",
+      "yoga-2026-08-11",
+      "yoga-2026-08-12",
+      "yoga-2026-08-13",
+      "yoga-2026-08-18",
+      "yoga-2026-08-19",
+      "yoga-2026-08-20",
     ]);
   });
 
@@ -207,3 +215,85 @@ describe("FAQ answers", () => {
     }
   });
 });
+
+describe("apiEventToCoursePass and mergeCoursePasses", () => {
+  it("converts raw API event to course pass format", () => {
+    const rawApiEvent = {
+      id: "test-yoga-123",
+      title: "Kvällsyoga på loftet",
+      description: "Ett lugnt yogapass för alla.",
+      category: "yoga",
+      startAt: "2026-08-20T18:00:00+02:00",
+      endAt: "2026-08-20T19:30:00+02:00",
+      spots: "150 kr / person – Drop-in",
+      images: [{ url: "/images/test.jpg", alt: "Test" }],
+    };
+
+    const pass = apiEventToCoursePass(rawApiEvent);
+
+    expect(pass.id).toBe("test-yoga-123");
+    expect(pass.title).toBe("Kvällsyoga på loftet");
+    expect(pass.primaryTrack).toBe(YOGA_TRACK_ID);
+    expect(pass.price).toBe(150);
+    expect(pass.images[0].url).toBe("/images/test.jpg");
+  });
+
+  it("merges API events with static passes chronologically", () => {
+    const staticPasses = [
+      {
+        id: "static-yoga-1",
+        title: "Static Yoga",
+        tracks: [YOGA_TRACK_ID],
+        primaryTrack: YOGA_TRACK_ID,
+        startAt: "2026-07-30T18:00:00+02:00",
+        endAt: "2026-07-30T19:30:00+02:00",
+      },
+    ];
+
+    const apiEvents = [
+      {
+        id: "api-yoga-new",
+        title: "Nytt Yoga Event från Admin",
+        category: "yoga",
+        startAt: "2026-08-15T18:00:00+02:00",
+        endAt: "2026-08-15T19:30:00+02:00",
+      },
+    ];
+
+    const merged = mergeCoursePasses(
+      staticPasses,
+      apiEvents,
+      YOGA_TRACK_ID,
+      BEFORE_JULY_30
+    );
+
+    expect(merged).toHaveLength(2);
+    expect(merged[0].id).toBe("static-yoga-1");
+    expect(merged[1].id).toBe("api-yoga-new");
+  });
+
+  it("converts and merges maleri / konst events correctly", () => {
+    const rawMaleriEvent = {
+      id: "api-maleri-1",
+      title: "Helgkurs Akvarell",
+      category: "maleri",
+      startAt: "2026-09-10T10:00:00+02:00",
+      endAt: "2026-09-10T16:00:00+02:00",
+    };
+
+    const pass = apiEventToCoursePass(rawMaleriEvent, MALERI_TRACK_ID);
+    expect(pass.primaryTrack).toBe(MALERI_TRACK_ID);
+    expect(pass.title).toBe("Helgkurs Akvarell");
+
+    const merged = mergeCoursePasses(
+      [],
+      [rawMaleriEvent],
+      MALERI_TRACK_ID,
+      BEFORE_JULY_30
+    );
+    expect(merged).toHaveLength(1);
+    expect(merged[0].id).toBe("api-maleri-1");
+  });
+});
+
+

@@ -29,6 +29,7 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
   const scrollToContact = useScrollToSelector(".contact-container");
   const scrollToPastEvents = useScrollToSelector("#past-events");
   const [isCentered, setIsCentered] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -52,7 +53,7 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const activeEvent = upcomingEvents[0] || null;
+  const activeEvent = upcomingEvents[activeIndex] || upcomingEvents[0] || null;
   const primaryLink = activeEvent?.links?.[0] || { href: "/kurser/yoga", label: "Läs mer & anmäl dig" };
 
   return (
@@ -334,6 +335,28 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
 
               {/* Right Column: Event card carousel */}
               <div className="upcoming-events-carousel-col">
+                {upcomingEvents.length > 1 && (
+                  <div className="upcoming-date-tabs-bar">
+                    <span className="upcoming-date-tabs-label">Välj datum:</span>
+                    <div className="upcoming-date-tabs-list">
+                      {upcomingEvents.map((evt, idx) => {
+                        const parts = (evt.date || "").split(" ");
+                        const dayStr = parts[0] || `${idx + 1}`;
+                        const monthStr = parts[1] ? parts[1].slice(0, 3) : "aug";
+                        return (
+                          <button
+                            key={evt.id || idx}
+                            type="button"
+                            className={`upcoming-date-chip ${idx === activeIndex ? "is-active" : ""}`}
+                            onClick={() => setActiveIndex(idx)}
+                          >
+                            {dayStr} {monthStr}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
                 {activeEvent && (
                   <div className="upcoming-event-carousel">
                     <EventCard event={activeEvent} />

@@ -370,6 +370,8 @@
 }
 
 .admin-gallery-upload-drop-hint,
+.admin-gallery-upload-recovery,
+.admin-gallery-upload-staged,
 .admin-gallery-upload-queue {
   flex: 1 0 100%;
   margin: 0;
@@ -388,6 +390,37 @@
   list-style: none;
 }
 
+.admin-gallery-upload-staged {
+  display: grid;
+  gap: 0.6rem;
+  border-radius: 10px;
+  background: #f3f2ef;
+  padding: 0.75rem;
+}
+
+.admin-gallery-upload-recovery {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 10px;
+  background: #fff4df;
+  padding: 0.75rem;
+}
+
+.admin-gallery-upload-recovery p {
+  margin: 0.2rem 0 0;
+  color: var(--admin-muted);
+  font-size: 0.85rem;
+}
+
+.admin-gallery-upload-staged-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .admin-gallery-upload-queue-item {
   display: flex;
   align-items: baseline;
@@ -397,6 +430,26 @@
   background: #ffffff;
   padding: 0.45rem 0.65rem;
   font-size: 0.85rem;
+}
+
+.admin-gallery-upload-remove {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--admin-muted);
+  padding: 0.25rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-gallery-upload-remove:hover {
+  color: var(--admin-text);
+}
+
+.admin-gallery-upload-remove:focus-visible {
+  outline: 2px solid var(--admin-text);
+  outline-offset: 2px;
 }
 
 .admin-gallery-upload-queue-name {
@@ -444,12 +497,17 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: var(--primary-color);
-  color: #fff;
+  border: 1px solid var(--admin-line);
+  background: #fff;
+  color: var(--admin-text);
   padding: 0.6rem 1rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+}
+
+.admin-gallery-upload-start {
+  min-width: 10.5rem;
 }
 
 .admin-upload-button input {
@@ -860,6 +918,7 @@
   .admin-panel-header,
   .admin-gallery-content-header,
   .admin-gallery-upload,
+  .admin-gallery-upload-recovery,
   .admin-gallery-upload-actions,
   .admin-gallery-image-toolbar {
     flex-direction: column;

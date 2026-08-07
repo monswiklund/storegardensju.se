@@ -37,6 +37,36 @@ export const toUiEvent = (item) => {
     }),
   );
 
+  let links = Array.isArray(item?.links) ? [...item.links] : [];
+
+  const titleLower = (item?.title || "").toLowerCase();
+  const categoryLower = (item?.category || "").toLowerCase();
+
+  const isYoga = categoryLower === "yoga" || titleLower.includes("yoga");
+  const isMaleri =
+    categoryLower === "maleri" ||
+    categoryLower === "konst" ||
+    categoryLower === "keramik" ||
+    titleLower.includes("måleri") ||
+    titleLower.includes("keramik") ||
+    titleLower.includes("konst");
+
+  if (isYoga && (links.length === 0 || links[0]?.href?.startsWith("mailto:"))) {
+    links = [
+      {
+        href: "/kurser/yoga",
+        label: "Läs mer & anmäl dig på Yogasidan",
+      },
+    ];
+  } else if (isMaleri && (links.length === 0 || links[0]?.href?.startsWith("mailto:"))) {
+    links = [
+      {
+        href: "/kurser/konst",
+        label: "Läs mer & anmäl dig på Kurssidan",
+      },
+    ];
+  }
+
   return {
     id: item?.id || "",
     title: item?.title || "",
@@ -47,8 +77,10 @@ export const toUiEvent = (item) => {
     moments: Array.isArray(item?.moments) ? item.moments : [],
     artists: item?.artists || "",
     location: item?.location || "",
-    links: Array.isArray(item?.links) ? item.links : [],
+    seriesText: isYoga ? "11/8, 12/8, 13/8, 18/8, 19/8, 20/8" : null,
+    links,
     image: mappedImages.length > 0 ? mappedImages[0] : null,
     images: mappedImages,
   };
 };
+

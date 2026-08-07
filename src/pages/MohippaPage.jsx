@@ -592,7 +592,7 @@ function MohippaPage() {
             <PageSection background="green" spacing="default">
               <FadeInSection>
                 <HomeServicesSection
-                  excludeId="mohippa"
+                  excludeId="gruppdagar"
                   title="Se mer på gården"
                   eyebrow="FLER AKTIVITETER"
                 />

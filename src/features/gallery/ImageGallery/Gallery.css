@@ -120,7 +120,7 @@
 
 @media (max-width: 480px) {
   .gallery-grid, .gallery-column {
-    gap: 14px; /* Cozy spacing on mobile phones */
+    gap: 12px; /* Cozy spacing on mobile phones */
   }
 }
 
@@ -132,12 +132,12 @@
   cursor: pointer;
   
   /* Use dynamic deterministic values injected by JS */
-  transform: rotate(var(--item-rotation, 0deg));
+  transform: rotate(var(--item-rotation-3-columns, 0deg));
   margin-top: var(--item-y-offset, 0px);
   margin-bottom: calc(12px - var(--item-y-offset, 0px));
   
   /* Scrapbook sizing and alignment inside column flexbox */
-  width: var(--item-width, 100%);
+  width: var(--item-width-3-columns, 100%);
   align-self: var(--item-align-self, stretch);
   
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
@@ -154,7 +154,7 @@
   position: absolute;
   top: -8px;
   left: 50%;
-  transform: translateX(-50%) rotate(var(--item-tape-rotation, -3deg));
+  transform: translateX(-50%) rotate(var(--item-tape-rotation-3-columns, -3deg));
   width: var(--item-tape-width, 65px);
   height: 18px;
   background: rgba(222, 216, 198, 0.55); /* Warm masking tape color */
@@ -183,6 +183,17 @@
   display: block;
   border-radius: 0;
   border: 1px solid rgba(0, 0, 0, 0.04); /* Subtle edge separation for the image */
+}
+
+@media (max-width: 768px) {
+  .gallery-thumbnail {
+    transform: rotate(var(--item-rotation-2-columns, 0deg));
+    width: var(--item-width-2-columns, 100%);
+  }
+
+  .gallery-thumbnail::before {
+    transform: translateX(-50%) rotate(var(--item-tape-rotation-2-columns, -3deg));
+  }
 }
 
 @media (max-width: 480px) {

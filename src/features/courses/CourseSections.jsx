@@ -141,7 +141,7 @@ export function PassSection({
             {track.id === pass.primaryTrack ? "Kommande pass" : "Kommande dag"}
           </span>
           <h2>
-            {pass.title} med {instructor.name}
+            {pass.title}
           </h2>
           <p className="kurser-details__description">{pass.summary}</p>
 
@@ -254,7 +254,7 @@ export function InstructorSection({
   const bio = (
     <div className="kurser-details__info">
       <span className="kurser-label">{label}</span>
-      <h2>Om {instructor.name}</h2>
+      <h2>Om {instructor.shortName || instructor.name.split(" ")[0]}</h2>
       <p className="kurser-details__description">{instructor.bio}</p>
       <ul className="kurser-details__meta">
         <li>
@@ -636,6 +636,100 @@ export function OtherHubLink({
           </div>
         </div>
       </div>
+    </CourseBand>
+  );
+}
+
+/**
+ * Interactive monthly schedule for yoga classes.
+ * Displays recurring or multi-pass monthly schedules cleanly.
+ */
+export function YogaScheduleSection({
+  passes = [],
+  trackId = "yoga",
+  contactSubject,
+  onContactClick,
+  showMailFallback,
+  background = "alt",
+}) {
+  const instructor = trackById(trackId).instructor;
+
+  return (
+    <CourseBand id="kommande" background={background} className="kurser-schedule-section">
+      <div className="kurser-schedule__header">
+        <span className="kurser-label">Månadsschema & klasser</span>
+        <h2>Yogapass i augusti</h2>
+        <p className="kurser-schedule__subtitle">
+          Anpassat för både nybörjare och övade utövare. Yogamattor finns att låna på plats på loftet på Storegården 7.
+        </p>
+      </div>
+
+      <div className="kurser-schedule__grid">
+        {passes.map((pass) => {
+          const isDropIn = pass.dropIn;
+          const duration = pass.durationMinutes || (pass.endAt ? Math.round((new Date(pass.endAt) - new Date(pass.startAt)) / 60000) : 60);
+          const mailSubject = `Föranmälan: ${pass.title} (${formatPassDate(pass)})`;
+          const mailHref = `mailto:${instructor.email}?subject=${encodeURIComponent(mailSubject)}`;
+
+          return (
+            <div
+              key={pass.id}
+              id={passAnchor(pass)}
+              className={`kurser-schedule-card ${isDropIn ? "kurser-schedule-card--dropin" : "kurser-schedule-card--signup"}`}
+            >
+              <div className="kurser-schedule-card__date-col">
+                <span className="kurser-schedule-card__date-text">{formatPassDate(pass)}</span>
+              </div>
+
+              <div className="kurser-schedule-card__meta-col">
+                <span className="kurser-schedule-card__time">
+                  <Clock size={16} aria-hidden="true" />
+                  kl {formatPassTime(pass.startAt)} ({duration} min)
+                </span>
+                <span className="kurser-schedule-card__location">
+                  <MapPin size={16} aria-hidden="true" />
+                  Storegården 7, Rackeby
+                </span>
+              </div>
+
+              <div className="kurser-schedule-card__tag-col">
+                <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
+                  {isDropIn ? "DROP-IN" : "FÖRANMÄLAN"}
+                </span>
+              </div>
+
+              <div className="kurser-schedule-card__price-col">
+                <span className="kurser-schedule-card__price">{pass.price ? `${pass.price}:-` : "150:-"}</span>
+              </div>
+
+              <div className="kurser-schedule-card__action-col">
+                {isDropIn ? (
+                  <span className="kurser-schedule-card__note">
+                    Ingen föranmälan behövs – betalning på plats
+                  </span>
+                ) : (
+                  <a
+                    href={mailHref}
+                    className="kurser-btn kurser-btn--primary"
+                    onClick={onContactClick}
+                  >
+                    <span>Föranmäl dig</span>
+                    <Mail size={16} aria-hidden="true" />
+                  </a>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {showMailFallback && (
+        <MailtoFallback
+          email={instructor.email}
+          subject={contactSubject}
+          onClose={() => {}}
+        />
+      )}
     </CourseBand>
   );
 }

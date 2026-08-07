@@ -15,6 +15,12 @@ const getSeededValue = (str) => {
   return Math.abs(hash % 1000) / 1000;
 };
 
+const getDirectionMultiplier = (index, columnCount) => {
+  const row = Math.floor(index / columnCount);
+  const column = index % columnCount;
+  return (row + column) % 2 === 0 ? 1 : -1;
+};
+
 function GalleryGrid({ images, onImageSelect }) {
   return (
     <Masonry
@@ -24,25 +30,35 @@ function GalleryGrid({ images, onImageSelect }) {
     >
       {images.map((image, index) => {
         const seed = image.filename || image.original || String(index);
-        
-        // Alternating sign pattern based on index (+ vs -) so adjacent items always tilt in opposite directions
-        const directionMultiplier = index % 2 === 0 ? 1 : -1;
-        
-        // Generate rotation magnitude between 0.8deg and 2.0deg (max 2.0deg)
-        const magRand = getSeededValue(seed + "-rot-mag-" + index);
-        const rotMagnitude = 0.8 + magRand * 1.2; // 0.8deg to 2.0deg max
-        const rotVal = (directionMultiplier * rotMagnitude).toFixed(2);
 
-        // Tejpbitens rotation lutar åt motsatt håll (0.5deg till 2.0deg max)
+        // Use a checkerboard direction for each responsive column layout.
+        const threeColumnDirection = getDirectionMultiplier(index, 3);
+        const twoColumnDirection = getDirectionMultiplier(index, 2);
+
+        // Generate rotation magnitude between 0.8deg and 2.0deg.
+        const magRand = getSeededValue(seed + "-rot-mag-" + index);
+        const rotMagnitude = 0.8 + magRand * 1.2;
+        const threeColumnRotation = (threeColumnDirection * rotMagnitude).toFixed(2);
+        const twoColumnRotation = (twoColumnDirection * rotMagnitude).toFixed(2);
+
+        // Keep the tape tilted in the opposite direction from its image.
         const tapeMagRand = getSeededValue(seed + "-tape-" + index);
-        const tapeRotVal = (-directionMultiplier * (0.5 + tapeMagRand * 1.5)).toFixed(2);
+        const tapeRotMagnitude = 0.5 + tapeMagRand * 1.5;
+        const threeColumnTapeRotation = (
+          -threeColumnDirection * tapeRotMagnitude
+        ).toFixed(2);
+        const twoColumnTapeRotation = (
+          -twoColumnDirection * tapeRotMagnitude
+        ).toFixed(2);
         const tapeWidthVal = Math.floor(getSeededValue(seed + "-width-" + index) * 16 + 60); // 60px to 76px
         
         // Vertikal förskjutning (-8px till +16px)
         const yOffsetVal = (getSeededValue(seed + "-y-" + index) * 24 - 8).toFixed(1);
         
-        // Scrapbook size variations (82% to 100% width) and horizontal position within the column
-        const widthVal = Math.floor(getSeededValue(seed + "-width-pct-" + index) * 18 + 82); // 82% to 100%
+        // Keep wider cards in the two-column layout while preserving scrapbook variation.
+        const widthRand = getSeededValue(seed + "-width-pct-" + index);
+        const threeColumnWidth = Math.floor(widthRand * 18 + 82);
+        const twoColumnWidth = Math.floor(widthRand * 8 + 92);
         const alignRand = getSeededValue(seed + "-align-" + index);
         const alignVal = alignRand < 0.33 ? "flex-start" : alignRand < 0.66 ? "center" : "flex-end";
 
@@ -55,11 +71,14 @@ function GalleryGrid({ images, onImageSelect }) {
             tabIndex={0}
             aria-label={`Öppna bild ${index + 1} av ${images.length} i lightbox`}
             style={{
-              "--item-rotation": `${rotVal}deg`,
+              "--item-rotation-3-columns": `${threeColumnRotation}deg`,
+              "--item-rotation-2-columns": `${twoColumnRotation}deg`,
               "--item-y-offset": `${yOffsetVal}px`,
-              "--item-tape-rotation": `${tapeRotVal}deg`,
+              "--item-tape-rotation-3-columns": `${threeColumnTapeRotation}deg`,
+              "--item-tape-rotation-2-columns": `${twoColumnTapeRotation}deg`,
               "--item-tape-width": `${tapeWidthVal}px`,
-              "--item-width": `${widthVal}%`,
+              "--item-width-3-columns": `${threeColumnWidth}%`,
+              "--item-width-2-columns": `${twoColumnWidth}%`,
               "--item-align-self": alignVal,
             }}
             onKeyDown={(event) => {

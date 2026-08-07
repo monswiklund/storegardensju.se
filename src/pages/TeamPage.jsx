@@ -44,7 +44,6 @@ function TeamPage() {
             <div id="team-services-recommendation">
               <PageSection background="white" spacing="default">
                 <HomeServicesSection
-                  excludeId="om-platsen"
                   title="Upptäck mer på gården"
                   eyebrow="MER ATT SE & GÖRA"
                 />

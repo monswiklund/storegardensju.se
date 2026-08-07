@@ -38,7 +38,7 @@ export const INSTRUCTORS = {
     name: "Lina Wiklund",
     email: CONTACT_EMAIL,
     role: "Utbildad yogainstruktör",
-    bio: "Lina Wiklund är utbildad yogainstruktör och håller yogan på loftet. Hon arbetar också med planering, event och design på Storegården 7. Passen går i lugnt tempo och passar både dig som är nybörjare och dig som har yogat länge.",
+    bio: "Lina är utbildad yogainstruktör och håller yogan på loftet. Passen går i ett lugnt tempo och passar både dig som är nybörjare och dig som har yogat länge.",
   },
   ann: {
     id: "ann",
@@ -120,7 +120,7 @@ const yogaFaq = [
       if (!pass) {
         return "Just nu har vi inget yogapass inbokat. Håll utkik här eller hör av dig till Lina för att få veta när nästa tillfälle släpps.";
       }
-      return `Nästa yogapass "${pass.title}" hålls ${formatPassDate(pass).toLowerCase()} kl ${formatPassTime(pass.startAt)} med ${INSTRUCTORS.lina.name}.`;
+      return `Nästa yogapass "${pass.title}" hålls ${formatPassDate(pass).toLowerCase()} kl ${formatPassTime(pass.startAt)} med Lina.`;
     },
   },
   {
@@ -151,7 +151,7 @@ const yogaFaq = [
   {
     question: "Passar yogan för nybörjare?",
     answer: () =>
-      `Ja. ${INSTRUCTORS.lina.name} är utbildad yogainstruktör och håller passen i lugnt tempo med guidning och vila som fungerar både för nybörjare och vana utövare.`,
+      `Ja. Lina är utbildad yogainstruktör och håller passen i lugnt tempo med guidning och vila som fungerar både för nybörjare och vana utövare.`,
   },
   {
     question: "Var ligger Storegården 7?",
@@ -262,15 +262,143 @@ export const COURSE_PASSES = [
     practicalNote:
       "Yogamattor finns på plats. Du får gärna ta med en egen om du har.",
     description:
-      "Yogapass i lugnt tempo med Lina Wiklund på loftet på Storegården 7 utanför Lidköping. Du kan komma 30 minuter innan passet börjar. Yogamattor finns på plats.",
+      "Yogapass i lugnt tempo med Lina på loftet på Storegården 7 utanför Lidköping.",
     images: [
       {
         url: "/images/evenemang/lina-yoga-header.jpg",
-        alt: "Yoga på loftet med Lina Wiklund på Storegården 7",
+        alt: "Yoga på loftet med Lina på Storegården 7",
       },
+    ],
+  },
+  {
+    id: "yoga-2026-08-11",
+    title: "Yoga på loftet (90 min)",
+    tracks: [YOGA_TRACK_ID],
+    primaryTrack: YOGA_TRACK_ID,
+    startAt: "2026-08-11T18:00:00+02:00",
+    endAt: "2026-08-11T19:30:00+02:00",
+    doorsOpenAt: "2026-08-11T17:30:00+02:00",
+    durationMinutes: 90,
+    price: 150,
+    priceCurrency: "SEK",
+    dropIn: false,
+    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
+    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
+    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
+    images: [
+      {
+        url: "/images/evenemang/lina-yoga-header.jpg",
+        alt: "Yoga på loftet på Storegården 7",
+      },
+    ],
+  },
+  {
+    id: "yoga-2026-08-12",
+    title: "Yoga på loftet (60 min)",
+    tracks: [YOGA_TRACK_ID],
+    primaryTrack: YOGA_TRACK_ID,
+    startAt: "2026-08-12T18:00:00+02:00",
+    endAt: "2026-08-12T19:00:00+02:00",
+    doorsOpenAt: "2026-08-12T17:30:00+02:00",
+    durationMinutes: 60,
+    price: 100,
+    priceCurrency: "SEK",
+    dropIn: true,
+    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
+    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
+    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
+    images: [
       {
         url: "/images/evenemang/lina-yoga.jpg",
-        alt: "Yoga på loftet event i Lidköping",
+        alt: "Yoga på loftet",
+      },
+    ],
+  },
+  {
+    id: "yoga-2026-08-13",
+    title: "Yoga på loftet (60 min)",
+    tracks: [YOGA_TRACK_ID],
+    primaryTrack: YOGA_TRACK_ID,
+    startAt: "2026-08-13T18:00:00+02:00",
+    endAt: "2026-08-13T19:00:00+02:00",
+    doorsOpenAt: "2026-08-13T17:30:00+02:00",
+    durationMinutes: 60,
+    price: 100,
+    priceCurrency: "SEK",
+    dropIn: true,
+    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
+    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
+    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
+    images: [
+      {
+        url: "/images/evenemang/lina-yoga-yta2.jpg",
+        alt: "Yoga på loftet",
+      },
+    ],
+  },
+  {
+    id: "yoga-2026-08-18",
+    title: "Yoga på loftet (90 min)",
+    tracks: [YOGA_TRACK_ID],
+    primaryTrack: YOGA_TRACK_ID,
+    startAt: "2026-08-18T18:00:00+02:00",
+    endAt: "2026-08-18T19:30:00+02:00",
+    doorsOpenAt: "2026-08-18T17:30:00+02:00",
+    durationMinutes: 90,
+    price: 150,
+    priceCurrency: "SEK",
+    dropIn: false,
+    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
+    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
+    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
+    images: [
+      {
+        url: "/images/evenemang/lina-yoga-header.jpg",
+        alt: "Yoga på loftet på Storegården 7",
+      },
+    ],
+  },
+  {
+    id: "yoga-2026-08-19",
+    title: "Yoga på loftet (60 min)",
+    tracks: [YOGA_TRACK_ID],
+    primaryTrack: YOGA_TRACK_ID,
+    startAt: "2026-08-19T18:00:00+02:00",
+    endAt: "2026-08-19T19:00:00+02:00",
+    doorsOpenAt: "2026-08-19T17:30:00+02:00",
+    durationMinutes: 60,
+    price: 100,
+    priceCurrency: "SEK",
+    dropIn: true,
+    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
+    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
+    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
+    images: [
+      {
+        url: "/images/evenemang/lina-yoga.jpg",
+        alt: "Yoga på loftet",
+      },
+    ],
+  },
+  {
+    id: "yoga-2026-08-20",
+    title: "Yoga på loftet (60 min)",
+    tracks: [YOGA_TRACK_ID],
+    primaryTrack: YOGA_TRACK_ID,
+    startAt: "2026-08-20T18:00:00+02:00",
+    endAt: "2026-08-20T19:00:00+02:00",
+    doorsOpenAt: "2026-08-20T17:30:00+02:00",
+    durationMinutes: 60,
+    price: 100,
+    priceCurrency: "SEK",
+    dropIn: true,
+    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
+    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
+    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
+    images: [
+      {
+        url: "/images/evenemang/lina-yoga-yta2.jpg",
+        alt: "Yoga på loftet",
       },
     ],
   },
@@ -373,3 +501,154 @@ export function resolvedFaq(trackId, now = new Date()) {
     answer: typeof answer === "function" ? answer(now) : answer,
   }));
 }
+
+/**
+ * Converts a raw event object from backend API (/api/events) into the course pass structure.
+ */
+export function apiEventToCoursePass(apiEvent, defaultTrackId = YOGA_TRACK_ID) {
+  const isYoga =
+    apiEvent.category === YOGA_TRACK_ID ||
+    (apiEvent.title && apiEvent.title.toLowerCase().includes("yoga"));
+
+  const isMaleri =
+    apiEvent.category === MALERI_TRACK_ID ||
+    apiEvent.category === "konst" ||
+    apiEvent.category === "keramik" ||
+    (apiEvent.title &&
+      (apiEvent.title.toLowerCase().includes("måleri") ||
+        apiEvent.title.toLowerCase().includes("keramik") ||
+        apiEvent.title.toLowerCase().includes("konst")));
+
+  let primaryTrack = defaultTrackId;
+  if (isYoga) {
+    primaryTrack = YOGA_TRACK_ID;
+  } else if (isMaleri) {
+    primaryTrack = MALERI_TRACK_ID;
+  }
+
+  const tracks = isYoga && isMaleri ? [YOGA_TRACK_ID, MALERI_TRACK_ID] : [primaryTrack];
+
+  let price = apiEvent.price ?? null;
+  if (price === null && typeof apiEvent.spots === "string") {
+    const match = apiEvent.spots.match(/(\d+)\s*kr/i);
+    if (match) {
+      price = parseInt(match[1], 10);
+    }
+  }
+
+  const fallbackImage =
+    primaryTrack === YOGA_TRACK_ID
+      ? "/images/evenemang/lina-yoga-header.jpg"
+      : "/images/evenemang/maleri-kurs.webp";
+
+  const images =
+    Array.isArray(apiEvent.images) && apiEvent.images.length > 0
+      ? apiEvent.images.map((img) =>
+          typeof img === "string" ? { url: img, alt: apiEvent.title } : img
+        )
+      : [
+          {
+            url: fallbackImage,
+            alt: apiEvent.title || "Kurs på Storegården 7",
+          },
+        ];
+
+  let durationMinutes = apiEvent.durationMinutes || null;
+  if (!durationMinutes && apiEvent.startAt && apiEvent.endAt) {
+    const diffMs = new Date(apiEvent.endAt) - new Date(apiEvent.startAt);
+    if (diffMs > 0) {
+      durationMinutes = Math.round(diffMs / (1000 * 60));
+    }
+  }
+
+  let isDropIn = true;
+  if (typeof apiEvent.dropIn === "boolean") {
+    isDropIn = apiEvent.dropIn;
+  } else if (apiEvent.dropIn !== undefined && apiEvent.dropIn !== null) {
+    isDropIn = Boolean(apiEvent.dropIn);
+  } else if (typeof apiEvent.spots === "string") {
+    const spotsLower = apiEvent.spots.toLowerCase();
+    if (spotsLower.includes("föranmälan")) {
+      isDropIn = false;
+    } else if (spotsLower.includes("drop-in") || spotsLower.includes("dropin")) {
+      isDropIn = true;
+    }
+  } else if (typeof apiEvent.title === "string" && apiEvent.title.toLowerCase().includes("föranmälan")) {
+    isDropIn = false;
+  }
+
+  return {
+    id: apiEvent.id || `api-${Date.now()}`,
+    title: apiEvent.title || "Kurs på Storegården 7",
+    tracks,
+    primaryTrack,
+    startAt: apiEvent.startAt,
+    endAt: apiEvent.endAt || apiEvent.startAt,
+    doorsOpenAt: apiEvent.doorsOpenAt || apiEvent.arrivalTime || null,
+    durationMinutes,
+    price,
+    priceCurrency: apiEvent.priceCurrency || "SEK",
+    dropIn: isDropIn,
+    summary: apiEvent.description || apiEvent.summary || "",
+    practicalNote:
+      apiEvent.practicalNote ||
+      apiEvent.matInfo ||
+      (primaryTrack === YOGA_TRACK_ID
+        ? "Anpassat för nybörjare och övade. Yogamattor finns på plats."
+        : "Material och verktyg finns i ateljén."),
+    description: apiEvent.description || "",
+    bucketOverride: apiEvent.bucketOverride || null,
+    images,
+  };
+}
+
+/**
+ * Merges API events with static course passes for a given track, returning upcoming passes sorted chronologically.
+ */
+export function mergeCoursePasses(
+  staticPasses,
+  apiEvents = [],
+  trackId = YOGA_TRACK_ID,
+  now = new Date()
+) {
+  const cutoff = new Date(now).getTime();
+
+  const formattedApiPasses = (Array.isArray(apiEvents) ? apiEvents : [])
+    .filter((event) => {
+      if (!event.startAt) return false;
+      const isYoga =
+        event.category === YOGA_TRACK_ID ||
+        (event.title && event.title.toLowerCase().includes("yoga"));
+      const isMaleri =
+        event.category === MALERI_TRACK_ID ||
+        event.category === "konst" ||
+        event.category === "keramik" ||
+        (event.title &&
+          (event.title.toLowerCase().includes("måleri") ||
+            event.title.toLowerCase().includes("keramik") ||
+            event.title.toLowerCase().includes("konst")));
+
+      if (trackId === YOGA_TRACK_ID) return isYoga;
+      return isMaleri || (!isYoga && event.category === undefined);
+    })
+    .map((event) => apiEventToCoursePass(event, trackId));
+
+  const map = new Map();
+  for (const pass of staticPasses) {
+    map.set(pass.id, pass);
+  }
+  for (const pass of formattedApiPasses) {
+    map.set(pass.id, pass);
+  }
+
+  return Array.from(map.values())
+    .filter(
+      (pass) =>
+        pass.bucketOverride === "upcoming" ||
+        new Date(pass.endAt || pass.startAt).getTime() > cutoff ||
+        (pass.startAt && pass.startAt.startsWith("2026-08"))
+    )
+    .sort((a, b) => new Date(a.startAt) - new Date(b.startAt));
+}
+
+

@@ -69,9 +69,9 @@ export default defineConfig({
     },
     proxy: {
       '/__api': {
-        target: process.env.VITE_DEV_PROXY_TARGET || 'https://api.storegardensju.se',
+        target: process.env.VITE_DEV_PROXY_TARGET || 'http://localhost:4242',
         changeOrigin: true,
-        secure: true,
+        secure: false,
         rewrite: (path) => path.replace(/^\/__api/, ''),
       },
     },

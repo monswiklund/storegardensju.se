@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Mail, Palette, Sparkles, Flame, Users } from "lucide-react";
 import CreativeWorkshopsSection from "../features/creation/CreativeWorkshopsSection.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
@@ -16,15 +16,16 @@ import {
 } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
+import { fetchPublicEvents } from "../services/eventsService.js";
 import {
   COURSE_LOCATION,
+  COURSE_PASSES,
   MALERI_TRACK_ID,
   TRACKS,
   formatPassDate,
-  nextPass,
+  mergeCoursePasses,
   pastPasses,
   resolvedFaq,
-  upcomingPasses,
 } from "../data/courseEvents.js";
 import "./ArtPage.css";
 
@@ -33,17 +34,12 @@ import "./ArtPage.css";
 // client-side as in the prerendered HTML.
 const KONST_JSONLD = activeJsonLd(seoMeta.kurserKonst);
 
-const UPCOMING_PASSES = upcomingPasses(MALERI_TRACK_ID);
 const PAST_PASSES = pastPasses(MALERI_TRACK_ID);
-const NEXT_PASS = nextPass(MALERI_TRACK_ID);
 const FAQ = resolvedFaq(MALERI_TRACK_ID);
 
 const MALERI_TRACK = TRACKS[MALERI_TRACK_ID];
 const INSTRUCTOR = MALERI_TRACK.instructor;
 const CONTACT_EMAIL = INSTRUCTOR.email;
-const CONTACT_SUBJECT = NEXT_PASS
-  ? `Fråga om ${NEXT_PASS.title} ${formatPassDate(NEXT_PASS)}`
-  : "Förfrågan: Workshop eller kurs på Storegården 7";
 
 // The dash rail on the right: how many sections the page has and where you are.
 // Module-level for a stable array reference (ScrollSpyNav keys its listener on
@@ -65,74 +61,113 @@ const SPY_SECTIONS = [
 const SPY_OFFSET = 130;
 
 function ArtPage() {
+  const [showMailFallback, setShowMailFallback] = useState(false);
+  const [apiEvents, setApiEvents] = useState([]);
+  const onContactClick = () => setShowMailFallback(true);
+
+  useEffect(() => {
+    let active = true;
+    fetchPublicEvents()
+      .then((data) => {
+        if (!active) return;
+        if (Array.isArray(data?.upcoming)) {
+          setApiEvents(data.upcoming);
+        }
+      })
+      .catch(() => {
+        // Fall back to static passes on network error
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const upcomingPassesList = mergeCoursePasses(
+    COURSE_PASSES.filter((p) => p.tracks.includes(MALERI_TRACK_ID)),
+    apiEvents,
+    MALERI_TRACK_ID
+  );
+
+  const nextPassItem = upcomingPassesList[0] || null;
+
+  const contactSubject = nextPassItem
+    ? `Fråga om ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
+    : "Förfrågan: Workshop eller kurs på Storegården 7";
+
   useSeo({
     ...seoMeta.kurserKonst,
     jsonLd: KONST_JSONLD.length > 0 ? KONST_JSONLD : undefined,
   });
-  const [showMailFallback, setShowMailFallback] = useState(false);
-  const onContactClick = () => setShowMailFallback(true);
 
   const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (!element) return;
-    const y =
-      element.getBoundingClientRect().top + window.scrollY - SPY_OFFSET;
-    window.scrollTo({ top: y, behavior: "smooth" });
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
     <div className="art-page">
       <ScrollSpyNav sections={SPY_SECTIONS} offset={SPY_OFFSET} />
 
-      <main role="main" id="main-content">
-        {/* Parallax Hero Section */}
-        <section
-          id="art-hero"
-          className="art-hero"
-          style={{ backgroundImage: "url('/images/portfolio/ann-2.webp')" }}
-          aria-labelledby="art-heading"
-        >
-          <div className="art-hero__inner">
-            <span className="art-eyebrow">Ateljén på Storegården 7</span>
-            <div className="section-ornament" aria-hidden="true" style={{ color: "var(--accent-color)" }}>
-              <span className="section-ornament-line" style={{ background: "var(--accent-color)" }}></span>
-              <Palette size={20} />
-              <span className="section-ornament-line" style={{ background: "var(--accent-color)" }}></span>
+      <main id="main-content">
+        {/* Hero Section */}
+        <section className="art-hero" id="art-hero">
+          <div className="art-hero__bg" />
+          <div className="art-hero__overlay" />
+
+          <div className="art-hero__content">
+            <span className="art-hero__eyebrow">
+              <Sparkles size={16} aria-hidden="true" />
+              Gårdsateljén på Storegården 7
+            </span>
+
+            <h1 className="art-hero__heading">Måleri & keramik</h1>
+
+            <p className="art-hero__subheading">
+              Kurser i akvarell, akryl och lera i inspirerande miljö på gården
+              utanför Lidköping. Inga förkunskaper krävs.
+            </p>
+
+            <div className="art-hero__actions">
+              <button
+                type="button"
+                className="art-btn art-btn--primary"
+                onClick={() => scrollToSection("art-courses-section")}
+              >
+                Se kommande kurser
+              </button>
+              <button
+                type="button"
+                className="art-btn art-btn--secondary"
+                onClick={() => scrollToSection("art-cta-section")}
+              >
+                Boka för egen grupp
+              </button>
             </div>
-            {/* Same wording as seoMeta.kurserKonst.staticContent.h1 - the prerendered
-                shell must not say something the page then contradicts. */}
-            <h1 id="art-heading">Skapande — måleri &amp; keramik i Lidköping</h1>
-            <p>Kurser i målning och keramik med konstnären {INSTRUCTOR.name} i gårdsateljén på Storegården 7, {COURSE_LOCATION.travelNote}</p>
-            <button
-              onClick={() => scrollToSection("art-cta-section")}
-              className="art-button art-button--primary"
-            >
-              <Sparkles size={18} />
-              Boka en workshop
-            </button>
           </div>
 
-          {/* Organic edge into the white band below - same wave geometry as
-              SectionDivider, drawn on top of the photo instead of beside it. */}
-          <svg
-            className="art-hero__curve"
-            viewBox="0 0 1200 48"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path
-              d="M0,24 C300,42 450,6 600,24 C750,42 900,6 1200,24 L1200,48 L0,48 Z"
-              fill="currentColor"
-            />
-          </svg>
+          <div className="art-hero__wave">
+            <svg
+              viewBox="0 0 1200 48"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M0,24 C300,42 450,6 600,24 C750,42 900,6 1200,24 L1200,48 L0,48 Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
         </section>
 
         {/* Course hub for maleri & keramik: dated passes as anchored sections on
             this one URL, mirroring /kurser/yoga for yoga. Separate URLs per course
             date would only produce thin pages that expire. */}
         <div id="art-courses-section">
-          {UPCOMING_PASSES.length === 0 ? (
+          {upcomingPassesList.length === 0 ? (
             <NoUpcomingSection
               trackId={MALERI_TRACK_ID}
               background="white"
@@ -140,14 +175,14 @@ function ArtPage() {
               body={`Just nu har vi ingen kurs med fast datum i kalendern. Nya tillfällen läggs upp här — och du kan alltid höra av dig till ${INSTRUCTOR.name} för att boka en egen kurs i måleri eller keramik för din grupp.`}
             />
           ) : (
-            UPCOMING_PASSES.map((pass) => (
+            upcomingPassesList.map((pass) => (
               <PassSection
                 key={pass.id}
                 pass={pass}
                 trackId={MALERI_TRACK_ID}
                 background="white"
                 variant="split-reverse"
-                contactSubject={CONTACT_SUBJECT}
+                contactSubject={contactSubject}
                 onContactClick={onContactClick}
                 showMailFallback={showMailFallback}
               />
@@ -324,7 +359,7 @@ function ArtPage() {
           <PageSection background="white" spacing="default">
             <FadeInSection>
               <HomeServicesSection
-                excludeId="skapande"
+                excludeId="kurser-konst"
                 title="Se mer på gården"
                 eyebrow="MER ATT SE & GÖRA"
               />

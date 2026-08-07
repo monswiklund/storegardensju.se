@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node /tmp/carousel-clickstorm.mjs)",
+      "Bash(curl -s --max-time 15 https://api.storegardensju.se/api/events)",
+      "Bash(python3 -)"
+    ]
+  }
+}

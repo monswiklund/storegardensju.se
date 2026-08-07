@@ -67,6 +67,8 @@ V31: While a gallery lightbox is open, browser/system Back closes it without cha
 V32: React 19.2 effect events use current callback/state without listener re-registration; ref-as-prop preserves rendered behavior.
 V33: Dev startup re-optimizes Vite dependencies after React upgrades; context providers retain cross-major `.Provider` syntax so stale runtimes cannot interpret provider children as consumers.
 V34: While a public past-event or past-pass overlay is open, browser/system Back closes it without changing route; later Back retains normal route history.
+V35: Gallery files remain local and removable after selection until an explicit upload action; large batches are paced and retry server-declared rate limits instead of immediately failing.
+V36: Closing an admin page with staged or active gallery uploads warns the user; interruption metadata survives reload without persisting image contents, completed images remain durable, and stale recovery state clears after success or acknowledgement.
 
 ## §T Tasks
 id|status|task|cites
@@ -105,6 +107,9 @@ T32|x|frontend: integrate gallery lightbox with browser history + hook regressio
 T33|x|frontend: adopt React 19.2 effect events + ref-as-prop; update hooks lint; regression test listener stability|V10,V14,V16,V18,V24,V30,V32
 T34|x|frontend: force Vite dependency re-optimization on dev start; restore cross-major context `.Provider`; regression test|V30,V33
 T35|x|frontend: integrate home and course-recap overlays with browser history + regression tests|V18,V34
+T36|x|frontend: stage gallery upload selections, add explicit batch start, pace requests, and retry 429 responses|V13,V21,V35
+T37|x|frontend: warn before abandoning gallery batches and persist a metadata-only interruption journal|V21,V35,V36
+T38|x|frontend: make gallery selection rail complete and add confirmed rate-safe bulk deletion|V13,V15,V21
 
 ## §B Bugs
 id|date|cause|fix
@@ -130,3 +135,6 @@ B19|2026-07-26|Vite dev server kept React 18.3.1 optimized cache after React 19 
 B20|2026-07-26|notification admin styling used green border values and violated the neutral edge policy|V25
 B21|2026-07-26|notification tests combined promise-driven rendering with fake timers and timed out before async queries settled|use real timers for promise-driven component tests
 B22|2026-07-27|home past-event query replaced the current entry and course recap overlays used local state only, so Back navigated away instead of dismissing the overlay|V34
+B23|2026-07-29|gallery file selection immediately started large batches and treated retryable 429 responses as final upload failures|V35
+B24|2026-07-29|staged and active gallery batches had no unload warning or interruption journal, so a closed browser gave no recovery guidance|V36
+B25|2026-07-29|gallery publish test still targeted removed card-level move controls even though ordering has its own workspace suite|scope publish test to selection actions; keep ordering in admin-gallery-order.spec.js

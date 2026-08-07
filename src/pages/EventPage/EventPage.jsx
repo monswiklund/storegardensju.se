@@ -377,7 +377,7 @@ function EventPage() {
           <PageSection background="white" spacing="none">
             <FadeInSection>
               <HomeServicesSection
-                excludeId="event-fest"
+                excludeId="event"
                 title="Utforska mer på gården"
                 eyebrow="MER HOS OSS"
               />

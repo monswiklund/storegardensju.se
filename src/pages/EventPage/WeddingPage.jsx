@@ -8,6 +8,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { PageSection, ScrollSpyNav, SectionDivider } from "../../components";
+import { HomeServicesSection } from "../../features/home";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import {
   WEDDING_FAQ,
@@ -328,7 +329,21 @@ function WeddingPage() {
           </PageSection>
         </div>
 
-        <SectionDivider above="green" below="alt" variant="hill" />
+        <SectionDivider above="green" below="white" variant="hill" />
+
+        <div id="wedding-services-recommendation">
+          <PageSection background="white" spacing="none">
+            <FadeInSection>
+              <HomeServicesSection
+                excludeId="brollop"
+                title="Utforska mer på gården"
+                eyebrow="MER HOS OSS"
+              />
+            </FadeInSection>
+          </PageSection>
+        </div>
+
+        <SectionDivider above="white" below="alt" variant="wave" />
       </main>
     </div>
   );

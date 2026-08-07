@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowDown } from "lucide-react";
 import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
@@ -13,19 +13,21 @@ import {
   OtherHubLink,
   PassSection,
   PastPassesSection,
+  YogaScheduleSection,
 } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
+import { fetchPublicEvents } from "../services/eventsService.js";
 import {
   COURSE_LOCATION,
+  COURSE_PASSES,
   TRACKS,
   YOGA_TRACK_ID,
   formatPassDate,
-  nextPass,
+  mergeCoursePasses,
   passAnchor,
   pastPasses,
   resolvedFaq,
-  upcomingPasses,
 } from "../data/courseEvents.js";
 import "./KurserPages.css";
 import "../features/gallery/ImageGallery/Gallery.css";
@@ -40,34 +42,11 @@ import maleriKursImg from "/images/evenemang/maleri-kurs.webp";
 // the same date gating runs client-side as in the prerendered HTML.
 const KURSER_JSONLD = activeJsonLd(seoMeta.kurserYoga);
 
-// Evaluated once per page load. The passes are known at build time, so there is
-// nothing to re-render on - and a stable value keeps useSeo from re-running.
-const UPCOMING_PASSES = upcomingPasses(YOGA_TRACK_ID);
 const PAST_PASSES = pastPasses(YOGA_TRACK_ID);
-const NEXT_PASS = nextPass(YOGA_TRACK_ID);
 const FAQ = resolvedFaq(YOGA_TRACK_ID);
 
 const YOGA_TRACK = TRACKS[YOGA_TRACK_ID];
 const INSTRUCTOR = YOGA_TRACK.instructor;
-const CONTACT_SUBJECT = NEXT_PASS
-  ? `Fråga om ${NEXT_PASS.title} ${formatPassDate(NEXT_PASS)}`
-  : "Fråga om yoga på Storegården 7";
-
-// The dash rail on the right. Module-level so the array reference is stable
-// across renders (ScrollSpyNav keys its scroll listener on it). Ids that are
-// not in the DOM (no upcoming pass, no past passes) are skipped at runtime.
-const SPY_SECTIONS = [
-  { id: "kurser-hero", label: "Start" },
-  ...(NEXT_PASS
-    ? [{ id: passAnchor(NEXT_PASS), label: "Nästa pass" }]
-    : [{ id: "kommande", label: "Kommande" }]),
-  { id: "om-lina", label: `Om ${INSTRUCTOR.name.split(" ")[0]}` },
-  { id: "fragor-och-svar", label: "Frågor" },
-  { id: "gardens-atmosfar", label: "Bilder" },
-  { id: "hitta-hit", label: "Hitta hit" },
-  { id: "tidigare-pass", label: "Tidigare" },
-  { id: "kontakt", label: "Kontakt" },
-];
 
 // Navbar (60px) plus the section subnav (48px) - the same clearance the anchors
 // use, so a dot click lands with the heading visible.
@@ -102,7 +81,54 @@ const RECAP_IMAGES = [
 // hubs do not read as one template with the nouns swapped.
 function KurserPage() {
   const [showMailFallback, setShowMailFallback] = useState(false);
+  const [apiEvents, setApiEvents] = useState([]);
   const onContactClick = () => setShowMailFallback(true);
+
+  useEffect(() => {
+    let active = true;
+    fetchPublicEvents()
+      .then((data) => {
+        if (!active) return;
+        if (Array.isArray(data?.upcoming)) {
+          setApiEvents(data.upcoming);
+        }
+      })
+      .catch(() => {
+        // Fall back to static passes on network error
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const upcomingPassesList = mergeCoursePasses(
+    COURSE_PASSES.filter((p) => p.tracks.includes(YOGA_TRACK_ID)),
+    apiEvents,
+    YOGA_TRACK_ID
+  );
+
+  const nextPassItem =
+    upcomingPassesList.find((p) => new Date(p.endAt || p.startAt).getTime() >= Date.now()) ||
+    upcomingPassesList[0] ||
+    null;
+
+  const contactSubject = nextPassItem
+    ? `Fråga om ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
+    : "Fråga om yoga på Storegården 7";
+
+  const spySections = [
+    { id: "kurser-hero", label: "Start" },
+    ...(nextPassItem
+      ? [{ id: passAnchor(nextPassItem), label: "Nästa pass" }]
+      : [{ id: "kommande", label: "Kommande" }]),
+    { id: "om-lina", label: `Om ${INSTRUCTOR.name.split(" ")[0]}` },
+    { id: "fragor-och-svar", label: "Frågor" },
+    { id: "gardens-atmosfar", label: "Bilder" },
+    { id: "hitta-hit", label: "Hitta hit" },
+    { id: "tidigare-pass", label: "Tidigare" },
+    { id: "kontakt", label: "Kontakt" },
+  ];
 
   useSeo({
     ...seoMeta.kurserYoga,
@@ -124,7 +150,7 @@ function KurserPage() {
 
   return (
     <div className="kurser-page">
-      <ScrollSpyNav sections={SPY_SECTIONS} offset={SPY_OFFSET} />
+      <ScrollSpyNav sections={spySections} offset={SPY_OFFSET} />
 
       <main id="main-content">
         <header className="kurser-hero" id="kurser-hero">
@@ -136,22 +162,18 @@ function KurserPage() {
           />
           <div className="kurser-hero__overlay" />
           <div className="kurser-hero__inner">
-            {NEXT_PASS && (
+            {nextPassItem && (
               <div className="kurser-hero__badge">
                 <span className="kurser-hero__badge-pulse" />
-                <span>Nästa tillfälle: {formatPassDate(NEXT_PASS)}</span>
+                <span>Nästa tillfälle: {formatPassDate(nextPassItem)}</span>
               </div>
             )}
-            <h1>Yoga på loftet</h1>
-            <p>
-              Yoga i lugnt tempo med {INSTRUCTOR.name} på loftet på Storegården 7,{" "}
-              {COURSE_LOCATION.travelNote}.
-            </p>
+            <h1>Yoga</h1>
             <a
               className="kurser-hero__link"
-              href={NEXT_PASS ? `#${passAnchor(NEXT_PASS)}` : "#kontakt"}
+              href={nextPassItem ? `#${passAnchor(nextPassItem)}` : "#kontakt"}
             >
-              {NEXT_PASS ? "Se nästa pass" : "Hör av dig"}
+              {nextPassItem ? "Se nästa pass" : "Hör av dig"}
               <ArrowDown size={16} aria-hidden="true" />
             </a>
           </div>
@@ -159,28 +181,23 @@ function KurserPage() {
 
         {/* No divider straight after the hero: the photo already closes the
             section, and a curve would only lay a pale strip across it. */}
-        {UPCOMING_PASSES.length === 0 && (
+        {upcomingPassesList.length === 0 ? (
           <NoUpcomingSection
             trackId={YOGA_TRACK_ID}
             background="alt"
             heading="Inget pass inbokat just nu"
             body={`Vi har för tillfället inget yogapass i kalendern. Håll utkik här, eller hör av dig till ${INSTRUCTOR.name} så berättar hon när nästa tillfälle släpps.`}
           />
-        )}
-
-        {UPCOMING_PASSES.map((pass) => (
-          <PassSection
-            key={pass.id}
-            pass={pass}
+        ) : (
+          <YogaScheduleSection
+            passes={upcomingPassesList}
             trackId={YOGA_TRACK_ID}
             background="alt"
-            variant="split"
-            sticky
-            contactSubject={CONTACT_SUBJECT}
+            contactSubject={contactSubject}
             onContactClick={onContactClick}
             showMailFallback={showMailFallback}
           />
-        ))}
+        )}
 
         <SectionDivider above="alt" below="white" variant="valley" />
 
@@ -236,7 +253,7 @@ function KurserPage() {
         <DirectionsSection
           background="white"
           variant="split-reverse"
-          description={`Yogan hålls på loftet på ${COURSE_LOCATION.name} i ${COURSE_LOCATION.locality}, ${COURSE_LOCATION.travelNote}. Kör mot Rackeby och följ skyltningen till gården — det finns gott om parkering på grusplanen intill ladan.`}
+          description={`Yogan hålls på loftet på ${COURSE_LOCATION.name} i ${COURSE_LOCATION.locality}, ${COURSE_LOCATION.travelNote}. Kör mot Rackeby och följ skyltningen tillgården — det finns gott om parkering på grusplanen intill ladan.`}
         />
 
         <SectionDivider above="white" below="alt" variant="wave" />
@@ -244,7 +261,7 @@ function KurserPage() {
         <PastPassesSection
           passes={PAST_PASSES}
           trackId={YOGA_TRACK_ID}
-          heading="Tidigare pass på gården"
+          heading="Tidigare pass pågården"
           background="alt"
           variant="timeline"
         />
@@ -258,7 +275,7 @@ function KurserPage() {
           heading="Frågor om yogan?"
           body={`Hör av dig till ${INSTRUCTOR.name} — hon svarar gärna på frågor om passen, nivån eller vad du behöver ta med.`}
           email={INSTRUCTOR.email}
-          subject={CONTACT_SUBJECT}
+          subject={contactSubject}
           background="green"
           variant="split"
           onContactClick={onContactClick}

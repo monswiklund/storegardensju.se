@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("admin can reorder and publish gallery images through stubbed APIs", async ({
+test("admin can publish and safely delete selected gallery images", async ({
   page,
 }) => {
   const state = {
@@ -88,6 +88,19 @@ test("admin can reorder and publish gallery images through stubbed APIs", async 
 
   await page.route(/\/admin\/gallery\/images\/(img_1|img_2)$/, async (route) => {
     const id = route.request().url().split("/").pop();
+    if (route.request().method() === "DELETE") {
+      state.gallery.categories[0].images =
+        state.gallery.categories[0].images.filter((image) => image.id !== id);
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: true,
+          data: { deleted: true },
+        }),
+      });
+      return;
+    }
     const payload = JSON.parse(route.request().postData() || "{}");
     state.gallery.categories[0].images = state.gallery.categories[0].images.map((image) =>
       image.id === id
@@ -110,17 +123,27 @@ test("admin can reorder and publish gallery images through stubbed APIs", async 
   await page.goto("/admin?view=gallery");
 
   await expect(page.getByRole("heading", { name: "Galleriöversikt" })).toBeVisible();
-  // Move controls live on the image card itself so touch users can reorder.
-  await page
-    .locator(".admin-gallery-image-move")
-    .first()
-    .getByRole("button", { name: "Flytta ner" })
-    .click();
-  await expect(page.getByText("Bild flyttad ner.")).toBeVisible();
-  await page.getByRole("button", { name: "Spara ändringar" }).click();
-  await expect(page.getByText(/Ändringar sparade/)).toBeVisible();
 
   await page.getByLabel(/Markera alla/).check();
   await page.getByRole("button", { name: "Publicera", exact: true }).click();
   await expect(page.getByText("Bilder publicerade.")).toBeVisible();
+
+  await page.getByLabel("Markera bild").first().click();
+  const actionRail = page.getByRole("region", {
+    name: "Åtgärder för markering",
+  });
+  await expect(actionRail).toContainText("1 av 2 bilder valda");
+  await actionRail
+    .getByRole("button", { name: "Markera alla", exact: true })
+    .click();
+  await expect(actionRail).toContainText("2 av 2 bilder valda");
+
+  page.once("dialog", (dialog) => dialog.dismiss());
+  await actionRail.getByRole("button", { name: "Ta bort" }).click();
+  await expect(page.locator(".admin-gallery-image-card")).toHaveCount(2);
+
+  page.once("dialog", (dialog) => dialog.accept());
+  await actionRail.getByRole("button", { name: "Ta bort" }).click();
+  await expect(page.getByText("2 bilder borttagna.")).toBeVisible();
+  await expect(page.locator(".admin-gallery-image-card")).toHaveCount(0);
 });

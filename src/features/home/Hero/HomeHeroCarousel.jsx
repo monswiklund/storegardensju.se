@@ -1,11 +1,24 @@
 import { useEffect, useRef, useMemo, useState } from "react";
 import "./Hero.css";
-import galleryOrder from "../../../data/gallery-order.json";
 import { fetchGalleryCategories } from "../../../services/galleryService";
-import { normalizeGalleryData } from "../../gallery/normalizeGalleryData";
+import {
+  isAllGalleryCategory,
+  normalizeGalleryData,
+} from "../../gallery/normalizeGalleryData";
 
 // Auto-scroll speed (px/frame ~60fps). Idle time before resume after interaction.
 const SCROLL_SPEED = 0.25;
+const HOME_CAROUSEL_IMAGE_LIMIT = 20;
+
+export const getHomeCarouselSlides = (galleryData) => {
+  const normalized = normalizeGalleryData(galleryData);
+  const allImagesCategory = normalized.categories.find(isAllGalleryCategory);
+
+  return (allImagesCategory?.images || [])
+    .map((image) => image.path)
+    .filter(Boolean)
+    .slice(0, HOME_CAROUSEL_IMAGE_LIMIT);
+};
 
 const HomeHeroCarousel = () => {
   const scrollerRef = useRef(null);
@@ -31,28 +44,10 @@ const HomeHeroCarousel = () => {
     };
   }, []);
 
-  // Get featured images from gallery data
-  const slides = useMemo(() => {
-    const normalized = normalizeGalleryData(galleryData);
-    const featuredList =
-      normalized.featured || galleryOrder?.featured || [];
-    if (!featuredList || !normalized?.categories) return [];
-
-    const allaCategory = normalized.categories.find((c) => c.id === "alla");
-    if (!allaCategory) return [];
-
-    return featuredList
-      .map((featuredId) => {
-        const img = allaCategory.images.find(
-          (i) =>
-            i.filename === featuredId ||
-            i.id === featuredId ||
-            i.storageKey === featuredId
-        );
-        return img ? img.path : null;
-      })
-      .filter(Boolean);
-  }, [galleryData]);
+  const slides = useMemo(
+    () => getHomeCarouselSlides(galleryData),
+    [galleryData]
+  );
 
   useEffect(() => {
     addAnimation();

@@ -14,6 +14,7 @@ import {
   Link as LinkIcon,
   ListOrdered,
   Search,
+  Trash2,
 } from "lucide-react";
 import {
   AdminActionRail,
@@ -35,6 +36,8 @@ const UPLOAD_STATUS_PENDING = "pending";
 const UPLOAD_STATUS_UPLOADING = "uploading";
 const UPLOAD_STATUS_DONE = "done";
 const UPLOAD_STATUS_FAILED = "failed";
+const UPLOAD_MIN_START_INTERVAL_MS = 1000;
+const GALLERY_UPLOAD_RECOVERY_KEY = "admin-gallery-upload-recovery-v1";
 
 const UPLOAD_STATUS_LABELS = {
   [UPLOAD_STATUS_PENDING]: "Väntar",
@@ -46,6 +49,38 @@ const UPLOAD_STATUS_LABELS = {
 const formatMaxUploadSize = () => `${Math.round(MAX_UPLOAD_BYTES / (1024 * 1024))} MB`;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const readUploadRecovery = () => {
+  try {
+    const raw = window.localStorage.getItem(GALLERY_UPLOAD_RECOVERY_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed?.files) && parsed.files.length > 0
+      ? parsed
+      : null;
+  } catch {
+    return null;
+  }
+};
+
+const writeUploadRecovery = (manifest) => {
+  try {
+    window.localStorage.setItem(
+      GALLERY_UPLOAD_RECOVERY_KEY,
+      JSON.stringify({ ...manifest, updatedAt: Date.now() })
+    );
+  } catch {
+    // Uploading still works if storage is unavailable.
+  }
+};
+
+const clearUploadRecovery = () => {
+  try {
+    window.localStorage.removeItem(GALLERY_UPLOAD_RECOVERY_KEY);
+  } catch {
+    // Uploading still works if storage is unavailable.
+  }
+};
 
 const slugify = (value) =>
   value
@@ -201,11 +236,16 @@ function AdminGallery({ adminKey }) {
   const [editingImageId, setEditingImageId] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState(IMAGE_FILTER_ALL);
+  const [interruptedUpload, setInterruptedUpload] = useState(readUploadRecovery);
+  const [stagedUploadFiles, setStagedUploadFiles] = useState([]);
+  const [stagedUploadCategoryId, setStagedUploadCategoryId] = useState("");
   const [uploadQueue, setUploadQueue] = useState([]);
   const [isDropActive, setIsDropActive] = useState(false);
   const [dragOverId, setDragOverId] = useState("");
   const feedbackTimerRef = useRef(null);
   const categoryPickerRef = useRef(null);
+  const stagedUploadSequenceRef = useRef(0);
+  const uploadRecoveryRef = useRef(null);
   // Anchor for shift-click range selection.
   const lastSelectedIdRef = useRef("");
 
@@ -495,8 +535,10 @@ function AdminGallery({ adminKey }) {
     };
   }, [activeCategory?.name, categories, selectedImageIds.size, sortedActiveImages.length]);
 
-  const loadGallery = useCallback(async () => {
+  const loadGallery = useCallback(async (preferredCategoryId = "") => {
     if (!adminKey) return;
+    const requestedCategoryId =
+      typeof preferredCategoryId === "string" ? preferredCategoryId : "";
     setLoading(true);
     setLoadError("");
     try {
@@ -504,6 +546,14 @@ function AdminGallery({ adminKey }) {
       setGalleryData(data || { categories: [] });
       setActiveCategoryId((prev) => {
         if (!data?.categories?.length) return "";
+        if (
+          requestedCategoryId &&
+          data.categories.some(
+            (category) => category.id === requestedCategoryId
+          )
+        ) {
+          return requestedCategoryId;
+        }
         if (prev && data.categories.some((category) => category.id === prev)) {
           return prev;
         }
@@ -533,6 +583,18 @@ function AdminGallery({ adminKey }) {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (stagedUploadFiles.length === 0 && !uploading) return undefined;
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [stagedUploadFiles.length, uploading]);
 
   useEffect(() => {
     if (!isCategoryMenuOpen) return undefined;
@@ -959,6 +1021,66 @@ function AdminGallery({ adminKey }) {
     }
   };
 
+  const handleBulkDelete = async () => {
+    const imageIds = Array.from(selectedImageIds);
+    if (imageIds.length === 0) return;
+
+    const confirmed = window.confirm(
+      `Ta bort ${imageIds.length} markerade ${
+        imageIds.length === 1 ? "bild" : "bilder"
+      } från galleriet?\n\nDetta går inte att ångra.`
+    );
+    if (!confirmed) return;
+
+    setSaving(true);
+    const failedIds = [];
+    try {
+      for (const imageId of imageIds) {
+        let attempts = 0;
+        while (attempts < 3) {
+          try {
+            await AdminService.deleteGalleryImage(adminKey, imageId);
+            break;
+          } catch (err) {
+            attempts += 1;
+            if (err?.status === 429 && attempts < 3) {
+              const waitSeconds =
+                Number.isFinite(Number(err?.retryAfter)) &&
+                Number(err.retryAfter) > 0
+                  ? Number(err.retryAfter)
+                  : 1;
+              await sleep(waitSeconds * 1000);
+              continue;
+            }
+            failedIds.push(imageId);
+            break;
+          }
+        }
+        // Keep the batch below the authenticated admin request rate.
+        await sleep(120);
+      }
+
+      await loadGallery(activeCategoryId);
+      if (failedIds.length === 0) {
+        setSelectedImageIds(new Set());
+        success(
+          `${imageIds.length} ${
+            imageIds.length === 1 ? "bild borttagen" : "bilder borttagna"
+          }.`
+        );
+      } else {
+        setSelectedImageIds(new Set(failedIds));
+        error(
+          `${imageIds.length - failedIds.length} borttagna, ${
+            failedIds.length
+          } kunde inte tas bort.`
+        );
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const applyImageUpdates = useCallback(
     async (updates) => {
       for (const update of updates) {
@@ -1105,8 +1227,49 @@ function AdminGallery({ adminKey }) {
       return true;
     });
 
-  const runUploadBatch = async (filesToUpload) => {
+  const runUploadStep = async (operation) => {
+    let attempts = 0;
+    while (attempts < 3) {
+      try {
+        return await operation();
+      } catch (err) {
+        attempts += 1;
+        if (err?.status === 429 && attempts < 3) {
+          const waitSeconds =
+            Number.isFinite(Number(err?.retryAfter)) &&
+            Number(err.retryAfter) > 0
+              ? Number(err.retryAfter)
+              : 1;
+          await sleep(waitSeconds * 1000);
+          continue;
+        }
+        throw err;
+      }
+    }
+    return null;
+  };
+
+  const runUploadBatch = async (
+    filesToUpload,
+    uploadCategoryId = activeCategoryId
+  ) => {
     if (!filesToUpload.length) return;
+    const uploadCategory = categories.find(
+      (category) => category.id === uploadCategoryId
+    );
+    uploadRecoveryRef.current = {
+      categoryId: uploadCategoryId,
+      categoryName: uploadCategory?.name || "vald kategori",
+      startedAt: Date.now(),
+      files: filesToUpload.map((file, index) => ({
+        key: `${index}-${file.name}`,
+        name: file.name,
+        size: file.size,
+        status: UPLOAD_STATUS_PENDING,
+      })),
+    };
+    writeUploadRecovery(uploadRecoveryRef.current);
+    setInterruptedUpload(null);
     setUploading(true);
     setUploadProgress(0);
     // The queue is keyed by position so identically named files stay distinct.
@@ -1120,6 +1283,15 @@ function AdminGallery({ adminKey }) {
       }))
     );
     const setQueueStatus = (index, status, reason = "") => {
+      if (uploadRecoveryRef.current) {
+        uploadRecoveryRef.current = {
+          ...uploadRecoveryRef.current,
+          files: uploadRecoveryRef.current.files.map((item, itemIndex) =>
+            itemIndex === index ? { ...item, status, reason } : item
+          ),
+        };
+        writeUploadRecovery(uploadRecoveryRef.current);
+      }
       setUploadQueue((prev) =>
         prev.map((item, itemIndex) =>
           itemIndex === index ? { ...item, status, reason } : item
@@ -1128,10 +1300,19 @@ function AdminGallery({ adminKey }) {
     };
     const failed = [];
     let completed = 0;
+    let lastUploadStartedAt = 0;
     for (const [fileIndex, file] of filesToUpload.entries()) {
+      const waitBeforeStart =
+        UPLOAD_MIN_START_INTERVAL_MS - (Date.now() - lastUploadStartedAt);
+      if (lastUploadStartedAt && waitBeforeStart > 0) {
+        await sleep(waitBeforeStart);
+      }
+      lastUploadStartedAt = Date.now();
       setQueueStatus(fileIndex, UPLOAD_STATUS_UPLOADING);
       try {
-        const uploadInfo = await AdminService.createGalleryUpload(adminKey, file);
+        const uploadInfo = await runUploadStep(() =>
+          AdminService.createGalleryUpload(adminKey, file)
+        );
 
         const title = file.name
           .replace(/\.[^/.]+$/, "")
@@ -1140,25 +1321,27 @@ function AdminGallery({ adminKey }) {
 
         const publicUrl =
           uploadInfo?.publicUrl || uploadInfo?.cdnUrl || uploadInfo?.assetUrl;
-        await AdminService.createGalleryImage(adminKey, {
-          categoryId: activeCategoryId,
-          // Also a member of Alla bilder so that view carries its own order.
-          categoryIds: allImagesCategoryId
-            ? [activeCategoryId, allImagesCategoryId]
-            : [activeCategoryId],
-          title,
-          alt: title,
-          uploadId: uploadInfo?.uploadId || "",
-          storageKey: uploadInfo?.storageKey || uploadInfo?.key,
-          url: publicUrl,
-          filename: uploadInfo?.filename || "",
-          originalFilename: file.name,
-          published: false,
-        });
+        await runUploadStep(() =>
+          AdminService.createGalleryImage(adminKey, {
+            categoryId: uploadCategoryId,
+            // Also a member of Alla bilder so that view carries its own order.
+            categoryIds: allImagesCategoryId
+              ? [uploadCategoryId, allImagesCategoryId]
+              : [uploadCategoryId],
+            title,
+            alt: title,
+            uploadId: uploadInfo?.uploadId || "",
+            storageKey: uploadInfo?.storageKey || uploadInfo?.key,
+            url: publicUrl,
+            filename: uploadInfo?.filename || "",
+            originalFilename: file.name,
+            published: false,
+          })
+        );
         setQueueStatus(fileIndex, UPLOAD_STATUS_DONE);
       } catch (err) {
         const reason = err?.message || "Okänt fel";
-        failed.push({ file, reason });
+        failed.push({ file, reason, categoryId: uploadCategoryId });
         setQueueStatus(fileIndex, UPLOAD_STATUS_FAILED, reason);
       } finally {
         completed += 1;
@@ -1171,6 +1354,8 @@ function AdminGallery({ adminKey }) {
     setUploadProgress(0);
 
     if (failed.length === 0) {
+      uploadRecoveryRef.current = null;
+      clearUploadRecovery();
       success("Uppladdning klar.");
     } else if (failed.length < filesToUpload.length) {
       error(`${failed.length} av ${filesToUpload.length} filer misslyckades.`);
@@ -1178,11 +1363,10 @@ function AdminGallery({ adminKey }) {
       error("Uppladdningen misslyckades. Försök igen.");
     }
 
-    await loadGallery();
+    await loadGallery(uploadCategoryId);
   };
 
-  /** Shared entry point for the file input, drag-and-drop and paste. */
-  const startUpload = async (files) => {
+  const stageUploadFiles = (files) => {
     if (!files.length) return;
     if (!activeCategoryId) {
       error("Välj en kategori innan uppladdning.");
@@ -1196,17 +1380,83 @@ function AdminGallery({ adminKey }) {
     const validFiles = validateUploadFiles(files);
     if (validFiles.length === 0) return;
 
+    if (
+      stagedUploadFiles.length > 0 &&
+      stagedUploadCategoryId !== activeCategoryId
+    ) {
+      const queuedCategory = categories.find(
+        (category) => category.id === stagedUploadCategoryId
+      );
+      error(
+        `Kön tillhör ${queuedCategory?.name || "en annan kategori"}. Ladda upp eller töm kön först.`
+      );
+      return;
+    }
+
     setFailedUploads([]);
-    await runUploadBatch(validFiles);
+    setUploadQueue([]);
+    setStagedUploadCategoryId(activeCategoryId);
+    const nextStagedFiles = [
+      ...stagedUploadFiles,
+      ...validFiles.map((file) => ({
+        key: `staged-${stagedUploadSequenceRef.current++}`,
+        file,
+      })),
+    ];
+    setStagedUploadFiles(nextStagedFiles);
+    writeUploadRecovery({
+      categoryId: activeCategoryId,
+      categoryName: activeCategory?.name || "vald kategori",
+      startedAt: Date.now(),
+      files: nextStagedFiles.map((item) => ({
+        key: item.key,
+        name: item.file.name,
+        size: item.file.size,
+        status: UPLOAD_STATUS_PENDING,
+      })),
+    });
+    setInterruptedUpload(null);
   };
 
-  const handleUpload = async (event) => {
+  const handleUpload = (event) => {
     const files = Array.from(event.target.files || []);
-    try {
-      await startUpload(files);
-    } finally {
-      event.target.value = "";
-    }
+    stageUploadFiles(files);
+    event.target.value = "";
+  };
+
+  const handleStartUpload = async () => {
+    if (stagedUploadFiles.length === 0 || uploading) return;
+    const files = stagedUploadFiles.map((item) => item.file);
+    const uploadCategoryId = stagedUploadCategoryId || activeCategoryId;
+    setStagedUploadFiles([]);
+    setStagedUploadCategoryId("");
+    await runUploadBatch(files, uploadCategoryId);
+  };
+
+  const handleRemoveStagedUpload = (key) => {
+    setStagedUploadFiles((prev) => {
+      const next = prev.filter((item) => item.key !== key);
+      if (next.length === 0) {
+        setStagedUploadCategoryId("");
+        clearUploadRecovery();
+      } else {
+        writeUploadRecovery({
+          categoryId: stagedUploadCategoryId,
+          categoryName:
+            categories.find(
+              (category) => category.id === stagedUploadCategoryId
+            )?.name || "vald kategori",
+          startedAt: Date.now(),
+          files: next.map((item) => ({
+            key: item.key,
+            name: item.file.name,
+            size: item.file.size,
+            status: UPLOAD_STATUS_PENDING,
+          })),
+        });
+      }
+      return next;
+    });
   };
 
   const handleDropZoneDragOver = (event) => {
@@ -1221,11 +1471,11 @@ function AdminGallery({ adminKey }) {
     setIsDropActive(false);
   };
 
-  const handleDropZoneDrop = async (event) => {
+  const handleDropZoneDrop = (event) => {
     if (!activeCategoryIsAssignable || uploading) return;
     event.preventDefault();
     setIsDropActive(false);
-    await startUpload(Array.from(event.dataTransfer?.files || []));
+    stageUploadFiles(Array.from(event.dataTransfer?.files || []));
   };
 
   return (
@@ -1534,7 +1784,7 @@ function AdminGallery({ adminKey }) {
               <div>
                 <h3>Uppladdning</h3>
                 <p className="admin-muted">
-                  Dra och släpp bilder här, eller välj filer. Bilder optimeras
+                  Välj bilder och granska kön innan du startar. Bilder optimeras
                   automatiskt till WebP (max 800x1063).
                 </p>
               </div>
@@ -1549,20 +1799,107 @@ function AdminGallery({ adminKey }) {
                       uploading || !activeCategoryId || !activeCategoryIsAssignable
                     }
                   />
+                  Välj bilder
+                </label>
+                <button
+                  type="button"
+                  className="admin-btn-primary admin-gallery-upload-start"
+                  onClick={handleStartUpload}
+                  disabled={uploading || stagedUploadFiles.length === 0}
+                >
                   {uploading
                     ? `Laddar upp ${uploadProgress}%`
-                    : "Välj bilder"}
-                </label>
-                {activeCategory && (
+                    : `Ladda upp ${stagedUploadFiles.length} ${
+                        stagedUploadFiles.length === 1 ? "bild" : "bilder"
+                      }`}
+                </button>
+                {(stagedUploadFiles.length > 0
+                  ? categories.find(
+                      (category) => category.id === stagedUploadCategoryId
+                    )
+                  : activeCategory) && (
                   <span className="admin-muted">
-                    Till kategori: {activeCategory.name}
+                    Till kategori:{" "}
+                    {stagedUploadFiles.length > 0
+                      ? categories.find(
+                          (category) => category.id === stagedUploadCategoryId
+                        )?.name
+                      : activeCategory?.name}
                   </span>
                 )}
               </div>
               {isDropActive && (
                 <p className="admin-gallery-upload-drop-hint">
-                  Släpp filerna för att ladda upp till {activeCategory?.name}
+                  Släpp filerna för att lägga dem i kön
                 </p>
+              )}
+              {interruptedUpload && (
+                <div className="admin-gallery-upload-recovery" role="status">
+                  <div>
+                    <strong>En tidigare uppladdning avbröts</strong>
+                    <p>
+                      {
+                        interruptedUpload.files.filter(
+                          (file) => file.status !== UPLOAD_STATUS_DONE
+                        ).length
+                      }{" "}
+                      bilder kan behöva väljas igen. Bilder som hann bli klara
+                      är redan sparade i{" "}
+                      {interruptedUpload.categoryName || "galleriet"}.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="admin-btn-tertiary"
+                    onClick={() => {
+                      clearUploadRecovery();
+                      setInterruptedUpload(null);
+                    }}
+                  >
+                    Jag har kontrollerat
+                  </button>
+                </div>
+              )}
+              {stagedUploadFiles.length > 0 && !uploading && (
+                <div className="admin-gallery-upload-staged">
+                  <div className="admin-gallery-upload-staged-header">
+                    <strong>
+                      {stagedUploadFiles.length}{" "}
+                      {stagedUploadFiles.length === 1 ? "bild redo" : "bilder redo"}
+                    </strong>
+                    <button
+                      type="button"
+                      className="admin-btn-tertiary"
+                      onClick={() => {
+                        setStagedUploadFiles([]);
+                        setStagedUploadCategoryId("");
+                        clearUploadRecovery();
+                      }}
+                    >
+                      Töm kön
+                    </button>
+                  </div>
+                  <ul className="admin-gallery-upload-queue">
+                    {stagedUploadFiles.map((item) => (
+                      <li
+                        key={item.key}
+                        className="admin-gallery-upload-queue-item is-pending"
+                      >
+                        <span className="admin-gallery-upload-queue-name">
+                          {item.file.name}
+                        </span>
+                        <button
+                          type="button"
+                          className="admin-gallery-upload-remove"
+                          onClick={() => handleRemoveStagedUpload(item.key)}
+                          aria-label={`Ta bort ${item.file.name} från kön`}
+                        >
+                          Ta bort
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
               {uploadQueue.length > 0 && (
                 <ul className="admin-gallery-upload-queue">
@@ -1593,8 +1930,10 @@ function AdminGallery({ adminKey }) {
                     className="admin-btn-tertiary"
                     onClick={async () => {
                       const filesToRetry = failedUploads.map((f) => f.file);
+                      const retryCategoryId =
+                        failedUploads[0]?.categoryId || activeCategoryId;
                       setFailedUploads([]);
-                      await runUploadBatch(filesToRetry);
+                      await runUploadBatch(filesToRetry, retryCategoryId);
                     }}
                   >
                     Försök igen
@@ -1689,11 +2028,16 @@ function AdminGallery({ adminKey }) {
               )}
               <AdminActionRail
                 selectionLabel={
-                  pendingImageChangesCount > 0
-                    ? `${pendingImageChangesCount} osparade ändringar`
-                    : selectedImageIds.size > 0
-                      ? `${selectedImageIds.size} bilder valda`
-                      : ""
+                  [
+                    selectedImageIds.size > 0
+                      ? `${selectedImageIds.size} av ${selectableImageIds.length} bilder valda`
+                      : "",
+                    pendingImageChangesCount > 0
+                      ? `${pendingImageChangesCount} osparade ändringar`
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" • ")
                 }
               >
                 {pendingImageChangesCount > 0 && (
@@ -1708,22 +2052,51 @@ function AdminGallery({ adminKey }) {
                 )}
                 {selectedImageIds.size > 0 && (
                   <>
-                <button
-                  type="button"
-                  className="admin-btn-secondary"
-                  onClick={() => handleBulkPublish(true)}
-                  disabled={saving}
-                >
-                  Publicera
-                </button>
-                <button
-                  type="button"
-                  className="admin-btn-secondary"
-                  onClick={() => handleBulkPublish(false)}
-                  disabled={saving}
-                >
-                  Avpublicera
-                </button>
+                    {selectedImageIds.size < selectableImageIds.length && (
+                      <button
+                        type="button"
+                        className="admin-btn-tertiary"
+                        onClick={() =>
+                          setSelectedImageIds(new Set(selectableImageIds))
+                        }
+                        disabled={saving}
+                      >
+                        Markera alla
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="admin-btn-tertiary"
+                      onClick={() => setSelectedImageIds(new Set())}
+                      disabled={saving}
+                    >
+                      Avmarkera alla
+                    </button>
+                    <button
+                      type="button"
+                      className="admin-btn-secondary"
+                      onClick={() => handleBulkPublish(true)}
+                      disabled={saving}
+                    >
+                      Publicera
+                    </button>
+                    <button
+                      type="button"
+                      className="admin-btn-secondary"
+                      onClick={() => handleBulkPublish(false)}
+                      disabled={saving}
+                    >
+                      Avpublicera
+                    </button>
+                    <button
+                      type="button"
+                      className="admin-btn-danger"
+                      onClick={handleBulkDelete}
+                      disabled={saving}
+                    >
+                      <Trash2 size={16} aria-hidden="true" />
+                      Ta bort
+                    </button>
                   </>
                 )}
               </AdminActionRail>
@@ -1755,9 +2128,22 @@ function AdminGallery({ adminKey }) {
                       <button
                         type="button"
                         className="admin-gallery-image-preview"
-                        onClick={() => image.id && setEditingImageId(image.id)}
+                        onClick={() => {
+                          if (!image.id) return;
+                          if (selectedImageIds.size > 0) {
+                            handleToggleImageSelect(image.id);
+                            return;
+                          }
+                          setEditingImageId(image.id);
+                        }}
                         disabled={!image.id}
-                        title="Redigera bild"
+                        title={
+                          selectedImageIds.size > 0
+                            ? isSelected
+                              ? "Avmarkera bild"
+                              : "Markera bild"
+                            : "Redigera bild"
+                        }
                       >
                         {getImageSrc(image) ? (
                           <img

@@ -28,18 +28,29 @@ export const heroContent = {
 
 export const services = [
   {
-    id: "event-fest",
+    id: "event",
     kicker: "Ladan och loftet",
-    title: "Event & fest",
+    title: "Event",
     description:
-      "Hyr gården för bröllop, företagsevent, födelsedagar eller en kväll med långbord, bar och dansgolv.",
+      "Hyr gården för bröllop, företagsevent, födelsedagar eller andra tillställningar med långbord, bar och dansgolv.",
     meta: "Loft 150+ sittande · Lada 50+ sittande · Mingel 300+",
     route: "/event",
     image: "/images/event/hero/hero.webp",
-    ctaLabel: "Se eventlokalen",
+    ctaLabel: "Se event",
   },
   {
-    id: "mohippa",
+    id: "brollop",
+    kicker: "En dag att minnas",
+    title: "Bröllop",
+    description:
+      "Samla välkomstskål, middag och fest på samma gård. Ladan och loftet ger plats för både nära och många.",
+    meta: "Middag · Mingel · Bar & dansgolv",
+    route: "/event/brollop",
+    image: "/images/event/hero/hero-2.webp",
+    ctaLabel: "Se bröllopslokalen",
+  },
+  {
+    id: "gruppdagar",
     kicker: "Samla gruppen på gården",
     title: "Gruppdagar",
     description:
@@ -50,48 +61,37 @@ export const services = [
     ctaLabel: "Planera er gruppdag",
   },
   {
-    id: "skapande",
+    id: "fest",
+    kicker: "Middag och dans",
+    title: "Fest & företagsevent",
+    description:
+      "Fira födelsedag, jubileum, afterwork eller företagsfest i två flexibla våningar med plats för både middag och mingel.",
+    meta: "Bar · Kök · Ljud · Dansgolv",
+    route: "/event#event-amenities-section",
+    image: "/images/event/hero/hero-3.webp",
+    ctaLabel: "Se festmöjligheterna",
+  },
+  {
+    id: "kurser-konst",
     kicker: "Ateljé och lera",
     title: "Måleri & keramik",
     description:
       "Kurser i måleri, keramik och drejning för både nybörjare och vana. Det går också att boka ateljén för en egen grupp.",
     meta: "Målning · Keramik · Privata workshops",
     route: "/kurser/konst",
-    image: "/images/portfolio/ann-2.webp",
-    ctaLabel: "Se kurser",
+    image: "/images/konst-keramik/slide16.webp",
+    ctaLabel: "Se kurserna",
   },
   {
-    id: "kurser-heldagar",
+    id: "yoga",
     kicker: "På loftet",
-    title: "Yoga & heldagar",
+    title: "Yoga",
     description:
-      "Yoga i lugnt tempo på loftet och heldagar där yoga varvas med måleri, fika och vegetarisk lunch.",
-    meta: "Heldagar · Yoga · Lunch ingår",
+      "Yoga i lugnt tempo på loftet med guidning, rörelse och vila. Passar både dig som är nybörjare och dig som yogat länge.",
+    meta: "Loftet · Lugnt tempo · Mattor finns",
     route: "/kurser/yoga",
-    image: "/images/evenemang/heldag-paket.webp",
-    ctaLabel: "Se heldagar",
-  },
-  {
-    id: "galleri",
-    kicker: "Se gården",
-    title: "Bildgalleri",
-    description:
-      "Kika in i vårt galleri för att se bilder från gården, ateljén, festdukningar och tidigare evenemang.",
-    meta: "Foton · Inspiration · Ladan & loftet",
-    route: "/galleri",
-    image: "/images/event/hero/hero-2.webp",
-    ctaLabel: "Se bilderna",
-  },
-  {
-    id: "om-platsen",
-    kicker: "Människorna bakom",
-    title: "Om platsen & oss",
-    description:
-      "Läs om oss som driver Storegården 7 och om vad som finns här på gården.",
-    meta: "15 min från Lidköping · Ateljé · Gårdsbutik",
-    route: "/om-oss",
-    image: "/images/lokal/slide23.webp",
-    ctaLabel: "Möt oss",
+    image: "/images/evenemang/lina-yoga-header.jpg",
+    ctaLabel: "Se yogan",
   },
 ];
 
