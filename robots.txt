@@ -1,5 +1,5 @@
 # robots.txt för Storegården 7
-# Uppdaterad: 2026-07-06
+# Uppdaterad: 2026-08-08
 
 # Tillåt alla legitima sökmotorer
 User-agent: *
@@ -25,7 +25,3 @@ User-agent: AhrefsBot
 User-agent: SemrushBot
 User-agent: DotBot
 Disallow: /
-
-# Crawl-delay för att inte överbelasta servern
-User-agent: *
-Crawl-delay: 1
