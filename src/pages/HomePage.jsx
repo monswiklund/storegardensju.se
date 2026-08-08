@@ -18,6 +18,7 @@ import {
   trackById,
 } from "../data/courseEvents.js";
 import { seoMeta } from "../config/seoMeta.js";
+import { canonicalPath } from "../config/routes.js";
 import { COURSE_DAY_EVENT } from "../data/featuredPastEvents.js";
 
 const isCourseDayEvent = (event) =>
@@ -126,7 +127,7 @@ function HomePage() {
   }, [eventsData.past]);
 
   const scrollToGallery = () => {
-    navigate("/galleri");
+    navigate(canonicalPath("/galleri"));
   };
 
   return (

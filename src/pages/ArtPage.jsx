@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
-import { Mail, Palette, Sparkles, Flame, Users } from "lucide-react";
+import {
+  ArrowRight,
+  Mail,
+  MapPin,
+  Palette,
+  Sparkles,
+  Flame,
+  Users,
+} from "lucide-react";
 import CreativeWorkshopsSection from "../features/creation/CreativeWorkshopsSection.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { PageSection, ScrollSpyNav, SectionDivider } from "../components";
-import { HomeServicesSection } from "../features/home";
 import {
   ContactSection,
-  DirectionsSection,
   FaqSection,
   InstructorSection,
   NoUpcomingSection,
-  OtherHubLink,
   PassSection,
   PastPassesSection,
 } from "../features/courses/CourseSections.jsx";
@@ -307,7 +312,7 @@ function ArtPage() {
             Google requires markup to match what a visitor can see. */}
         <FaqSection
           faq={FAQ}
-          heading="Vanliga frågor om kurserna"
+          heading="Vanliga frågor"
           background="alt"
           variant="stack"
         />
@@ -319,55 +324,54 @@ function ArtPage() {
           trackId={MALERI_TRACK_ID}
           heading="Tidigare kurser och skapardagar"
           background="white"
-          variant="cards"
+          variant="timeline"
         />
-
-        <SectionDivider above="white" below="green" variant="wave" />
-
-        <DirectionsSection
-          description={`Ateljén ligger på ${COURSE_LOCATION.name} i ${COURSE_LOCATION.locality}, ${COURSE_LOCATION.travelNote}. Kör mot Rackeby och följ skyltningen till gården — det finns gott om parkering på grusplanen intill ladan.`}
-          background="green"
-          variant="split"
-        />
-
-        <SectionDivider above="green" below="alt" variant="hill" />
-
-        <OtherHubLink
-          href={`${TRACKS.yoga.hubPath}/`}
-          background="alt"
-          variant="split"
-          eyebrow="Mer att göra på gården"
-          heading="Yoga på loftet"
-          body={`Vi håller även yogapass på loftet med ${TRACKS.yoga.instructor.name} — lugnt tempo, guidning och vila, ${COURSE_LOCATION.travelNote}.`}
-          linkLabel="Se yogan på loftet"
-        />
-
-        <ContactSection
-          heading="Frågor om kurserna?"
-          body={`Hör av dig till ${INSTRUCTOR.name} — hon svarar gärna på frågor om kurserna, nivån eller hur en dag i ateljén läggs upp.`}
-          email={CONTACT_EMAIL}
-          subject={CONTACT_SUBJECT}
-          background="alt"
-          variant="split"
-          onContactClick={onContactClick}
-        />
-
-        <SectionDivider above="alt" below="white" variant="wave" />
-
-        {/* Andra erbjudanden */}
-        <div id="art-services-recommendation">
-          <PageSection background="white" spacing="default">
-            <FadeInSection>
-              <HomeServicesSection
-                excludeId="kurser-konst"
-                title="Se mer på gården"
-                eyebrow="MER ATT SE & GÖRA"
-              />
-            </FadeInSection>
-          </PageSection>
-        </div>
 
         <SectionDivider above="white" below="alt" variant="wave" />
+
+        <section className="art-location" id="hitta-hit" aria-labelledby="art-location-title">
+          <div className="art-location__copy">
+            <span className="art-location__eyebrow">Hitta hit</span>
+            <h2 id="art-location-title">Storegården 7, Rackeby</h2>
+            <p>
+              Ateljén ligger {COURSE_LOCATION.travelNote} från Lidköping. Det
+              finns gott om parkering vid ladan.
+            </p>
+          </div>
+          <div className="art-location__details">
+            <address>
+              {COURSE_LOCATION.streetAddress}, {COURSE_LOCATION.postalCode}{" "}
+              {COURSE_LOCATION.locality}
+            </address>
+            <a
+              href={COURSE_LOCATION.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MapPin size={17} aria-hidden="true" />
+              Visa på karta
+              <ArrowRight size={16} aria-hidden="true" />
+            </a>
+          </div>
+        </section>
+
+        <section className="art-next-course" aria-label="Andra kurser på gården">
+          <span>Mer att göra hos oss</span>
+          <a href={`${TRACKS.yoga.hubPath}/`}>
+            Se även Yoga på loftet
+            <ArrowRight size={16} aria-hidden="true" />
+          </a>
+        </section>
+
+        <ContactSection
+          heading="Fråga om en kurs"
+          body={`Hör av dig till ${INSTRUCTOR.name} — hon svarar gärna på frågor om kurserna, nivån eller hur en dag i ateljén läggs upp.`}
+          email={CONTACT_EMAIL}
+          subject={contactSubject}
+          background="alt"
+          variant="center"
+          onContactClick={onContactClick}
+        />
       </main>
     </div>
   );

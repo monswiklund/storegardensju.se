@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
-import { PageSection } from "../components";
+import { ExploreMoreSection, PageSection } from "../components";
 import { profiles } from "../data/profileData.js";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
@@ -26,7 +26,7 @@ function MansPortfolioPage() {
           <FadeInSection>
             <div className="retro-wrapper">
               <nav className="retro-nav">
-                <Link to="/om-oss">&larr; Tillbaka till Om Oss</Link>
+                <Link to="/om-oss/">&larr; Tillbaka till Om Oss</Link>
               </nav>
 
               <hr className="retro-hr" />
@@ -103,6 +103,35 @@ function MansPortfolioPage() {
           </FadeInSection>
         </ErrorBoundary>
       </PageSection>
+
+      <ExploreMoreSection
+        id="portfolio-explore-more"
+        eyebrow="NÄSTA STEG"
+        title="Utforska mer på Storegården 7"
+        intro="Fortsätt till den del av sajten som passar dig bäst – lär känna gården, se miljöerna eller hör av dig."
+        background="green"
+        items={[
+          {
+            to: "/om-oss/",
+            eyebrow: "Storegården 7",
+            title: "Tillbaka till Om oss",
+            text: "Lär känna gården och människorna bakom verksamheten.",
+            featured: true,
+          },
+          {
+            to: "/galleri/",
+            eyebrow: "Se platsen",
+            title: "Bildgalleri",
+            text: "Upptäck ladan, loftet och ateljén på nära håll.",
+          },
+          {
+            to: "/kontakt/",
+            eyebrow: "Prata med oss",
+            title: "Kontakt",
+            text: "Skicka en fråga eller berätta vad du vill planera.",
+          },
+        ]}
+      />
     </main>
   );
 }

@@ -16,6 +16,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Calendar,
+  ChevronDown,
   Clock,
   Mail,
   MapPin,
@@ -317,6 +318,41 @@ export function InstructorSection({
   );
 }
 
+function FaqItem({ question, answer }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const slug = question.toLowerCase().replace(/[^a-z0-9åäö]/g, "-").replace(/-+/g, "-");
+  const contentId = `faq-answer-${slug}`;
+
+  return (
+    <div className={`kurser-faq__item ${isOpen ? "is-open" : ""}`}>
+      <dt>
+        <button
+          type="button"
+          className="kurser-faq__trigger"
+          aria-expanded={isOpen}
+          aria-controls={contentId}
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          <span className="kurser-faq__question">{question}</span>
+          <ChevronDown
+            className={`kurser-faq__chevron ${isOpen ? "is-open" : ""}`}
+            size={20}
+            aria-hidden="true"
+          />
+        </button>
+      </dt>
+      <dd
+        id={contentId}
+        className={`kurser-faq__answer-wrapper ${isOpen ? "is-open" : ""}`}
+      >
+        <div className="kurser-faq__answer-inner">
+          <p>{answer}</p>
+        </div>
+      </dd>
+    </div>
+  );
+}
+
 /**
  * FAQ answers must stay visible on the page - the FAQPage JSON-LD in seoMeta
  * reads from the same data, and Google requires the markup to match what a
@@ -342,14 +378,11 @@ export function FaqSection({
           centered ? " kurser-faq__inner--centered" : ""
         }`}
       >
-        <span className="kurser-label">Frågor och svar</span>
+        <span className="kurser-label">Bra att veta</span>
         <h2>{heading}</h2>
         <dl className={`kurser-faq__list kurser-faq__list--${variant}`}>
           {faq.map(({ question, answer }) => (
-            <div key={question} className="kurser-faq__item">
-              <dt>{question}</dt>
-              <dd>{answer}</dd>
-            </div>
+            <FaqItem key={question} question={question} answer={answer} />
           ))}
         </dl>
       </div>
@@ -673,11 +706,6 @@ export function YogaScheduleSection({
           const dayNum = dateParts[1] || "";
           const monthName = dateParts[2] || "";
 
-          const focusText = pass.summary || (isDropIn 
-            ? "Öppet drop-in-pass – kom som du är!"
-            : "Lugnt tempo & djup återhämtning på loftet"
-          );
-
           return (
             <div
               key={pass.id}
@@ -719,24 +747,7 @@ export function YogaScheduleSection({
                 </div>
               </div>
 
-              {/* Center Info: Focus Quote & Location */}
-              <div className="kurser-schedule-card__meta-col">
-                <div className="kurser-schedule-card__focus-quote">
-                  <span>"{focusText}"</span>
-                </div>
-                <div className="kurser-schedule-card__submeta">
-                  <a
-                    href={COURSE_LOCATION.mapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="kurser-schedule-card__location"
-                    title="Öppna Storegården 7, Rackeby i Google Maps"
-                  >
-                    <MapPin size={15} aria-hidden="true" />
-                    <span>Storegården 7, Rackeby</span>
-                  </a>
-                </div>
-              </div>
+
 
               {/* Tag Column */}
               <div className="kurser-schedule-card__tag-col desktop-only">

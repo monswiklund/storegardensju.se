@@ -58,7 +58,7 @@ export default function SuccessPage() {
               Det verkar som att du inte har en aktiv orderbekräftelse.
             </p>
             <div className="success-actions">
-              <Link to="/butik" className="btn-primary">
+              <Link to="/butik/" className="btn-primary">
                 <ShoppingBag size={18} />
                 Gå till butiken
               </Link>
@@ -100,7 +100,7 @@ export default function SuccessPage() {
           </p>
 
           <div className="success-actions">
-            <Link to="/butik" className="btn-primary">
+            <Link to="/butik/" className="btn-primary">
               <ShoppingBag size={18} />
               Fortsätt handla
             </Link>

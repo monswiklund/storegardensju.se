@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
-import { PageSection } from "../components";
+import { ExploreMoreSection, PageSection } from "../components";
 import { formatPrice } from "../services/stripeService";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
@@ -151,19 +151,35 @@ function ButikPage() {
                   className={`product-card ${isSoldOut ? "sold-out" : ""}`}
                   key={product.id}
                 >
-                  <div className="product-card-image">
-                    <img src={product.images[0]} alt={product.name} loading="lazy" decoding="async" />
-                    {/* Endast SÅLD badge visas på bilden */}
-                    {isSoldOut && (
-                      <div className="product-badges">
-                        <span className="product-badge badge-sold-out">
-                          SÅLD
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                  <Link
+                    className="product-card-image-link"
+                    to={`/butik/${product.id}/`}
+                    aria-label={`Visa ${product.name}`}
+                  >
+                    <div className="product-card-image">
+                      <img
+                        src={product.images[0]}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      {/* Endast SÅLD badge visas på bilden */}
+                      {isSoldOut && (
+                        <div className="product-badges">
+                          <span className="product-badge badge-sold-out">
+                            SÅLD
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
                   <div className="product-card-content">
-                    <h3>{product.name}</h3>
+                    <Link
+                      className="product-card-title-link"
+                      to={`/butik/${product.id}/`}
+                    >
+                      <h3>{product.name}</h3>
+                    </Link>
                     <p className="description">{product.description}</p>
 
                     {/* Kategori och Unikt exemplar som text under beskrivning */}
@@ -249,6 +265,35 @@ function ButikPage() {
           </div>
         )}
       </PageSection>
+
+      <ExploreMoreSection
+        id="shop-explore-more"
+        eyebrow="MER FRÅN GÅRDEN"
+        title="Fortsätt upptäcka"
+        intro="När du har hittat något i butiken finns det mer att se, uppleva och planera på Storegården 7."
+        background="green"
+        items={[
+          {
+            to: "/event/",
+            eyebrow: "Planera",
+            title: "Planera ett event",
+            text: "Se hur gården kan bli platsen för er nästa dag tillsammans.",
+            featured: true,
+          },
+          {
+            to: "/galleri/",
+            eyebrow: "Se gården",
+            title: "Bildgalleri",
+            text: "Titta närmare på ladan, loftet och ateljén.",
+          },
+          {
+            to: "/om-oss/",
+            eyebrow: "Lär känna",
+            title: "Om oss",
+            text: "Möt människorna och idéerna bakom Storegården 7.",
+          },
+        ]}
+      />
     </main>
   );
 }

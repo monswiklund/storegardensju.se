@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Clock, MapPin, Calendar, ArrowUpRight } from "lucide-react";
+import { canonicalPath } from "../../../../config/routes.js";
 
 const splitDateString = (dateStr) => {
   if (!dateStr) return { day: "", month: "", year: "" };
@@ -16,7 +17,7 @@ const SmartLink = ({ href, className, children, ...props }) => {
   const isInternal = href && href.startsWith("/") && !href.startsWith("//");
   if (isInternal) {
     return (
-      <Link to={href} className={className} {...props}>
+      <Link to={canonicalPath(href)} className={className} {...props}>
         {children}
       </Link>
     );

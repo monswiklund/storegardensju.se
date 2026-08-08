@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { appRoutes, normalizePath } from "./routes.js";
+import { appRoutes, canonicalPath, normalizePath } from "./routes.js";
 import { sectionForPath } from "../components/layout/Navbar/SectionSubnav.jsx";
 
 describe("normalizePath", () => {
@@ -15,6 +15,26 @@ describe("normalizePath", () => {
   it("leaves the root and slashless paths alone", () => {
     expect(normalizePath("/")).toBe("/");
     expect(normalizePath("/kurser/konst")).toBe("/kurser/konst");
+  });
+});
+
+describe("canonicalPath", () => {
+  it("adds the public trailing slash without losing a hash or query", () => {
+    expect(canonicalPath("/kontakt")).toBe("/kontakt/");
+    expect(canonicalPath("/event#event-amenities-section")).toBe(
+      "/event/#event-amenities-section",
+    );
+    expect(canonicalPath("/kurser/yoga/?from=home")).toBe(
+      "/kurser/yoga/?from=home",
+    );
+  });
+
+  it("leaves the root, fragments, and external paths unchanged", () => {
+    expect(canonicalPath("/")).toBe("/");
+    expect(canonicalPath("#kontakt")).toBe("#kontakt");
+    expect(canonicalPath("https://example.com/page")).toBe(
+      "https://example.com/page",
+    );
   });
 });
 

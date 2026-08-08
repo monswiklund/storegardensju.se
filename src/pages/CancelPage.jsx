@@ -22,7 +22,7 @@ export default function CancelPage() {
               <ShoppingCart size={20} />
               Tillbaka till varukorgen
             </Link>
-            <Link to="/butik" className="btn-secondary">
+            <Link to="/butik/" className="btn-secondary">
               Fortsätt handla
             </Link>
           </div>

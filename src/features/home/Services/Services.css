@@ -2,15 +2,31 @@
    Services Section (Editorial Guide)
    ========================================================================== */
 
-/* Let the carousel bleed to the real viewport edges: the PageSection wrapper
-   otherwise insets the box that .services-section overflow-clips against,
-   which cuts the peeking cards 20-40px inside the screen */
-#home-services .page-section.spacing-compact {
+/* Let every services carousel bleed to the real viewport edges. The generic
+   PageSection wrapper otherwise clips the peeking cards at its content box,
+   leaving a hard vertical edge on the first and last visible card. */
+:is(
+  #home-services,
+  #event-services-recommendation,
+  #wedding-services-recommendation,
+  #mohippa-services-recommendation,
+  #gallery-services-recommendation,
+  #team-services-recommendation,
+  #art-services-recommendation
+) .page-section {
   padding-left: 0;
   padding-right: 0;
 }
 
-#home-services .page-section-content {
+:is(
+  #home-services,
+  #event-services-recommendation,
+  #wedding-services-recommendation,
+  #mohippa-services-recommendation,
+  #gallery-services-recommendation,
+  #team-services-recommendation,
+  #art-services-recommendation
+) .page-section-content {
   max-width: none;
   padding: 0;
 }
@@ -230,6 +246,34 @@
   transform: scale(1.02);
   border-color: rgba(84, 139, 116, 0.4);
   box-shadow: 0 12px 30px rgba(95, 111, 82, 0.12);
+}
+
+/* Side cards should read as a soft preview of the carousel, not as separate
+   panels competing with the centered card. Fade their outer edges and remove
+   the hard frame while keeping the active card crisp and easy to select. */
+.service-card:not(.service-card--active) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 7%,
+    #000 93%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 7%,
+    #000 93%,
+    transparent 100%
+  );
+}
+
+.service-card:not(.service-card--active) .service-card__image-wrap,
+.service-card:not(.service-card--active) .service-card__meta {
+  border-color: transparent;
 }
 
 /* Hover styles only on devices with a real pointer; on touch, tap would

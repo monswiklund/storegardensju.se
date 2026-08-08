@@ -178,6 +178,12 @@
 }
 
 /* Product image container */
+.product-card-image-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .product-card-image {
   position: relative;
   overflow: hidden;
@@ -264,6 +270,17 @@
   font-family: var(--font-heading);
   font-weight: 400;
   letter-spacing: -0.01em;
+}
+
+.product-card-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-card-title-link:focus-visible,
+.product-card-image-link:focus-visible {
+  outline: 3px solid var(--primary-hover);
+  outline-offset: 3px;
 }
 
 .product-card .description {

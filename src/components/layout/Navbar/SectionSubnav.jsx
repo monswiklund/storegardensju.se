@@ -1,5 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { appRoutes, normalizePath } from "../../../config/routes.js";
+import {
+  appRoutes,
+  canonicalPath,
+  normalizePath,
+} from "../../../config/routes.js";
 import HomeSubnav from "./HomeSubnav.jsx";
 
 // Desktop hides the navbar dropdowns (see .nav-submenu in Navbar.css), so a
@@ -55,7 +59,7 @@ function SectionSubnav() {
         {links.map((link) => (
           <Link
             key={link.path}
-            to={link.path}
+            to={canonicalPath(link.path)}
             className={`event-subnav-link ${
               currentPath === link.path ? "active" : ""
             }`}

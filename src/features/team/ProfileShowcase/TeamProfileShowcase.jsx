@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { canonicalPath } from "../../../config/routes.js";
 import "./ProfileShowcase.css";
 import ContactList from "./components/ContactList";
 import ActionButtons from "./components/ActionButtons";
@@ -110,7 +111,7 @@ const TeamProfileShowcase = ({ profile }) => {
 
         {profile.portfolioUrl ? (
           <Link
-            to={profile.portfolioUrl}
+            to={canonicalPath(profile.portfolioUrl)}
             className="team-card-portfolio-btn"
             aria-label={`Visa portfolio för ${profile.title}`}
           >

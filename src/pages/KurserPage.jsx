@@ -11,7 +11,6 @@ import {
   InstructorSection,
   NoUpcomingSection,
   OtherHubLink,
-  PassSection,
   PastPassesSection,
   YogaScheduleSection,
 } from "../features/courses/CourseSections.jsx";
@@ -214,7 +213,7 @@ function KurserPage() {
 
         <FaqSection
           faq={FAQ}
-          heading="Vanliga frågor & praktisk info"
+          heading="Vanliga frågor"
           background="green"
           variant="columns"
         />
@@ -261,7 +260,7 @@ function KurserPage() {
         <PastPassesSection
           passes={PAST_PASSES}
           trackId={YOGA_TRACK_ID}
-          heading="Tidigare pass på gården"
+          heading="Tidigare pass"
           background="alt"
           variant="timeline"
         />
@@ -289,7 +288,7 @@ function KurserPage() {
           variant="band"
           image={maleriKursImg}
           imageAlt="Målarkurs i ateljén på Storegården 7"
-          eyebrow="Mer att göra på gården"
+          eyebrow="Mer hos oss"
           heading="Måla eller dreja i ateljén"
           body={`I gårdsateljén håller ${TRACKS.maleri.instructor.name} kurser i måleri och keramik, både på fasta datum och som privat kurs för grupper.`}
           linkLabel="Se kurser i måleri och keramik"

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
+  ArrowDown,
   ArrowUpRight,
   Building2,
   CalendarCheck,
@@ -16,6 +17,7 @@ import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import { useSeo } from "../../hooks/useSeo.js";
 import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
 import { seoMeta } from "../../config/seoMeta.js";
+import { canonicalPath } from "../../config/routes.js";
 import "./EventPage.css";
 
 const EVENT_FACTS = [
@@ -57,7 +59,7 @@ const EVENT_TYPES = [
     title: "Bröllop",
     description:
       "Hyr ladan och loftet för bröllopsmiddag och fest. Ni får ta med egen mat och dryck.",
-    to: "/event/brollop",
+    to: "/event/brollop/",
     linkLabel: "Läs om bröllop",
     variant: "wedding",
     image: "/images/event/hero/hero-2.webp",
@@ -77,7 +79,7 @@ const EVENT_TYPES = [
     title: "Gruppdagar",
     description:
       "Ett färdigt upplägg för möhippa, svensexa, teambuilding eller en dag med vänner.",
-    to: "/gruppdagar",
+    to: "/gruppdagar/",
     linkLabel: "Planera en gruppdag",
     variant: "group",
     image: "/images/evenemang/heldag-paket.webp",
@@ -94,7 +96,7 @@ const SPY_SECTIONS = [
   { id: "event-loft-section", label: "Kapacitet" },
   { id: "event-amenities-section", label: "Möjligheter" },
   { id: "event-planning-section", label: "Planering" },
-  { id: "event-services-recommendation", label: "Mer på gården" },
+  { id: "event-services-recommendation", label: "Utforska mer" },
 ];
 
 // Navbar (60px) plus the section subnav (48px), with breathing room for the
@@ -111,7 +113,7 @@ function EventPage() {
   } = useSequentialScrollTimeline(EVENT_STEPS.length);
 
   const handleGalleryClick = () => {
-    navigate("/galleri");
+    navigate(canonicalPath("/galleri"));
   };
 
   return (
@@ -135,6 +137,19 @@ function EventPage() {
             </div>
             <h1 id="event-heading">Event på Storegården 7</h1>
             <p>Lada och loft för bröllop, fest och företagsevent</p>
+            <div className="event-hero__actions">
+              <Link to="/kontakt/" className="event-button event-button--primary">
+                Berätta om ert event
+                <ArrowUpRight size={18} aria-hidden="true" />
+              </Link>
+              <a
+                href="#event-details-section"
+                className="event-button event-button--secondary"
+              >
+                Se eventtyper
+                <ArrowDown size={18} aria-hidden="true" />
+              </a>
+            </div>
           </div>
 
           {/* The curve belongs on the photo so the hero keeps its full image;
@@ -378,7 +393,7 @@ function EventPage() {
             <FadeInSection>
               <HomeServicesSection
                 excludeId="event"
-                title="Utforska mer på gården"
+                title="Utforska mer"
                 eyebrow="MER HOS OSS"
               />
             </FadeInSection>

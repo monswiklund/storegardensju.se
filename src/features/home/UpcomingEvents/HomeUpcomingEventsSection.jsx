@@ -7,13 +7,14 @@ import {
 import "./UpcomingEvents.css";
 import EventCard from "./components/EventCard";
 import useScrollToSelector from "../../../hooks/useScrollToSelector";
+import { canonicalPath } from "../../../config/routes.js";
 
 // Helper component to render either react-router Link or standard anchor tag
 const SmartLink = ({ href, className, children, ...props }) => {
   const isInternal = href && href.startsWith("/") && !href.startsWith("//");
   if (isInternal) {
     return (
-      <Link to={href} className={className} {...props}>
+      <Link to={canonicalPath(href)} className={className} {...props}>
         {children}
       </Link>
     );
@@ -317,7 +318,7 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
                   <Calendar size={18} />
                   <span className="section-ornament-line"></span>
                 </div>
-                <h2 className="events-heading-large">Nästa datum på Storegården</h2>
+                <h2 className="events-heading-large">Kommande tillfällen</h2>
                 <p className="events-description-large">
                   Här hittar du kommande kurser, öppna ateljékvällar och andra
                   aktiviteter på gården.

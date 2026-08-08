@@ -468,7 +468,7 @@ export const seoMeta = {
     },
     buildJsonLd: hubJsonLd(YOGA_TRACK_ID),
   },
-  mohippa: {
+  gruppdagar: {
     title: "Gruppdagar i Lidköping | Storegården 7",
     description:
       "Boka möhippa, svensexa, teambuilding, afterwork eller workshop på Storegården 7 utanför Lidköping. Baspaket från 500 kr/person med lokal och praktisk hjälp.",
@@ -476,7 +476,7 @@ export const seoMeta = {
     staticContent: {
       h1: "Er gruppdag på Storegården 7",
       paragraphs: [
-        "Boka en gruppdag på gården för möhippa, svensexa, teambuilding, afterwork eller workshop. Lokal och praktisk hjälp ingår i baspaketet.",
+        "Boka en gruppdag på gården för svensexa, teambuilding, afterwork eller workshop. Lokal och praktisk hjälp ingår i baspaketet.",
         "Pris från 500 kr per person. Lokalen är er 10:00-22:00. Upplägget är ett baspaket med tillval per aktivitet, så ni kan lägga till måleri, keramik eller yoga efter vad gruppen vill göra.",
       ],
     },

@@ -20,7 +20,7 @@ import "./MohippaPage.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
 
-const GROUP_OCCASIONS = ["Möhippa", "Svensexa", "Teambuilding", "Afterwork", "Workshop"];
+const GROUP_OCCASIONS = ["Svensexa", "Teambuilding", "Afterwork", "Workshop"];
 
 const HERO_FACTS = [
   { label: "Pris från", value: "500 kr/person" },
@@ -124,7 +124,7 @@ const ACTIVITIES = [
 const formatActivityNumber = (index) => String(index + 1).padStart(2, "0");
 
 function MohippaPage() {
-  useSeo(seoMeta.mohippa);
+  useSeo(seoMeta.gruppdagar);
   const [activeSection, setActiveSection] = useState("top");
   const [mainTab, setMainTab] = useState("baspaket"); // "baspaket" or "aktiviteter"
   const [activeTab, setActiveTab] = useState("alla");
@@ -216,7 +216,7 @@ function MohippaPage() {
             <button
               onClick={() => scrollToSection("mohippa-hero-section")}
               className={`scroll-dot ${activeSection === "top" ? "active" : ""}`}
-              title="Gruppdag på gården"
+              title="Gruppdagar"
             >
               <span className="dot-label">Start</span>
             </button>
@@ -256,7 +256,7 @@ function MohippaPage() {
           <section id="mohippa-hero-section" className="mohippa-hero" aria-labelledby="mohippa-heading">
             <div className="mohippa-hero__inner">
               <div className="mohippa-hero__copy">
-                <span className="mohippa-eyebrow">Samla gruppen på gården</span>
+                <span className="mohippa-eyebrow">Samla gruppen</span>
                 <h1 id="mohippa-heading" aria-label="Gruppdag på Storegården 7">
                   Er{" "}
                   <span className="mohippa-word-switch" aria-hidden="true">
@@ -593,7 +593,7 @@ function MohippaPage() {
               <FadeInSection>
                 <HomeServicesSection
                   excludeId="gruppdagar"
-                  title="Se mer på gården"
+                  title="Utforska mer"
                   eyebrow="FLER AKTIVITETER"
                 />
               </FadeInSection>

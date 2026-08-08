@@ -1,7 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import {
-  ArrowRight,
   Clock3,
   ExternalLink,
   Mail,
@@ -10,6 +8,7 @@ import {
 } from "lucide-react";
 import { ContactSection } from "../features/contact";
 import { contactEmail } from "../features/contact/contact.js";
+import { ExploreMoreSection } from "../components";
 import { COURSE_LOCATION } from "../data/courseEvents.js";
 import { seoMeta } from "../config/seoMeta.js";
 import { useSeo } from "../hooks/useSeo.js";
@@ -17,25 +16,25 @@ import "./ContactPage.css";
 
 const QUICK_LINKS = [
   {
-    to: "/event/brollop",
+    to: "/event/brollop/",
     eyebrow: "Fira",
     title: "Bröllop & fest",
     text: "Ladan, loftet och hela gårdens möjligheter.",
   },
   {
-    to: "/gruppdagar",
+    to: "/gruppdagar/",
     eyebrow: "Samlas",
     title: "Gruppdagar",
     text: "Möhippa, teambuilding eller en dag med vänner.",
   },
   {
-    to: "/kurser/yoga",
+    to: "/kurser/yoga/",
     eyebrow: "Landa",
     title: "Yoga på loftet",
     text: "Pass i lugnt tempo med Lina.",
   },
   {
-    to: "/kurser/konst",
+    to: "/kurser/konst/",
     eyebrow: "Skapa",
     title: "Måleri & keramik",
     text: "Kurser och privata grupper i gårdsateljén.",
@@ -207,26 +206,15 @@ function ContactPage() {
         </div>
       </section>
 
-      <section className="contact-page__explore" aria-labelledby="explore-title">
-        <div className="contact-page__section-heading">
-          <span className="contact-page__eyebrow contact-page__eyebrow--dark">
-            Vad vill du veta mer om?
-          </span>
-          <h2 id="explore-title">Hitta rätt direkt</h2>
-        </div>
-        <div className="contact-page__quick-links">
-          {QUICK_LINKS.map((item) => (
-            <Link className="contact-page__quick-link" to={item.to} key={item.to}>
-              <span>{item.eyebrow}</span>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-              <ArrowRight size={19} aria-hidden="true" />
-            </Link>
-          ))}
-        </div>
-      </section>
-
       <ContactSection defaultOpen />
+
+      <ExploreMoreSection
+        id="contact-explore-more"
+        eyebrow="Vad vill du veta mer om?"
+        title="Hitta rätt direkt"
+        intro="När du har hört av dig kan du fortsätta upptäcka det som passar din dag på gården."
+        items={QUICK_LINKS}
+      />
     </main>
   );
 }

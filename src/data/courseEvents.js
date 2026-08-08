@@ -119,7 +119,7 @@ const yogaFaq = [
       "På loftet hålls klasser i lugnt tempo med fokus på mjuka rörelser, guidning och vila. Alla tillfällen passar både nybörjare och dig som har deltagit tidigare.",
   },
   {
-    question: "När är nästa pass på Storegården 7?",
+    question: "När är nästa pass?",
     answer: (now) => {
       const pass = nextPass(YOGA_TRACK_ID, now);
       if (!pass) {
@@ -129,7 +129,7 @@ const yogaFaq = [
     },
   },
   {
-    question: "Vad kostar klasserna på Storegården 7?",
+    question: "Vad kostar klasserna?",
     answer: (now) => {
       const pass = nextPass(YOGA_TRACK_ID, now);
       if (!pass?.price) {
@@ -172,7 +172,7 @@ const maleriFaq = [
       "I ateljén på Storegården 7 håller Ann Wiklund kurser i måleri med akvarell och akryl samt i keramik med handbygge, ringling och drejning. Kurserna är prestationsfria och passar även dig som är nybörjare.",
   },
   {
-    question: "När är nästa målarkurs på Storegården 7?",
+    question: "När är nästa målarkurs?",
     answer: (now) => {
       const pass = nextPass(MALERI_TRACK_ID, now);
       if (!pass) {

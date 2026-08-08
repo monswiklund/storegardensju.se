@@ -322,91 +322,9 @@
   padding-bottom: 4px;
 }
 
-.contact-page__explore {
-  background: var(--background-green);
-}
-
-.contact-page__section-heading {
-  max-width: 1120px;
-  margin: 0 auto 42px;
-}
-
-.contact-page__section-heading h2 {
-  margin-bottom: 0;
-}
-
-.contact-page__quick-links {
-  max-width: 1120px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 1px solid var(--contact-line);
-  border-bottom: 1px solid var(--contact-line);
-}
-
-.contact-page__quick-link {
-  position: relative;
-  min-height: 235px;
-  padding: 34px 28px;
-  border-right: 1px solid var(--contact-line);
-}
-
-.contact-page__quick-link:last-child {
-  border-right: 0;
-}
-
-.contact-page__quick-link > span {
-  color: var(--primary-hover);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.contact-page__quick-link h3 {
-  margin: 20px 0 12px;
-  color: var(--contact-ink);
-  font-size: 1.45rem;
-  font-weight: 500;
-}
-
-.contact-page__quick-link p {
-  color: var(--text-secondary);
-  font-size: 0.93rem;
-  line-height: 1.6;
-}
-
-.contact-page__quick-link > svg {
-  position: absolute;
-  right: 28px;
-  bottom: 30px;
-  color: var(--primary-hover);
-  transition: transform 0.25s ease;
-}
-
-.contact-page__quick-link:hover {
-  background: white;
-}
-
-.contact-page__quick-link:hover > svg {
-  transform: translateX(5px);
-}
-
 @media (max-width: 900px) {
   .contact-page__arrival-grid {
     grid-template-columns: 1fr;
-  }
-
-  .contact-page__quick-links {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .contact-page__quick-link:nth-child(2) {
-    border-right: 0;
-  }
-
-  .contact-page__quick-link:nth-child(-n + 2) {
-    border-bottom: 1px solid var(--contact-line);
   }
 }
 
@@ -429,8 +347,7 @@
     font-size: clamp(2.75rem, 14vw, 4.15rem);
   }
 
-  .contact-page__arrival,
-  .contact-page__explore {
+  .contact-page__arrival {
     padding-inline: 18px;
   }
 
@@ -454,8 +371,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .contact-page__button,
-  .contact-page__quick-link > svg {
+  .contact-page__button {
     transition: none;
   }
 

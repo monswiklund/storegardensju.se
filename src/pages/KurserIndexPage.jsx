@@ -8,7 +8,11 @@ import {
   User,
   Users,
 } from "lucide-react";
-import { ScrollSpyNav, SectionDivider } from "../components";
+import {
+  ExploreMoreSection,
+  ScrollSpyNav,
+  SectionDivider,
+} from "../components";
 import { CourseBand } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
@@ -209,6 +213,35 @@ function KurserIndexPage() {
         {/* Ends on green; the global contact section below is alt, so the colour
             change gets its own curve like every other one on the page. */}
         <SectionDivider above="green" below="alt" variant="valley" />
+
+        <ExploreMoreSection
+          id="kurser-explore-more"
+          eyebrow="MER HOS OSS"
+          title="Utforska mer"
+          intro="När du har hittat rätt kurs finns fler sätt att uppleva Storegården 7."
+          background="alt"
+          items={[
+            {
+              to: "/kurser/yoga/",
+              eyebrow: "Landa",
+              title: "Yoga på loftet",
+              text: "Se kommande pass och läs mer om yogan.",
+            },
+            {
+              to: "/kurser/konst/",
+              eyebrow: "Skapa",
+              title: "Måleri & keramik",
+              text: "Upptäck kurserna i gårdsateljén.",
+            },
+            {
+              to: "/gruppdagar/",
+              eyebrow: "Samlas",
+              title: "Gruppdagar",
+              text: "Planera en egen dag för gruppen på gården.",
+              featured: true,
+            },
+          ]}
+        />
       </main>
     </div>
   );

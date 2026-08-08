@@ -1,6 +1,8 @@
+import { useState } from "react";
 import {
   ArrowUpRight,
   CalendarHeart,
+  ChevronDown,
   GlassWater,
   Heart,
   Music,
@@ -68,6 +70,39 @@ const SPY_SECTIONS = [
 // Matches the fixed navbar and Event section subnav used throughout the hub.
 const SPY_OFFSET = 130;
 
+function WeddingFaqItem({ question, answer }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const slug = question.toLowerCase().replace(/[^a-z0-9åäö]/g, "-").replace(/-+/g, "-");
+  const contentId = `wedding-faq-answer-${slug}`;
+
+  return (
+    <article className={`wedding-faq-card ${isOpen ? "is-open" : ""}`}>
+      <button
+        type="button"
+        className="wedding-faq-card__trigger"
+        aria-expanded={isOpen}
+        aria-controls={contentId}
+        onClick={() => setIsOpen((prev) => !prev)}
+      >
+        <h3>{question}</h3>
+        <ChevronDown
+          className={`wedding-faq-card__chevron ${isOpen ? "is-open" : ""}`}
+          size={20}
+          aria-hidden="true"
+        />
+      </button>
+      <div
+        id={contentId}
+        className={`wedding-faq-card__answer-wrapper ${isOpen ? "is-open" : ""}`}
+      >
+        <div className="wedding-faq-card__answer-inner">
+          <p>{answer}</p>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function WeddingPage() {
   useSeo(seoMeta.eventWedding);
   const {
@@ -105,7 +140,7 @@ function WeddingPage() {
               <Heart size={20} />
               <span className="section-ornament-line" />
             </div>
-            <h1 id="wedding-heading">Bröllop på Storegården 7</h1>
+            <h1 id="wedding-heading">Bröllop</h1>
             <p>En lantlig plats för middag, mingel och dans under samma tak</p>
           </div>
 
@@ -137,7 +172,7 @@ function WeddingPage() {
                   />
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">Er dag på gården</span>
+                  <span className="event-section-eyebrow">Er bröllopsdag</span>
                   <div className="section-ornament align-left" aria-hidden="true">
                     <span className="section-ornament-line" />
                     <CalendarHeart size={18} />
@@ -314,15 +349,12 @@ function WeddingPage() {
             <FadeInSection>
               <div className="event-section-intro wedding-faq__intro">
                 <span className="event-section-eyebrow">Bra att veta</span>
-                <h2>Vanliga frågor om bröllop på gården</h2>
+                <h2>Vanliga frågor</h2>
               </div>
 
               <div className="wedding-faq-grid">
                 {WEDDING_FAQ.map(({ answer, question }) => (
-                  <article key={question} className="wedding-faq-card">
-                    <h3>{question}</h3>
-                    <p>{answer}</p>
-                  </article>
+                  <WeddingFaqItem key={question} question={question} answer={answer} />
                 ))}
               </div>
             </FadeInSection>
@@ -336,7 +368,7 @@ function WeddingPage() {
             <FadeInSection>
               <HomeServicesSection
                 excludeId="brollop"
-                title="Utforska mer på gården"
+                title="Utforska mer"
                 eyebrow="MER HOS OSS"
               />
             </FadeInSection>

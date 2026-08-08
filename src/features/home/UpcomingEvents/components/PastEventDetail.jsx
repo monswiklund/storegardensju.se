@@ -9,6 +9,7 @@ import {
   MapPin,
   X,
 } from "lucide-react";
+import { canonicalPath } from "../../../../config/routes.js";
 import "../../PastEvents/PastEvents.css";
 
 export const PAST_EVENT_VARIANT_MODAL = "modal";
@@ -207,7 +208,7 @@ function PastEventDetail({
                 return (
                   <Link
                     key={link.href || index}
-                    to={link.href}
+                    to={canonicalPath(link.href)}
                     className="past-event-modal-button"
                   >
                     <ArrowUpRight size={16} aria-hidden="true" />

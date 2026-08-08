@@ -1,7 +1,9 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { PageSection } from "../components";
+import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
+import { ProductRecommendations } from "../features/shop";
 import { getStripeProductById, formatPrice } from "../services/stripeService";
 import "./ProductDetailPage.css";
 
@@ -13,6 +15,8 @@ import "./ProductDetailPage.css";
 
 function ProductDetailPage() {
   const { productId } = useParams();
+  const productContext = useContext(ProductContext);
+  const products = productContext?.products ?? [];
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -67,7 +71,7 @@ function ProductDetailPage() {
           <div className="product-not-found">
             <h1>Produkten hittades inte</h1>
             <p>{error || "Den produkt du söker finns inte längre."}</p>
-            <Link to="/butik">Tillbaka till butiken</Link>
+            <Link to="/butik/">Tillbaka till butiken</Link>
           </div>
         </PageSection>
       </main>
@@ -81,7 +85,7 @@ function ProductDetailPage() {
         <nav className="breadcrumb" aria-label="breadcrumb">
           <Link to="/">Hem</Link>
           <span> / </span>
-          <Link to="/butik">Butik</Link>
+          <Link to="/butik/">Butik</Link>
           <span> / </span>
           <span aria-current="page">{product?.name || "Produkt"}</span>
         </nav>
@@ -172,11 +176,13 @@ function ProductDetailPage() {
 
         {/* Tillbaka-knapp */}
         <div className="back-to-shop">
-          <Link to="/butik" className="back-link">
+          <Link to="/butik/" className="back-link">
             ← Tillbaka till butiken
           </Link>
         </div>
       </PageSection>
+
+      <ProductRecommendations products={products} currentProduct={product} />
     </main>
   );
 }

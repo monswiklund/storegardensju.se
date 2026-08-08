@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { heroContent } from "../../../data/homeContent.js";
+import { canonicalPath } from "../../../config/routes.js";
 import "./Hero.css";
 import HomeHeroContent from "./HomeHeroContent.jsx";
 
@@ -34,7 +35,7 @@ function HomeHeroSection() {
       ?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
-  const handleSecondaryRoute = (to) => navigate(to);
+  const handleSecondaryRoute = (to) => navigate(canonicalPath(to));
 
   const handleScrollIndicatorClick = () => {
     // Scroll to hero content section

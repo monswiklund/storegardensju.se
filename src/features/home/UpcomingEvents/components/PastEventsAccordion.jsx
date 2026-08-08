@@ -124,7 +124,7 @@ function PastEventsAccordion({ events }) {
         {/* Left Column (Desktop only) */}
         <div className="past-events-info-col desktop-only">
           <span className="past-events-eyebrow">TIDIGARE EVENEMANG</span>
-          <h2 className="past-events-heading">Tidigare på gården</h2>
+          <h2 className="past-events-heading">Tidigare evenemang</h2>
           <p className="past-events-intro">
             Ett urval av kurser, öppna ateljékvällar och samarbeten.
           </p>

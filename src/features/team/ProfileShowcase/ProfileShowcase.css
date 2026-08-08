@@ -12,6 +12,7 @@
   }
 }
 
+.profile-showcase-container h1,
 .profile-showcase-container h2 {
   text-align: left;
   font-size: clamp(2.2rem, 1.8rem + 3vw, 3rem);
@@ -22,6 +23,7 @@
 }
 
 @media (max-width: 768px) {
+  .profile-showcase-container h1,
   .profile-showcase-container h2 {
     margin-bottom: 40px;
   }

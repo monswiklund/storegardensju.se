@@ -197,7 +197,10 @@ for (const meta of Object.values(seoMeta)) {
 // Deliberately not noindex: Google treats meta-refresh + canonical as a soft
 // redirect and consolidates the old URL's signals into the new one, which
 // noindex would block.
-const LEGACY_REDIRECTS = [{ from: "/konst", to: "/kurser/konst" }];
+const LEGACY_REDIRECTS = [
+  { from: "/konst", to: "/kurser/konst" },
+  { from: "/mohippa", to: "/gruppdagar" },
+];
 
 for (const { from, to } of LEGACY_REDIRECTS) {
   const target = canonicalUrl(to);

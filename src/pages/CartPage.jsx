@@ -18,7 +18,7 @@ export default function CartPage() {
             <ShoppingBag size={64} strokeWidth={1.5} />
             <h1>Din varukorg är tom</h1>
             <p>Lägg till produkter från vår butik</p>
-            <Link to="/butik" className="btn-primary">
+            <Link to="/butik/" className="btn-primary">
               Till butiken
             </Link>
           </div>
@@ -123,7 +123,7 @@ export default function CartPage() {
             Gå till kassan
           </Link>
           
-          <Link to="/butik" className="btn btn-secondary" style={{ marginTop: '1rem' }}>
+          <Link to="/butik/" className="btn btn-secondary" style={{ marginTop: '1rem' }}>
             Fortsätt handla
           </Link>
         </div>

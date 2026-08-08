@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { canonicalPath } from "../../../config/routes.js";
 
 function activeSectionPath(items, currentPath) {
   return (
@@ -51,7 +52,7 @@ function NavLinks({ items, currentPath, onNavigate }) {
           >
             <div className="nav-item-row">
               <Link
-                to={item.path}
+                to={canonicalPath(item.path)}
                 className={`nav-link ${isActive ? "active" : ""} ${
                   isChildActive ? "section-active" : ""
                 }`}
@@ -85,7 +86,7 @@ function NavLinks({ items, currentPath, onNavigate }) {
                 {children.map((child) => (
                   <li key={child.path} className="nav-submenu-item">
                     <Link
-                      to={child.path}
+                      to={canonicalPath(child.path)}
                       className={`nav-sublink ${
                         currentPath === child.path ? "active" : ""
                       }`}

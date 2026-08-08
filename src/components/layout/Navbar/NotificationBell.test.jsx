@@ -60,11 +60,11 @@ describe("NotificationBell", () => {
     );
 
     fireEvent.click(await screen.findByRole("button", { name: /Visa aktuellt, 1 oläst/ }));
-    expect(screen.getByRole("region", { name: "Aktuellt på gården" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Aktuellt" })).toBeInTheDocument();
 
     fireEvent.keyDown(document, { key: "Escape" });
     expect(
-      screen.queryByRole("region", { name: "Aktuellt på gården" }),
+      screen.queryByRole("region", { name: "Aktuellt" }),
     ).not.toBeInTheDocument();
   });
 });

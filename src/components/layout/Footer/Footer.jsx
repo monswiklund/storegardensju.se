@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Facebook, Instagram } from "lucide-react";
 import BuildInfo from "../../ui/BuildInfo.jsx";
 import { useEffect, useState } from "react";
-import { appRoutes } from "../../../config/routes.js";
+import { appRoutes, canonicalPath } from "../../../config/routes.js";
 
 const Footer = () => {
   const [currentYear, setCurrentYear] = useState(2025);
@@ -38,7 +38,7 @@ const Footer = () => {
             {footerLinks.map((link) => (
               <li key={link.path}>
                 <Link
-                  to={link.path}
+                  to={canonicalPath(link.path)}
                   className="footer-link"
                   onClick={handleLinkClick}
                 >

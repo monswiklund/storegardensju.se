@@ -9,6 +9,7 @@ import {
   passAnchor,
   passHubPath,
 } from "../../../data/courseEvents.js";
+import { canonicalPath } from "../../../config/routes.js";
 import { fetchPublicNotifications } from "../../../services/notificationsService.js";
 import "./NotificationBell.css";
 
@@ -137,12 +138,12 @@ export default function NotificationBell() {
         <section
           id="notification-panel"
           className="notification-panel"
-          aria-label="Aktuellt på gården"
+          aria-label="Aktuellt"
         >
           <div className="notification-panel-header">
             <div>
               <span className="notification-panel-eyebrow">Storegården 7</span>
-              <h2>Aktuellt på gården</h2>
+              <h2>Aktuellt</h2>
             </div>
             {unreadCount > 0 && (
               <button
@@ -164,7 +165,7 @@ export default function NotificationBell() {
                 return (
                   <li key={notification.id}>
                     <Link
-                      to={notification.href}
+                      to={canonicalPath(notification.href)}
                       className={`notification-item ${isUnread ? "is-unread" : ""}`}
                       onClick={() => markAsRead(notification.id)}
                     >

@@ -2,6 +2,7 @@ import "./Services.css";
 import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import { services as servicesData } from "../../../data/homeContent.js";
+import { canonicalPath } from "../../../config/routes.js";
 import { useState, useRef, useEffect, useEffectEvent } from "react";
 
 const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "VAD VI HAR" }) => {
@@ -195,19 +196,14 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
   };
 
   const handleCardClick = (e, index) => {
-    // Compare per service (mod L): a clone of the active card counts as
-    // active, so clicking it navigates instead of re-centering
+    // Clicking a non-active card first brings it into focus. Clicking the
+    // active card follows its link, preserving the carousel's browse flow.
     if (index % L !== activeDomIndex % L) {
       e.preventDefault();
       const container = containerRef.current;
       if (container) {
-        // Clamp the TARGET into the middle copy, not just the current
-        // position: during fast click-walking the scroll position lags
-        // mid-animation below the normalize threshold while the clicked
-        // index keeps climbing, and the walk runs off the end of the
-        // tripled list. If the target lands in an outer copy, teleport
-        // the view one copy over (invisible) and aim at the equivalent
-        // middle-copy card.
+        // Clamp the target into the middle copy so fast click-walking cannot
+        // run the tripled list into one of its outer boundaries.
         let targetIndex = index + normalizeToMiddle(container);
         const step = getStepSize(container);
         if (step > 0) {
@@ -254,7 +250,7 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
             return (
             <Link
               key={`${service.id}-${index}`}
-              to={service.route}
+              to={canonicalPath(service.route)}
               onClick={(e) => handleCardClick(e, index)}
               className={`service-card ${activeDomIndex % L === index % L ? "service-card--active" : ""}`}
               aria-label={`${service.ctaLabel}: ${service.title}`}

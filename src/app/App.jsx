@@ -42,6 +42,7 @@ const CartPage = lazy(() => import("../pages/CartPage.jsx"));
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage/CheckoutPage.jsx"));
 const SuccessPage = lazy(() => import("../pages/SuccessPage.jsx"));
 const CancelPage = lazy(() => import("../pages/CancelPage.jsx"));
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage.jsx"));
 import { ContactSection } from "../features/contact";
 
 function App() {
@@ -143,6 +144,7 @@ function AppContent() {
   const isHomePage = location.pathname === "/";
   const isTeamPage = location.pathname.startsWith("/om-oss");
   const isContactPage = location.pathname.startsWith("/kontakt");
+  const isArtPage = location.pathname.startsWith("/kurser/konst");
   // Any top-level route with children gets a subnav bar, not just /event.
   const isSubnavSection =
     isHomePage || sectionForPath(location.pathname) !== null;
@@ -169,14 +171,17 @@ function AppContent() {
             <Route path="/event" element={<EventPage />} />
             <Route path="/event/brollop" element={<WeddingPage />} />
             <Route path="/gruppdagar" element={<MohippaPage />} />
-            <Route path="/mohippa" element={<MohippaPage />} />
+            <Route
+              path="/mohippa"
+              element={<Navigate to="/gruppdagar/" replace />}
+            />
             {/* /konst was the maleri & keramik hub before the two course hubs
                 got a shared parent. GitHub Pages cannot 301, so the old URL is
                 forwarded here (and by a static redirect page in dist/konst/
                 for direct hits). */}
             <Route
               path="/konst"
-              element={<Navigate to="/kurser/konst" replace />}
+              element={<Navigate to="/kurser/konst/" replace />}
             />
             <Route path="/kurser" element={<KurserIndexPage />} />
             <Route path="/kurser/yoga" element={<KurserPage />} />
@@ -193,10 +198,11 @@ function AppContent() {
             <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
             <Route path="/kontakt" element={<ContactPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </PageTransition>
       </Suspense>
-      {!isAdminRoute && !isTeamPage && !isContactPage && (
+      {!isAdminRoute && !isTeamPage && !isContactPage && !isArtPage && (
         <div id={isHomePage ? "home-contact" : undefined}>
           <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
             <ContactSection />

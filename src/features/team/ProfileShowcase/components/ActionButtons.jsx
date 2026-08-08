@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { canonicalPath } from "../../../../config/routes.js";
 
 function ActionButtons({ actions = null }) {
   if (!actions || actions.length === 0) {
@@ -14,7 +15,7 @@ function ActionButtons({ actions = null }) {
           return (
             <Link
               key={action.label}
-              to={action.href}
+              to={canonicalPath(action.href)}
               className={`profile-action-btn ${action.primary ? "primary" : "secondary"}`}
             >
               {action.label}

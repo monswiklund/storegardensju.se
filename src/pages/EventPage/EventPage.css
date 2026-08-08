@@ -93,6 +93,14 @@
   color: var(--event-surface);
 }
 
+.event-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
 /* The hero's organic edge has to be drawn on the photograph; a standalone
    divider would reserve a pale band and reduce the image's visual height. */
 .event-hero__curve {
@@ -131,6 +139,24 @@
   background-color: var(--primary-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+.event-button--secondary {
+  border: 1px solid color-mix(in srgb, var(--event-surface) 58%, transparent);
+  background: color-mix(in srgb, var(--event-surface) 8%, transparent);
+  color: var(--event-surface);
+  backdrop-filter: blur(5px);
+}
+
+.event-button--secondary:hover {
+  border-color: var(--event-surface);
+  background: color-mix(in srgb, var(--event-surface) 16%, transparent);
+  transform: translateY(-2px);
+}
+
+.event-button:focus-visible {
+  outline: 3px solid var(--event-surface);
+  outline-offset: 3px;
 }
 
 .event-section-intro {
@@ -616,13 +642,6 @@
   line-height: 1.65;
 }
 
-/* HomeServices owns its own content width and padding; the generic PageSection
-   inset would otherwise clip the carousel's intended viewport bleed. */
-#event-services-recommendation .page-section-content {
-  max-width: none;
-  padding: 0;
-}
-
 @media (max-width: 1024px) {
   .event-types-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -725,6 +744,15 @@
 }
 
 @media (max-width: 600px) {
+  .event-hero__actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .event-hero__actions .event-button {
+    width: min(100%, 320px);
+  }
+
   .event-types-grid {
     grid-template-columns: 1fr;
     gap: 14px;

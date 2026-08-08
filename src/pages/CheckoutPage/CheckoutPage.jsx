@@ -22,7 +22,7 @@ export default function CheckoutPage() {
           <div className="checkout-empty">
             <h1>Din varukorg är tom</h1>
             <p>Lägg till produkter innan du går till kassan</p>
-            <Link to="/butik" className="btn-primary">
+            <Link to="/butik/" className="btn-primary">
               Till butiken
             </Link>
           </div>
