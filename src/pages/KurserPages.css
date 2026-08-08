@@ -1057,53 +1057,158 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 24px;
 }
 
 .kurser-schedule-card {
   display: grid;
-  grid-template-columns: 180px minmax(180px, 1fr) 130px 80px 220px;
+  grid-template-columns: 240px minmax(180px, 1fr) 130px 80px 200px;
   align-items: center;
   gap: 20px;
-  padding: 22px 28px;
-  background: #ffffff;
+  padding: 20px 26px;
   border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.07);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.kurser-schedule-card--signup {
+  background: #fdfbf7;
+  border-color: rgba(95, 111, 82, 0.16);
+}
+
+.kurser-schedule-card--dropin {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.07);
 }
 
 .kurser-schedule-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 26px rgba(61, 94, 75, 0.08);
 }
 
-.kurser-schedule-card__date-col {
+/* Date & Time Side-by-side Col */
+.kurser-schedule-card__datetime-col {
   display: flex;
   align-items: center;
+  gap: 14px;
 }
 
-.kurser-schedule-card__date-text {
+.kurser-schedule-card__datetime-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kurser-schedule-card__weekday {
   font-family: var(--font-heading);
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: var(--text-main);
-  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.kurser-schedule-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  padding: 8px 4px;
+  background: #ffffff;
+  border: 1px solid rgba(95, 111, 82, 0.18);
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  flex-shrink: 0;
+}
+
+.kurser-schedule-card--signup .kurser-schedule-badge {
+  background: #ffffff;
+  border-color: rgba(43, 108, 176, 0.2);
+}
+
+.kurser-schedule-badge__day {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.kurser-schedule-badge__month {
+  margin-top: 2px;
+  color: var(--primary-color);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.kurser-schedule-card--signup .kurser-schedule-badge__month {
+  color: #2b6cb0;
+}
+
+.kurser-schedule-badge__weekday {
+  margin-top: 3px;
+  padding-top: 3px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.12);
+  width: 80%;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: capitalize;
 }
 
 .kurser-schedule-card__meta-col {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+}
+
+.kurser-schedule-card__focus-quote {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--primary-hover);
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.kurser-schedule-card__submeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 2px;
 }
 
 .kurser-schedule-card__time,
-.kurser-schedule-card__location {
+a.kurser-schedule-card__location {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.95rem;
+  gap: 6px;
+  font-size: 0.88rem;
   color: var(--text-secondary);
   white-space: nowrap;
+}
+
+a.kurser-schedule-card__location {
+  text-decoration: none;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+a.kurser-schedule-card__location:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+a.kurser-schedule-card__location svg {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+a.kurser-schedule-card__location:hover svg {
+  transform: translateY(-1px);
+  color: var(--primary-color);
 }
 
 .kurser-schedule-card__tag-col {
@@ -1199,60 +1304,111 @@
   transform: translateY(0);
 }
 
+/* --- Mobile Layout (<= 900px) --- */
 @media (max-width: 900px) {
   .kurser-schedule-card {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "date tag"
-      "meta meta"
-      "price action";
-    gap: 12px 16px;
-    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   }
 
-  .kurser-schedule-card__date-col {
-    grid-area: date;
+  .kurser-schedule-card__mobile-top {
+    display: flex;
     align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
 
-  .kurser-schedule-card__tag-col {
-    grid-area: tag;
-    justify-content: flex-end;
+  .kurser-schedule-card__mobile-top .kurser-schedule-badge {
+    width: 60px;
+    padding: 6px 4px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .kurser-schedule-card__mobile-top .kurser-schedule-badge__day {
+    font-size: 1.45rem;
+  }
+
+  .kurser-schedule-card__mobile-top .kurser-schedule-badge__month {
+    font-size: 0.65rem;
+  }
+
+  .kurser-schedule-card__mobile-header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .kurser-schedule-card__mobile-header-title {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
   }
 
-  .kurser-schedule-card__meta-col {
-    grid-area: meta;
+  .kurser-schedule-card__weekday {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .kurser-schedule-card__focus-quote {
+    font-size: 0.82rem;
+    color: var(--primary-hover);
+    font-style: italic;
+    line-height: 1.35;
+  }
+
+  .kurser-schedule-card__submeta {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 6px;
-    padding-bottom: 4px;
   }
 
-  .kurser-schedule-card__price-col {
-    grid-area: price;
-    justify-content: flex-start;
+  .kurser-schedule-card__mobile-footer {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 12px;
     border-top: 1px solid rgba(0, 0, 0, 0.06);
-    padding-top: 14px;
+    margin-top: 4px;
   }
 
-  .kurser-schedule-card__action-col {
-    grid-area: action;
+  .kurser-schedule-card__mobile-price-chip {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .kurser-schedule-card__price-val {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .kurser-schedule-card__mobile-action {
+    display: flex;
     justify-content: flex-end;
-    align-items: center;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-    padding-top: 14px;
-  }
-
-  .kurser-schedule-card__price {
-    font-size: 1.3rem;
-    text-align: left;
   }
 
   .kurser-schedule-card__note {
     text-align: right;
-    font-size: 0.8rem;
-    max-width: 170px;
+    font-size: 0.82rem;
+    max-width: 180px;
   }
 
   .kurser-btn {

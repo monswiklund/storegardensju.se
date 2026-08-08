@@ -167,7 +167,7 @@ describe("FAQ answers", () => {
   it("names the next yoga pass while one is booked", () => {
     const faq = resolvedFaq(YOGA_TRACK_ID, BEFORE_JULY_30);
     const answer = faq.find((item) =>
-      item.question.startsWith("När är nästa yoga")
+      item.question.includes("När är nästa pass")
     ).answer;
 
     expect(answer).toContain("torsdag 30 juli");
@@ -177,11 +177,11 @@ describe("FAQ answers", () => {
   it("falls back to a no-pass answer instead of a stale date", () => {
     const faq = resolvedFaq(YOGA_TRACK_ID, AFTER_ALL_PASSES);
     const answer = faq.find((item) =>
-      item.question.startsWith("När är nästa yoga")
+      item.question.includes("När är nästa pass")
     ).answer;
 
     expect(answer).not.toContain("30 juli");
-    expect(answer).toContain("inget yogapass");
+    expect(answer).toContain("inget pass");
   });
 
   it("does not claim a booked maleri course when none exists", () => {

@@ -214,7 +214,7 @@ function KurserPage() {
 
         <FaqSection
           faq={FAQ}
-          heading="Vanliga frågor om yogan"
+          heading="Vanliga frågor & praktisk info"
           background="green"
           variant="columns"
         />
@@ -253,7 +253,7 @@ function KurserPage() {
         <DirectionsSection
           background="white"
           variant="split-reverse"
-          description={`Yogan hålls på loftet på ${COURSE_LOCATION.name} i ${COURSE_LOCATION.locality}, ${COURSE_LOCATION.travelNote}. Kör mot Rackeby och följ skyltningen tillgården — det finns gott om parkering på grusplanen intill ladan.`}
+          description={`Yogan hålls på loftet på ${COURSE_LOCATION.name} i ${COURSE_LOCATION.locality}, ${COURSE_LOCATION.travelNote}. Kör mot Rackeby och följ skyltningen till gården — det finns gott om parkering på grusplanen intill ladan.`}
         />
 
         <SectionDivider above="white" below="alt" variant="wave" />
@@ -261,7 +261,7 @@ function KurserPage() {
         <PastPassesSection
           passes={PAST_PASSES}
           trackId={YOGA_TRACK_ID}
-          heading="Tidigare pass pågården"
+          heading="Tidigare pass på gården"
           background="alt"
           variant="timeline"
         />

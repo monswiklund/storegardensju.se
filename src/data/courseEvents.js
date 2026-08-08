@@ -21,7 +21,7 @@
 export const COURSE_LOCATION = {
   name: "Storegården 7",
   streetAddress: "Storegården 7",
-  postalCode: "531 96",
+  postalCode: "531 98",
   locality: "Rackeby",
   region: "Västra Götaland",
   country: "SE",
@@ -114,32 +114,37 @@ export const MALERI_TRACK_ID = "maleri";
 
 const yogaFaq = [
   {
-    question: "När är nästa yoga på Storegården 7?",
+    question: "Vilka klasser erbjuds på loftet?",
+    answer: () =>
+      "På loftet hålls klasser i lugnt tempo med fokus på mjuka rörelser, guidning och vila. Alla tillfällen passar både nybörjare och dig som har deltagit tidigare.",
+  },
+  {
+    question: "När är nästa pass på Storegården 7?",
     answer: (now) => {
       const pass = nextPass(YOGA_TRACK_ID, now);
       if (!pass) {
-        return "Just nu har vi inget yogapass inbokat. Håll utkik här eller hör av dig till Lina för att få veta när nästa tillfälle släpps.";
+        return "Just nu har vi inget pass inbokat. Håll utkik här eller hör av dig till Lina för att få veta när nästa tillfälle släpps.";
       }
-      return `Nästa yogapass "${pass.title}" hålls ${formatPassDate(pass).toLowerCase()} kl ${formatPassTime(pass.startAt)} med Lina.`;
+      return `Nästa pass "${pass.title}" hålls ${formatPassDate(pass).toLowerCase()} kl ${formatPassTime(pass.startAt)} med Lina.`;
     },
   },
   {
-    question: "Vad kostar yogan på Storegården 7?",
+    question: "Vad kostar klasserna på Storegården 7?",
     answer: (now) => {
       const pass = nextPass(YOGA_TRACK_ID, now);
       if (!pass?.price) {
         return "Priset varierar mellan passen. Hör av dig till Lina för aktuellt pris.";
       }
-      return `Yoga på loftet kostar ${pass.price} kr per person och betalas på plats.${pass.dropIn ? " Det är drop-in, så ingen föranmälan behövs." : ""}`;
+      return `Passen på loftet kostar ${pass.price} kr per person och betalas på plats.${pass.dropIn ? " Det är drop-in, så ingen föranmälan behövs." : ""}`;
     },
   },
   {
-    question: "Behöver jag ta med egen yogamatta?",
+    question: "Behöver jag ta med egen matta?",
     answer: () =>
-      "Yogamattor finns att låna på plats, men om du har en egen matta får du gärna ta med den.",
+      "Mattor finns att låna på plats, men om du har en egen matta får du gärna ta med den.",
   },
   {
-    question: "När bör man komma till yogan?",
+    question: "När bör man komma innan passet?",
     answer: (now) => {
       const pass = nextPass(YOGA_TRACK_ID, now);
       const doorsTime = pass?.doorsOpenAt
@@ -149,9 +154,9 @@ const yogaFaq = [
     },
   },
   {
-    question: "Passar yogan för nybörjare?",
+    question: "Passar klasserna för nybörjare?",
     answer: () =>
-      `Ja. Lina är utbildad yogainstruktör och håller passen i lugnt tempo med guidning och vila som fungerar både för nybörjare och vana utövare.`,
+      `Ja. Lina guidar passen i lugnt tempo med mjuka rörelser och vila som fungerar både för nybörjare och vana utövare.`,
   },
   {
     question: "Var ligger Storegården 7?",

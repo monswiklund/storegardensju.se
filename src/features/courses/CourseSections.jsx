@@ -16,7 +16,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Calendar,
-  Car,
   Clock,
   Mail,
   MapPin,
@@ -361,7 +360,7 @@ export function FaqSection({
 export function DirectionsSection({
   description,
   background = "white",
-  variant = "split",
+  variant = "stacked",
 }) {
   return (
     <CourseBand
@@ -374,23 +373,19 @@ export function DirectionsSection({
       >
         <div className="kurser-details__info">
           <span className="kurser-label">Hitta hit</span>
-          <h2>Vägbeskrivning till {COURSE_LOCATION.name}</h2>
+          <h2>Hitta till {COURSE_LOCATION.name}</h2>
           <p className="kurser-details__description">{description}</p>
           <ul className="kurser-details__meta">
             <li>
               <MapPin size={20} aria-hidden="true" />
               <address>{fullAddress}</address>
             </li>
-            <li>
-              <Car size={20} aria-hidden="true" />
-              <span>Fri parkering på gården</span>
-            </li>
           </ul>
         </div>
 
         <div className="kurser-details__action">
           <div className="kurser-action-card">
-            <h3>Vägbeskrivning</h3>
+            <h3>Öppna i Google Maps</h3>
             <p>Öppna kartan för vägbeskrivning ända fram till gården.</p>
             <a
               className="kurser-interest__link"
@@ -408,6 +403,8 @@ export function DirectionsSection({
     </CourseBand>
   );
 }
+
+export const CourseLocationSection = DirectionsSection;
 
 /**
  * Past passes stay on the page: they show that the courses actually run, and
@@ -658,9 +655,9 @@ export function YogaScheduleSection({
     <CourseBand id="kommande" background={background} className="kurser-schedule-section">
       <div className="kurser-schedule__header">
         <span className="kurser-label">Månadsschema & klasser</span>
-        <h2>Yogapass i augusti</h2>
+        <h2>Klasser på loftet i augusti</h2>
         <p className="kurser-schedule__subtitle">
-          Anpassat för både nybörjare och övade utövare. Yogamattor finns att låna på plats på loftet på Storegården 7.
+          Anpassat för både nybörjare och övade utövare. Mattor finns att låna på plats på loftet på Storegården 7.
         </p>
       </div>
 
@@ -671,38 +668,90 @@ export function YogaScheduleSection({
           const mailSubject = `Föranmälan: ${pass.title} (${formatPassDate(pass)})`;
           const mailHref = `mailto:${instructor.email}?subject=${encodeURIComponent(mailSubject)}`;
 
+          const dateParts = formatPassDate(pass).split(" ");
+          const weekday = dateParts[0] || "";
+          const dayNum = dateParts[1] || "";
+          const monthName = dateParts[2] || "";
+
+          const focusText = pass.summary || (isDropIn 
+            ? "Öppet drop-in-pass – kom som du är!"
+            : "Lugnt tempo & djup återhämtning på loftet"
+          );
+
           return (
             <div
               key={pass.id}
               id={passAnchor(pass)}
               className={`kurser-schedule-card ${isDropIn ? "kurser-schedule-card--dropin" : "kurser-schedule-card--signup"}`}
             >
-              <div className="kurser-schedule-card__date-col">
-                <span className="kurser-schedule-card__date-text">{formatPassDate(pass)}</span>
+              {/* Mobile Top Row: Date Badge + Weekday & Time + Tag */}
+              <div className="kurser-schedule-card__mobile-top mobile-only">
+                <div className="kurser-schedule-badge">
+                  <span className="kurser-schedule-badge__day">{dayNum}</span>
+                  <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : "AUG"}</span>
+                </div>
+                <div className="kurser-schedule-card__mobile-header-info">
+                  <div className="kurser-schedule-card__mobile-header-title">
+                    <span className="kurser-schedule-card__weekday">{weekday}</span>
+                    <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
+                      {isDropIn ? "DROP-IN" : "FÖRANMÄLAN"}
+                    </span>
+                  </div>
+                  <span className="kurser-schedule-card__time">
+                    <Clock size={13} aria-hidden="true" />
+                    kl {formatPassTime(pass.startAt)} ({duration} min)
+                  </span>
+                </div>
               </div>
 
+              {/* Left Column: Date & Time Side-by-Side (Desktop) */}
+              <div className="kurser-schedule-card__datetime-col desktop-only">
+                <div className="kurser-schedule-badge">
+                  <span className="kurser-schedule-badge__day">{dayNum}</span>
+                  <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : "AUG"}</span>
+                </div>
+                <div className="kurser-schedule-card__datetime-info">
+                  <span className="kurser-schedule-card__weekday">{weekday}</span>
+                  <span className="kurser-schedule-card__time">
+                    <Clock size={14} aria-hidden="true" />
+                    kl {formatPassTime(pass.startAt)} ({duration} min)
+                  </span>
+                </div>
+              </div>
+
+              {/* Center Info: Focus Quote & Location */}
               <div className="kurser-schedule-card__meta-col">
-                <span className="kurser-schedule-card__time">
-                  <Clock size={16} aria-hidden="true" />
-                  kl {formatPassTime(pass.startAt)} ({duration} min)
-                </span>
-                <span className="kurser-schedule-card__location">
-                  <MapPin size={16} aria-hidden="true" />
-                  Storegården 7, Rackeby
-                </span>
+                <div className="kurser-schedule-card__focus-quote">
+                  <span>"{focusText}"</span>
+                </div>
+                <div className="kurser-schedule-card__submeta">
+                  <a
+                    href={COURSE_LOCATION.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="kurser-schedule-card__location"
+                    title="Öppna Storegården 7, Rackeby i Google Maps"
+                  >
+                    <MapPin size={15} aria-hidden="true" />
+                    <span>Storegården 7, Rackeby</span>
+                  </a>
+                </div>
               </div>
 
-              <div className="kurser-schedule-card__tag-col">
+              {/* Tag Column */}
+              <div className="kurser-schedule-card__tag-col desktop-only">
                 <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
                   {isDropIn ? "DROP-IN" : "FÖRANMÄLAN"}
                 </span>
               </div>
 
-              <div className="kurser-schedule-card__price-col">
+              {/* Price Column */}
+              <div className="kurser-schedule-card__price-col desktop-only">
                 <span className="kurser-schedule-card__price">{pass.price ? `${pass.price}:-` : "150:-"}</span>
               </div>
 
-              <div className="kurser-schedule-card__action-col">
+              {/* Action Column */}
+              <div className="kurser-schedule-card__action-col desktop-only">
                 {isDropIn ? (
                   <span className="kurser-schedule-card__note">
                     Ingen föranmälan behövs – betalning på plats
@@ -717,6 +766,29 @@ export function YogaScheduleSection({
                     <Mail size={16} aria-hidden="true" />
                   </a>
                 )}
+              </div>
+
+              {/* Mobile Footer Row */}
+              <div className="kurser-schedule-card__mobile-footer mobile-only">
+                <div className="kurser-schedule-card__mobile-price-chip">
+                  <span className="kurser-schedule-card__price-val">{pass.price ? `${pass.price}:-` : "150:-"}</span>
+                </div>
+                <div className="kurser-schedule-card__mobile-action">
+                  {isDropIn ? (
+                    <span className="kurser-schedule-card__note">
+                      Betalas på plats
+                    </span>
+                  ) : (
+                    <a
+                      href={mailHref}
+                      className="kurser-btn kurser-btn--primary"
+                      onClick={onContactClick}
+                    >
+                      <span>Föranmäl dig</span>
+                      <Mail size={15} aria-hidden="true" />
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           );
