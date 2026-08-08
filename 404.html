@@ -2,14 +2,68 @@
 <html lang="sv">
 <head>
     <meta charset="utf-8">
-    <title>Storegården 7</title>
-    <script>
-        // GitHub Pages SPA redirect hack
-        // Store the path in sessionStorage and redirect to root
-        sessionStorage.setItem('redirectPath', location.pathname + location.search + location.hash);
-        location.replace(location.origin);
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Sidan hittades inte | Storegården 7</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #243328;
+            --muted: #5f6f62;
+            --green: #5f8a70;
+            --paper: #f7f5ef;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 32px 20px;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: Lato, Helvetica, Arial, sans-serif;
+        }
+        main { max-width: 620px; text-align: center; }
+        p { color: var(--muted); line-height: 1.7; }
+        h1 {
+            margin: 0 0 16px;
+            font-family: Georgia, serif;
+            font-size: clamp(2.25rem, 7vw, 4rem);
+            font-weight: 600;
+        }
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 28px;
+        }
+        a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 46px;
+            padding: 10px 18px;
+            border: 1px solid var(--green);
+            border-radius: 999px;
+            color: var(--green);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        a:first-child { background: var(--green); color: white; }
+        a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+    </style>
 </head>
 <body>
+    <main>
+        <p aria-hidden="true">404</p>
+        <h1>Sidan hittades inte</h1>
+        <p>Det verkar som att sidan har flyttat eller att länken inte längre finns.</p>
+        <nav aria-label="Hitta vidare på Storegården 7">
+            <a href="/">Till startsidan</a>
+            <a href="/event/">Se våra event</a>
+            <a href="/kontakt/">Kontakta oss</a>
+        </nav>
+    </main>
 </body>
 </html>
