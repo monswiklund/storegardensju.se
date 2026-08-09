@@ -607,6 +607,40 @@ export function apiEventToCoursePass(apiEvent, defaultTrackId = YOGA_TRACK_ID) {
   };
 }
 
+// A pass can exist in both the static schedule and the admin API. IDs are the
+// normal way to match those records, but an accidentally recreated API event
+// can have a different ID while keeping the same start time. Prefer the
+// record with a complete schedule in that case so a malformed duplicate does
+// not become a second visible card.
+function passSlotKey(pass, trackId) {
+    const startTime = new Date(pass.startAt).getTime();
+    if (!Number.isFinite(startTime)) return null;
+    return `${trackId}:${startTime}`;
+}
+
+function passQuality(pass) {
+    const startTime = new Date(pass.startAt).getTime();
+    const endTime = new Date(pass.endAt || pass.startAt).getTime();
+    let score = 0;
+
+    if (Number.isFinite(startTime)) score += 1;
+    if (Number.isFinite(endTime) && endTime > startTime) score += 4;
+    if (Number.isFinite(pass.durationMinutes) && pass.durationMinutes > 0) {
+        score += 2;
+    }
+    if (pass.price !== null && pass.price !== undefined) score += 1;
+    if (typeof pass.dropIn === "boolean") score += 1;
+    if (pass.summary || pass.description) score += 1;
+    if (pass.practicalNote) score += 1;
+    if (Array.isArray(pass.images) && pass.images.length > 0) score += 1;
+
+    return score;
+}
+
+function preferCompletePass(candidate, current) {
+    return passQuality(candidate) > passQuality(current) ? candidate : current;
+}
+
 /**
  * Merges API events with static course passes for a given track, returning upcoming passes sorted chronologically.
  */
@@ -643,10 +677,26 @@ export function mergeCoursePasses(
     map.set(pass.id, pass);
   }
   for (const pass of formattedApiPasses) {
-    map.set(pass.id, pass);
+      const existing = map.get(pass.id);
+      map.set(pass.id, existing ? preferCompletePass(pass, existing) : pass);
   }
 
-  return Array.from(map.values())
+    const passesBySlot = new Map();
+    for (const pass of map.values()) {
+        const slotKey = passSlotKey(pass, trackId);
+        if (!slotKey) {
+            passesBySlot.set(`id:${pass.id}`, pass);
+            continue;
+        }
+
+        const existing = passesBySlot.get(slotKey);
+        passesBySlot.set(
+            slotKey,
+            existing ? preferCompletePass(pass, existing) : pass
+        );
+  }
+
+    return Array.from(passesBySlot.values())
     .filter(
       (pass) =>
         pass.bucketOverride === "upcoming" ||
@@ -655,5 +705,4 @@ export function mergeCoursePasses(
     )
     .sort((a, b) => new Date(a.startAt) - new Date(b.startAt));
 }
-
 

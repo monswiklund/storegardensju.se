@@ -1,13 +1,11 @@
-import { describe, expect, it } from "vitest";
+import {describe, expect, it} from "vitest";
 import {
-  COURSE_PASSES,
-  MALERI_TRACK_ID,
-  TRACKS,
-  YOGA_TRACK_ID,
   allUpcomingPasses,
   apiEventToCoursePass,
+  COURSE_PASSES,
   formatPassDate,
   formatPassTime,
+  MALERI_TRACK_ID,
   mergeCoursePasses,
   nextPass,
   ownedUpcomingPasses,
@@ -16,7 +14,9 @@ import {
   pastPasses,
   resolvedFaq,
   trackById,
+  TRACKS,
   upcomingPasses,
+  YOGA_TRACK_ID,
 } from "./courseEvents.js";
 
 // Fixed clock: these assertions must not start failing as real time passes.
@@ -272,6 +272,45 @@ describe("apiEventToCoursePass and mergeCoursePasses", () => {
     expect(merged[1].id).toBe("api-yoga-new");
   });
 
+    it("keeps one complete pass when an API duplicate has the same start time", () => {
+        const staticPass = {
+            id: "static-yoga-duplicate-slot",
+            title: "Yoga på loftet (90 min)",
+            tracks: [YOGA_TRACK_ID],
+            primaryTrack: YOGA_TRACK_ID,
+            startAt: "2026-08-11T18:00:00+02:00",
+            endAt: "2026-08-11T19:30:00+02:00",
+            durationMinutes: 90,
+            price: 150,
+            dropIn: false,
+            summary: "Ett komplett yogapass.",
+            practicalNote: "Mattor finns på plats.",
+            images: [{url: "/images/yoga.jpg"}],
+        };
+
+        const apiEvents = [
+            {
+                id: "event-duplicate-slot",
+                title: "90 minuter Yogapss",
+                category: "yoga",
+                startAt: "2026-08-11T18:00:00+02:00",
+                endAt: "2026-08-11T18:00:00+02:00",
+            },
+        ];
+
+        const merged = mergeCoursePasses(
+            [staticPass],
+            apiEvents,
+            YOGA_TRACK_ID,
+            BEFORE_JULY_30
+        );
+
+        expect(merged).toHaveLength(1);
+        expect(merged[0].id).toBe(staticPass.id);
+        expect(merged[0].durationMinutes).toBe(90);
+        expect(merged[0].price).toBe(150);
+    });
+
   it("converts and merges maleri / konst events correctly", () => {
     const rawMaleriEvent = {
       id: "api-maleri-1",
@@ -295,5 +334,4 @@ describe("apiEventToCoursePass and mergeCoursePasses", () => {
     expect(merged[0].id).toBe("api-maleri-1");
   });
 });
-
 
