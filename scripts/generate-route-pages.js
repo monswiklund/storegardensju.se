@@ -190,6 +190,20 @@ for (const meta of Object.values(seoMeta)) {
   console.log(`generated dist${meta.path}/index.html`);
 }
 
+// The operational admin is a real React route too, but it has no public SEO
+// metadata. Give GitHub Pages a static entry point without adding it to the
+// crawlable site graph or injecting the public prerender shell.
+const adminHtml = html
+  .replace(/<title>[\s\S]*?<\/title>/, "<title>Administration – Storegården 7</title>")
+  .replace(
+    "</head>",
+    '    <meta name="robots" content="noindex, nofollow" />\n  </head>'
+  );
+
+mkdirSync("dist/admin", { recursive: true });
+writeFileSync("dist/admin/index.html", adminHtml);
+console.log("generated dist/admin/index.html");
+
 // Legacy URLs that moved. GitHub Pages serves static files only - it cannot
 // 301 - so the old path keeps returning 200 with a redirect page: canonical and
 // og:url point at the new URL, a meta refresh moves real visitors, and the body
