@@ -1,7 +1,9 @@
 import "./Creation.css";
 import { creationContent } from "../../data/homeContent.js";
+import usePageCopy from "../../hooks/usePageCopy.js";
 
 function CreativeWorkshopsSection() {
+  const copy = usePageCopy("art");
   const { sections } = creationContent;
 
   // Let's pair each section with a beautiful, high-quality image path
@@ -23,9 +25,11 @@ function CreativeWorkshopsSection() {
                 className={`creation-row ${isEven ? "row-normal" : "row-reverse"}`}
               >
                 <div className="creation-row__text">
-                  <h3>{section.heading}</h3>
+                  <h3>{copy(`workshops.${index}.heading`, section.heading)}</h3>
                   {section.body.map((paragraph, idx) => (
-                    <p key={idx}>{paragraph}</p>
+                    <p key={idx}>
+                      {copy(`workshops.${index}.paragraphs.${idx}`, paragraph)}
+                    </p>
                   ))}
                 </div>
                 <div className="creation-row__image-wrapper">

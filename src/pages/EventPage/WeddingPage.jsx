@@ -18,6 +18,7 @@ import {
 } from "../../config/seoMeta.js";
 import { useSeo } from "../../hooks/useSeo.js";
 import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
+import usePageCopy from "../../hooks/usePageCopy.js";
 import "./EventPage.css";
 import "./WeddingPage.css";
 
@@ -105,6 +106,17 @@ function WeddingFaqItem({ question, answer }) {
 
 function WeddingPage() {
   useSeo(seoMeta.eventWedding);
+  const copy = usePageCopy("wedding");
+  const weddingSpaces = WEDDING_SPACES.map((item, index) => ({
+    ...item,
+    value: copy(`spaces.items.${index}.value`, item.value),
+    title: copy(`spaces.items.${index}.title`, item.title),
+    body: copy(`spaces.items.${index}.body`, item.body),
+  }));
+  const weddingFlow = WEDDING_FLOW.map((item, index) => ({
+    title: copy(`flow.steps.${index}.title`, item.title),
+    body: copy(`flow.steps.${index}.body`, item.body),
+  }));
   const {
     timelineRef,
     activeSteps: activeTimelineSteps,
@@ -134,14 +146,14 @@ function WeddingPage() {
           aria-labelledby="wedding-heading"
         >
           <div className="event-hero__inner">
-            <span className="event-eyebrow">Bröllopslokal nära Lidköping</span>
+            <span className="event-eyebrow">{copy("hero.eyebrow", "Bröllopslokal nära Lidköping")}</span>
             <div className="section-ornament wedding-hero__ornament" aria-hidden="true">
               <span className="section-ornament-line" />
               <Heart size={20} />
               <span className="section-ornament-line" />
             </div>
-            <h1 id="wedding-heading">Bröllop</h1>
-            <p>En lantlig plats för middag, mingel och dans under samma tak</p>
+            <h1 id="wedding-heading">{copy("hero.title", "Bröllop")}</h1>
+            <p>{copy("hero.lead", "En lantlig plats för middag, mingel och dans under samma tak")}</p>
           </div>
 
           {/* The photo remains full-height while the wave visually opens the
@@ -172,7 +184,7 @@ function WeddingPage() {
                   />
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">Er bröllopsdag</span>
+                  <span className="event-section-eyebrow">{copy("intro.eyebrow", "Er bröllopsdag")}</span>
                   <div className="section-ornament align-left" aria-hidden="true">
                     <span className="section-ornament-line" />
                     <CalendarHeart size={18} />
@@ -207,7 +219,7 @@ function WeddingPage() {
               </div>
 
               <div className="wedding-spaces-grid">
-                {WEDDING_SPACES.map(({ Icon, body, title, value }) => (
+                {weddingSpaces.map(({ Icon, body, title, value }) => (
                   <article key={title} className="wedding-space-card">
                     <span className="wedding-space-card__icon" aria-hidden="true">
                       <Icon size={23} />
@@ -248,7 +260,7 @@ function WeddingPage() {
                     "--event-timeline-progress": timelineProgress,
                   }}
                 >
-                  {WEDDING_FLOW.map((step, index) => (
+                  {weddingFlow.map((step, index) => (
                     <li
                       key={step.title}
                       className={`event-timeline__item${
@@ -367,9 +379,10 @@ function WeddingPage() {
           <PageSection background="white" spacing="none">
             <FadeInSection>
               <HomeServicesSection
+                cmsPage="wedding"
                 excludeId="brollop"
-                title="Utforska mer"
-                eyebrow="MER HOS OSS"
+                title={copy("services-section.title", "Utforska mer")}
+                eyebrow={copy("services-section.eyebrow", "MER HOS OSS")}
               />
             </FadeInSection>
           </PageSection>

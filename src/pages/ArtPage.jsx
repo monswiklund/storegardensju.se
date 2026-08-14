@@ -22,6 +22,7 @@ import {
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import { fetchPublicEvents } from "../services/eventsService.js";
+import usePageCopy from "../hooks/usePageCopy.js";
 import {
   COURSE_LOCATION,
   COURSE_PASSES,
@@ -66,6 +67,7 @@ const SPY_SECTIONS = [
 const SPY_OFFSET = 130;
 
 function ArtPage() {
+  const copy = usePageCopy("art");
   const [showMailFallback, setShowMailFallback] = useState(false);
   const [apiEvents, setApiEvents] = useState([]);
   const onContactClick = () => setShowMailFallback(true);
@@ -125,14 +127,13 @@ function ArtPage() {
           <div className="art-hero__content">
             <span className="art-hero__eyebrow">
               <Sparkles size={16} aria-hidden="true" />
-              Gårdsateljén på Storegården 7
+              {copy("hero.eyebrow", "Gårdsateljén på Storegården 7")}
             </span>
 
-            <h1 className="art-hero__heading">Måleri & keramik</h1>
+            <h1 className="art-hero__heading">{copy("hero.title", "Måleri & keramik")}</h1>
 
             <p className="art-hero__subheading">
-              Kurser i akvarell, akryl och lera i inspirerande miljö på gården
-              utanför Lidköping. Inga förkunskaper krävs.
+              {copy("hero.lead", "Kurser i akvarell, akryl och lera i inspirerande miljö på gården utanför Lidköping. Inga förkunskaper krävs.")}
             </p>
 
             <div className="art-hero__actions">
@@ -176,8 +177,8 @@ function ArtPage() {
             <NoUpcomingSection
               trackId={MALERI_TRACK_ID}
               background="white"
-              heading="Kurser med fast datum släpps här"
-              body={`Just nu har vi ingen kurs med fast datum i kalendern. Nya tillfällen läggs upp här — och du kan alltid höra av dig till ${INSTRUCTOR.name} för att boka en egen kurs i måleri eller keramik för din grupp.`}
+              heading={copy("empty.title", "Kurser med fast datum släpps här")}
+              body={copy("empty.body", `Just nu har vi ingen kurs med fast datum i kalendern. Nya tillfällen läggs upp här — och du kan alltid höra av dig till ${INSTRUCTOR.name} för att boka en egen kurs i måleri eller keramik för din grupp.`)}
             />
           ) : (
             upcomingPassesList.map((pass) => (

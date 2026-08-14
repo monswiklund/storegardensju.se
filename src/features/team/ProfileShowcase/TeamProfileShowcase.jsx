@@ -7,8 +7,12 @@ import { canonicalPath } from "../../../config/routes.js";
 import "./ProfileShowcase.css";
 import ContactList from "./components/ContactList";
 import ActionButtons from "./components/ActionButtons";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 
-const TeamProfileShowcase = ({ profile }) => {
+const TeamProfileShowcase = ({ cmsId, profile }) => {
+  const copy = usePageCopy("about");
+  const editableTitle = copy(`people.${cmsId}.name`, profile.title);
+  const editableAbout = copy(`people.${cmsId}.role`, profile.about);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
@@ -81,15 +85,15 @@ const TeamProfileShowcase = ({ profile }) => {
           <img
             className="team-card-image"
             src={profile.imageSrc}
-            alt={profile.imageAlt || `Profilbild för ${profile.title}`}
+            alt={profile.imageAlt || `Profilbild för ${editableTitle}`}
             loading="lazy"
           />
         )}
       </div>
 
       <div className="team-card-content">
-        {profile.title && <h3 className="team-card-title">{profile.title}</h3>}
-        {profile.about && <p className="team-card-subtitle">{profile.about}</p>}
+        {editableTitle && <h3 className="team-card-title">{editableTitle}</h3>}
+        {editableAbout && <p className="team-card-subtitle">{editableAbout}</p>}
         
 
 
@@ -97,7 +101,7 @@ const TeamProfileShowcase = ({ profile }) => {
           <div className="team-card-tags">
             {profile.listItems.map((item, index) => (
               <span key={index} className="team-card-tag">
-                {item}
+                {copy(`people.${cmsId}.tags.${index}`, item)}
               </span>
             ))}
           </div>
@@ -113,7 +117,7 @@ const TeamProfileShowcase = ({ profile }) => {
           <Link
             to={canonicalPath(profile.portfolioUrl)}
             className="team-card-portfolio-btn"
-            aria-label={`Visa portfolio för ${profile.title}`}
+            aria-label={`Visa portfolio för ${editableTitle}`}
           >
             <ImageIcon size={16} />
             <span>Visa Portfolio</span>
@@ -122,7 +126,7 @@ const TeamProfileShowcase = ({ profile }) => {
           <button
             className="team-card-portfolio-btn"
             onClick={() => openModal(0)}
-            aria-label={`Visa portfolio för ${profile.title}`}
+            aria-label={`Visa portfolio för ${editableTitle}`}
           >
             <ImageIcon size={16} />
             <span>Visa Portfolio</span>
@@ -216,6 +220,7 @@ const TeamProfileShowcase = ({ profile }) => {
 };
 
 TeamProfileShowcase.propTypes = {
+  cmsId: PropTypes.string.isRequired,
   profile: PropTypes.shape({
     title: PropTypes.string,
     about: PropTypes.string,

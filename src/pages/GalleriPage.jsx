@@ -8,6 +8,7 @@ import { HomeServicesSection } from "../features/home";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import "./GalleriPage.css";
+import usePageCopy from "../hooks/usePageCopy.js";
 
 // Lazy load heavy components
 const GalleryShowcase = lazy(() =>
@@ -16,6 +17,7 @@ const GalleryShowcase = lazy(() =>
 
 function GalleriPage() {
   useSeo(seoMeta.galleri);
+  const copy = usePageCopy("gallery");
   return (
     <main role="main" id="main-content">
       {/* Full Gallery */}
@@ -25,8 +27,8 @@ function GalleriPage() {
         ariaLabel="gallery-page-heading"
       >
         <div className="gallery-page-intro">
-          <span className="section-eyebrow">SE PLATSEN</span>
-          <h1 id="gallery-page-heading">Bildgalleri</h1>
+          <span className="section-eyebrow">{copy("hero.eyebrow", "SE PLATSEN")}</span>
+          <h1 id="gallery-page-heading">{copy("hero.title", "Bildgalleri")}</h1>
           <p>
             Se ladan, loftet och ateljén inför ert nästa event, besök eller
             kurs på Storegården 7.
@@ -53,8 +55,9 @@ function GalleriPage() {
       <div id="gallery-services-recommendation">
         <PageSection background="green" spacing="default">
           <HomeServicesSection
-            title="Utforska mer"
-            eyebrow="BOKA & BESÖK"
+            cmsPage="gallery"
+            title={copy("services-section.title", "Utforska mer")}
+            eyebrow={copy("services-section.eyebrow", "BOKA & BESÖK")}
           />
         </PageSection>
       </div>

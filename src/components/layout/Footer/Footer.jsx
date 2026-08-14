@@ -4,8 +4,10 @@ import { Facebook, Instagram } from "lucide-react";
 import BuildInfo from "../../ui/BuildInfo.jsx";
 import { useEffect, useState } from "react";
 import { appRoutes, canonicalPath } from "../../../config/routes.js";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 
 const Footer = () => {
+  const copy = usePageCopy("site");
   const [currentYear, setCurrentYear] = useState(2025);
 
   useEffect(() => {
@@ -29,8 +31,8 @@ const Footer = () => {
     <footer className="site-footer" role="contentinfo">
       <div className="footer-content">
         <div className="footer-brand">
-          <h2 className="footer-logo">Storegården 7</h2>
-          <p className="footer-tagline">Fest, kurser och konst på landet</p>
+          <h2 className="footer-logo">{copy("footer.name", "Storegården 7")}</h2>
+          <p className="footer-tagline">{copy("footer.tagline", "Fest, kurser och konst på landet")}</p>
         </div>
 
         <nav className="footer-nav" aria-label="Footer Navigation">
@@ -50,7 +52,7 @@ const Footer = () => {
         </nav>
 
         <div className="footer-social-wrapper">
-          <p className="footer-social-title">Följ oss gärna på</p>
+          <p className="footer-social-title">{copy("footer.social-title", "Följ oss gärna på")}</p>
           <div className="footer-social">
             <a
               href="https://www.facebook.com/profile.php?id=61564642647081"
@@ -73,11 +75,11 @@ const Footer = () => {
           </div>
 
           <div className="footer-collaboration">
-            <h3 className="footer-collab-title">Samarbeta med oss</h3>
+            <h3 className="footer-collab-title">{copy("footer.collaboration-title", "Samarbeta med oss")}</h3>
             <p className="footer-collab-text">
-              Vill du ställa ut konst, ordna ett evenemang eller har du en idé som skulle passa på gården?{" "}
+              {copy("footer.collaboration-body", "Vill du ställa ut konst, ordna ett evenemang eller har du en idé som skulle passa på gården?")}{" "}
               <a href="mailto:storegardensju@gmail.com?subject=Samarbete med Storegården 7" className="footer-collab-link">
-                Hör av dig till oss.
+                {copy("footer.collaboration-cta", "Hör av dig till oss.")}
               </a>
             </p>
           </div>
@@ -89,7 +91,7 @@ const Footer = () => {
 
         <div className="footer-copyright">
           <p>
-            &copy; {currentYear} Storegården 7. Alla rättigheter förbehållna.
+            &copy; {currentYear} {copy("footer.copyright", "Storegården 7. Alla rättigheter förbehållna.")}
           </p>
         </div>
       </div>

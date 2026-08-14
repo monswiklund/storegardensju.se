@@ -13,6 +13,7 @@ import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
 import { ExploreMoreSection, PageSection } from "../components";
 import { formatPrice } from "../services/stripeService";
+import usePageCopy from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import "./ButikPage.css";
@@ -32,6 +33,7 @@ import "./ButikPage.css";
 
 function ButikPage() {
   useSeo(seoMeta.butik);
+  const copy = usePageCopy("shop");
   // Hämta produkter från global ProductContext (prefetchade vid app start)
   const { products, loading, error, categories, refetch } =
     useContext(ProductContext);
@@ -84,14 +86,21 @@ function ButikPage() {
       <PageSection background="alt" spacing="default">
         {/* Header */}
         <div className="butik-header">
-          <span className="section-eyebrow">GÅRDSBUTIK</span>
+          <span className="section-eyebrow">
+            {copy("hero.eyebrow", "GÅRDSBUTIK")}
+          </span>
           <div className="section-ornament" aria-hidden="true">
             <span className="section-ornament-line"></span>
             <ShoppingBag size={20} />
             <span className="section-ornament-line"></span>
           </div>
-          <h1>Butik</h1>
-          <p>Konst och handgjord keramik från gårdens ateljé</p>
+          <h1>{copy("hero.title", "Butik")}</h1>
+          <p>
+            {copy(
+              "hero.lead",
+              "Konst och handgjord keramik från gårdens ateljé",
+            )}
+          </p>
         </div>
 
         {/* Kategorifilter - visa bara om det finns produkter */}
@@ -132,8 +141,15 @@ function ButikPage() {
         {/* Empty state */}
         {!loading && !error && products.length === 0 && (
           <div className="products-empty">
-            <p>Inga produkter tillgängliga just nu.</p>
-            <p>Sortimentet fylls på när det finns nya saker från ateljén.</p>
+            <p>
+              {copy("empty.title", "Inga produkter tillgängliga just nu.")}
+            </p>
+            <p>
+              {copy(
+                "empty.body",
+                "Sortimentet fylls på när det finns nya saker från ateljén.",
+              )}
+            </p>
           </div>
         )}
 

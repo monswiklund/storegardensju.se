@@ -2,13 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { heroContent } from "../../../data/homeContent.js";
 import { canonicalPath } from "../../../config/routes.js";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 import "./Hero.css";
 import HomeHeroContent from "./HomeHeroContent.jsx";
 
 function HomeHeroSection() {
   const navigate = useNavigate();
+  const copy = usePageCopy("home");
   const { title, subtitle, paragraphs, primaryCta, secondaryCtas } =
     heroContent;
+  const editableParagraphs = paragraphs.map((paragraph, index) =>
+    copy(`hero.paragraphs.${index}`, paragraph),
+  );
 
   const contentRef = useRef(null);
   const [isContentVisible, setIsContentVisible] = useState(false);
@@ -124,11 +129,14 @@ function HomeHeroSection() {
         ref={contentRef}
       >
         <HomeHeroContent
-          title={title}
-          subtitle={subtitle}
-          paragraphs={paragraphs}
-          primaryCta={primaryCta}
-          secondaryCtas={secondaryCtas}
+          title={copy("hero.title", title)}
+          subtitle={copy("hero.subtitle", subtitle)}
+          paragraphs={editableParagraphs}
+          primaryCta={{ ...primaryCta, label: copy("hero.primary-cta", primaryCta.label) }}
+          secondaryCtas={secondaryCtas.map((cta, index) => ({
+            ...cta,
+            label: copy(`hero.secondary-ctas.${index}`, cta.label),
+          }))}
           onPrimaryClick={handlePrimaryCta}
           onRouteClick={handleSecondaryRoute}
         />

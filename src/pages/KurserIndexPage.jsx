@@ -15,6 +15,7 @@ import {
 } from "../components";
 import { CourseBand } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
+import usePageCopy from "../hooks/usePageCopy.js";
 import { seoMeta } from "../config/seoMeta.js";
 import {
   COURSE_LOCATION,
@@ -82,6 +83,7 @@ const SPY_OFFSET = 130;
 function KurserIndexPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const copy = usePageCopy("courses");
 
   useSeo(seoMeta.kurser);
 
@@ -104,14 +106,15 @@ function KurserIndexPage() {
           className="kurser-index__intro"
         >
           <div className="kurser-index__intro-copy">
-            <span className="kurser-label">Kurser i Lidköping</span>
-            <h1>Kurser på Storegården 7</h1>
+            <span className="kurser-label">
+              {copy("hero.eyebrow", "Kurser i Lidköping")}
+            </span>
+            <h1>{copy("hero.title", "Kurser på Storegården 7")}</h1>
             <p className="kurser-index__lead">
-              Två sorters kurser på gården: yoga på loftet med{" "}
-              {TRACKS[YOGA_TRACK_ID].instructor.name} och skapande i
-              gårdsateljén med {TRACKS[MALERI_TRACK_ID].instructor.name}. Välj
-              den du är intresserad av. Datum, priser och praktiska detaljer finns på
-              respektive sida.
+              {copy(
+                "hero.lead",
+                `Två sorters kurser på gården: yoga på loftet med ${TRACKS[YOGA_TRACK_ID].instructor.name} och skapande i gårdsateljén med ${TRACKS[MALERI_TRACK_ID].instructor.name}. Välj den du är intresserad av. Datum, priser och praktiska detaljer finns på respektive sida.`,
+              )}
             </p>
             <ul className="kurser-index__facts">
               <li>
@@ -122,11 +125,13 @@ function KurserIndexPage() {
               </li>
               <li>
                 <Sparkles size={17} aria-hidden="true" />
-                <span>Kurser för både nybörjare och vana</span>
+                <span>
+                  {copy("hero.fact-level", "Kurser för både nybörjare och vana")}
+                </span>
               </li>
               <li>
                 <Users size={17} aria-hidden="true" />
-                <span>Privata kurser för grupper</span>
+                <span>{copy("hero.fact-groups", "Privata kurser för grupper")}</span>
               </li>
             </ul>
           </div>
@@ -136,7 +141,7 @@ function KurserIndexPage() {
 
         <CourseBand id="kurser-index-val" background="alt">
           <div className="kurser-index__grid">
-            {HUBS.map(({ trackId, image, imageAlt, heading, body, cta }) => {
+            {HUBS.map(({ trackId, image, imageAlt, heading, body, cta }, index) => {
               const track = TRACKS[trackId];
               const pass = nextPass(trackId);
 
@@ -151,8 +156,8 @@ function KurserIndexPage() {
                   </div>
                   <div className="kurser-index__card-body">
                     <span className="kurser-label">{track.label}</span>
-                    <h2>{heading}</h2>
-                    <p>{body}</p>
+                    <h2>{copy(`hubs.${index}.title`, heading)}</h2>
+                    <p>{copy(`hubs.${index}.body`, body)}</p>
                     <ul className="kurser-index__card-meta">
                       <li>
                         <Calendar size={17} aria-hidden="true" />
@@ -170,7 +175,7 @@ function KurserIndexPage() {
                       </li>
                     </ul>
                     <span className="kurser-index__card-cta">
-                      {cta}
+                      {copy(`hubs.${index}.cta`, cta)}
                       <ArrowUpRight size={16} aria-hidden="true" />
                     </span>
                   </div>
@@ -187,22 +192,28 @@ function KurserIndexPage() {
         <CourseBand id="grupper" background="green" className="kurser-details">
           <div className="kurser-details__container kurser-details__container--split-reverse">
             <div className="kurser-details__info">
-              <span className="kurser-label">Grupper</span>
-              <h2>Egen kurs för din grupp</h2>
+              <span className="kurser-label">
+                {copy("groups.eyebrow", "Grupper")}
+              </span>
+              <h2>{copy("groups.title", "Egen kurs för din grupp")}</h2>
               <p className="kurser-details__description">
-                Möhippa, svensexa, teambuilding eller ett gäng vänner som vill
-                göra något tillsammans? Vi håller kurser i måleri, keramik och
-                yoga som privat bokning, med lokalen och fikat på gården.
+                {copy(
+                  "groups.body",
+                  "Möhippa, svensexa, teambuilding eller ett gäng vänner som vill göra något tillsammans? Vi håller kurser i måleri, keramik och yoga som privat bokning, med lokalen och fikat på gården.",
+                )}
               </p>
             </div>
             <div className="kurser-details__action">
               <div className="kurser-action-card">
-                <h3>Gruppdagar</h3>
+                <h3>{copy("groups.card-title", "Gruppdagar")}</h3>
                 <p>
-                  Baspaket från 500 kr per person, lokalen är er 10:00-22:00.
+                  {copy(
+                    "groups.card-body",
+                    "Baspaket från 500 kr per person, lokalen är er 10:00-22:00.",
+                  )}
                 </p>
                 <Link className="kurser-interest__link" to="/gruppdagar/">
-                  Läs om gruppdagar
+                  {copy("groups.cta", "Läs om gruppdagar")}
                   <ArrowUpRight size={15} aria-hidden="true" />
                 </Link>
               </div>

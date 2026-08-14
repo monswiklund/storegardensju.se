@@ -7,6 +7,7 @@ import {
   CalendarDays,
   ChevronRight,
   Flower2,
+  FileText,
   GalleryHorizontal,
   House,
   LayoutDashboard,
@@ -40,6 +41,11 @@ function AdminSidebar({
   isExpanded,
   onExpandedChange,
 }) {
+  const cmsAdminUrl =
+    import.meta.env.VITE_CMS_ADMIN_URL?.trim() ||
+    (import.meta.env.DEV
+      ? "http://localhost:3000/admin"
+      : "https://cms.storegardensju.se/admin");
   const closeButtonRef = useRef(null);
   const restoreFocusRef = useRef(null);
 
@@ -144,6 +150,17 @@ function AdminSidebar({
           ))}
 
           <div className="admin-sidebar-footer">
+            <a
+              href={cmsAdminUrl}
+              className="admin-sidebar-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Redigera hemsidans texter"
+              title={!isExpanded ? "Redigera hemsidans texter" : undefined}
+            >
+              <FileText size={18} aria-hidden="true" />
+              <span>Redigera sidtexter</span>
+            </a>
             <Link
               to="/"
               className="admin-sidebar-link admin-sidebar-home"

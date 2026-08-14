@@ -9,8 +9,10 @@ import "./FeaturedGallery.css";
 import { fetchGalleryCategories } from "../../../services/galleryService";
 import galleryOrder from "../../../data/gallery-order.json";
 import { normalizeGalleryData } from "../../gallery/normalizeGalleryData";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 
 function HomeFeaturedGallery({ onViewAll }) {
+  const copy = usePageCopy("home");
   // Only animate when visible - stops infinite animation when off-screen
   const { ref: containerRef, isVisible } = useIntersectionObserver({
     threshold: 0.1,
@@ -87,11 +89,17 @@ function HomeFeaturedGallery({ onViewAll }) {
           >
             <img src={image.src} alt={image.alt} loading="eager" />
             <div className="featured-text-overlay">
-              <h3 className="featured-title">{venueIntro.title}</h3>
-              <p className="featured-subtitle">{venueIntro.description}</p>
+              <h3 className="featured-title">
+                {copy("venue.title", venueIntro.title)}
+              </h3>
+              <p className="featured-subtitle">
+                {copy("venue.description", venueIntro.description)}
+              </p>
             </div>
             <div className="featured-overlay">
-              <span className="view-more-text">Se alla bilder</span>
+              <span className="view-more-text">
+                {copy("venue.gallery-cta", "Se alla bilder")}
+              </span>
             </div>
           </div>
         ))}

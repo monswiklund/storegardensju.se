@@ -25,6 +25,9 @@ describe("admin shell", () => {
       "page"
     );
     expect(screen.getByRole("img", { name: "Storegården 7" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Redigera hemsidans texter" }),
+    ).toHaveAttribute("href", "http://localhost:3000/admin");
     expect(screen.queryByText("S7")).not.toBeInTheDocument();
   });
 

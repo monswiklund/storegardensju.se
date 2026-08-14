@@ -3,6 +3,7 @@ import { Mail } from "lucide-react";
 import { contactMethods, contactEmail } from "./contact.js";
 import MailtoFallback from "./MailtoFallback.jsx";
 import "./Contact.css";
+import usePageCopy from "../../hooks/usePageCopy.js";
 
 const chipIcons = {
   heart: <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />,
@@ -112,6 +113,7 @@ const leafIcon = (
 );
 
 function ContactSection({ defaultOpen = false }) {
+  const copy = usePageCopy("site");
   const [subjectValue, setSubjectValue] = useState("");
   const [fallbackText, setFallbackText] = useState("");
   const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -141,16 +143,22 @@ function ContactSection({ defaultOpen = false }) {
   return (
     <section className="contact-section" aria-labelledby="contact-heading">
       <div className="contact-container">
-        <span className="section-eyebrow">KONTAKT</span>
+        <span className="section-eyebrow">
+          {copy("contact.eyebrow", "KONTAKT")}
+        </span>
         <div className="section-ornament" aria-hidden="true">
           <span className="section-ornament-line"></span>
           <Mail size={20} />
           <span className="section-ornament-line"></span>
         </div>
-        <h2 id="contact-heading">Kontakta oss</h2>
+        <h2 id="contact-heading">
+          {copy("contact.title", "Kontakta oss")}
+        </h2>
         <p className="contact-subtitle">
-          Har du frågor, vill boka en kurs eller funderar på ett datum för fest? <br />
-          Berätta vad du planerar, så återkommer vi så snart vi kan.
+          {copy(
+            "contact.lead",
+            "Har du frågor, vill boka en kurs eller funderar på ett datum för fest? Berätta vad du planerar, så återkommer vi så snart vi kan.",
+          )}
         </p>
 
         <div className="contact-trigger-wrapper">
@@ -263,9 +271,11 @@ function ContactSection({ defaultOpen = false }) {
               <div className="contact-note">
                 <span className="contact-note-icon">{leafIcon}</span>
                 <p>
-                  <strong>Vi brukar svara inom 24 timmar.</strong>
+                  <strong>
+                    {copy("contact.response-time", "Vi brukar svara inom 24 timmar.")}
+                  </strong>
                   <br />
-                  Tack för att du hör av dig.
+                  {copy("contact.thanks", "Tack för att du hör av dig.")}
                 </p>
               </div>
 
@@ -300,7 +310,9 @@ function ContactSection({ defaultOpen = false }) {
             </form>
 
             <div className="contact-aside">
-              <h3 className="contact-aside-heading">Du kan också nå oss direkt</h3>
+              <h3 className="contact-aside-heading">
+                {copy("contact.direct-title", "Du kan också nå oss direkt")}
+              </h3>
               {contactMethods.map((method) => {
                 const icon = iconMap[method.icon] ?? null;
                 const externalProps = method.external
@@ -318,7 +330,12 @@ function ContactSection({ defaultOpen = false }) {
                     <div className="contact-card-body">
                       <h4>{method.label}</h4>
                       <p className="contact-info">{method.display}</p>
-                      <p className="contact-card-note">{methodNotes[method.id]}</p>
+                      <p className="contact-card-note">
+                        {copy(
+                          `contact.methods.${method.id}.note`,
+                          methodNotes[method.id],
+                        )}
+                      </p>
                     </div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

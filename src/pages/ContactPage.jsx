@@ -12,6 +12,7 @@ import { ExploreMoreSection } from "../components";
 import { COURSE_LOCATION } from "../data/courseEvents.js";
 import { seoMeta } from "../config/seoMeta.js";
 import { useSeo } from "../hooks/useSeo.js";
+import usePageCopy from "../hooks/usePageCopy.js";
 import "./ContactPage.css";
 
 const QUICK_LINKS = [
@@ -43,6 +44,13 @@ const QUICK_LINKS = [
 
 function ContactPage() {
   useSeo(seoMeta.kontakt);
+  const copy = usePageCopy("contact");
+  const quickLinks = QUICK_LINKS.map((item, index) => ({
+    ...item,
+    eyebrow: copy(`explore.items.${index}.eyebrow`, item.eyebrow),
+    title: copy(`explore.items.${index}.title`, item.title),
+    text: copy(`explore.items.${index}.body`, item.text),
+  }));
   const routeRef = useRef(null);
 
   useEffect(() => {
@@ -122,16 +130,15 @@ function ContactPage() {
         />
         <div className="contact-page__hero-overlay" />
         <div className="contact-page__hero-content">
-          <span className="contact-page__eyebrow">Kontakt & hitta hit</span>
-          <h1 id="contact-page-title">Vi ses på Storegården 7</h1>
+          <span className="contact-page__eyebrow">{copy("hero.eyebrow", "Kontakt & hitta hit")}</span>
+          <h1 id="contact-page-title">{copy("hero.title", "Vi ses på Storegården 7")}</h1>
           <p>
-            I Rackeby, en kvart från Lidköping. Hör av dig om du vill boka,
-            planera ett besök eller bara fråga något om gården.
+            {copy("hero.lead", "I Rackeby, en kvart från Lidköping. Hör av dig om du vill boka, planera ett besök eller bara fråga något om gården.")}
           </p>
           <div className="contact-page__hero-actions">
             <a className="contact-page__button contact-page__button--light" href={`mailto:${contactEmail}`}>
               <Mail size={18} aria-hidden="true" />
-              Mejla oss
+              {copy("hero.email-cta", "Mejla oss")}
             </a>
             <a
               className="contact-page__button contact-page__button--ghost"
@@ -140,7 +147,7 @@ function ContactPage() {
               rel="noopener noreferrer"
             >
               <Navigation size={18} aria-hidden="true" />
-              Öppna vägbeskrivning
+              {copy("hero.map-cta", "Öppna vägbeskrivning")}
             </a>
           </div>
         </div>
@@ -151,12 +158,11 @@ function ContactPage() {
         <div className="contact-page__arrival-grid">
           <div className="contact-page__arrival-copy">
             <span className="contact-page__eyebrow contact-page__eyebrow--dark">
-              Hitta hit
+              {copy("arrival.eyebrow", "Hitta hit")}
             </span>
-            <h2 id="arrival-title">Nära stan. Mitt på landet.</h2>
+            <h2 id="arrival-title">{copy("arrival.title", "Nära stan. Mitt på landet.")}</h2>
             <p>
-              Storegården 7 ligger i Rackeby, cirka 15 minuter med bil från
-              Lidköpings centrum.
+              {copy("arrival.body", "Storegården 7 ligger i Rackeby, cirka 15 minuter med bil från Lidköpings centrum.")}
             </p>
 
             <div
@@ -190,7 +196,7 @@ function ContactPage() {
             <ul className="contact-page__facts">
               <li>
                 <Clock3 size={19} aria-hidden="true" />
-                <span>Hör av dig före ett besök så ser vi till att någon är på plats.</span>
+                <span>{copy("arrival.visit-note", "Hör av dig före ett besök så ser vi till att någon är på plats.")}</span>
               </li>
             </ul>
             <a
@@ -210,10 +216,10 @@ function ContactPage() {
 
       <ExploreMoreSection
         id="contact-explore-more"
-        eyebrow="Vad vill du veta mer om?"
-        title="Hitta rätt direkt"
+        eyebrow={copy("explore.eyebrow", "Vad vill du veta mer om?")}
+        title={copy("explore.title", "Hitta rätt direkt")}
         intro="När du har hört av dig kan du fortsätta upptäcka det som passar din dag på gården."
-        items={QUICK_LINKS}
+        items={quickLinks}
       />
     </main>
   );

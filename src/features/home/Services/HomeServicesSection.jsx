@@ -4,16 +4,36 @@ import { Sparkles } from "lucide-react";
 import { services as servicesData } from "../../../data/homeContent.js";
 import { canonicalPath } from "../../../config/routes.js";
 import { useState, useRef, useEffect, useEffectEvent } from "react";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 
-const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "VAD VI HAR" }) => {
+const HomeServicesSection = ({
+  cmsPage = "home",
+  cmsKey = "services-section",
+  excludeId,
+  title = "Vad vi erbjuder",
+  eyebrow = "VAD VI HAR",
+}) => {
+  const sharedCopy = usePageCopy("home");
+  const pageCopy = usePageCopy(cmsPage);
   const [activeDomIndex, setActiveDomIndex] = useState(0);
   const containerRef = useRef(null);
   const initializedRef = useRef(false);
   const idleTimerRef = useRef(null);
 
+  const editableServices = servicesData.map((service) => ({
+    ...service,
+    kicker: sharedCopy(`services.${service.id}.kicker`, service.kicker),
+    title: sharedCopy(`services.${service.id}.title`, service.title),
+    description: sharedCopy(
+      `services.${service.id}.description`,
+      service.description,
+    ),
+    meta: sharedCopy(`services.${service.id}.meta`, service.meta),
+    ctaLabel: sharedCopy(`services.${service.id}.cta`, service.ctaLabel),
+  }));
   const filteredServices = excludeId
-    ? servicesData.filter((service) => service.id !== excludeId)
-    : servicesData;
+    ? editableServices.filter((service) => service.id !== excludeId)
+    : editableServices;
 
   const L = filteredServices.length;
 
@@ -226,13 +246,15 @@ const HomeServicesSection = ({ excludeId, title = "Vad vi erbjuder", eyebrow = "
     <section className="services-section" aria-labelledby="services-heading">
       <div className="services-container">
         <div className="services-header">
-          <span className="section-eyebrow">{eyebrow}</span>
+          <span className="section-eyebrow">
+            {pageCopy(`${cmsKey}.eyebrow`, eyebrow)}
+          </span>
           <div className="section-ornament" aria-hidden="true">
             <span className="section-ornament-line"></span>
             <Sparkles size={20} />
             <span className="section-ornament-line"></span>
           </div>
-          <h2 id="services-heading">{title}</h2>
+          <h2 id="services-heading">{pageCopy(`${cmsKey}.title`, title)}</h2>
           <p className="services-intro">
           </p>
         </div>

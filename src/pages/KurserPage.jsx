@@ -17,6 +17,7 @@ import {
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import { fetchPublicEvents } from "../services/eventsService.js";
+import usePageCopy from "../hooks/usePageCopy.js";
 import {
   COURSE_LOCATION,
   COURSE_PASSES,
@@ -79,6 +80,7 @@ const RECAP_IMAGES = [
 // colours and the layout variants in the opposite order on purpose, so the two
 // hubs do not read as one template with the nouns swapped.
 function KurserPage() {
+  const copy = usePageCopy("yoga");
   const [showMailFallback, setShowMailFallback] = useState(false);
   const [apiEvents, setApiEvents] = useState([]);
   const onContactClick = () => setShowMailFallback(true);
@@ -167,12 +169,14 @@ function KurserPage() {
                 <span>Nästa tillfälle: {formatPassDate(nextPassItem)}</span>
               </div>
             )}
-            <h1>Yoga</h1>
+            <h1>{copy("hero.title", "Yoga")}</h1>
             <a
               className="kurser-hero__link"
               href={nextPassItem ? `#${passAnchor(nextPassItem)}` : "#kontakt"}
             >
-              {nextPassItem ? "Se nästa pass" : "Hör av dig"}
+              {nextPassItem
+                ? copy("hero.next-cta", "Se nästa pass")
+                : copy("hero.contact-cta", "Hör av dig")}
               <ArrowDown size={16} aria-hidden="true" />
             </a>
           </div>
@@ -184,8 +188,8 @@ function KurserPage() {
           <NoUpcomingSection
             trackId={YOGA_TRACK_ID}
             background="alt"
-            heading="Inget pass inbokat just nu"
-            body={`Vi har för tillfället inget yogapass i kalendern. Håll utkik här, eller hör av dig till ${INSTRUCTOR.name} så berättar hon när nästa tillfälle släpps.`}
+            heading={copy("empty.title", "Inget pass inbokat just nu")}
+            body={copy("empty.body", `Vi har för tillfället inget yogapass i kalendern. Håll utkik här, eller hör av dig till ${INSTRUCTOR.name} så berättar hon när nästa tillfälle släpps.`)}
           />
         ) : (
           <YogaScheduleSection
@@ -204,7 +208,7 @@ function KurserPage() {
         <InstructorSection
           id="om-lina"
           instructor={INSTRUCTOR}
-          label="Vem leder passen"
+          label={copy("instructor.label", "Vem leder passen")}
           background="white"
           variant="split"
         />
@@ -222,8 +226,8 @@ function KurserPage() {
 
         <CourseBand id="gardens-atmosfar" background="white" className="kurser-recap">
           <div className="kurser-recap__copy">
-            <span className="kurser-label">Bilder från loftet</span>
-            <h2>Loftet på Storegården 7</h2>
+            <span className="kurser-label">{copy("gallery.eyebrow", "Bilder från loftet")}</span>
+            <h2>{copy("gallery.title", "Loftet på Storegården 7")}</h2>
           </div>
 
           <div className="kurser-recap__gallery">
@@ -252,7 +256,7 @@ function KurserPage() {
         <DirectionsSection
           background="white"
           variant="split-reverse"
-          description={`Yogan hålls på loftet på ${COURSE_LOCATION.name} i ${COURSE_LOCATION.locality}, ${COURSE_LOCATION.travelNote}. Kör mot Rackeby och följ skyltningen till gården — det finns gott om parkering på grusplanen intill ladan.`}
+          description={copy("directions.body", `Yogan hålls på loftet på ${COURSE_LOCATION.name} i ${COURSE_LOCATION.locality}, ${COURSE_LOCATION.travelNote}. Kör mot Rackeby och följ skyltningen till gården — det finns gott om parkering på grusplanen intill ladan.`)}
         />
 
         <SectionDivider above="white" below="alt" variant="wave" />
@@ -260,7 +264,7 @@ function KurserPage() {
         <PastPassesSection
           passes={PAST_PASSES}
           trackId={YOGA_TRACK_ID}
-          heading="Tidigare pass"
+          heading={copy("past.title", "Tidigare pass")}
           background="alt"
           variant="timeline"
         />
@@ -271,8 +275,8 @@ function KurserPage() {
             App.jsx renders below is a centred block, so a second centred contact
             block right above it read as the same section twice. */}
         <ContactSection
-          heading="Frågor om yogan?"
-          body={`Hör av dig till ${INSTRUCTOR.name} — hon svarar gärna på frågor om passen, nivån eller vad du behöver ta med.`}
+          heading={copy("contact.title", "Frågor om yogan?")}
+          body={copy("contact.body", `Hör av dig till ${INSTRUCTOR.name} — hon svarar gärna på frågor om passen, nivån eller vad du behöver ta med.`)}
           email={INSTRUCTOR.email}
           subject={contactSubject}
           background="green"
@@ -288,10 +292,10 @@ function KurserPage() {
           variant="band"
           image={maleriKursImg}
           imageAlt="Målarkurs i ateljén på Storegården 7"
-          eyebrow="Mer hos oss"
-          heading="Måla eller dreja i ateljén"
-          body={`I gårdsateljén håller ${TRACKS.maleri.instructor.name} kurser i måleri och keramik, både på fasta datum och som privat kurs för grupper.`}
-          linkLabel="Se kurser i måleri och keramik"
+          eyebrow={copy("other.eyebrow", "Mer hos oss")}
+          heading={copy("other.title", "Måla eller dreja i ateljén")}
+          body={copy("other.body", `I gårdsateljén håller ${TRACKS.maleri.instructor.name} kurser i måleri och keramik, både på fasta datum och som privat kurs för grupper.`)}
+          linkLabel={copy("other.cta", "Se kurser i måleri och keramik")}
         />
 
         {/* White -> alt for the global contact section below. */}

@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Camera } from "lucide-react";
 import "./Gallery.css";
 import CategoryToggle from "../CategoryToggle/CategoryToggle";
@@ -9,7 +10,7 @@ import useGalleryLightbox from "./hooks/useGalleryLightbox";
 import { fetchGalleryCategories } from "../../../services/galleryService";
 import { normalizeGalleryData } from "../normalizeGalleryData";
 
-function GalleryShowcase() {
+function GalleryShowcase({ eyebrow = "GALLERI", title = "Bildgalleri" }) {
   const [activeCategory, setActiveCategory] = useState("alla");
   const [galleryData, setGalleryData] = useState(null);
 
@@ -101,13 +102,13 @@ function GalleryShowcase() {
       </div>
 
       <div className="gallery-header" style={{ textAlign: "center", marginBottom: "48px" }}>
-        <span className="section-eyebrow">GALLERI</span>
+        <span className="section-eyebrow">{eyebrow}</span>
         <div className="section-ornament" aria-hidden="true">
           <span className="section-ornament-line"></span>
           <Camera size={20} />
           <span className="section-ornament-line"></span>
         </div>
-        <h2 id="gallery-heading" style={{ margin: 0 }}>Bildgalleri</h2>
+        <h2 id="gallery-heading" style={{ margin: 0 }}>{title}</h2>
       </div>
 
       <CategoryToggle
@@ -140,5 +141,10 @@ function GalleryShowcase() {
     </div>
   );
 }
+
+GalleryShowcase.propTypes = {
+  eyebrow: PropTypes.string,
+  title: PropTypes.string,
+};
 
 export default GalleryShowcase;

@@ -16,6 +16,7 @@ import { HomeServicesSection } from "../../features/home";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import { useSeo } from "../../hooks/useSeo.js";
 import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
+import usePageCopy from "../../hooks/usePageCopy.js";
 import { seoMeta } from "../../config/seoMeta.js";
 import { canonicalPath } from "../../config/routes.js";
 import "./EventPage.css";
@@ -106,6 +107,21 @@ const SPY_OFFSET = 130;
 function EventPage() {
   useSeo(seoMeta.event);
   const navigate = useNavigate();
+  const copy = usePageCopy("event");
+  const eventTypes = EVENT_TYPES.map((item, index) => ({
+    ...item,
+    title: copy(`types.${index}.title`, item.title),
+    description: copy(`types.${index}.description`, item.description),
+    linkLabel: copy(`types.${index}.cta`, item.linkLabel),
+  }));
+  const eventFacts = EVENT_FACTS.map((item, index) => ({
+    value: copy(`facts.${index}.value`, item.value),
+    label: copy(`facts.${index}.label`, item.label),
+  }));
+  const eventSteps = EVENT_STEPS.map((item, index) => ({
+    title: copy(`planning.steps.${index}.title`, item.title),
+    body: copy(`planning.steps.${index}.body`, item.body),
+  }));
   const {
     timelineRef,
     activeSteps: activeTimelineSteps,
@@ -129,14 +145,14 @@ function EventPage() {
           aria-labelledby="event-heading"
         >
           <div className="event-hero__inner">
-            <span className="event-eyebrow">Eventlokal på landet</span>
+            <span className="event-eyebrow">{copy("hero.eyebrow", "Eventlokal på landet")}</span>
             <div className="section-ornament" aria-hidden="true" style={{ color: "var(--primary-color)" }}>
               <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
               <PartyPopper size={20} />
               <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
             </div>
-            <h1 id="event-heading">Event på Storegården 7</h1>
-            <p>Lada och loft för bröllop, fest och företagsevent</p>
+            <h1 id="event-heading">{copy("hero.title", "Event på Storegården 7")}</h1>
+            <p>{copy("hero.lead", "Lada och loft för bröllop, fest och företagsevent")}</p>
             <div className="event-hero__actions">
               <Link to="/kontakt/" className="event-button event-button--primary">
                 Berätta om ert event
@@ -172,7 +188,7 @@ function EventPage() {
           <PageSection background="alt" spacing="default">
             <FadeInSection>
               <div className="event-section-intro">
-                <span className="event-section-eyebrow">Bröllop, fest eller gruppdag</span>
+                <span className="event-section-eyebrow">{copy("intro.eyebrow", "Bröllop, fest eller gruppdag")}</span>
                 <div className="section-ornament" aria-hidden="true">
                   <span className="section-ornament-line"></span>
                   <Wine size={20} />
@@ -186,7 +202,7 @@ function EventPage() {
               </div>
 
               <div className="event-types-grid">
-                {EVENT_TYPES.map(
+                {eventTypes.map(
                   ({
                     Icon,
                     description,
@@ -246,7 +262,7 @@ function EventPage() {
               </div>
 
               <div className="event-facts-grid">
-                {EVENT_FACTS.map((fact) => (
+                {eventFacts.map((fact) => (
                   <article key={fact.value} className="event-fact-card">
                     <strong>{fact.value}</strong>
                     <p>{fact.label}</p>
@@ -342,7 +358,7 @@ function EventPage() {
             <FadeInSection>
               <div className="event-planning">
                 <div className="event-section-intro event-section-intro--compact">
-                  <span className="event-section-eyebrow">Så går planeringen till</span>
+                  <span className="event-section-eyebrow">{copy("planning.eyebrow", "Så går planeringen till")}</span>
                   <div className="section-ornament" aria-hidden="true">
                     <span className="section-ornament-line"></span>
                     <CalendarCheck size={20} />
@@ -362,7 +378,7 @@ function EventPage() {
                     "--event-timeline-progress": timelineProgress,
                   }}
                 >
-                  {EVENT_STEPS.map((step, index) => (
+                  {eventSteps.map((step, index) => (
                     <li
                       key={step.title}
                       className={`event-timeline__item${
@@ -392,9 +408,10 @@ function EventPage() {
           <PageSection background="white" spacing="none">
             <FadeInSection>
               <HomeServicesSection
+                cmsPage="event"
                 excludeId="event"
-                title="Utforska mer"
-                eyebrow="MER HOS OSS"
+                title={copy("services-section.title", "Utforska mer")}
+                eyebrow={copy("services-section.eyebrow", "MER HOS OSS")}
               />
             </FadeInSection>
           </PageSection>

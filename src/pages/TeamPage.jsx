@@ -9,22 +9,24 @@ import { profiles } from "../data/profileData.js";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import "./TeamPage.css";
+import usePageCopy from "../hooks/usePageCopy.js";
 
 function TeamPage() {
     useSeo(seoMeta.omOss);
+    const copy = usePageCopy("about");
     return (
         <main role="main" id="main-content">
             {/* Team */}
             <PageSection background="white" spacing="default" ariaLabel="about-heading">
                 <ErrorBoundary>
                     <div className="profile-showcase-container">
-                        <span className="section-eyebrow">STOREGÅRDEN 7</span>
+                        <span className="section-eyebrow">{copy("hero.eyebrow", "STOREGÅRDEN 7")}</span>
                         <div className="section-ornament align-left" aria-hidden="true">
                             <span className="section-ornament-line"></span>
                             <Users size={18} />
                             <span className="section-ornament-line"></span>
                         </div>
-                        <h1 id="about-heading">Om oss</h1>
+                        <h1 id="about-heading">{copy("hero.title", "Om oss")}</h1>
                         <p className="team-page-intro">
                             Lär känna människorna bakom Storegården 7 och få en
                             känsla för hur vi tar hand om våra gäster, grupper
@@ -40,10 +42,10 @@ function TeamPage() {
                             </Link>
                         </div>
                         <div className="team-grid">
-                            <TeamProfileShowcase profile={profiles.ann} />
-                            <TeamProfileShowcase profile={profiles.carl} />
-                            <TeamProfileShowcase profile={profiles.lina} />
-                            <TeamProfileShowcase profile={profiles.mans} />
+                            <TeamProfileShowcase cmsId="ann" profile={profiles.ann} />
+                            <TeamProfileShowcase cmsId="carl" profile={profiles.carl} />
+                            <TeamProfileShowcase cmsId="lina" profile={profiles.lina} />
+                            <TeamProfileShowcase cmsId="mans" profile={profiles.mans} />
                         </div>
                     </div>
                 </ErrorBoundary>
@@ -60,8 +62,9 @@ function TeamPage() {
             <div id="team-services-recommendation">
               <PageSection background="white" spacing="default">
                 <HomeServicesSection
-                  title="Utforska mer"
-                  eyebrow="MER ATT SE & GÖRA"
+                  cmsPage="about"
+                  title={copy("services-section.title", "Utforska mer")}
+                  eyebrow={copy("services-section.eyebrow", "MER ATT SE & GÖRA")}
                 />
               </PageSection>
             </div>

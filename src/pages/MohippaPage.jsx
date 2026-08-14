@@ -16,6 +16,7 @@ import { HomeServicesSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
+import usePageCopy from "../hooks/usePageCopy.js";
 import "./MohippaPage.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
@@ -125,6 +126,24 @@ const formatActivityNumber = (index) => String(index + 1).padStart(2, "0");
 
 function MohippaPage() {
   useSeo(seoMeta.gruppdagar);
+  const copy = usePageCopy("group-days");
+  const heroFacts = HERO_FACTS.map((fact, index) => ({
+    label: copy(`hero.facts.${index}.label`, fact.label),
+    value: copy(`hero.facts.${index}.value`, fact.value),
+  }));
+  const baseFeatures = BASE_FEATURES.map((feature, index) => ({
+    ...feature,
+    title: copy(`package.items.${index}.title`, feature.title),
+    text: copy(`package.items.${index}.body`, feature.text),
+  }));
+  const activities = ACTIVITIES.map((activity) => ({
+    ...activity,
+    title: copy(`activities.items.${activity.id}.title`, activity.title),
+    description: copy(`activities.items.${activity.id}.body`, activity.description),
+  }));
+  const details = DETAILS.map((detail, index) =>
+    copy(`package.details.${index}`, detail),
+  );
   const [activeSection, setActiveSection] = useState("top");
   const [mainTab, setMainTab] = useState("baspaket"); // "baspaket" or "aktiviteter"
   const [activeTab, setActiveTab] = useState("alla");
@@ -138,7 +157,7 @@ function MohippaPage() {
   };
 
   const basePricePerPerson = 500;
-  const selectedObjects = ACTIVITIES.filter((a) => selectedActivities.includes(a.id));
+  const selectedObjects = activities.filter((a) => selectedActivities.includes(a.id));
   const activitiesPricePerPerson = selectedObjects.reduce((sum, a) => sum + a.priceVal, 0);
   const totalPerPerson = basePricePerPerson + activitiesPricePerPerson;
   const grandTotal = totalPerPerson * guestCount;
@@ -256,9 +275,9 @@ function MohippaPage() {
           <section id="mohippa-hero-section" className="mohippa-hero" aria-labelledby="mohippa-heading">
             <div className="mohippa-hero__inner">
               <div className="mohippa-hero__copy">
-                <span className="mohippa-eyebrow">Samla gruppen</span>
+                <span className="mohippa-eyebrow">{copy("hero.eyebrow", "Samla gruppen")}</span>
                 <h1 id="mohippa-heading" aria-label="Gruppdag på Storegården 7">
-                  Er{" "}
+                  {copy("hero.title-prefix", "Er")}{" "}
                   <span className="mohippa-word-switch" aria-hidden="true">
                     <span className="mohippa-word-switch__track">
                       {[...GROUP_OCCASIONS, GROUP_OCCASIONS[0]].map((occasion, index) => (
@@ -266,15 +285,14 @@ function MohippaPage() {
                       ))}
                     </span>
                   </span>{" "}
-                  på Storegården 7
+                  {copy("hero.title-suffix", "på Storegården 7")}
                 </h1>
                 <p>
-                  Boka ladan och loftet från 10:00 till 22:00. Vi hjälper till
-                  med det praktiska, och ni kan lägga till aktiviteter om ni vill.
+                  {copy("hero.lead", "Boka ladan och loftet från 10:00 till 22:00. Vi hjälper till med det praktiska, och ni kan lägga till aktiviteter om ni vill.")}
                 </p>
 
                 <div className="mohippa-hero__facts" aria-label="Snabbfakta">
-                  {HERO_FACTS.map((fact) => (
+                  {heroFacts.map((fact) => (
                     <div key={fact.label}>
                       <span>{fact.label}</span>
                       <strong>{fact.value}</strong>
@@ -292,7 +310,7 @@ function MohippaPage() {
                     }}
                     style={{ cursor: "pointer" }}
                   >
-                    Planera er dag
+                    {copy("hero.primary-cta", "Planera er dag")}
                   </button>
                   <button
                     type="button"
@@ -303,7 +321,7 @@ function MohippaPage() {
                     }}
                     style={{ background: "none", border: "1px solid rgba(0,0,0,0.15)", cursor: "pointer" }}
                   >
-                    Se tillval
+                    {copy("hero.secondary-cta", "Se tillval")}
                     <ArrowDown size={17} />
                   </button>
                 </div>
@@ -312,7 +330,7 @@ function MohippaPage() {
               <div className="mohippa-hero__media" aria-hidden="true">
                 <img src="/images/evenemang/slide2.webp" alt="" />
                 <div className="mohippa-hero__note">
-                  <strong>Planera er dag</strong>
+                  <strong>{copy("hero.note", "Planera er dag")}</strong>
                 </div>
               </div>
             </div>
@@ -433,13 +451,13 @@ function MohippaPage() {
                     {mainTab === "baspaket" && (
                       <div className="mohippa-tab-content-pane">
                         <div className="mohippa-section-heading">
-                          <span className="mohippa-eyebrow">Baspaket</span>
+                          <span className="mohippa-eyebrow">{copy("package.eyebrow", "Baspaket")}</span>
                           <div className="section-ornament align-left" aria-hidden="true">
                             <span className="section-ornament-line"></span>
                             <Heart size={18} />
                             <span className="section-ornament-line"></span>
                           </div>
-                          <h2 id="mohippa-package-heading">Det här ingår i baspaketet</h2>
+                          <h2 id="mohippa-package-heading">{copy("package.title", "Det här ingår i baspaketet")}</h2>
                           <p>
                             Ni får tillgång till vår lokal, både ladan och loftet samt
                             tillhörande uteplatser. Ni har tillgång 10:00-22:00.
@@ -447,7 +465,7 @@ function MohippaPage() {
                         </div>
                         
                         <div className="mohippa-checklist">
-                          {BASE_FEATURES.map((feature) => (
+                          {baseFeatures.map((feature) => (
                             <div key={feature.title} className="mohippa-checklist-item">
                               <span className="mohippa-checklist-item__icon" aria-hidden="true">
                                 {feature.icon}
@@ -461,9 +479,9 @@ function MohippaPage() {
                         </div>
 
                         <div className="mohippa-good-to-know">
-                          <h3>Bra att veta</h3>
+                          <h3>{copy("package.details-title", "Bra att veta")}</h3>
                           <ul>
-                            {DETAILS.map((detail) => (
+                            {details.map((detail) => (
                               <li key={detail}>
                                 <CheckCircle2 size={17} />
                                 <span>{detail}</span>
@@ -525,7 +543,7 @@ function MohippaPage() {
                         </div>
 
                         <div className="mohippa-activity-grid">
-                          {ACTIVITIES.filter(
+                          {activities.filter(
                             (activity) => activeTab === "alla" || activity.category === activeTab
                           ).map((activity, index) => {
                             const isSelected = selectedActivities.includes(activity.id);
@@ -592,9 +610,10 @@ function MohippaPage() {
             <PageSection background="green" spacing="default">
               <FadeInSection>
                 <HomeServicesSection
+                  cmsPage="group-days"
                   excludeId="gruppdagar"
-                  title="Utforska mer"
-                  eyebrow="FLER AKTIVITETER"
+                  title={copy("services-section.title", "Utforska mer")}
+                  eyebrow={copy("services-section.eyebrow", "FLER AKTIVITETER")}
                 />
               </FadeInSection>
             </PageSection>
