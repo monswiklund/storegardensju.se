@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   clearCmsPageCache,
   fetchPageCopy,
+  fetchTeamMembers,
+  logInquiry,
   normalizePageCopy,
 } from "./cmsService";
 
@@ -38,5 +40,48 @@ describe("fetchPageCopy", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
     await expect(fetchPageCopy("home")).resolves.toEqual({});
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("logInquiry", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("never writes from localhost to the production CMS", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await logInquiry({ name: "Test" });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:3002/api/inquiries",
+      expect.objectContaining({ method: "POST" }),
+    );
+  });
+});
+
+describe("fetchTeamMembers", () => {
+  afterEach(() => {
+    clearCmsPageCache();
+    vi.unstubAllGlobals();
+  });
+
+  it("resolves uploaded profile images against the CMS origin", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          docs: [{ id: 1, name: "Ann", image: { url: "/api/media/file/ann.webp" } }],
+        }),
+      }),
+    );
+
+    await expect(fetchTeamMembers()).resolves.toEqual([
+      expect.objectContaining({
+        image: { url: "https://cms.storegardensju.se/api/media/file/ann.webp" },
+      }),
+    ]);
   });
 });

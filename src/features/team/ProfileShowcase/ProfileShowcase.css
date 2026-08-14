@@ -225,6 +225,17 @@
   text-align: center;
 }
 
+.team-card-bio {
+  color: var(--text-muted, #5f625c);
+  display: -webkit-box;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0 0 18px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
 
 
 /* Skill tags */

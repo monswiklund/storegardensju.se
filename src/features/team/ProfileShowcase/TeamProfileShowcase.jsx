@@ -7,12 +7,10 @@ import { canonicalPath } from "../../../config/routes.js";
 import "./ProfileShowcase.css";
 import ContactList from "./components/ContactList";
 import ActionButtons from "./components/ActionButtons";
-import usePageCopy from "../../../hooks/usePageCopy.js";
 
-const TeamProfileShowcase = ({ cmsId, profile }) => {
-  const copy = usePageCopy("about");
-  const editableTitle = copy(`people.${cmsId}.name`, profile.title);
-  const editableAbout = copy(`people.${cmsId}.role`, profile.about);
+const TeamProfileShowcase = ({ profile }) => {
+  const editableTitle = profile.title;
+  const editableAbout = profile.about;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
@@ -94,14 +92,16 @@ const TeamProfileShowcase = ({ cmsId, profile }) => {
       <div className="team-card-content">
         {editableTitle && <h3 className="team-card-title">{editableTitle}</h3>}
         {editableAbout && <p className="team-card-subtitle">{editableAbout}</p>}
-        
 
+        {profile.texts?.[0] && (
+          <p className="team-card-bio">{profile.texts[0]}</p>
+        )}
 
         {profile.listItems && profile.listItems.length > 0 && (
           <div className="team-card-tags">
             {profile.listItems.map((item, index) => (
               <span key={index} className="team-card-tag">
-                {copy(`people.${cmsId}.tags.${index}`, item)}
+                {item}
               </span>
             ))}
           </div>
@@ -220,7 +220,6 @@ const TeamProfileShowcase = ({ cmsId, profile }) => {
 };
 
 TeamProfileShowcase.propTypes = {
-  cmsId: PropTypes.string.isRequired,
   profile: PropTypes.shape({
     title: PropTypes.string,
     about: PropTypes.string,

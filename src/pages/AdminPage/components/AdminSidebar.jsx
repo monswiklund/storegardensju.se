@@ -41,11 +41,9 @@ function AdminSidebar({
   isExpanded,
   onExpandedChange,
 }) {
-  const cmsAdminUrl =
-    import.meta.env.VITE_CMS_ADMIN_URL?.trim() ||
-    (import.meta.env.DEV
-      ? "http://localhost:3000/admin"
-      : "https://cms.storegardensju.se/admin");
+  const cmsAdminUrl = import.meta.env.DEV
+    ? "http://localhost:3002/admin"
+    : "https://cms.storegardensju.se/admin";
   const closeButtonRef = useRef(null);
   const restoreFocusRef = useRef(null);
 

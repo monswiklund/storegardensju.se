@@ -62,7 +62,7 @@ function GalleryShowcase({ eyebrow = "GALLERI", title = "Bildgalleri" }) {
 
     return activeCategoryData.images.map((imageData) => ({
       original: imageData.path,
-      thumbnail: imageData.path,
+      thumbnail: imageData.thumbnailPath || imageData.path,
       description: imageData.displayName,
       originalAlt: imageData.displayName,
       thumbnailAlt: imageData.displayName,
@@ -118,6 +118,7 @@ function GalleryShowcase({ eyebrow = "GALLERI", title = "Bildgalleri" }) {
       />
 
       <GalleryGrid
+        key={`${activeCategory}:${images.length}`}
         images={images}
         onImageSelect={openLightbox}
       />

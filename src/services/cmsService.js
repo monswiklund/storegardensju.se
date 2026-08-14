@@ -9,10 +9,15 @@ export function getCmsUrl() {
   return "https://cms.storegardensju.se";
 }
 
+function getCmsWriteUrl() {
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    return "http://localhost:3002";
+  }
+  return getCmsUrl();
+}
+
 const pageRequests = new Map();
-let coursePassesRequest = null;
 let shopProductsRequest = null;
-let testimonialsRequest = null;
 
 /** Convert Payload's editor rows into an immutable lookup used by page components. */
 export function normalizePageCopy(payload) {
@@ -64,38 +69,6 @@ export function fetchPageCopy(slug) {
   return pageRequests.get(slug);
 }
 
-/** Fetch published course passes from CMS */
-export function fetchCoursePasses(track) {
-  if (!coursePassesRequest) {
-    const cmsUrl = getCmsUrl();
-    const query = new URLSearchParams({
-      limit: "50",
-      depth: "0",
-      sort: "startAt",
-    });
-
-    coursePassesRequest = fetch(`${cmsUrl}/api/course-passes?${query}`, {
-      headers: { Accept: "application/json" },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Course passes request failed with status ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => (Array.isArray(data?.docs) ? data.docs : []))
-      .catch(() => {
-        coursePassesRequest = null;
-        return [];
-      });
-  }
-
-  return coursePassesRequest.then((passes) => {
-    if (!track) return passes;
-    return passes.filter((pass) => pass.track === track || pass.track === "allmant");
-  });
-}
-
 /** Fetch published products from CMS */
 export function fetchShopProducts(category) {
   if (!shopProductsRequest) {
@@ -127,41 +100,53 @@ export function fetchShopProducts(category) {
   });
 }
 
-/** Fetch published customer testimonials from CMS */
-export function fetchTestimonials(category) {
-  if (!testimonialsRequest) {
+/** Fetch team members and profiles from CMS */
+let teamMembersRequest = null;
+
+export function fetchTeamMembers() {
+  if (!teamMembersRequest) {
     const cmsUrl = getCmsUrl();
     const query = new URLSearchParams({
-      limit: "20",
-      depth: "0",
+      limit: "50",
+      sort: "order",
+      depth: "1",
     });
 
-    testimonialsRequest = fetch(`${cmsUrl}/api/testimonials?${query}`, {
+    teamMembersRequest = fetch(`${cmsUrl}/api/team-members?${query}`, {
       headers: { Accept: "application/json" },
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error(`Testimonials request failed with status ${response.status}`);
+          throw new Error(`TeamMembers request failed with status ${response.status}`);
         }
         return response.json();
       })
-      .then((data) => (Array.isArray(data?.docs) ? data.docs : []))
+      .then((data) => {
+        const docs = Array.isArray(data?.docs) ? data.docs : [];
+        return docs.map((member) => {
+          if (!member?.image?.url || member.image.url.startsWith("http")) return member;
+          return {
+            ...member,
+            image: {
+              ...member.image,
+              url: `${cmsUrl}${member.image.url}`,
+            },
+          };
+        });
+      })
       .catch(() => {
-        testimonialsRequest = null;
+        teamMembersRequest = null;
         return [];
       });
   }
 
-  return testimonialsRequest.then((items) => {
-    if (!category) return items;
-    return items.filter((item) => item.category === category || item.featured);
-  });
+  return teamMembersRequest;
 }
 
 /** Save an inquiry to CMS log in the background without blocking email */
 export async function logInquiry(data) {
   try {
-    const cmsUrl = getCmsUrl();
+    const cmsUrl = getCmsWriteUrl();
     await fetch(`${cmsUrl}/api/inquiries`, {
       method: "POST",
       headers: {
@@ -180,7 +165,6 @@ export async function logInquiry(data) {
 
 export function clearCmsPageCache() {
   pageRequests.clear();
-  coursePassesRequest = null;
   shopProductsRequest = null;
-  testimonialsRequest = null;
+  teamMembersRequest = null;
 }
