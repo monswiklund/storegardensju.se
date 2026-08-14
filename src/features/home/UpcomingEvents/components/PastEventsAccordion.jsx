@@ -5,7 +5,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import { ArrowUpRight, Calendar } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import PastEventModal from "./PastEventModal.jsx";
 import "../../PastEvents/PastEvents.css";
 
@@ -16,7 +16,6 @@ function PastEventsAccordion({ events }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [showAll, setShowAll] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
   const requestedEventId = searchParams.get("pastEvent");
 
@@ -58,7 +57,6 @@ function PastEventsAccordion({ events }) {
     );
     if (!requestedEvent) return;
 
-    setShowAll(true);
     setSelectedEvent(requestedEvent);
   }, [events, requestedEventId]);
 
@@ -100,24 +98,13 @@ function PastEventsAccordion({ events }) {
     handleScroll(); // Initial check on load
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [showAll, events.length]);
-
-  const visibleEvents = showAll ? events : events.slice(0, 4);
+  }, [events.length]);
 
   return (
     <div id="past-events-inner" className="past-events-section" data-section="past-events">
       {/* Mobile-only header row */}
       <div className="past-events-mobile-header mobile-only">
         <span className="past-events-eyebrow">TIDIGARE EVENEMANG</span>
-        {events.length > 4 && (
-          <button
-            className="past-events-show-more-link"
-            onClick={() => setShowAll(!showAll)}
-          >
-            <span>{showAll ? "Visa färre" : "Visa alla"}</span>
-            <Calendar size={14} />
-          </button>
-        )}
       </div>
 
       <div className="past-events-split-layout">
@@ -128,28 +115,18 @@ function PastEventsAccordion({ events }) {
           <p className="past-events-intro">
             Ett urval av kurser, öppna ateljékvällar och samarbeten.
           </p>
-          
-          {events.length > 4 && (
-            <button
-              className="past-events-show-more-btn"
-              onClick={() => setShowAll(!showAll)}
-            >
-              <Calendar size={16} />
-              <span>{showAll ? "Visa färre" : "Visa alla evenemang"}</span>
-            </button>
-          )}
         </div>
 
         {/* Right Column / Main List (Timeline) */}
         <div className="past-events-timeline-col">
           <div className="past-events-list">
-            {visibleEvents.length === 0 && (
+            {events.length === 0 && (
               <div className="past-events-empty">
                 <p>Inga tidigare evenemang att visa just nu.</p>
               </div>
             )}
 
-            {visibleEvents.map((event, index) => {
+            {events.map((event, index) => {
               const dateParts = event.date.split(" ");
               const day = dateParts[0] || "";
               const month = dateParts[1]

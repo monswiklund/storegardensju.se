@@ -12,6 +12,23 @@ const event = {
 };
 
 describe("PastEventsAccordion history", () => {
+  it("shows every past event without an extra reveal step", () => {
+    const events = Array.from({ length: 5 }, (_, index) => ({
+      ...event,
+      id: `event-${index}`,
+      title: `Evenemang ${index + 1}`,
+    }));
+
+    render(
+      <BrowserRouter>
+        <PastEventsAccordion events={events} />
+      </BrowserRouter>
+    );
+
+    expect(screen.getAllByRole("button", { name: /Evenemang/ })).toHaveLength(5);
+    expect(screen.queryByText("Visa alla evenemang")).not.toBeInTheDocument();
+  });
+
   it("V34 closes the home past-event overlay on Back before leaving the route", async () => {
     window.history.replaceState({}, "", "/fore");
     window.history.pushState({}, "", "/");

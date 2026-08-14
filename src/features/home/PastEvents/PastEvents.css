@@ -41,31 +41,6 @@
   margin: 0 0 28px 0;
 }
 
-.past-events-show-more-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 0 20px;
-  border: 1px solid rgba(95, 111, 82, 0.25);
-  border-radius: 6px;
-  background: #ffffff;
-  color: var(--text-main);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-}
-
-.past-events-show-more-btn:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-hover);
-  background: rgba(95, 111, 82, 0.02);
-  transform: translateY(-1px);
-}
-
 /* Mobile Header Row */
 .past-events-mobile-header {
   display: none;
@@ -75,23 +50,6 @@
   margin-bottom: 24px;
   border-bottom: 1px solid rgba(95, 111, 82, 0.08);
   padding-bottom: 12px;
-}
-
-.past-events-show-more-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: none;
-  background: none;
-  color: var(--primary-hover);
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0;
-}
-
-.past-events-show-more-link:hover {
-  text-decoration: underline;
 }
 
 /* Right Column / Timeline List */
