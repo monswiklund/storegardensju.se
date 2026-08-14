@@ -21,6 +21,14 @@ const absoluteMediaUrl = (url, cmsUrl) => {
   return url.startsWith("http") ? url : `${cmsUrl}${url}`;
 };
 
+const mediaOrder = (doc, field) => {
+  const value = Number(doc?.[field]);
+  return Number.isFinite(value) ? value : 10;
+};
+
+const compareMedia = (field) => (a, b) =>
+  mediaOrder(a, field) - mediaOrder(b, field) || Number(a.id) - Number(b.id);
+
 export function fetchGalleryCategories() {
   if (galleryCategoriesCache) {
     return Promise.resolve(galleryCategoriesCache);
@@ -44,7 +52,7 @@ export function fetchGalleryCategories() {
         if (Array.isArray(data?.docs) && data.docs.length > 0) {
           const categoryMap = new Map();
 
-          data.docs.forEach((doc) => {
+          [...data.docs].sort(compareMedia("order")).forEach((doc) => {
             const catId = doc.category || "overvaning";
             if (!categoryMap.has(catId)) {
               categoryMap.set(catId, {
@@ -67,15 +75,15 @@ export function fetchGalleryCategories() {
               ) || imagePath;
 
             catGroup.images.push({
-              id: String(doc.id),
-              filename: doc.filename,
+              id: String(doc.legacyId || doc.id),
+              filename: doc.filename || doc.legacyId,
               displayName: doc.displayName || doc.alt || doc.filename,
               alt: doc.alt || doc.displayName,
               category: catId,
               path: imagePath,
               thumbnailPath,
-              order: Number(doc.order) || 10,
-              allOrder: Number(doc.allOrder) || 10,
+              order: mediaOrder(doc, "order"),
+              allOrder: mediaOrder(doc, "allOrder"),
             });
           });
 
@@ -84,15 +92,16 @@ export function fetchGalleryCategories() {
             name: "Alla bilder",
             description: "Alla bilder från Storegården 7",
             order: -1,
-            images: data.docs
+            images: [...data.docs]
+              .sort(compareMedia("allOrder"))
               .map((doc) => {
                 const imagePath =
                   absoluteMediaUrl(doc.externalUrl, cmsUrl) ||
                   absoluteMediaUrl(doc.url, cmsUrl) ||
                   `/images/gallery/${doc.filename}`;
                 return {
-                  id: String(doc.id),
-                  filename: doc.filename,
+                  id: String(doc.legacyId || doc.id),
+                  filename: doc.filename || doc.legacyId,
                   displayName: doc.displayName || doc.alt || doc.filename,
                   alt: doc.alt || doc.displayName,
                   category: doc.category || "ovrigt",
@@ -100,14 +109,17 @@ export function fetchGalleryCategories() {
                   thumbnailPath:
                     absoluteMediaUrl(doc.sizes?.thumbnail?.url || doc.thumbnailURL, cmsUrl) ||
                     imagePath,
-                  order: Number(doc.allOrder) || 10,
+                  order: mediaOrder(doc, "allOrder"),
                 };
-              })
-              .sort((a, b) => a.order - b.order),
+              }),
           });
 
           const categories = Array.from(categoryMap.values());
-          const structuredData = { categories };
+          const featured = [...data.docs]
+            .filter((doc) => doc.featured)
+            .sort(compareMedia("allOrder"))
+            .map((doc) => String(doc.legacyId || doc.id));
+          const structuredData = { categories, featured };
           galleryCategoriesCache = structuredData;
           return structuredData;
         }

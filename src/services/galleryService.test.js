@@ -40,4 +40,26 @@ describe("galleryService", () => {
       "https://cms.storegardensju.se/media/loftet-400x300.webp"
     );
   });
+
+  it("preserves zero-based CMS order and legacy identities for featured images", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          docs: [
+            { id: 2, legacyId: "second", category: "overvaning", order: 0, allOrder: 0, externalUrl: "/second.webp", featured: true },
+            { id: 1, legacyId: "first", category: "overvaning", order: 0, allOrder: 0, externalUrl: "/first.webp", featured: true },
+            { id: 3, legacyId: "third", category: "overvaning", order: 1, allOrder: 1, externalUrl: "/third.webp", featured: false },
+          ],
+        }),
+      })
+    );
+
+    const result = await fetchGalleryCategories();
+    const allImages = result.categories.find((category) => category.id === "alla").images;
+
+    expect(allImages.map((image) => image.id)).toEqual(["first", "second", "third"]);
+    expect(result.featured).toEqual(["first", "second"]);
+  });
 });
