@@ -190,14 +190,12 @@ function WeddingPage() {
                     <CalendarHeart size={18} />
                     <span className="section-ornament-line" />
                   </div>
-                  <h2>Hyr ladan och loftet för hela bröllopsdagen</h2>
+                  <h2>{copy("intro.title", "Hyr ladan och loftet för hela bröllopsdagen")}</h2>
                   <p>
-                    Storegården 7 ligger i Rackeby, strax utanför Lidköping.
-                    Här kan ni ha välkomstskål, middag och fest på samma gård.
+                    {copy("intro.paragraphs.0", "Storegården 7 ligger i Rackeby, strax utanför Lidköping. Här kan ni ha välkomstskål, middag och fest på samma gård.")}
                   </p>
                   <p>
-                    Ni disponerar den renoverade ladan och loftet och bestämmer
-                    själva hur ni vill använda rummen under dagen.
+                    {copy("intro.paragraphs.1", "Ni disponerar den renoverade ladan och loftet och bestämmer själva hur ni vill använda rummen under dagen.")}
                   </p>
                 </div>
               </div>
@@ -211,10 +209,10 @@ function WeddingPage() {
           <PageSection background="white" spacing="default">
             <FadeInSection>
               <div className="event-section-intro">
-                <span className="event-section-eyebrow">Ladan och loftet</span>
-                <h2>Plats för middag, mingel och dans</h2>
+                <span className="event-section-eyebrow">{copy("spaces.eyebrow", "Ladan och loftet")}</span>
+                <h2>{copy("spaces.title", "Plats för middag, mingel och dans")}</h2>
                 <p className="event-section-lead">
-                  Gästerna kan röra sig mellan våningarna utan att lämna gården.
+                  {copy("spaces.lead", "Gästerna kan röra sig mellan våningarna utan att lämna gården.")}
                 </p>
               </div>
 
@@ -241,15 +239,15 @@ function WeddingPage() {
             <FadeInSection>
               <div className="event-planning">
                 <div className="event-section-intro event-section-intro--compact">
-                  <span className="event-section-eyebrow">Ett möjligt upplägg</span>
+                  <span className="event-section-eyebrow">{copy("flow.eyebrow", "Ett möjligt upplägg")}</span>
                   <div className="section-ornament" aria-hidden="true">
                     <span className="section-ornament-line" />
                     <Sparkles size={19} />
                     <span className="section-ornament-line" />
                   </div>
-                  <h2>Från välkomstskål till dansgolv</h2>
+                  <h2>{copy("flow.title", "Från välkomstskål till dansgolv")}</h2>
                   <p className="event-section-lead">
-                    Så här kan ni använda de olika delarna av lokalen under dagen.
+                    {copy("flow.lead", "Så här kan ni använda de olika delarna av lokalen under dagen.")}
                   </p>
                 </div>
 

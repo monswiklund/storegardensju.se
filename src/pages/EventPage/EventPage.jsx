@@ -155,14 +155,14 @@ function EventPage() {
             <p>{copy("hero.lead", "Lada och loft för bröllop, fest och företagsevent")}</p>
             <div className="event-hero__actions">
               <Link to="/kontakt/" className="event-button event-button--primary">
-                Berätta om ert event
+                {copy("hero.primary-cta", "Berätta om ert event")}
                 <ArrowUpRight size={18} aria-hidden="true" />
               </Link>
               <a
                 href="#event-details-section"
                 className="event-button event-button--secondary"
               >
-                Se eventtyper
+                {copy("hero.secondary-cta", "Se eventtyper")}
                 <ArrowDown size={18} aria-hidden="true" />
               </a>
             </div>
@@ -194,10 +194,9 @@ function EventPage() {
                   <Wine size={20} />
                   <span className="section-ornament-line"></span>
                 </div>
-                <h2>Vad vill ni ordna?</h2>
+                <h2>{copy("intro.title", "Vad vill ni ordna?")}</h2>
                 <p className="event-section-lead">
-                  Här finns plats för bröllop, privata fester, företagsevent och
-                  gruppdagar i en renoverad lada strax utanför Lidköping.
+                  {copy("intro.lead", "Här finns plats för bröllop, privata fester, företagsevent och gruppdagar i en renoverad lada strax utanför Lidköping.")}
                 </p>
               </div>
 
@@ -277,7 +276,7 @@ function EventPage() {
                   onClick={handleGalleryClick}
                   aria-label="Gå till bildgalleri"
                 >
-                  Se galleriet
+                  {copy("intro.gallery-cta", "Se galleriet")}
                 </button>
               </div>
             </FadeInSection>
@@ -294,17 +293,15 @@ function EventPage() {
                   <img src="/images/event/hero/hero-2.webp" alt="Dukade bord för fest på loftet" />
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">Ytor och kapacitet</span>
+                  <span className="event-section-eyebrow">{copy("capacity.eyebrow", "Ytor och kapacitet")}</span>
                   <div className="section-ornament align-left" aria-hidden="true">
                     <span className="section-ornament-line"></span>
                     <Maximize2 size={18} />
                     <span className="section-ornament-line"></span>
                   </div>
-                  <h2>Plats för både middag och mingel</h2>
+                  <h2>{copy("capacity.title", "Plats för både middag och mingel")}</h2>
                   <p>
-                    Ladan och loftet ger er totalt 360 kvm inomhus på två
-                    våningar. Ni kan använda en våning eller låta gästerna röra
-                    sig mellan båda.
+                    {copy("capacity.body", "Ladan och loftet ger er totalt 360 kvm inomhus på två våningar. Ni kan använda en våning eller låta gästerna röra sig mellan båda.")}
                   </p>
                   <ul className="event-bullets">
                     <li><strong>Loftet:</strong> Plats för 150+ sittande gäster vid middag eller föreläsning.</li>
@@ -327,16 +324,15 @@ function EventPage() {
                   <img src="/images/event/hero/hero-3.webp" alt="Detaljbild från baren i ladan" />
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">Det här finns på plats</span>
+                  <span className="event-section-eyebrow">{copy("amenities.eyebrow", "Det här finns på plats")}</span>
                   <div className="section-ornament align-left" aria-hidden="true">
                     <span className="section-ornament-line"></span>
                     <Sparkles size={18} />
                     <span className="section-ornament-line"></span>
                   </div>
-                  <h2>Möbler, bar, ljud och köksytor</h2>
+                  <h2>{copy("amenities.title", "Möbler, bar, ljud och köksytor")}</h2>
                   <p>
-                    Mycket av det praktiska finns redan här och ingår i hyran.
-                    Ni får också ta med egen mat och dryck.
+                    {copy("amenities.body", "Mycket av det praktiska finns redan här och ingår i hyran. Ni får också ta med egen mat och dryck.")}
                   </p>
                   <ul className="event-bullets">
                     <li><strong>Dukning & möbler:</strong> Glas, tallrikar, bestick, bord och stolar finns färdigt för alla gäster.</li>
@@ -364,10 +360,9 @@ function EventPage() {
                     <CalendarCheck size={20} />
                     <span className="section-ornament-line"></span>
                   </div>
-                  <h2>Vi planerar det praktiska tillsammans</h2>
+                  <h2>{copy("planning.title", "Vi planerar det praktiska tillsammans")}</h2>
                   <p className="event-section-lead">
-                    Ni sätter tonen och vi hjälper er att få lokalerna och det
-                    praktiska på plats.
+                    {copy("planning.lead", "Ni sätter tonen och vi hjälper er att få lokalerna och det praktiska på plats.")}
                   </p>
                 </div>
 

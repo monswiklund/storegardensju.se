@@ -1,9 +1,44 @@
-import { apiRequest } from "./api";
-import { getApiBaseUrl } from "../config/apiBaseUrl";
+import { getCmsUrl } from "./cmsService";
 
-const API_URL = getApiBaseUrl();
+let notificationsRequest = null;
 
 export async function fetchPublicNotifications() {
-  const data = await apiRequest(`${API_URL}/api/notifications`);
-  return Array.isArray(data?.notifications) ? data.notifications : [];
+  if (!notificationsRequest) {
+    const cmsUrl = getCmsUrl();
+    const query = new URLSearchParams({
+      "where[active][equals]": "true",
+      limit: "10",
+      sort: "-priority",
+    });
+
+    notificationsRequest = fetch(`${cmsUrl}/api/notifications?${query}`, {
+      headers: { Accept: "application/json" },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data?.docs) && data.docs.length > 0) {
+          return data.docs.map((doc) => ({
+            id: doc.id,
+            title: doc.title,
+            message: doc.message,
+            href: doc.href || "/",
+            updatedAt: doc.updatedAt,
+          }));
+        }
+        return [];
+      })
+      .catch(() => {
+        notificationsRequest = null;
+        return [];
+      });
+  }
+
+  return notificationsRequest;
+}
+
+export function clearNotificationsCache() {
+  notificationsRequest = null;
 }
