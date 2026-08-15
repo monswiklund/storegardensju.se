@@ -3,11 +3,11 @@
 }
 
 .wedding-hero__ornament {
-  color: var(--primary-color);
+  color: color-mix(in srgb, var(--event-surface) 85%, var(--primary-color));
 }
 
 .wedding-hero__ornament .section-ornament-line {
-  background: var(--primary-color);
+  background: color-mix(in srgb, var(--event-surface) 65%, var(--primary-color));
 }
 
 .wedding-intro__image {

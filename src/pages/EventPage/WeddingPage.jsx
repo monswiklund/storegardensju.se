@@ -10,6 +10,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { PageSection, ScrollSpyNav, SectionDivider } from "../../components";
+import { smoothScrollTo } from "../../utils/scrollUtils.js";
 import { HomeServicesSection } from "../../features/home";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import {
@@ -134,11 +135,7 @@ function WeddingPage() {
 
   const handleContactClick = () => {
     window.dispatchEvent(new Event("expand-contact-form"));
-    const contact = document.querySelector(".contact-container");
-    if (!contact) return;
-    const top =
-      contact.getBoundingClientRect().top + window.scrollY - SPY_OFFSET;
-    window.scrollTo({ top, behavior: "smooth" });
+    smoothScrollTo(".contact-container", SPY_OFFSET);
   };
 
   return (

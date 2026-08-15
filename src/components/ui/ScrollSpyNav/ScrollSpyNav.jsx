@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { smoothScrollTo } from "../../../utils/scrollUtils.js";
 
 /**
  * The floating dash rail on the right that shows how many sections a page has
@@ -55,10 +56,7 @@ function ScrollSpyNav({ sections, label = "Sidinnehåll", offset = 90 }) {
   }, [sections, offset]);
 
   const scrollTo = (id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const y = el.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top: y, behavior: "smooth" });
+    smoothScrollTo(id, offset);
   };
 
   return (

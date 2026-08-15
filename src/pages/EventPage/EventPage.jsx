@@ -21,6 +21,7 @@ import usePageMedia from "../../hooks/usePageMedia.js";
 import usePageLists from "../../hooks/usePageLists.js";
 import { seoMeta } from "../../config/seoMeta.js";
 import { canonicalPath } from "../../config/routes.js";
+import { smoothScrollTo } from "../../utils/scrollUtils.js";
 import "./EventPage.css";
 
 const EVENT_FACTS = [
@@ -147,6 +148,13 @@ function EventPage() {
     navigate(canonicalPath("/galleri"));
   };
 
+  const handleScrollToSection = (e, targetIdOrSelector) => {
+    if (e && typeof e.preventDefault === "function") {
+      e.preventDefault();
+    }
+    smoothScrollTo(targetIdOrSelector, SPY_OFFSET);
+  };
+
   return (
     <div className="event-page-container">
       <ScrollSpyNav sections={SPY_SECTIONS} offset={SPY_OFFSET} />
@@ -163,10 +171,10 @@ function EventPage() {
         >
           <div className="event-hero__inner" data-cms-hero-content>
             <span className="event-eyebrow">{copy("hero.eyebrow", "Eventlokal på landet")}</span>
-            <div className="section-ornament" aria-hidden="true" style={{ color: "var(--primary-color)" }}>
-              <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
+            <div className="section-ornament event-hero__ornament" aria-hidden="true">
+              <span className="section-ornament-line"></span>
               <PartyPopper size={20} />
-              <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
+              <span className="section-ornament-line"></span>
             </div>
             <h1 id="event-heading">{copy("hero.title", "Event på Storegården 7")}</h1>
             <p>{copy("hero.lead", "Lada och loft för bröllop, fest och företagsevent")}</p>
@@ -178,6 +186,7 @@ function EventPage() {
               <a
                 href="#event-details-section"
                 className="event-button event-button--secondary"
+                onClick={(e) => handleScrollToSection(e, "event-details-section")}
               >
                 {copy("hero.secondary-cta", "Se eventtyper")}
                 <ArrowDown size={18} aria-hidden="true" />
@@ -269,7 +278,16 @@ function EventPage() {
                         {content}
                       </Link>
                     ) : (
-                      <a key={title} className={className} href={href}>
+                      <a
+                        key={title}
+                        className={className}
+                        href={href}
+                        onClick={
+                          href?.startsWith("#")
+                            ? (e) => handleScrollToSection(e, href)
+                            : undefined
+                        }
+                      >
                         {content}
                       </a>
                     );

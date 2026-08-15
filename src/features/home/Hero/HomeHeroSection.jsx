@@ -4,6 +4,7 @@ import { heroContent } from "../../../data/homeContent.js";
 import { canonicalPath } from "../../../config/routes.js";
 import usePageCopy from "../../../hooks/usePageCopy.js";
 import usePageMedia from "../../../hooks/usePageMedia.js";
+import { smoothScrollTo } from "../../../utils/scrollUtils.js";
 import "./Hero.css";
 import HomeHeroContent from "./HomeHeroContent.jsx";
 
@@ -38,16 +39,14 @@ function HomeHeroSection() {
 
   const handlePrimaryCta = () => {
     window.dispatchEvent(new CustomEvent("expand-contact-form"));
-    document
-      .querySelector(".contact-container")
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    smoothScrollTo(".contact-container", 80);
   };
 
   const handleSecondaryRoute = (to) => navigate(canonicalPath(to));
 
   const handleScrollIndicatorClick = () => {
     // Scroll to hero content section
-    contentRef.current?.scrollIntoView({ behavior: "smooth" });
+    smoothScrollTo(contentRef.current, 80);
   };
 
   // Intersection Observer to show content when scrolled into view

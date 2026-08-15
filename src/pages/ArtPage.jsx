@@ -11,6 +11,7 @@ import {
 import CreativeWorkshopsSection from "../features/creation/CreativeWorkshopsSection.jsx";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { PageSection, ScrollSpyNav, SectionDivider } from "../components";
+import { smoothScrollTo } from "../utils/scrollUtils.js";
 import {
   ContactSection,
   FaqSection,
@@ -110,10 +111,7 @@ function ArtPage() {
   });
 
   const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+    smoothScrollTo(id, SPY_OFFSET);
   };
 
   return (

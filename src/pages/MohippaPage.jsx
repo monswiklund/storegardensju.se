@@ -12,6 +12,7 @@ import {
   Palette,
 } from "lucide-react";
 import { PageSection, SectionDivider } from "../components";
+import { smoothScrollTo } from "../utils/scrollUtils.js";
 import { HomeServicesSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { useSeo } from "../hooks/useSeo.js";
@@ -215,15 +216,8 @@ function MohippaPage() {
   }, []);
 
   const scrollToSection = (id) => {
-    let element = document.getElementById(id);
-    if (!element && id === "mohippa-contact") {
-      element = document.querySelector(".contact-container");
-    }
-    if (element) {
-      const yOffset = -70; // offset for fixed header
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
+    const target = id === "mohippa-contact" ? ".contact-container" : id;
+    smoothScrollTo(target, 70);
   };
 
   return (

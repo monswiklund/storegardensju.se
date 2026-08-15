@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import "./ParallaxHero.css";
 import ScrollCue from "./components/ScrollCue";
 import useParallaxHeroAnimation from "./hooks/useParallaxHeroAnimation";
+import { smoothScrollTo } from "../../../utils/scrollUtils.js";
 
 function ParallaxHero({
   image,
@@ -30,7 +31,7 @@ function ParallaxHero({
   const handleScrollDown = () => {
     const nextSection = document.querySelector(".sticky-image-section");
     if (nextSection) {
-      nextSection.scrollIntoView({ behavior: "smooth" });
+      smoothScrollTo(nextSection, 80);
     } else {
       // Fallback if no specific class matches or generic scroll
       window.scrollBy({ top: window.innerHeight, behavior: "smooth" });

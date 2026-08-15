@@ -3,6 +3,7 @@ import { ArrowDown } from "lucide-react";
 import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
 import { ScrollSpyNav, SectionDivider } from "../components";
+import { smoothScrollTo } from "../utils/scrollUtils.js";
 import {
   ContactSection,
   CourseBand,
@@ -180,6 +181,13 @@ function KurserPage() {
             <a
               className="kurser-hero__link"
               href={nextPassItem ? `#${passAnchor(nextPassItem)}` : "#kontakt"}
+              onClick={(e) => {
+                e.preventDefault();
+                smoothScrollTo(
+                  nextPassItem ? passAnchor(nextPassItem) : "kontakt",
+                  SPY_OFFSET
+                );
+              }}
             >
               {nextPassItem
                 ? copy("hero.next-cta", "Se nästa pass")

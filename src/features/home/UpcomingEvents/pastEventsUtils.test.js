@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   eventMatchesCategory,
   groupPastEvents,
-  PAST_EVENT_CATEGORIES,
 } from "./pastEventsUtils.js";
 
 describe("pastEventsUtils", () => {
