@@ -18,6 +18,7 @@ import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import usePageCopy from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
+import usePageLists from "../hooks/usePageLists.js";
 import "./MohippaPage.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
@@ -129,14 +130,12 @@ function MohippaPage() {
   useSeo(seoMeta.gruppdagar);
   const copy = usePageCopy("group-days");
   const media = usePageMedia("group-days");
-  const heroFacts = HERO_FACTS.map((fact, index) => ({
-    label: copy(`hero.facts.${index}.label`, fact.label),
-    value: copy(`hero.facts.${index}.value`, fact.value),
-  }));
-  const baseFeatures = BASE_FEATURES.map((feature, index) => ({
+  const list = usePageLists("group-days");
+  const heroFacts = list("hero-facts", HERO_FACTS.map(({ label, value }) => ({ body: label, value })));
+  const featureIcons = BASE_FEATURES.map((feature) => feature.icon);
+  const baseFeatures = list("package-features", BASE_FEATURES.map(({ title, text }) => ({ body: text, title }))).map((feature, index) => ({
     ...feature,
-    title: copy(`package.items.${index}.title`, feature.title),
-    text: copy(`package.items.${index}.body`, feature.text),
+    icon: featureIcons[index % featureIcons.length],
   }));
   const activities = ACTIVITIES.map((activity) => ({
     ...activity,
@@ -144,9 +143,7 @@ function MohippaPage() {
     title: copy(`activities.items.${activity.id}.title`, activity.title),
     description: copy(`activities.items.${activity.id}.body`, activity.description),
   }));
-  const details = DETAILS.map((detail, index) =>
-    copy(`package.details.${index}`, detail),
-  );
+  const details = list("package-details", DETAILS.map((body) => ({ body })));
   const [activeSection, setActiveSection] = useState("top");
   const [mainTab, setMainTab] = useState("baspaket"); // "baspaket" or "aktiviteter"
   const [activeTab, setActiveTab] = useState("alla");
@@ -297,7 +294,7 @@ function MohippaPage() {
                 <div className="mohippa-hero__facts" aria-label="Snabbfakta">
                   {heroFacts.map((fact) => (
                     <div key={fact.label}>
-                      <span>{fact.label}</span>
+                      <span>{fact.body}</span>
                       <strong>{fact.value}</strong>
                     </div>
                   ))}
@@ -461,10 +458,7 @@ function MohippaPage() {
                             <span className="section-ornament-line"></span>
                           </div>
                           <h2 id="mohippa-package-heading">{copy("package.title", "Det här ingår i baspaketet")}</h2>
-                          <p>
-                            Ni får tillgång till vår lokal, både ladan och loftet samt
-                            tillhörande uteplatser. Ni har tillgång 10:00-22:00.
-                          </p>
+                          <p>{copy("package.body", "Ni får tillgång till vår lokal, både ladan och loftet samt tillhörande uteplatser. Ni har tillgång 10:00-22:00.")}</p>
                         </div>
                         
                         <div className="mohippa-checklist">
@@ -475,7 +469,7 @@ function MohippaPage() {
                               </span>
                               <div className="mohippa-checklist-item__content">
                                 <h3>{feature.title}</h3>
-                                <p>{feature.text}</p>
+                                <p>{feature.body}</p>
                               </div>
                             </div>
                           ))}
@@ -484,10 +478,10 @@ function MohippaPage() {
                         <div className="mohippa-good-to-know">
                           <h3>{copy("package.details-title", "Bra att veta")}</h3>
                           <ul>
-                            {details.map((detail) => (
-                              <li key={detail}>
+                            {details.map((detail, index) => (
+                              <li key={detail.id || index}>
                                 <CheckCircle2 size={17} />
-                                <span>{detail}</span>
+                                <span>{detail.body}</span>
                               </li>
                             ))}
                           </ul>
@@ -498,20 +492,16 @@ function MohippaPage() {
                     {mainTab === "aktiviteter" && (
                       <div className="mohippa-tab-content-pane">
                         <div className="mohippa-section-heading">
-                          <span className="mohippa-eyebrow">Tillval och aktiviteter</span>
+                          <span className="mohippa-eyebrow">{copy("activities.eyebrow", "Tillval och aktiviteter")}</span>
                           <div className="section-ornament align-left" aria-hidden="true">
                             <span className="section-ornament-line"></span>
                             <Palette size={18} />
                             <span className="section-ornament-line"></span>
                           </div>
                           <h2 id="mohippa-activities-heading">
-                            Lägg till det som passar gruppen
+                            {copy("activities.title", "Lägg till det som passar gruppen")}
                           </h2>
-                          <p>
-                            Välj de aktiviteter som gruppen vill göra. När ni
-                            klickar på ett tillval läggs det direkt till i
-                            prisberäkningen.
-                          </p>
+                          <p>{copy("activities.lead", "Välj de aktiviteter som gruppen vill göra. När ni klickar på ett tillval läggs det direkt till i prisberäkningen.")}</p>
                         </div>
 
                         <div className="mohippa-tabs">

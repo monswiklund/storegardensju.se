@@ -20,6 +20,7 @@ import { useSeo } from "../../hooks/useSeo.js";
 import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
 import usePageCopy from "../../hooks/usePageCopy.js";
 import usePageMedia from "../../hooks/usePageMedia.js";
+import usePageLists from "../../hooks/usePageLists.js";
 import "./EventPage.css";
 import "./WeddingPage.css";
 
@@ -57,6 +58,12 @@ const WEDDING_FLOW = [
     title: "Öppna dansgolvet",
     body: "Runda av middagen och låt bar, musik och dans ta över resten av natten.",
   },
+];
+
+const FREEDOM_BULLETS = [
+  { value: "För middagen:", body: "I köket finns bra arbetsytor, handdisk samt varmt och kallt vatten. Muurikka-hällar kan hyras. Dukning och möbler finns på gården." },
+  { value: "För festen:", body: "Bar, lounge, dansgolv, ljud och festbelysning är redo att användas." },
+  { value: "För hjälpen:", body: "Vi kan hjälpa till att ordna serveringspersonal, bar eller DJ vid behov." },
 ];
 
 const SPY_SECTIONS = [
@@ -109,21 +116,21 @@ function WeddingPage() {
   useSeo(seoMeta.eventWedding);
   const copy = usePageCopy("wedding");
   const media = usePageMedia("wedding");
-  const weddingSpaces = WEDDING_SPACES.map((item, index) => ({
+  const list = usePageLists("wedding");
+  const spaceIcons = [UtensilsCrossed, GlassWater, Music];
+  const weddingSpaces = list("spaces", WEDDING_SPACES).map((item, index) => ({
     ...item,
-    value: copy(`spaces.items.${index}.value`, item.value),
-    title: copy(`spaces.items.${index}.title`, item.title),
-    body: copy(`spaces.items.${index}.body`, item.body),
+    Icon: spaceIcons[index % spaceIcons.length],
   }));
-  const weddingFlow = WEDDING_FLOW.map((item, index) => ({
-    title: copy(`flow.steps.${index}.title`, item.title),
-    body: copy(`flow.steps.${index}.body`, item.body),
-  }));
+  const weddingFlow = list("flow", WEDDING_FLOW);
+  const freedomBullets = list("freedom-bullets", FREEDOM_BULLETS);
+  const weddingFaq = list("faq", WEDDING_FAQ.map(({ answer, question }) => ({ body: answer, title: question })))
+    .filter((item) => item.title && item.body);
   const {
     timelineRef,
     activeSteps: activeTimelineSteps,
     progress: timelineProgress,
-  } = useSequentialScrollTimeline(WEDDING_FLOW.length);
+  } = useSequentialScrollTimeline(weddingFlow.length);
 
   const handleContactClick = () => {
     window.dispatchEvent(new Event("expand-contact-form"));
@@ -221,8 +228,8 @@ function WeddingPage() {
               </div>
 
               <div className="wedding-spaces-grid">
-                {weddingSpaces.map(({ Icon, body, title, value }) => (
-                  <article key={title} className="wedding-space-card">
+                {weddingSpaces.map(({ Icon, body, id, title, value }, index) => (
+                  <article key={id || title || index} className="wedding-space-card">
                     <span className="wedding-space-card__icon" aria-hidden="true">
                       <Icon size={23} />
                     </span>
@@ -300,28 +307,13 @@ function WeddingPage() {
                   />}
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">Mat, dryck och hjälp</span>
-                  <h2>Ni väljer upplägget själva</h2>
-                  <p>
-                    Ni får ta med egen mat och dryck och kan välja det upplägg
-                    som passar er bäst. På plats finns glas, porslin, bestick,
-                    bord och stolar.
-                  </p>
+                  <span className="event-section-eyebrow">{copy("freedom.eyebrow", "Mat, dryck och hjälp")}</span>
+                  <h2>{copy("freedom.title", "Ni väljer upplägget själva")}</h2>
+                  <p>{copy("freedom.body", "Ni får ta med egen mat och dryck och kan välja det upplägg som passar er bäst. På plats finns glas, porslin, bestick, bord och stolar.")}</p>
                   <ul className="event-bullets">
-                    <li>
-                      <strong>För middagen:</strong> I köket finns bra
-                      arbetsytor, handdisk samt varmt och kallt vatten.
-                      Muurikka-hällar kan hyras. Dukning och möbler finns på
-                      gården.
-                    </li>
-                    <li>
-                      <strong>För festen:</strong> Bar, lounge, dansgolv, ljud
-                      och festbelysning är redo att användas.
-                    </li>
-                    <li>
-                      <strong>För hjälpen:</strong> Vi kan hjälpa till att ordna
-                      serveringspersonal, bar eller DJ vid behov.
-                    </li>
+                    {freedomBullets.map((item, index) => (
+                      <li key={item.id || index}><strong>{item.value}</strong> {item.body}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -337,18 +329,15 @@ function WeddingPage() {
           <PageSection background="alt" spacing="default">
             <FadeInSection>
               <div className="wedding-cta">
-                <span className="event-section-eyebrow">Skicka en förfrågan</span>
-                <h2>Har ni ett datum och ett ungefärligt gästantal?</h2>
-                <p>
-                  Berätta vilket datum ni tänker er, ungefär hur många ni blir
-                  och vilken hjälp ni behöver.
-                </p>
+                <span className="event-section-eyebrow">{copy("contact.eyebrow", "Skicka en förfrågan")}</span>
+                <h2>{copy("contact.title", "Har ni ett datum och ett ungefärligt gästantal?")}</h2>
+                <p>{copy("contact.body", "Berätta vilket datum ni tänker er, ungefär hur många ni blir och vilken hjälp ni behöver.")}</p>
                 <button
                   type="button"
                   className="event-gallery-button event-gallery-button--solid"
                   onClick={handleContactClick}
                 >
-                  Skicka en bröllopsförfrågan
+                  {copy("contact.cta", "Skicka en bröllopsförfrågan")}
                   <ArrowUpRight size={17} aria-hidden="true" />
                 </button>
               </div>
@@ -362,13 +351,13 @@ function WeddingPage() {
           <PageSection background="green" spacing="default">
             <FadeInSection>
               <div className="event-section-intro wedding-faq__intro">
-                <span className="event-section-eyebrow">Bra att veta</span>
-                <h2>Vanliga frågor</h2>
+                <span className="event-section-eyebrow">{copy("faq.eyebrow", "Bra att veta")}</span>
+                <h2>{copy("faq.title", "Vanliga frågor")}</h2>
               </div>
 
               <div className="wedding-faq-grid">
-                {WEDDING_FAQ.map(({ answer, question }) => (
-                  <WeddingFaqItem key={question} question={question} answer={answer} />
+                {weddingFaq.map(({ body, id, title }) => (
+                  <WeddingFaqItem key={id || title} question={title} answer={body} />
                 ))}
               </div>
             </FadeInSection>

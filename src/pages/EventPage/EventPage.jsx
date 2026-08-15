@@ -18,6 +18,7 @@ import { useSeo } from "../../hooks/useSeo.js";
 import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
 import usePageCopy from "../../hooks/usePageCopy.js";
 import usePageMedia from "../../hooks/usePageMedia.js";
+import usePageLists from "../../hooks/usePageLists.js";
 import { seoMeta } from "../../config/seoMeta.js";
 import { canonicalPath } from "../../config/routes.js";
 import "./EventPage.css";
@@ -124,6 +125,7 @@ function EventPage() {
   const navigate = useNavigate();
   const copy = usePageCopy("event");
   const media = usePageMedia("event");
+  const list = usePageLists("event");
   const eventTypes = EVENT_TYPES.map((item, index) => ({
     ...item,
     image: item.image ? media(`types.${index}`, item.image, "card") : null,
@@ -131,27 +133,15 @@ function EventPage() {
     description: copy(`types.${index}.description`, item.description),
     linkLabel: copy(`types.${index}.cta`, item.linkLabel),
   }));
-  const eventFacts = EVENT_FACTS.map((item, index) => ({
-    value: copy(`facts.${index}.value`, item.value),
-    label: copy(`facts.${index}.label`, item.label),
-  }));
-  const eventSteps = EVENT_STEPS.map((item, index) => ({
-    title: copy(`planning.steps.${index}.title`, item.title),
-    body: copy(`planning.steps.${index}.body`, item.body),
-  }));
-  const capacityBullets = CAPACITY_BULLETS.map((item, index) => ({
-    label: copy(`capacity.bullets.${index}.label`, item.label),
-    body: copy(`capacity.bullets.${index}.body`, item.body),
-  }));
-  const amenitiesBullets = AMENITIES_BULLETS.map((item, index) => ({
-    label: copy(`amenities.bullets.${index}.label`, item.label),
-    body: copy(`amenities.bullets.${index}.body`, item.body),
-  }));
+  const eventFacts = list("facts", EVENT_FACTS.map(({ label, value }) => ({ body: label, value })));
+  const eventSteps = list("planning-steps", EVENT_STEPS);
+  const capacityBullets = list("capacity-bullets", CAPACITY_BULLETS.map(({ label, body }) => ({ value: label, body })));
+  const amenitiesBullets = list("amenities-bullets", AMENITIES_BULLETS.map(({ label, body }) => ({ value: label, body })));
   const {
     timelineRef,
     activeSteps: activeTimelineSteps,
     progress: timelineProgress,
-  } = useSequentialScrollTimeline(EVENT_STEPS.length);
+  } = useSequentialScrollTimeline(eventSteps.length);
 
   const handleGalleryClick = () => {
     navigate(canonicalPath("/galleri"));
@@ -291,7 +281,7 @@ function EventPage() {
                 {eventFacts.map((fact) => (
                   <article key={fact.value} className="event-fact-card">
                     <strong>{fact.value}</strong>
-                    <p>{fact.label}</p>
+                    <p>{fact.body}</p>
                   </article>
                 ))}
               </div>
@@ -332,7 +322,7 @@ function EventPage() {
                   </p>
                   <ul className="event-bullets">
                     {capacityBullets.map((item, index) => (
-                      <li key={index}><strong>{item.label}</strong> {item.body}</li>
+                      <li key={item.id || index}><strong>{item.value}</strong> {item.body}</li>
                     ))}
                   </ul>
                 </div>
@@ -363,7 +353,7 @@ function EventPage() {
                   </p>
                   <ul className="event-bullets">
                     {amenitiesBullets.map((item, index) => (
-                      <li key={index}><strong>{item.label}</strong> {item.body}</li>
+                      <li key={item.id || index}><strong>{item.value}</strong> {item.body}</li>
                     ))}
                   </ul>
                 </div>

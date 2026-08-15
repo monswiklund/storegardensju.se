@@ -38,8 +38,9 @@ export function normalizePageAppearance(doc) {
 /** Convert Payload's editor rows into an immutable lookup used by page components. */
 export function normalizePageContent(payload) {
   const doc = payload?.docs?.[0];
-  if (!doc) return { found: false, copy: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
+  if (!doc) return { found: false, copy: {}, lists: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
   const rows = Array.isArray(doc.copy) ? doc.copy : [];
+  const contentLists = Array.isArray(doc.contentLists) ? doc.contentLists : [];
   const imageSlots = Array.isArray(doc.imageSlots) ? doc.imageSlots : [];
   return Object.freeze({
     found: true,
@@ -52,6 +53,11 @@ export function normalizePageContent(payload) {
             row.value.trim() !== "",
         )
         .map((row) => [row.key, row.value]),
+    )),
+    lists: Object.freeze(Object.fromEntries(
+      contentLists
+        .filter((list) => typeof list?.key === "string")
+        .map((list) => [list.key, Object.freeze(Array.isArray(list.items) ? list.items : [])]),
     )),
     images: Object.freeze(Object.fromEntries(
       imageSlots.filter((slot) => typeof slot?.key === "string").map((slot) => [slot.key, slot.image || null]),
@@ -87,7 +93,7 @@ export function fetchPageContent(slug) {
       .then(normalizePageContent)
       .catch(() => {
         pageRequests.delete(slug);
-        return { found: false, copy: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
+        return { found: false, copy: {}, lists: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
       });
 
     pageRequests.set(slug, request);

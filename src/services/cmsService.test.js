@@ -5,6 +5,7 @@ import {
   fetchTeamMembers,
   logInquiry,
   normalizePageAppearance,
+  normalizePageContent,
   normalizePageCopy,
 } from "./cmsService";
 
@@ -23,6 +24,17 @@ describe("normalizePageCopy", () => {
         ],
       }),
     ).toEqual({ "hero.title": "Ny rubrik" });
+  });
+});
+
+describe("normalizePageContent", () => {
+  it("keeps an intentionally empty CMS list instead of restoring fallback rows", () => {
+    const content = normalizePageContent({
+      docs: [{ contentLists: [{ key: "capacity-bullets", items: [] }] }],
+    });
+
+    expect(content.found).toBe(true);
+    expect(content.lists).toEqual({ "capacity-bullets": [] });
   });
 });
 
