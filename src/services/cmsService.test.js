@@ -4,6 +4,7 @@ import {
   fetchPageCopy,
   fetchTeamMembers,
   logInquiry,
+  normalizePageAppearance,
   normalizePageCopy,
 } from "./cmsService";
 
@@ -22,6 +23,22 @@ describe("normalizePageCopy", () => {
         ],
       }),
     ).toEqual({ "hero.title": "Ny rubrik" });
+  });
+});
+
+describe("normalizePageAppearance", () => {
+  it("accepts known presets and safely resets unknown values", () => {
+    expect(normalizePageAppearance({
+      pageTheme: "clay",
+      heroLayout: "broken-layout",
+      heroOverlay: "soft",
+      sectionSpacing: "compact",
+    })).toEqual({
+      pageTheme: "clay",
+      heroLayout: "original",
+      heroOverlay: "soft",
+      sectionSpacing: "compact",
+    });
   });
 });
 

@@ -26,7 +26,7 @@ function GalleriPage() {
         spacing="default"
         ariaLabel="gallery-page-heading"
       >
-        <div className="gallery-page-intro">
+        <div className="gallery-page-intro" data-cms-hero data-cms-hero-content>
           <span className="section-eyebrow">{copy("hero.eyebrow", "SE PLATSEN")}</span>
           <h1 id="gallery-page-heading">{copy("hero.title", "Bildgalleri")}</h1>
           <p>

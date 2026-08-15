@@ -1,0 +1,96 @@
+/* CMS presets change shared tokens and marked hero regions only. Editors
+   never receive arbitrary CSS or breakpoint controls. */
+[data-cms-theme="linen"] {
+  --primary-color: #496e5d;
+  --primary-hover: #385749;
+  --accent-color: #a87d55;
+  --accent-hover: #8d6746;
+  --background-alt: #fbf6ec;
+  --background-green: #f4efe5;
+}
+
+[data-cms-theme="clay"] {
+  --primary-color: #8b5139;
+  --primary-hover: #70402d;
+  --accent-color: #a96c4b;
+  --accent-hover: #8d5539;
+  --background-alt: #fff9f2;
+  --background-green: #f7eee7;
+}
+
+[data-cms-theme="forest"] {
+  --primary-color: #365e4c;
+  --primary-hover: #294a3b;
+  --accent-color: #a87542;
+  --accent-hover: #895e35;
+  --background-alt: #faf8f1;
+  --background-green: #edf3ef;
+}
+
+[data-cms-hero-layout="centered"] [data-cms-hero-content],
+[data-cms-hero-layout="editorial"] [data-cms-hero-content] {
+  width: min(100%, 860px);
+}
+
+[data-cms-hero-layout="centered"] [data-cms-hero-content] {
+  margin-inline: auto;
+  text-align: center;
+  align-items: center;
+}
+
+[data-cms-hero-layout="editorial"] [data-cms-hero-content] {
+  margin-right: auto;
+  margin-left: max(0px, calc((100% - 1200px) / 2));
+  text-align: left;
+  align-items: flex-start;
+}
+
+[data-cms-hero-layout="centered"] [data-cms-hero-content] > :is(h1, p),
+[data-cms-hero-layout="centered"] [data-cms-hero-actions] {
+  margin-inline: auto;
+}
+
+[data-cms-hero-layout="editorial"] [data-cms-hero-content] > :is(h1, p),
+[data-cms-hero-layout="editorial"] [data-cms-hero-actions] {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+[data-cms-hero-layout="centered"] [data-cms-hero-actions] {
+  justify-content: center;
+}
+
+[data-cms-hero-layout="editorial"] [data-cms-hero-actions] {
+  justify-content: flex-start;
+}
+
+[data-cms-hero-overlay="soft"] [data-cms-hero-overlay] {
+  opacity: 0.72;
+}
+
+[data-cms-hero-overlay="strong"] [data-cms-hero-overlay] {
+  opacity: 1;
+}
+
+[data-cms-hero-overlay="soft"] [data-cms-hero-visual].event-hero::before {
+  opacity: 0.56;
+}
+
+[data-cms-hero-overlay="strong"] [data-cms-hero-visual].event-hero::before {
+  opacity: 0.82;
+}
+
+[data-cms-section-spacing="compact"] .page-section.spacing-default {
+  padding-block: clamp(40px, 5vw, 60px);
+}
+
+[data-cms-section-spacing="airy"] .page-section.spacing-default {
+  padding-block: clamp(72px, 9vw, 112px);
+}
+
+@media (max-width: 640px) {
+  [data-cms-hero-layout="editorial"] [data-cms-hero-content] {
+    width: 100%;
+    margin-inline: 0;
+  }
+}

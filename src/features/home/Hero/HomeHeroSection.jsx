@@ -127,6 +127,7 @@ function HomeHeroSection() {
       {/* Hero Content Section - Appears on Scroll */}
       <div
         id="home-welcome"
+        data-cms-hero
         className={`hero-content-section${
           isContentVisible ? " is-visible" : ""
         }`}

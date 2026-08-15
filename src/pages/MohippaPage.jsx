@@ -275,9 +275,9 @@ function MohippaPage() {
 
       <div className="mohippa-page">
         <main>
-          <section id="mohippa-hero-section" className="mohippa-hero" aria-labelledby="mohippa-heading">
+          <section id="mohippa-hero-section" data-cms-hero className="mohippa-hero" aria-labelledby="mohippa-heading">
             <div className="mohippa-hero__inner">
-              <div className="mohippa-hero__copy">
+              <div className="mohippa-hero__copy" data-cms-hero-content>
                 <span className="mohippa-eyebrow">{copy("hero.eyebrow", "Samla gruppen")}</span>
                 <h1 id="mohippa-heading" aria-label="Gruppdag på Storegården 7">
                   {copy("hero.title-prefix", "Er")}{" "}
@@ -303,7 +303,7 @@ function MohippaPage() {
                   ))}
                 </div>
 
-                <div className="mohippa-hero__actions">
+                <div className="mohippa-hero__actions" data-cms-hero-actions>
                   <button
                     type="button"
                     className="mohippa-button mohippa-button--primary"

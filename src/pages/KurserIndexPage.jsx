@@ -107,7 +107,7 @@ function KurserIndexPage() {
           background="white"
           className="kurser-index__intro"
         >
-          <div className="kurser-index__intro-copy">
+          <div className="kurser-index__intro-copy" data-cms-hero data-cms-hero-content>
             <span className="kurser-label">
               {copy("hero.eyebrow", "Kurser i Lidköping")}
             </span>

@@ -56,7 +56,7 @@ function HomeHeroContent({
   };
 
   return (
-    <div className="hero-content" ref={ref}>
+    <div className="hero-content" data-cms-hero-content ref={ref}>
       {title ? <h1>{title}</h1> : null}
       {subtitle ? <h2>{subtitle}</h2> : null}
 
@@ -71,7 +71,7 @@ function HomeHeroContent({
       <HomeHeroCarousel />
 
       {(primaryCta || (secondaryCtas && secondaryCtas.length > 0)) && (
-        <div className="hero-cta-container">
+        <div className="hero-cta-container" data-cms-hero-actions>
           {/* Primary Row - Centered & Alone */}
           {primaryCta && (
             <div className="hero-cta-primary-row">

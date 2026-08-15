@@ -21,6 +21,8 @@ import SectionSubnav, {
 import PageTransition from "../components/layout/PageTransition/PageTransition.jsx";
 import HomeInstagramSection from "../features/home/InstagramFeed/HomeInstagramSection.jsx";
 import { ToastProvider } from "../contexts/ToastContext";
+import usePageAppearance, { pageSlugForPath } from "../hooks/usePageAppearance.js";
+import "./PageAppearance.css";
 
 // Pages — HomePage eager (initial route/LCP), rest lazy per route
 import HomePage from "../pages/HomePage.jsx";
@@ -140,6 +142,7 @@ export default App;
 
 function AppContent() {
   const location = useLocation();
+  const appearance = usePageAppearance(pageSlugForPath(location.pathname));
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isHomePage = location.pathname === "/";
   const isTeamPage = location.pathname.startsWith("/om-oss");
@@ -160,6 +163,10 @@ function AppContent() {
   return (
     <div
       className={isAdminRoute ? "admin-app" : isHomePage ? "home-app" : "page-app"}
+      data-cms-theme={appearance.pageTheme}
+      data-cms-hero-layout={appearance.heroLayout}
+      data-cms-hero-overlay={appearance.heroOverlay}
+      data-cms-section-spacing={appearance.sectionSpacing}
     >
       {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <SectionSubnav />}

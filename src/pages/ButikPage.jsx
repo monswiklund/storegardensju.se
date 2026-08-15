@@ -85,7 +85,7 @@ function ButikPage() {
     <main role="main" id="main-content">
       <PageSection background="alt" spacing="default">
         {/* Header */}
-        <div className="butik-header">
+        <div className="butik-header" data-cms-hero data-cms-hero-content>
           <span className="section-eyebrow">
             {copy("hero.eyebrow", "GÅRDSBUTIK")}
           </span>

@@ -39,7 +39,8 @@ function TeamPage() {
       <PageSection background="white" spacing="default" ariaLabel="about-heading">
         <ErrorBoundary>
           <div className="profile-showcase-container">
-            <span className="section-eyebrow">{copy("hero.eyebrow", "STOREGÅRDEN 7")}</span>
+            <div className="team-page-hero" data-cms-hero data-cms-hero-content>
+              <span className="section-eyebrow">{copy("hero.eyebrow", "STOREGÅRDEN 7")}</span>
             <div className="section-ornament align-left" aria-hidden="true">
               <span className="section-ornament-line"></span>
               <Users size={18} />
@@ -52,7 +53,7 @@ function TeamPage() {
                 "Lär känna människorna bakom Storegården 7 och hur vi tar hand om våra gäster, grupper och samarbeten.",
               )}
             </p>
-            <div className="team-page-actions">
+            <div className="team-page-actions" data-cms-hero-actions>
               <Link to="/kontakt/" className="team-page-action team-page-action--primary">
                 {copy("hero.primary-cta", "Kontakta oss")}
                 <ArrowUpRight size={18} aria-hidden="true" />
@@ -60,6 +61,7 @@ function TeamPage() {
               <Link to="/event/" className="team-page-action team-page-action--secondary">
                 Se våra event
               </Link>
+            </div>
             </div>
             <div className="team-grid">
               {teamList.length > 0 ? (

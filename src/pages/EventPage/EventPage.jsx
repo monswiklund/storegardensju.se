@@ -143,11 +143,13 @@ function EventPage() {
         {/* Hero Section */}
         <section
           id="event-hero"
+          data-cms-hero
+          data-cms-hero-visual
           className="event-hero"
           style={{ backgroundImage: media("hero.background", "/images/event/hero/hero.webp", "hero") ? `url(${media("hero.background", "/images/event/hero/hero.webp", "hero")})` : "none" }}
           aria-labelledby="event-heading"
         >
-          <div className="event-hero__inner">
+          <div className="event-hero__inner" data-cms-hero-content>
             <span className="event-eyebrow">{copy("hero.eyebrow", "Eventlokal på landet")}</span>
             <div className="section-ornament" aria-hidden="true" style={{ color: "var(--primary-color)" }}>
               <span className="section-ornament-line" style={{ background: "var(--primary-color)" }}></span>
@@ -156,7 +158,7 @@ function EventPage() {
             </div>
             <h1 id="event-heading">{copy("hero.title", "Event på Storegården 7")}</h1>
             <p>{copy("hero.lead", "Lada och loft för bröllop, fest och företagsevent")}</p>
-            <div className="event-hero__actions">
+            <div className="event-hero__actions" data-cms-hero-actions>
               <Link to="/kontakt/" className="event-button event-button--primary">
                 {copy("hero.primary-cta", "Berätta om ert event")}
                 <ArrowUpRight size={18} aria-hidden="true" />

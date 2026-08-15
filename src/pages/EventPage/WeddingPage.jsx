@@ -141,13 +141,15 @@ function WeddingPage() {
       <main id="main-content" className="event-page">
         <section
           id="wedding-hero"
+          data-cms-hero
+          data-cms-hero-visual
           className="event-hero event-hero--wedding"
           style={{
             backgroundImage: media("hero.background", "/images/event/hero/hero-2.webp", "hero") ? `url(${media("hero.background", "/images/event/hero/hero-2.webp", "hero")})` : "none",
           }}
           aria-labelledby="wedding-heading"
         >
-          <div className="event-hero__inner">
+          <div className="event-hero__inner" data-cms-hero-content>
             <span className="event-eyebrow">{copy("hero.eyebrow", "Bröllopslokal nära Lidköping")}</span>
             <div className="section-ornament wedding-hero__ornament" aria-hidden="true">
               <span className="section-ornament-line" />

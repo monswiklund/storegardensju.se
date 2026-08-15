@@ -124,20 +124,20 @@ function ContactPage() {
 
   return (
     <main className="contact-page" id="main-content">
-      <section className="contact-page__hero" aria-labelledby="contact-page-title">
+      <section className="contact-page__hero" data-cms-hero data-cms-hero-visual aria-labelledby="contact-page-title">
         {media("hero", "/images/event/hero/hero.webp", "hero") && <img
           className="contact-page__hero-image"
           src={media("hero", "/images/event/hero/hero.webp", "hero")}
           alt="Loftet på Storegården 7 med träbjälkar och ljusinsläpp"
         />}
-        <div className="contact-page__hero-overlay" />
-        <div className="contact-page__hero-content">
+        <div className="contact-page__hero-overlay" data-cms-hero-overlay />
+        <div className="contact-page__hero-content" data-cms-hero-content>
           <span className="contact-page__eyebrow">{copy("hero.eyebrow", "Kontakt & hitta hit")}</span>
           <h1 id="contact-page-title">{copy("hero.title", "Vi ses på Storegården 7")}</h1>
           <p>
             {copy("hero.lead", "I Rackeby, en kvart från Lidköping. Hör av dig om du vill boka, planera ett besök eller bara fråga något om gården.")}
           </p>
-          <div className="contact-page__hero-actions">
+          <div className="contact-page__hero-actions" data-cms-hero-actions>
             <a className="contact-page__button contact-page__button--light" href={`mailto:${contactEmail}`}>
               <Mail size={18} aria-hidden="true" />
               {copy("hero.email-cta", "Mejla oss")}

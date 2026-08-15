@@ -19,10 +19,26 @@ function getCmsWriteUrl() {
 const pageRequests = new Map();
 let shopProductsRequest = null;
 
+const appearanceOptions = Object.freeze({
+  pageTheme: new Set(["original", "linen", "clay", "forest"]),
+  heroLayout: new Set(["original", "centered", "editorial"]),
+  heroOverlay: new Set(["original", "soft", "strong"]),
+  sectionSpacing: new Set(["original", "compact", "airy"]),
+});
+
+export function normalizePageAppearance(doc) {
+  return Object.freeze(Object.fromEntries(
+    Object.entries(appearanceOptions).map(([key, allowed]) => [
+      key,
+      allowed.has(doc?.[key]) ? doc[key] : "original",
+    ]),
+  ));
+}
+
 /** Convert Payload's editor rows into an immutable lookup used by page components. */
 export function normalizePageContent(payload) {
   const doc = payload?.docs?.[0];
-  if (!doc) return { found: false, copy: {}, images: {}, socialImage: null };
+  if (!doc) return { found: false, copy: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
   const rows = Array.isArray(doc.copy) ? doc.copy : [];
   const imageSlots = Array.isArray(doc.imageSlots) ? doc.imageSlots : [];
   return Object.freeze({
@@ -41,6 +57,7 @@ export function normalizePageContent(payload) {
       imageSlots.filter((slot) => typeof slot?.key === "string").map((slot) => [slot.key, slot.image || null]),
     )),
     socialImage: doc.socialImage || null,
+    appearance: normalizePageAppearance(doc),
   });
 }
 
@@ -70,7 +87,7 @@ export function fetchPageContent(slug) {
       .then(normalizePageContent)
       .catch(() => {
         pageRequests.delete(slug);
-        return { found: false, copy: {}, images: {}, socialImage: null };
+        return { found: false, copy: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
       });
 
     pageRequests.set(slug, request);

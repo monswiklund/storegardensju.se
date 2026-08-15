@@ -122,11 +122,11 @@ function ArtPage() {
 
       <main id="main-content">
         {/* Hero Section */}
-        <section className="art-hero" id="art-hero">
+        <section className="art-hero" id="art-hero" data-cms-hero data-cms-hero-visual>
           <div className="art-hero__bg" style={{ backgroundImage: media("hero.background", "/images/portfolio/ann-2.webp", "hero") ? `url(${media("hero.background", "/images/portfolio/ann-2.webp", "hero")})` : "none" }} />
-          <div className="art-hero__overlay" />
+          <div className="art-hero__overlay" data-cms-hero-overlay />
 
-          <div className="art-hero__content">
+          <div className="art-hero__content" data-cms-hero-content>
             <span className="art-hero__eyebrow">
               <Sparkles size={16} aria-hidden="true" />
               {copy("hero.eyebrow", "Gårdsateljén på Storegården 7")}
@@ -138,7 +138,7 @@ function ArtPage() {
               {copy("hero.lead", "Kurser i akvarell, akryl och lera i inspirerande miljö på gården utanför Lidköping. Inga förkunskaper krävs.")}
             </p>
 
-            <div className="art-hero__actions">
+            <div className="art-hero__actions" data-cms-hero-actions>
               <button
                 type="button"
                 className="art-btn art-btn--primary"

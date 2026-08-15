@@ -160,15 +160,15 @@ function KurserPage() {
       <ScrollSpyNav sections={spySections} offset={SPY_OFFSET} />
 
       <main id="main-content">
-        <header className="kurser-hero" id="kurser-hero">
+        <header className="kurser-hero" id="kurser-hero" data-cms-hero data-cms-hero-visual>
           <div
             className="kurser-hero__bg"
             style={{
               backgroundImage: media("hero.background", linaYogaHeaderImg, "hero") ? `url(${media("hero.background", linaYogaHeaderImg, "hero")})` : "none",
             }}
           />
-          <div className="kurser-hero__overlay" />
-          <div className="kurser-hero__inner">
+          <div className="kurser-hero__overlay" data-cms-hero-overlay />
+          <div className="kurser-hero__inner" data-cms-hero-content>
             {nextPassItem && (
               <div className="kurser-hero__badge">
                 <span className="kurser-hero__badge-pulse" />
