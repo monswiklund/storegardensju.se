@@ -4,7 +4,7 @@ import { cdnAsset } from "./cdnAssets.js";
 describe("cdnAsset", () => {
   it("maps legacy site images to WebP on the media CDN", () => {
     expect(cdnAsset("/images/event/hero/hero.webp")).toMatch(
-      /^https:\/\/pub-[^.]+\.r2\.dev\/media-[a-f0-9]+\.webp$/
+      /^https:\/\/media\.storegardensju\.se\/media-[a-f0-9]+\.webp$/
     );
   });
 

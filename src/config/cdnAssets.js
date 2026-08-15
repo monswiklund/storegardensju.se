@@ -1,4 +1,4 @@
-const CDN = "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev";
+const CDN = "https://media.storegardensju.se";
 
 const assets = {
   "/images/ann-profile.webp": `${CDN}/media-2f1b53dc8f2d36b38564c752e99add39fd13cee486c62ff3b409143c770f7c07.webp`,
