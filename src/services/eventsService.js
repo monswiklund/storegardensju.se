@@ -8,7 +8,7 @@ export function partitionCmsEvents(docs, now = Date.now()) {
     const normalized = {
       ...event,
       id: event.legacyId || event.id,
-      images: event.mediaMigrated
+      images: Array.isArray(event.media) && event.media.length > 0
         ? normalizeMediaList(event.media, "card")
         : (Array.isArray(event.images) ? event.images : []),
       links: Array.isArray(event.links) ? event.links : [],
