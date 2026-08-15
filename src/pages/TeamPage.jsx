@@ -59,7 +59,7 @@ function TeamPage() {
                 <ArrowUpRight size={18} aria-hidden="true" />
               </Link>
               <Link to="/event/" className="team-page-action team-page-action--secondary">
-                Se våra event
+                {copy("hero.secondary-cta", "Se våra event")}
               </Link>
             </div>
             </div>

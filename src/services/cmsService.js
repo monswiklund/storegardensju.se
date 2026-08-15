@@ -49,8 +49,7 @@ export function normalizePageContent(payload) {
         .filter(
           (row) =>
             typeof row?.key === "string" &&
-            typeof row?.value === "string" &&
-            row.value.trim() !== "",
+            typeof row?.value === "string",
         )
         .map((row) => [row.key, row.value]),
     )),

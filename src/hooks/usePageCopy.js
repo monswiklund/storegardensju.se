@@ -129,8 +129,7 @@ export default function usePageCopy(slug) {
 
   return useCallback(
     (key, fallback) => {
-      const value = values[key];
-      return typeof value === "string" && value.trim() !== "" ? value : fallback;
+      return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : fallback;
     },
     [values],
   );

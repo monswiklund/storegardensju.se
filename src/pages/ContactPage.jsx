@@ -220,7 +220,7 @@ function ContactPage() {
         id="contact-explore-more"
         eyebrow={copy("explore.eyebrow", "Vad vill du veta mer om?")}
         title={copy("explore.title", "Hitta rätt direkt")}
-        intro="När du har hört av dig kan du fortsätta upptäcka det som passar din dag på gården."
+        intro={copy("explore.body", "När du har hört av dig kan du fortsätta upptäcka det som passar din dag på gården.")}
         items={quickLinks}
       />
     </main>

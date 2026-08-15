@@ -30,11 +30,10 @@ function GalleriPage() {
           <span className="section-eyebrow">{copy("hero.eyebrow", "SE PLATSEN")}</span>
           <h1 id="gallery-page-heading">{copy("hero.title", "Bildgalleri")}</h1>
           <p>
-            Se ladan, loftet och ateljén inför ert nästa event, besök eller
-            kurs på Storegården 7.
+            {copy("hero.lead", "Se ladan, loftet och ateljén inför ert nästa event, besök eller kurs på Storegården 7.")}
           </p>
           <Link to="/event/" className="gallery-page-intro__cta">
-            Planera ett event
+            {copy("hero.primary-cta", "Planera ett event")}
             <ArrowUpRight size={18} aria-hidden="true" />
           </Link>
         </div>

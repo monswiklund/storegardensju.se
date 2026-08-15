@@ -284,29 +284,29 @@ function ButikPage() {
 
       <ExploreMoreSection
         id="shop-explore-more"
-        eyebrow="MER FRÅN GÅRDEN"
-        title="Fortsätt upptäcka"
-        intro="När du har hittat något i butiken finns det mer att se, uppleva och planera på Storegården 7."
+        eyebrow={copy("explore.eyebrow", "MER FRÅN GÅRDEN")}
+        title={copy("explore.title", "Fortsätt upptäcka")}
+        intro={copy("explore.body", "När du har hittat något i butiken finns det mer att se, uppleva och planera på Storegården 7.")}
         background="green"
         items={[
           {
             to: "/event/",
-            eyebrow: "Planera",
-            title: "Planera ett event",
-            text: "Se hur gården kan bli platsen för er nästa dag tillsammans.",
+            eyebrow: copy("explore.items.0.eyebrow", "Planera"),
+            title: copy("explore.items.0.title", "Planera ett event"),
+            text: copy("explore.items.0.body", "Se hur gården kan bli platsen för er nästa dag tillsammans."),
             featured: true,
           },
           {
             to: "/galleri/",
-            eyebrow: "Se gården",
-            title: "Bildgalleri",
-            text: "Titta närmare på ladan, loftet och ateljén.",
+            eyebrow: copy("explore.items.1.eyebrow", "Se gården"),
+            title: copy("explore.items.1.title", "Bildgalleri"),
+            text: copy("explore.items.1.body", "Titta närmare på ladan, loftet och ateljén."),
           },
           {
             to: "/om-oss/",
-            eyebrow: "Lär känna",
-            title: "Om oss",
-            text: "Möt människorna och idéerna bakom Storegården 7.",
+            eyebrow: copy("explore.items.2.eyebrow", "Lär känna"),
+            title: copy("explore.items.2.title", "Om oss"),
+            text: copy("explore.items.2.body", "Möt människorna och idéerna bakom Storegården 7."),
           },
         ]}
       />

@@ -8,6 +8,7 @@ import "./UpcomingEvents.css";
 import EventCard from "./components/EventCard";
 import useScrollToSelector from "../../../hooks/useScrollToSelector";
 import { canonicalPath } from "../../../config/routes.js";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 
 // Helper component to render either react-router Link or standard anchor tag
 const SmartLink = ({ href, className, children, ...props }) => {
@@ -27,6 +28,7 @@ const SmartLink = ({ href, className, children, ...props }) => {
 };
 
 function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error = "" }) {
+  const copy = usePageCopy("home");
   const scrollToContact = useScrollToSelector(".contact-container");
   const scrollToPastEvents = useScrollToSelector("#past-events");
   const [isCentered, setIsCentered] = useState(false);
@@ -312,16 +314,15 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
             <div className="upcoming-events-layout">
               {/* Left Column: Text info and Call to action buttons */}
               <div className="upcoming-events-content-col">
-                <span className="events-eyebrow">KOMMANDE EVENEMANG</span>
+                <span className="events-eyebrow">{copy("events.upcoming.eyebrow", "KOMMANDE EVENEMANG")}</span>
                 <div className="section-ornament align-left" aria-hidden="true">
                   <span className="section-ornament-line"></span>
                   <Calendar size={18} />
                   <span className="section-ornament-line"></span>
                 </div>
-                <h2 className="events-heading-large">Kommande tillfällen</h2>
+                <h2 className="events-heading-large">{copy("events.upcoming.title", "Kommande tillfällen")}</h2>
                 <p className="events-description-large">
-                  Här hittar du kommande kurser, öppna ateljékvällar och andra
-                  aktiviteter på gården.
+                  {copy("events.upcoming.body", "Här hittar du kommande kurser, öppna ateljékvällar och andra aktiviteter på gården.")}
                 </p>
                 
                 <div className="upcoming-desktop-actions desktop-only">
@@ -367,11 +368,10 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
             </div>
           ) : (
             <div className="events-empty-panel">
-              <span className="events-empty-kicker">Just nu</span>
-              <h2>Inget nytt datum än.</h2>
+              <span className="events-empty-kicker">{copy("events.empty.eyebrow", "Just nu")}</span>
+              <h2>{copy("events.empty.title", "Inget nytt datum än.")}</h2>
               <p>
-                Det går fortfarande att fråga om en privat workshop eller
-                gruppdag.
+                {copy("events.empty.body", "Det går fortfarande att fråga om en privat workshop eller gruppdag.")}
               </p>
               <div className="events-empty-actions">
                 <button
@@ -379,7 +379,7 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
                   type="button"
                   onClick={scrollToContact}
                 >
-                  Hör av dig
+                  {copy("events.empty.contact-cta", "Hör av dig")}
                   <ArrowUpRight size={15} aria-hidden="true" />
                 </button>
                 <button
@@ -387,7 +387,7 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
                   type="button"
                   onClick={scrollToPastEvents}
                 >
-                  Se tidigare evenemang
+                  {copy("events.empty.past-cta", "Se tidigare evenemang")}
                 </button>
               </div>
             </div>

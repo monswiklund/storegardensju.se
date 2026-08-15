@@ -10,7 +10,7 @@ import {
 } from "./cmsService";
 
 describe("normalizePageCopy", () => {
-  it("keeps valid editor values and ignores empty or malformed rows", () => {
+  it("keeps valid and intentionally empty editor values and ignores malformed rows", () => {
     expect(
       normalizePageCopy({
         docs: [
@@ -23,7 +23,7 @@ describe("normalizePageCopy", () => {
           },
         ],
       }),
-    ).toEqual({ "hero.title": "Ny rubrik" });
+    ).toEqual({ "hero.title": "Ny rubrik", "hero.empty": "  " });
   });
 });
 

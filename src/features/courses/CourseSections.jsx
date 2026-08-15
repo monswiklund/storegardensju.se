@@ -362,6 +362,7 @@ function FaqItem({ question, answer }) {
  */
 export function FaqSection({
   faq,
+  label = "Bra att veta",
   heading,
   background = "white",
   variant = "stack",
@@ -378,7 +379,7 @@ export function FaqSection({
           centered ? " kurser-faq__inner--centered" : ""
         }`}
       >
-        <span className="kurser-label">Bra att veta</span>
+        <span className="kurser-label">{label}</span>
         <h2>{heading}</h2>
         <dl className={`kurser-faq__list kurser-faq__list--${variant}`}>
           {faq.map(({ question, answer }) => (

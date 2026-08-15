@@ -231,28 +231,28 @@ function KurserIndexPage() {
 
         <ExploreMoreSection
           id="kurser-explore-more"
-          eyebrow="MER HOS OSS"
-          title="Utforska mer"
-          intro="När du har hittat rätt kurs finns fler sätt att uppleva Storegården 7."
+          eyebrow={copy("explore.eyebrow", "MER HOS OSS")}
+          title={copy("explore.title", "Utforska mer")}
+          intro={copy("explore.body", "När du har hittat rätt kurs finns fler sätt att uppleva Storegården 7.")}
           background="alt"
           items={[
             {
               to: "/kurser/yoga/",
-              eyebrow: "Landa",
-              title: "Yoga på loftet",
-              text: "Se kommande pass och läs mer om yogan.",
+              eyebrow: copy("explore.items.0.eyebrow", "Landa"),
+              title: copy("explore.items.0.title", "Yoga på loftet"),
+              text: copy("explore.items.0.body", "Se kommande pass och läs mer om yogan."),
             },
             {
               to: "/kurser/konst/",
-              eyebrow: "Skapa",
-              title: "Måleri & keramik",
-              text: "Upptäck kurserna i gårdsateljén.",
+              eyebrow: copy("explore.items.1.eyebrow", "Skapa"),
+              title: copy("explore.items.1.title", "Måleri & keramik"),
+              text: copy("explore.items.1.body", "Upptäck kurserna i gårdsateljén."),
             },
             {
               to: "/gruppdagar/",
-              eyebrow: "Samlas",
-              title: "Gruppdagar",
-              text: "Planera en egen dag för gruppen på gården.",
+              eyebrow: copy("explore.items.2.eyebrow", "Samlas"),
+              title: copy("explore.items.2.title", "Gruppdagar"),
+              text: copy("explore.items.2.body", "Planera en egen dag för gruppen på gården."),
               featured: true,
             },
           ]}

@@ -19,6 +19,7 @@ import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import { fetchPublicEvents } from "../services/eventsService.js";
 import usePageCopy from "../hooks/usePageCopy.js";
+import usePageLists from "../hooks/usePageLists.js";
 import usePageMedia from "../hooks/usePageMedia.js";
 import { cdnAsset } from "../config/cdnAssets.js";
 import {
@@ -84,7 +85,20 @@ const RECAP_IMAGES = [
 // hubs do not read as one template with the nouns swapped.
 function KurserPage() {
   const copy = usePageCopy("yoga");
+  const list = usePageLists("yoga");
   const media = usePageMedia("yoga");
+  const faq = list(
+    "faq",
+    FAQ.map(({ question, answer }) => ({ title: question, body: answer })),
+  )
+    .filter((item) => item.title && item.body)
+    .map(({ title, body }) => ({ question: title, answer: body }));
+  const instructor = {
+    ...INSTRUCTOR,
+    name: copy("instructor.title", INSTRUCTOR.name),
+    role: copy("instructor.role", INSTRUCTOR.role),
+    bio: copy("instructor.bio", INSTRUCTOR.bio),
+  };
   const recapImages = RECAP_IMAGES.map((item, index) => {
     const next = media(`gallery.${index}`, item.original, "card");
     return { ...item, original: next, thumbnail: next };
@@ -131,7 +145,7 @@ function KurserPage() {
     ...(nextPassItem
       ? [{ id: passAnchor(nextPassItem), label: "Nästa pass" }]
       : [{ id: "kommande", label: "Kommande" }]),
-    { id: "om-lina", label: `Om ${INSTRUCTOR.name.split(" ")[0]}` },
+    { id: "om-lina", label: `Om ${instructor.name.split(" ")[0]}` },
     { id: "fragor-och-svar", label: "Frågor" },
     { id: "gardens-atmosfar", label: "Bilder" },
     { id: "hitta-hit", label: "Hitta hit" },
@@ -204,7 +218,7 @@ function KurserPage() {
             trackId={YOGA_TRACK_ID}
             background="alt"
             heading={copy("empty.title", "Inget pass inbokat just nu")}
-            body={copy("empty.body", `Vi har för tillfället inget yogapass i kalendern. Håll utkik här, eller hör av dig till ${INSTRUCTOR.name} så berättar hon när nästa tillfälle släpps.`)}
+            body={copy("empty.body", `Vi har för tillfället inget yogapass i kalendern. Håll utkik här, eller hör av dig till ${instructor.name} så berättar hon när nästa tillfälle släpps.`)}
           />
         ) : (
           <YogaScheduleSection
@@ -222,8 +236,8 @@ function KurserPage() {
         {/* No portrait here by request - the section runs as text only. */}
         <InstructorSection
           id="om-lina"
-          instructor={INSTRUCTOR}
-          label={copy("instructor.label", "Vem leder passen")}
+          instructor={instructor}
+          label={copy("instructor.eyebrow", copy("instructor.label", "Vem leder passen"))}
           background="white"
           variant="split"
         />
@@ -231,8 +245,9 @@ function KurserPage() {
         <SectionDivider above="white" below="green" variant="wave" />
 
         <FaqSection
-          faq={FAQ}
-          heading="Vanliga frågor"
+          faq={faq}
+          label={copy("faq.eyebrow", "Bra att veta")}
+          heading={copy("faq.title", "Vanliga frågor")}
           background="green"
           variant="columns"
         />
@@ -291,8 +306,8 @@ function KurserPage() {
             block right above it read as the same section twice. */}
         <ContactSection
           heading={copy("contact.title", "Frågor om yogan?")}
-          body={copy("contact.body", `Hör av dig till ${INSTRUCTOR.name} — hon svarar gärna på frågor om passen, nivån eller vad du behöver ta med.`)}
-          email={INSTRUCTOR.email}
+          body={copy("contact.body", `Hör av dig till ${instructor.name} — hon svarar gärna på frågor om passen, nivån eller vad du behöver ta med.`)}
+          email={instructor.email}
           subject={contactSubject}
           background="green"
           variant="split"

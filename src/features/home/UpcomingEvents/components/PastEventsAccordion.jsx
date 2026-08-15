@@ -13,11 +13,13 @@ import {
   groupPastEvents,
 } from "../pastEventsUtils.js";
 import "../../PastEvents/PastEvents.css";
+import usePageCopy from "../../../../hooks/usePageCopy.js";
 
 const pastEventHistoryStateKey = "__storegardenPastEvent";
 const INITIAL_LIMIT = 5;
 
 function PastEventsAccordion({ events }) {
+  const copy = usePageCopy("home");
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -266,16 +268,16 @@ function PastEventsAccordion({ events }) {
     >
       {/* Mobile-only header row */}
       <div className="past-events-mobile-header mobile-only">
-        <span className="past-events-eyebrow">TIDIGARE EVENEMANG</span>
+        <span className="past-events-eyebrow">{copy("events.past.eyebrow", "TIDIGARE EVENEMANG")}</span>
       </div>
 
       <div className="past-events-split-layout">
         {/* Left Column (Desktop only) */}
         <div className="past-events-info-col desktop-only">
-          <span className="past-events-eyebrow">TIDIGARE EVENEMANG</span>
-          <h2 className="past-events-heading">Tidigare evenemang</h2>
+          <span className="past-events-eyebrow">{copy("events.past.eyebrow", "TIDIGARE EVENEMANG")}</span>
+          <h2 className="past-events-heading">{copy("events.past.title", "Tidigare evenemang")}</h2>
           <p className="past-events-intro">
-            Ett urval av kurser, öppna ateljékvällar och samarbeten.
+            {copy("events.past.body", "Ett urval av kurser, öppna ateljékvällar och samarbeten.")}
           </p>
 
           {/* Desktop Filter Pills */}
@@ -346,7 +348,7 @@ function PastEventsAccordion({ events }) {
           <div className="past-events-list" onMouseEnter={handleItemMouseEnter}>
             {filteredEvents.length === 0 && (
               <div className="past-events-empty">
-                <p>Inga tidigare evenemang i denna kategori.</p>
+                <p>{copy("events.past.empty", "Inga tidigare evenemang i denna kategori.")}</p>
               </div>
             )}
 

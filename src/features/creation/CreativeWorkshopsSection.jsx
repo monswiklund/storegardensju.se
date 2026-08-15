@@ -1,12 +1,16 @@
 import "./Creation.css";
 import { creationContent } from "../../data/homeContent.js";
-import usePageCopy from "../../hooks/usePageCopy.js";
 import usePageMedia from "../../hooks/usePageMedia.js";
+import usePageLists from "../../hooks/usePageLists.js";
 
 function CreativeWorkshopsSection() {
-  const copy = usePageCopy("art");
   const media = usePageMedia("art");
+  const list = usePageLists("art");
   const { sections } = creationContent;
+  const workshopSections = list(
+    "workshops",
+    sections.map((section) => ({ title: section.heading, body: section.body.join("\n\n") })),
+  );
 
   // Let's pair each section with a beautiful, high-quality image path
   const sectionImages = [
@@ -19,25 +23,26 @@ function CreativeWorkshopsSection() {
     <div id="creation-section" className="creation-section">
       <div className="creation-container">
         <div className="creation-rows">
-          {sections.map((section, index) => {
+          {workshopSections.map((section, index) => {
             const isEven = index % 2 === 0;
+            const paragraphs = String(section.body || "")
+              .split(/\n\s*\n/)
+              .filter(Boolean);
             return (
               <div 
-                key={section.heading} 
+                key={section.id || section.title || index}
                 className={`creation-row ${isEven ? "row-normal" : "row-reverse"}`}
               >
                 <div className="creation-row__text">
-                  <h3>{copy(`workshops.${index}.heading`, section.heading)}</h3>
-                  {section.body.map((paragraph, idx) => (
-                    <p key={idx}>
-                      {copy(`workshops.${index}.paragraphs.${idx}`, paragraph)}
-                    </p>
+                  <h3>{section.title}</h3>
+                  {paragraphs.map((paragraph, idx) => (
+                    <p key={idx}>{paragraph}</p>
                   ))}
                 </div>
                 <div className="creation-row__image-wrapper">
                   {sectionImages[index] && <img
                     src={sectionImages[index]} 
-                    alt={section.heading} 
+                    alt={section.title || "Bild från ateljén"}
                     className="creation-row__image"
                     loading="lazy"
                     decoding="async"

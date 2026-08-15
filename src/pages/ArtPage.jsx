@@ -25,6 +25,7 @@ import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import { fetchPublicEvents } from "../services/eventsService.js";
 import usePageCopy from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
+import usePageLists from "../hooks/usePageLists.js";
 import {
   COURSE_LOCATION,
   COURSE_PASSES,
@@ -71,6 +72,24 @@ const SPY_OFFSET = 130;
 function ArtPage() {
   const copy = usePageCopy("art");
   const media = usePageMedia("art");
+  const list = usePageLists("art");
+  const offerings = list("offerings", [
+    { title: "Målningskurser", body: "Prova akvarell eller akryl. Ann visar tekniker och övningar och hjälper dig vidare under passet." },
+    { title: "Keramik och lera", body: "Arbeta med handbygge, ringling eller drejning i keramikverkstaden. Verktyg och material finns på plats." },
+    { title: "Privata workshops", body: "Boka ateljén för ett kompisgäng eller en annan grupp. Kursen anpassas efter vad ni vill prova och hur mycket erfarenhet ni har." },
+    { title: "Teambuilding och kalas", body: "Måleri och keramik går att boka för företag, möhippor, svensexor och kalas. Det går också att lägga till fika." },
+  ]);
+  const offeringIcons = [Palette, Flame, Users, Sparkles];
+  const offeringClasses = ["offering-terracotta", "offering-green", "offering-slate", "offering-gold"];
+  const faq = list("faq", FAQ.map(({ answer, question }) => ({ body: answer, title: question })))
+    .filter((item) => item.title && item.body)
+    .map((item) => ({ question: item.title, answer: item.body }));
+  const instructor = {
+    ...INSTRUCTOR,
+    name: copy("instructor.title", INSTRUCTOR.name),
+    role: copy("instructor.role", INSTRUCTOR.role),
+    bio: copy("instructor.bio", INSTRUCTOR.bio),
+  };
   const [showMailFallback, setShowMailFallback] = useState(false);
   const [apiEvents, setApiEvents] = useState([]);
   const onContactClick = () => setShowMailFallback(true);
@@ -142,14 +161,14 @@ function ArtPage() {
                 className="art-btn art-btn--primary"
                 onClick={() => scrollToSection("art-courses-section")}
               >
-                Se kommande kurser
+                {copy("hero.primary-cta", "Se kommande kurser")}
               </button>
               <button
                 type="button"
                 className="art-btn art-btn--secondary"
                 onClick={() => scrollToSection("art-cta-section")}
               >
-                Boka för egen grupp
+                {copy("hero.secondary-cta", "Boka för egen grupp")}
               </button>
             </div>
           </div>
@@ -225,42 +244,24 @@ function ArtPage() {
                     style={{ background: "var(--accent-color)" }}
                   />
                 </div>
-                <h2>Det här kan du göra i ateljén</h2>
-                <p>Kom på en kurs med fast datum eller boka en egen tid för din grupp.</p>
+                <h2>{copy("offerings.title", "Det här kan du göra i ateljén")}</h2>
+                <p>{copy("offerings.lead", "Kom på en kurs med fast datum eller boka en egen tid för din grupp.")}</p>
               </div>
 
               <div className="art-offerings-grid">
-                <div className="art-offering-card offering-terracotta">
-                  <div className="offering-icon-wrapper">
-                    <Palette size={28} />
-                  </div>
-                  <h3>Målningskurser</h3>
-                  <p>Prova akvarell eller akryl. Ann visar tekniker och övningar och hjälper dig vidare under passet.</p>
-                </div>
-
-                <div className="art-offering-card offering-green">
-                  <div className="offering-icon-wrapper">
-                    <Flame size={28} />
-                  </div>
-                  <h3>Keramik och lera</h3>
-                  <p>Arbeta med handbygge, ringling eller drejning i keramikverkstaden. Verktyg och material finns på plats.</p>
-                </div>
-
-                <div className="art-offering-card offering-slate">
-                  <div className="offering-icon-wrapper">
-                    <Users size={28} />
-                  </div>
-                  <h3>Privata workshops</h3>
-                  <p>Boka ateljén för ett kompisgäng eller en annan grupp. Kursen anpassas efter vad ni vill prova och hur mycket erfarenhet ni har.</p>
-                </div>
-
-                <div className="art-offering-card offering-gold">
-                  <div className="offering-icon-wrapper">
-                    <Sparkles size={28} />
-                  </div>
-                  <h3>Teambuilding och kalas</h3>
-                  <p>Måleri och keramik går att boka för företag, möhippor, svensexor och kalas. Det går också att lägga till fika.</p>
-                </div>
+                {offerings.map((offering, index) => {
+                  const Icon = offeringIcons[index % offeringIcons.length];
+                  return (
+                    <div
+                      key={offering.id || offering.title || index}
+                      className={`art-offering-card ${offeringClasses[index % offeringClasses.length]}`}
+                    >
+                      <div className="offering-icon-wrapper"><Icon size={28} /></div>
+                      <h3>{offering.title}</h3>
+                      <p>{offering.body}</p>
+                    </div>
+                  );
+                })}
               </div>
             </FadeInSection>
           </PageSection>
@@ -274,18 +275,14 @@ function ArtPage() {
             <FadeInSection>
               <div className="art-cta-banner">
                 <div className="art-cta-banner__inner">
-                  <h2>Planerar du ett event eller vill du gå en kurs?</h2>
-                  <p>
-                    Vi tar emot möhippor, födelsedagar, företag och andra
-                    grupper. Berätta hur många ni är och om ni vill måla,
-                    arbeta med lera eller kombinera kursen med fika.
-                  </p>
+                  <h2>{copy("contact.title", "Planerar du ett event eller vill du gå en kurs?")}</h2>
+                  <p>{copy("contact.body", "Vi tar emot möhippor, födelsedagar, företag och andra grupper. Berätta hur många ni är och om ni vill måla, arbeta med lera eller kombinera kursen med fika.")}</p>
                   <a
                     href={`mailto:${CONTACT_EMAIL}?subject=Förfrågan: Workshop eller kurs på Storegården 7`}
                     className="art-button art-button--premium"
                   >
                     <Mail size={18} />
-                    Skicka en förfrågan
+                    {copy("contact.cta", "Skicka en förfrågan")}
                   </a>
                 </div>
               </div>
@@ -301,8 +298,8 @@ function ArtPage() {
             pages rather than one template with the nouns swapped. */}
         <InstructorSection
           id="om-ann"
-          instructor={INSTRUCTOR}
-          label="Vem håller kurserna"
+          instructor={instructor}
+          label={copy("instructor.eyebrow", "Vem håller kurserna")}
           background="white"
           variant="band"
         />
@@ -312,8 +309,9 @@ function ArtPage() {
         {/* FAQ stays visible: the FAQPage JSON-LD reads the same answers, and
             Google requires markup to match what a visitor can see. */}
         <FaqSection
-          faq={FAQ}
-          heading="Vanliga frågor"
+          faq={faq}
+          label={copy("faq.eyebrow", "Bra att veta")}
+          heading={copy("faq.title", "Vanliga frågor")}
           background="alt"
           variant="stack"
         />
@@ -323,7 +321,7 @@ function ArtPage() {
         <PastPassesSection
           passes={PAST_PASSES}
           trackId={MALERI_TRACK_ID}
-          heading="Tidigare kurser och skapardagar"
+          heading={copy("past.title", "Tidigare kurser och skapardagar")}
           background="white"
           variant="timeline"
         />
@@ -332,12 +330,9 @@ function ArtPage() {
 
         <section className="art-location" id="hitta-hit" aria-labelledby="art-location-title">
           <div className="art-location__copy">
-            <span className="art-location__eyebrow">Hitta hit</span>
-            <h2 id="art-location-title">Storegården 7, Rackeby</h2>
-            <p>
-              Ateljén ligger {COURSE_LOCATION.travelNote} från Lidköping. Det
-              finns gott om parkering vid ladan.
-            </p>
+            <span className="art-location__eyebrow">{copy("directions.eyebrow", "Hitta hit")}</span>
+            <h2 id="art-location-title">{copy("directions.title", "Storegården 7, Rackeby")}</h2>
+            <p>{copy("directions.body", `Ateljén ligger ${COURSE_LOCATION.travelNote} från Lidköping. Det finns gott om parkering vid ladan.`)}</p>
           </div>
           <div className="art-location__details">
             <address>
@@ -350,23 +345,23 @@ function ArtPage() {
               rel="noopener noreferrer"
             >
               <MapPin size={17} aria-hidden="true" />
-              Visa på karta
+              {copy("directions.cta", "Visa på karta")}
               <ArrowRight size={16} aria-hidden="true" />
             </a>
           </div>
         </section>
 
         <section className="art-next-course" aria-label="Andra kurser på gården">
-          <span>Mer att göra hos oss</span>
+          <span>{copy("other.eyebrow", "Mer att göra hos oss")}</span>
           <a href={`${TRACKS.yoga.hubPath}/`}>
-            Se även Yoga på loftet
+            {copy("other.title", "Se även Yoga på loftet")}
             <ArrowRight size={16} aria-hidden="true" />
           </a>
         </section>
 
         <ContactSection
-          heading="Fråga om en kurs"
-          body={`Hör av dig till ${INSTRUCTOR.name} — hon svarar gärna på frågor om kurserna, nivån eller hur en dag i ateljén läggs upp.`}
+          heading={copy("contact.section-title", "Fråga om en kurs")}
+          body={copy("contact.section-body", `Hör av dig till ${instructor.name} — hon svarar gärna på frågor om kurserna, nivån eller hur en dag i ateljén läggs upp.`)}
           email={CONTACT_EMAIL}
           subject={contactSubject}
           background="alt"

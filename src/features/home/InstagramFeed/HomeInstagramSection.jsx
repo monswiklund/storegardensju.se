@@ -14,6 +14,7 @@ import "./InstagramFeed.css";
 import { fetchInstagramFeed } from "../../../services/instagramService";
 import { getApiBaseUrl } from "../../../config/apiBaseUrl";
 import usePageMedia from "../../../hooks/usePageMedia.js";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 
 const toImageSrc = (item) =>
   `${getApiBaseUrl()}/api/instagram/image/${item.id}`;
@@ -31,6 +32,7 @@ const handleImageError = (event, item) => {
 };
 
 function HomeInstagramSection() {
+  const copy = usePageCopy("home");
   const siteMedia = usePageMedia("site");
   const logo = siteMedia("brand.logo", "/images/logoTransp_cropped.png", "thumbnail");
   const [items, setItems] = useState([]);
@@ -70,16 +72,15 @@ function HomeInstagramSection() {
     <section className="instagram-section" aria-labelledby="instagram-heading">
       <div className="instagram-container">
         <header className="instagram-section-header">
-          <span className="instagram-eyebrow">Instagram</span>
+          <span className="instagram-eyebrow">{copy("instagram.eyebrow", "Instagram")}</span>
           <div className="instagram-ornament" aria-hidden="true">
             <span className="instagram-ornament-line"></span>
             <Sprout size={20} />
             <span className="instagram-ornament-line"></span>
           </div>
-          <h2 id="instagram-heading">Följ oss på Instagram</h2>
+          <h2 id="instagram-heading">{copy("instagram.title", "Följ oss på Instagram")}</h2>
           <p className="instagram-subtitle">
-            Där lägger vi upp bilder från gården, kurserna och det som händer
-            i ladan och ateljén.
+            {copy("instagram.body", "Där lägger vi upp bilder från gården, kurserna och det som händer i ladan och ateljén.")}
           </p>
         </header>
 
