@@ -56,6 +56,20 @@ const EVENT_STEPS = [
   },
 ];
 
+const CAPACITY_BULLETS = [
+  { label: "Loftet:", body: "Plats för 150+ sittande gäster vid middag eller föreläsning." },
+  { label: "Ladan:", body: "Plats för 50+ sittande gäster på bottenvåningen." },
+  { label: "Mingel:", body: "Tillsammans rymmer lokalerna 300+ stående gäster." },
+];
+
+const AMENITIES_BULLETS = [
+  { label: "Dukning & möbler:", body: "Glas, tallrikar, bestick, bord och stolar finns färdigt för alla gäster." },
+  { label: "Kök:", body: "Bra arbetsytor, handdisk samt varmt och kallt vatten. Muurikka-hällar kan hyras." },
+  { label: "Övriga ytor:", body: "Lounge med soffor, dansgolv, bar och toaletter." },
+  { label: "Ljud och ljus:", body: "Ljudanläggning och festbelysning är installerade." },
+  { label: "Mat och dryck:", body: "Ni får ta med egen mat och dryck. Vid behov kan vi hjälpa till att ordna serveringspersonal, bar eller DJ." },
+];
+
 const EVENT_TYPES = [
   {
     title: "Bröllop",
@@ -124,6 +138,14 @@ function EventPage() {
   const eventSteps = EVENT_STEPS.map((item, index) => ({
     title: copy(`planning.steps.${index}.title`, item.title),
     body: copy(`planning.steps.${index}.body`, item.body),
+  }));
+  const capacityBullets = CAPACITY_BULLETS.map((item, index) => ({
+    label: copy(`capacity.bullets.${index}.label`, item.label),
+    body: copy(`capacity.bullets.${index}.body`, item.body),
+  }));
+  const amenitiesBullets = AMENITIES_BULLETS.map((item, index) => ({
+    label: copy(`amenities.bullets.${index}.label`, item.label),
+    body: copy(`amenities.bullets.${index}.body`, item.body),
   }));
   const {
     timelineRef,
@@ -309,9 +331,9 @@ function EventPage() {
                     {copy("capacity.body", "Ladan och loftet ger er totalt 360 kvm inomhus på två våningar. Ni kan använda en våning eller låta gästerna röra sig mellan båda.")}
                   </p>
                   <ul className="event-bullets">
-                    <li><strong>Loftet:</strong> Plats för 150+ sittande gäster vid middag eller föreläsning.</li>
-                    <li><strong>Ladan:</strong> Plats för 50+ sittande gäster på bottenvåningen.</li>
-                    <li><strong>Mingel:</strong> Tillsammans rymmer lokalerna 300+ stående gäster.</li>
+                    {capacityBullets.map((item, index) => (
+                      <li key={index}><strong>{item.label}</strong> {item.body}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -340,11 +362,9 @@ function EventPage() {
                     {copy("amenities.body", "Mycket av det praktiska finns redan här och ingår i hyran. Ni får också ta med egen mat och dryck.")}
                   </p>
                   <ul className="event-bullets">
-                    <li><strong>Dukning & möbler:</strong> Glas, tallrikar, bestick, bord och stolar finns färdigt för alla gäster.</li>
-                    <li><strong>Kök:</strong> Bra arbetsytor, handdisk samt varmt och kallt vatten. Muurikka-hällar kan hyras.</li>
-                    <li><strong>Övriga ytor:</strong> Lounge med soffor, dansgolv, bar och toaletter.</li>
-                    <li><strong>Ljud och ljus:</strong> Ljudanläggning och festbelysning är installerade.</li>
-                    <li><strong>Mat och dryck:</strong> Ni får ta med egen mat och dryck. Vid behov kan vi hjälpa till att ordna serveringspersonal, bar eller DJ.</li>
+                    {amenitiesBullets.map((item, index) => (
+                      <li key={index}><strong>{item.label}</strong> {item.body}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
