@@ -16,6 +16,7 @@ import {
 import { CourseBand } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import usePageCopy from "../hooks/usePageCopy.js";
+import usePageMedia from "../hooks/usePageMedia.js";
 import { seoMeta } from "../config/seoMeta.js";
 import {
   COURSE_LOCATION,
@@ -84,6 +85,7 @@ function KurserIndexPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const copy = usePageCopy("courses");
+  const media = usePageMedia("courses");
 
   useSeo(seoMeta.kurser);
 
@@ -144,6 +146,7 @@ function KurserIndexPage() {
             {HUBS.map(({ trackId, image, imageAlt, heading, body, cta }, index) => {
               const track = TRACKS[trackId];
               const pass = nextPass(trackId);
+              const hubImage = media(index === 0 ? "hubs.yoga" : "hubs.art", image, "card");
 
               return (
                 <Link
@@ -152,7 +155,7 @@ function KurserIndexPage() {
                   to={`${track.hubPath}/`}
                 >
                   <div className="kurser-index__card-media">
-                    <img src={image} alt={imageAlt} loading="lazy" />
+                    {hubImage && <img src={hubImage} alt={imageAlt} loading="lazy" />}
                   </div>
                   <div className="kurser-index__card-body">
                     <span className="kurser-label">{track.label}</span>

@@ -33,7 +33,7 @@ export const toUiEvent = (item) => {
   const mappedImages = (Array.isArray(item?.images) ? item.images : []).map(
     (image) => ({
       ...image,
-      src: image.url || image.src || "",
+      src: image.src || image.url || "",
     }),
   );
 
@@ -83,4 +83,3 @@ export const toUiEvent = (item) => {
     images: mappedImages,
   };
 };
-

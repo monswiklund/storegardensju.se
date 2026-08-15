@@ -551,7 +551,9 @@ export function apiEventToCoursePass(apiEvent, defaultTrackId = YOGA_TRACK_ID) {
       ? apiEvent.images.map((img) =>
           typeof img === "string" ? { url: img, alt: apiEvent.title } : img
         )
-      : [
+      : apiEvent.mediaMigrated
+        ? []
+        : [
           {
             url: fallbackImage,
             alt: apiEvent.title || "Kurs på Storegården 7",
@@ -603,6 +605,7 @@ export function apiEventToCoursePass(apiEvent, defaultTrackId = YOGA_TRACK_ID) {
         : "Material och verktyg finns i ateljén."),
     description: apiEvent.description || "",
     bucketOverride: apiEvent.bucketOverride || null,
+    mediaAuthoritative: Boolean(apiEvent.mediaMigrated),
     images,
   };
 }
@@ -678,7 +681,11 @@ export function mergeCoursePasses(
   }
   for (const pass of formattedApiPasses) {
       const existing = map.get(pass.id);
-      map.set(pass.id, existing ? preferCompletePass(pass, existing) : pass);
+      const preferred = existing ? preferCompletePass(pass, existing) : pass;
+      map.set(
+        pass.id,
+        pass.mediaAuthoritative ? { ...preferred, images: pass.images } : preferred
+      );
   }
 
     const passesBySlot = new Map();
@@ -690,9 +697,10 @@ export function mergeCoursePasses(
         }
 
         const existing = passesBySlot.get(slotKey);
+        const preferred = existing ? preferCompletePass(pass, existing) : pass;
         passesBySlot.set(
             slotKey,
-            existing ? preferCompletePass(pass, existing) : pass
+            pass.mediaAuthoritative ? { ...preferred, images: pass.images } : preferred
         );
   }
 
@@ -705,4 +713,3 @@ export function mergeCoursePasses(
     )
     .sort((a, b) => new Date(a.startAt) - new Date(b.startAt));
 }
-

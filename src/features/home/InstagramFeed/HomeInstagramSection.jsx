@@ -13,6 +13,7 @@ import {
 import "./InstagramFeed.css";
 import { fetchInstagramFeed } from "../../../services/instagramService";
 import { getApiBaseUrl } from "../../../config/apiBaseUrl";
+import usePageMedia from "../../../hooks/usePageMedia.js";
 
 const toImageSrc = (item) =>
   `${getApiBaseUrl()}/api/instagram/image/${item.id}`;
@@ -30,6 +31,8 @@ const handleImageError = (event, item) => {
 };
 
 function HomeInstagramSection() {
+  const siteMedia = usePageMedia("site");
+  const logo = siteMedia("brand.logo", "/images/logoTransp_cropped.png", "thumbnail");
   const [items, setItems] = useState([]);
   const [timeStr, setTimeStr] = useState("09:41");
 
@@ -147,7 +150,7 @@ function HomeInstagramSection() {
                   <div className="instagram-avatar-container">
                     <div className="instagram-avatar-ring">
                       <div className="instagram-avatar-bg">
-                        <img src="/images/logoTransp_cropped.png" alt="Storegården 7" className="instagram-avatar-img" />
+                        {logo && <img src={logo} alt="Storegården 7" className="instagram-avatar-img" />}
                       </div>
                     </div>
                   </div>

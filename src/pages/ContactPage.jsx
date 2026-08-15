@@ -13,6 +13,7 @@ import { COURSE_LOCATION } from "../data/courseEvents.js";
 import { seoMeta } from "../config/seoMeta.js";
 import { useSeo } from "../hooks/useSeo.js";
 import usePageCopy from "../hooks/usePageCopy.js";
+import usePageMedia from "../hooks/usePageMedia.js";
 import "./ContactPage.css";
 
 const QUICK_LINKS = [
@@ -45,6 +46,7 @@ const QUICK_LINKS = [
 function ContactPage() {
   useSeo(seoMeta.kontakt);
   const copy = usePageCopy("contact");
+  const media = usePageMedia("contact");
   const quickLinks = QUICK_LINKS.map((item, index) => ({
     ...item,
     eyebrow: copy(`explore.items.${index}.eyebrow`, item.eyebrow),
@@ -123,11 +125,11 @@ function ContactPage() {
   return (
     <main className="contact-page" id="main-content">
       <section className="contact-page__hero" aria-labelledby="contact-page-title">
-        <img
+        {media("hero", "/images/event/hero/hero.webp", "hero") && <img
           className="contact-page__hero-image"
-          src="/images/event/hero/hero.webp"
+          src={media("hero", "/images/event/hero/hero.webp", "hero")}
           alt="Loftet på Storegården 7 med träbjälkar och ljusinsläpp"
-        />
+        />}
         <div className="contact-page__hero-overlay" />
         <div className="contact-page__hero-content">
           <span className="contact-page__eyebrow">{copy("hero.eyebrow", "Kontakt & hitta hit")}</span>

@@ -19,6 +19,7 @@ import {
 import { useSeo } from "../../hooks/useSeo.js";
 import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
 import usePageCopy from "../../hooks/usePageCopy.js";
+import usePageMedia from "../../hooks/usePageMedia.js";
 import "./EventPage.css";
 import "./WeddingPage.css";
 
@@ -107,6 +108,7 @@ function WeddingFaqItem({ question, answer }) {
 function WeddingPage() {
   useSeo(seoMeta.eventWedding);
   const copy = usePageCopy("wedding");
+  const media = usePageMedia("wedding");
   const weddingSpaces = WEDDING_SPACES.map((item, index) => ({
     ...item,
     value: copy(`spaces.items.${index}.value`, item.value),
@@ -141,7 +143,7 @@ function WeddingPage() {
           id="wedding-hero"
           className="event-hero event-hero--wedding"
           style={{
-            backgroundImage: "url('/images/event/hero/hero-2.webp')",
+            backgroundImage: media("hero.background", "/images/event/hero/hero-2.webp", "hero") ? `url(${media("hero.background", "/images/event/hero/hero-2.webp", "hero")})` : "none",
           }}
           aria-labelledby="wedding-heading"
         >
@@ -177,11 +179,11 @@ function WeddingPage() {
             <FadeInSection>
               <div className="event-split-layout wedding-intro">
                 <div className="event-split-image wedding-intro__image">
-                  <img
-                    src="/images/event/hero/hero.webp"
+                  {media("intro", "/images/event/hero/hero.webp", "card") && <img
+                    src={media("intro", "/images/event/hero/hero.webp", "card")}
                     alt="Den renoverade ladan förberedd för bröllop"
                     loading="lazy"
-                  />
+                  />}
                 </div>
                 <div className="event-split-content">
                   <span className="event-section-eyebrow">{copy("intro.eyebrow", "Er bröllopsdag")}</span>
@@ -289,11 +291,11 @@ function WeddingPage() {
             <FadeInSection>
               <div className="event-split-layout event-split-layout--reverse wedding-freedom">
                 <div className="event-split-image wedding-freedom__image">
-                  <img
-                    src="/images/event/hero/hero-3.webp"
+                  {media("freedom", "/images/event/hero/hero-3.webp", "card") && <img
+                    src={media("freedom", "/images/event/hero/hero-3.webp", "card")}
                     alt="Glas och stämningsbelysning i bröllopslokalen"
                     loading="lazy"
-                  />
+                  />}
                 </div>
                 <div className="event-split-content">
                   <span className="event-section-eyebrow">Mat, dryck och hjälp</span>

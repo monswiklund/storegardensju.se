@@ -5,6 +5,47 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { seoMeta, canonicalUrl, activeJsonLd } from "../src/config/seoMeta.js";
 
 const html = readFileSync("dist/index.html", "utf8");
+const cmsUrl = (process.env.VITE_CMS_URL || "https://cms.storegardensju.se").replace(/\/$/, "");
+const PAGE_SLUG_BY_PATH = {
+  "/": "home",
+  "/event": "event",
+  "/event/brollop": "wedding",
+  "/gruppdagar": "group-days",
+  "/kurser": "courses",
+  "/kurser/yoga": "yoga",
+  "/kurser/konst": "art",
+  "/galleri": "gallery",
+  "/butik": "shop",
+  "/om-oss": "about",
+  "/kontakt": "contact",
+};
+
+const absoluteMediaUrl = (media) => {
+  const value = media?.sizes?.hero?.url || media?.url || media?.externalUrl;
+  if (!value) return null;
+  if (value.startsWith("http")) return value;
+  if (value.startsWith("/images/")) return `https://storegardensju.se${value}`;
+  return `${cmsUrl}${value.startsWith("/") ? "" : "/"}${value}`;
+};
+
+const fetchSocialImages = async () => {
+  try {
+    const query = new URLSearchParams({ limit: "100", depth: "1" });
+    const response = await fetch(`${cmsUrl}/api/pages?${query}`, { headers: { Accept: "application/json" } });
+    if (!response.ok) throw new Error(`status ${response.status}`);
+    const data = await response.json();
+    return new Map((data.docs || []).map((page) => [page.slug, absoluteMediaUrl(page.socialImage)]));
+  } catch (error) {
+    console.warn(`CMS-delningbilder kunde inte hämtas; använder kodens fallback (${error.message}).`);
+    return new Map();
+  }
+};
+
+const socialImages = await fetchSocialImages();
+const withCmsImage = (meta) => ({
+  ...meta,
+  image: socialImages.get(PAGE_SLUG_BY_PATH[meta.path]) || meta.image,
+});
 
 const escapeAttr = (value) =>
   String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
@@ -127,7 +168,8 @@ const replaceMeta = (source, selector, content) =>
     `$1${escapeAttr(content)}$2`
   );
 
-for (const meta of Object.values(seoMeta)) {
+for (const sourceMeta of Object.values(seoMeta)) {
+  const meta = withCmsImage(sourceMeta);
   if (meta.path === "/") continue;
 
   let routeHtml = html
@@ -243,5 +285,11 @@ for (const { from, to } of LEGACY_REDIRECTS) {
 
 // The home page keeps dist/index.html's own meta but needs the same crawlable
 // shell - it is the entry point Google reaches first.
-writeFileSync("dist/index.html", injectShell(html, seoMeta.home));
+const homeMeta = withCmsImage(seoMeta.home);
+let homeHtml = html;
+if (homeMeta.image) {
+  homeHtml = replaceMeta(homeHtml, 'property="og:image"', homeMeta.image);
+  homeHtml = replaceMeta(homeHtml, 'name="twitter:image"', homeMeta.image);
+}
+writeFileSync("dist/index.html", injectShell(homeHtml, homeMeta));
 console.log("injected crawlable shell into dist/index.html");

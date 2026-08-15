@@ -87,6 +87,11 @@ const TeamProfileShowcase = ({ profile }) => {
             loading="lazy"
           />
         )}
+        {!profile.imageSrc && (
+          <div className="team-card-image team-card-image--placeholder" aria-label={`Ingen profilbild för ${editableTitle}`}>
+            {editableTitle?.split(/\s+/).map((part) => part[0]).join("").slice(0, 2)}
+          </div>
+        )}
       </div>
 
       <div className="team-card-content">

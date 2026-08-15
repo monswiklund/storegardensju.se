@@ -17,6 +17,7 @@ import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import usePageCopy from "../hooks/usePageCopy.js";
+import usePageMedia from "../hooks/usePageMedia.js";
 import "./MohippaPage.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
@@ -127,6 +128,7 @@ const formatActivityNumber = (index) => String(index + 1).padStart(2, "0");
 function MohippaPage() {
   useSeo(seoMeta.gruppdagar);
   const copy = usePageCopy("group-days");
+  const media = usePageMedia("group-days");
   const heroFacts = HERO_FACTS.map((fact, index) => ({
     label: copy(`hero.facts.${index}.label`, fact.label),
     value: copy(`hero.facts.${index}.value`, fact.value),
@@ -138,6 +140,7 @@ function MohippaPage() {
   }));
   const activities = ACTIVITIES.map((activity) => ({
     ...activity,
+    image: media(`activities.${activity.id}`, activity.image, "card"),
     title: copy(`activities.items.${activity.id}.title`, activity.title),
     description: copy(`activities.items.${activity.id}.body`, activity.description),
   }));
@@ -328,7 +331,7 @@ function MohippaPage() {
               </div>
 
               <div className="mohippa-hero__media" aria-hidden="true">
-                <img src="/images/evenemang/slide2.webp" alt="" />
+                {media("hero", "/images/evenemang/slide2.webp", "hero") && <img src={media("hero", "/images/evenemang/slide2.webp", "hero")} alt="" />}
                 <div className="mohippa-hero__note">
                   <strong>{copy("hero.note", "Planera er dag")}</strong>
                 </div>

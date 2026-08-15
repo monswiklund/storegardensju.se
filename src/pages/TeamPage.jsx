@@ -12,6 +12,7 @@ import { seoMeta } from "../config/seoMeta.js";
 import "./TeamPage.css";
 import usePageCopy from "../hooks/usePageCopy.js";
 import { fetchTeamMembers } from "../services/cmsService.js";
+import { resolveMediaUrl } from "../services/mediaService.js";
 
 function TeamPage() {
   useSeo(seoMeta.omOss);
@@ -65,9 +66,7 @@ function TeamPage() {
                 teamList.map((m) => {
                   const slug = m.slug || m.name?.toLowerCase().split(" ")[0] || "ann";
                   const fallback = profiles[slug] || {};
-                  const imageSrc = m.image?.url
-                    ? m.image.url
-                    : (m.imageUrl || fallback.imageSrc);
+                  const imageSrc = resolveMediaUrl(m.image, "thumbnail");
 
                   const profileData = {
                     title: m.name || fallback.title,

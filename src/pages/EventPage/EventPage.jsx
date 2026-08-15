@@ -17,6 +17,7 @@ import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import { useSeo } from "../../hooks/useSeo.js";
 import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
 import usePageCopy from "../../hooks/usePageCopy.js";
+import usePageMedia from "../../hooks/usePageMedia.js";
 import { seoMeta } from "../../config/seoMeta.js";
 import { canonicalPath } from "../../config/routes.js";
 import "./EventPage.css";
@@ -108,8 +109,10 @@ function EventPage() {
   useSeo(seoMeta.event);
   const navigate = useNavigate();
   const copy = usePageCopy("event");
+  const media = usePageMedia("event");
   const eventTypes = EVENT_TYPES.map((item, index) => ({
     ...item,
+    image: item.image ? media(`types.${index}`, item.image, "card") : null,
     title: copy(`types.${index}.title`, item.title),
     description: copy(`types.${index}.description`, item.description),
     linkLabel: copy(`types.${index}.cta`, item.linkLabel),
@@ -141,7 +144,7 @@ function EventPage() {
         <section
           id="event-hero"
           className="event-hero"
-          style={{ backgroundImage: "url('/images/event/hero/hero.webp')" }}
+          style={{ backgroundImage: media("hero.background", "/images/event/hero/hero.webp", "hero") ? `url(${media("hero.background", "/images/event/hero/hero.webp", "hero")})` : "none" }}
           aria-labelledby="event-heading"
         >
           <div className="event-hero__inner">
@@ -290,7 +293,7 @@ function EventPage() {
             <FadeInSection>
               <div className="event-split-layout">
                 <div className="event-split-image">
-                  <img src="/images/event/hero/hero-2.webp" alt="Dukade bord för fest på loftet" />
+                  {media("capacity", "/images/event/hero/hero-2.webp", "card") && <img src={media("capacity", "/images/event/hero/hero-2.webp", "card")} alt="Dukade bord för fest på loftet" />}
                 </div>
                 <div className="event-split-content">
                   <span className="event-section-eyebrow">{copy("capacity.eyebrow", "Ytor och kapacitet")}</span>
@@ -321,7 +324,7 @@ function EventPage() {
             <FadeInSection>
               <div className="event-split-layout event-split-layout--reverse">
                 <div className="event-split-image">
-                  <img src="/images/event/hero/hero-3.webp" alt="Detaljbild från baren i ladan" />
+                  {media("amenities", "/images/event/hero/hero-3.webp", "card") && <img src={media("amenities", "/images/event/hero/hero-3.webp", "card")} alt="Detaljbild från baren i ladan" />}
                 </div>
                 <div className="event-split-content">
                   <span className="event-section-eyebrow">{copy("amenities.eyebrow", "Det här finns på plats")}</span>

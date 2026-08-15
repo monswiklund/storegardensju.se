@@ -10,6 +10,7 @@ import {
   getCategories,
 } from "../../../services/stripeService";
 import { fetchShopProducts } from "../../../services/cmsService";
+import { normalizeMediaList } from "../../../services/mediaService.js";
 
 export const ProductContext = createContext();
 
@@ -44,7 +45,7 @@ export function ProductProvider({ children }) {
         description: doc.description || "",
         price: (doc.price || 0) * 100,
         category: doc.category || "keramik",
-        images: [doc.imageUrl || "/images/butik/butik.webp"],
+        images: normalizeMediaList(doc.images, "card").map((image) => image.src),
         active: doc.status !== "sold_out",
         stock: doc.status === "in_stock" ? 10 : 1,
         metadata: {
@@ -53,7 +54,7 @@ export function ProductProvider({ children }) {
         },
       }));
 
-      const allProducts = stripeProducts.length > 0 ? stripeProducts : formattedCmsProducts;
+      const allProducts = [...stripeProducts, ...formattedCmsProducts];
       setProducts(allProducts);
     } catch (err) {
       console.error("Failed to prefetch products:", err);
@@ -85,7 +86,7 @@ export function ProductProvider({ children }) {
         description: doc.description || "",
         price: (doc.price || 0) * 100,
         category: doc.category || "keramik",
-        images: [doc.imageUrl || "/images/butik/butik.webp"],
+        images: normalizeMediaList(doc.images, "card").map((image) => image.src),
         active: doc.status !== "sold_out",
         stock: doc.status === "in_stock" ? 10 : 1,
         metadata: {
@@ -94,7 +95,7 @@ export function ProductProvider({ children }) {
         },
       }));
 
-      const allProducts = stripeProducts.length > 0 ? stripeProducts : formattedCmsProducts;
+      const allProducts = [...stripeProducts, ...formattedCmsProducts];
       setProducts(allProducts);
     } catch (err) {
       console.error("Failed to fetch products:", err);

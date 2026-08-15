@@ -173,12 +173,12 @@ function ButikPage() {
                     aria-label={`Visa ${product.name}`}
                   >
                     <div className="product-card-image">
-                      <img
+                      {product.images?.[0] ? <img
                         src={product.images[0]}
                         alt=""
                         loading="lazy"
                         decoding="async"
-                      />
+                      /> : <div className="product-card-image-placeholder" aria-label="Ingen produktbild">Ingen bild</div>}
                       {/* Endast SÅLD badge visas på bilden */}
                       {isSoldOut && (
                         <div className="product-badges">

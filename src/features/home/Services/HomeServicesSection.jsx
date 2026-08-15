@@ -5,6 +5,7 @@ import { services as servicesData } from "../../../data/homeContent.js";
 import { canonicalPath } from "../../../config/routes.js";
 import { useState, useRef, useEffect, useEffectEvent } from "react";
 import usePageCopy from "../../../hooks/usePageCopy.js";
+import usePageMedia from "../../../hooks/usePageMedia.js";
 
 const HomeServicesSection = ({
   cmsPage = "home",
@@ -14,6 +15,7 @@ const HomeServicesSection = ({
   eyebrow = "VAD VI HAR",
 }) => {
   const sharedCopy = usePageCopy("home");
+  const sharedMedia = usePageMedia("home");
   const pageCopy = usePageCopy(cmsPage);
   const [activeDomIndex, setActiveDomIndex] = useState(0);
   const containerRef = useRef(null);
@@ -22,6 +24,7 @@ const HomeServicesSection = ({
 
   const editableServices = servicesData.map((service) => ({
     ...service,
+    image: sharedMedia(`services.${service.id}`, service.image, "card"),
     kicker: sharedCopy(`services.${service.id}.kicker`, service.kicker),
     title: sharedCopy(`services.${service.id}.title`, service.title),
     description: sharedCopy(

@@ -1,4 +1,5 @@
 import { getCmsUrl } from "./cmsService";
+import { normalizeMediaList } from "./mediaService";
 
 export function partitionCmsEvents(docs, now = Date.now()) {
   const result = { upcoming: [], past: [] };
@@ -7,7 +8,9 @@ export function partitionCmsEvents(docs, now = Date.now()) {
     const normalized = {
       ...event,
       id: event.legacyId || event.id,
-      images: Array.isArray(event.images) ? event.images : [],
+      images: event.mediaMigrated
+        ? normalizeMediaList(event.media, "card")
+        : (Array.isArray(event.images) ? event.images : []),
       links: Array.isArray(event.links) ? event.links : [],
     };
     const end = new Date(event.endAt || event.startAt || 0).getTime();
@@ -25,7 +28,7 @@ export function partitionCmsEvents(docs, now = Date.now()) {
 }
 
 export async function fetchPublicEvents() {
-  const query = new URLSearchParams({ limit: "100", depth: "0", sort: "sortOrder" });
+  const query = new URLSearchParams({ limit: "100", depth: "1", sort: "sortOrder" });
   const response = await fetch(`${getCmsUrl()}/api/events?${query}`, {
     headers: { Accept: "application/json" },
   });

@@ -17,23 +17,28 @@ function ProductDetailPage() {
   const { productId } = useParams();
   const productContext = useContext(ProductContext);
   const products = productContext?.products ?? [];
+  const productsLoading = productContext?.loading ?? false;
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeImage, setActiveImage] = useState(0);
 
   // Hämta produkt från Stripe vid mount eller när productId ändras
   useEffect(() => {
     async function fetchProduct() {
       try {
         setLoading(true);
-        const stripeProduct = await getStripeProductById(productId);
+        const contextProduct = products.find((item) => String(item.id) === String(productId));
+        if (productId?.startsWith("cms-") && productsLoading && !contextProduct) return;
+        const resolvedProduct = contextProduct || await getStripeProductById(productId);
 
-        if (!stripeProduct) {
+        if (!resolvedProduct) {
           setError("Produkten hittades inte");
           setProduct(null);
         } else {
-          setProduct(stripeProduct);
+          setProduct(resolvedProduct);
+          setActiveImage(0);
           setError(null);
         }
       } catch (err) {
@@ -47,7 +52,7 @@ function ProductDetailPage() {
     if (productId) {
       fetchProduct();
     }
-  }, [productId]);
+  }, [productId, products, productsLoading]);
 
   // Loading state
   if (loading) {
@@ -93,21 +98,27 @@ function ProductDetailPage() {
         <div className="product-detail">
           {/* Bildgalleri */}
           <div className="product-images">
-            {/* TODO(human): Visa produktens huvudbild
-             *
-             * Tips:
-             * - Använd product.images[0] för första bilden
-             * - alt-text: product.name
-             * - className: "main-image"
-             *
-             * Bonus: Om product.images har fler än 1 bild,
-             * visa thumbnails under huvudbilden som man kan klicka på
-             */}
-            <img
-              src={product?.images[0]}
-              alt={product?.name}
-              className="main-image"
-            />
+            {product?.images?.[activeImage] ? (
+              <img src={product.images[activeImage]} alt={product.name} className="main-image" />
+            ) : (
+              <div className="main-image product-image-placeholder">Ingen produktbild</div>
+            )}
+            {product?.images?.length > 1 && (
+              <div className="product-image-thumbnails" aria-label="Produktbilder">
+                {product.images.map((image, index) => (
+                  <button
+                    type="button"
+                    key={image}
+                    className={index === activeImage ? "is-active" : ""}
+                    onClick={() => setActiveImage(index)}
+                    aria-label={`Visa produktbild ${index + 1}`}
+                    aria-pressed={index === activeImage}
+                  >
+                    <img src={image} alt="" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Produktinfo */}

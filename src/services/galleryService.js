@@ -39,6 +39,7 @@ export function fetchGalleryCategories() {
     const query = new URLSearchParams({
       limit: "100",
       sort: "order",
+      "where[showInGallery][equals]": "true",
     });
 
     galleryCategoriesRequest = fetch(`${cmsUrl}/api/media?${query}`, {

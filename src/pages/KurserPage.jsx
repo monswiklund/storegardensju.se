@@ -18,6 +18,7 @@ import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import { fetchPublicEvents } from "../services/eventsService.js";
 import usePageCopy from "../hooks/usePageCopy.js";
+import usePageMedia from "../hooks/usePageMedia.js";
 import {
   COURSE_LOCATION,
   COURSE_PASSES,
@@ -81,6 +82,11 @@ const RECAP_IMAGES = [
 // hubs do not read as one template with the nouns swapped.
 function KurserPage() {
   const copy = usePageCopy("yoga");
+  const media = usePageMedia("yoga");
+  const recapImages = RECAP_IMAGES.map((item, index) => {
+    const next = media(`gallery.${index}`, item.original, "card");
+    return { ...item, original: next, thumbnail: next };
+  }).filter((item) => item.original);
   const [showMailFallback, setShowMailFallback] = useState(false);
   const [apiEvents, setApiEvents] = useState([]);
   const onContactClick = () => setShowMailFallback(true);
@@ -147,7 +153,7 @@ function KurserPage() {
     goToPreviousImage,
     dialogRef,
     closeButtonRef,
-  } = useGalleryLightbox(RECAP_IMAGES, "kurser");
+  } = useGalleryLightbox(recapImages, "kurser");
 
   return (
     <div className="kurser-page">
@@ -158,7 +164,7 @@ function KurserPage() {
           <div
             className="kurser-hero__bg"
             style={{
-              backgroundImage: `url(${linaYogaHeaderImg})`,
+              backgroundImage: media("hero.background", linaYogaHeaderImg, "hero") ? `url(${media("hero.background", linaYogaHeaderImg, "hero")})` : "none",
             }}
           />
           <div className="kurser-hero__overlay" />
@@ -231,7 +237,7 @@ function KurserPage() {
           </div>
 
           <div className="kurser-recap__gallery">
-            {RECAP_IMAGES.map((imgItem, idx) => (
+            {recapImages.map((imgItem, idx) => (
               <figure
                 key={imgItem.original}
                 className={`kurser-recap__image ${idx === 0 ? "kurser-recap__image--large" : ""}`}
@@ -290,7 +296,7 @@ function KurserPage() {
           href={`${TRACKS.maleri.hubPath}/`}
           background="white"
           variant="band"
-          image={maleriKursImg}
+          image={media("other.art", maleriKursImg, "card")}
           imageAlt="Målarkurs i ateljén på Storegården 7"
           eyebrow={copy("other.eyebrow", "Mer hos oss")}
           heading={copy("other.title", "Måla eller dreja i ateljén")}
@@ -304,7 +310,7 @@ function KurserPage() {
         {/* Lightbox / Bildvisare */}
         <GalleryLightbox
           isOpen={showLightbox}
-          images={RECAP_IMAGES}
+          images={recapImages}
           currentIndex={lightboxIndex}
           currentImage={currentImage}
           onClose={closeLightbox}

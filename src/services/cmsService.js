@@ -20,12 +20,14 @@ const pageRequests = new Map();
 let shopProductsRequest = null;
 
 /** Convert Payload's editor rows into an immutable lookup used by page components. */
-export function normalizePageCopy(payload) {
-  const rows = payload?.docs?.[0]?.copy;
-  if (!Array.isArray(rows)) return {};
-
-  return Object.freeze(
-    Object.fromEntries(
+export function normalizePageContent(payload) {
+  const doc = payload?.docs?.[0];
+  if (!doc) return { found: false, copy: {}, images: {}, socialImage: null };
+  const rows = Array.isArray(doc.copy) ? doc.copy : [];
+  const imageSlots = Array.isArray(doc.imageSlots) ? doc.imageSlots : [];
+  return Object.freeze({
+    found: true,
+    copy: Object.freeze(Object.fromEntries(
       rows
         .filter(
           (row) =>
@@ -34,18 +36,26 @@ export function normalizePageCopy(payload) {
             row.value.trim() !== "",
         )
         .map((row) => [row.key, row.value]),
-    ),
-  );
+    )),
+    images: Object.freeze(Object.fromEntries(
+      imageSlots.filter((slot) => typeof slot?.key === "string").map((slot) => [slot.key, slot.image || null]),
+    )),
+    socialImage: doc.socialImage || null,
+  });
+}
+
+export function normalizePageCopy(payload) {
+  return normalizePageContent(payload).copy;
 }
 
 /** Fetch one published page document; callers keep their compiled copy as fallback. */
-export function fetchPageCopy(slug) {
+export function fetchPageContent(slug) {
   if (!pageRequests.has(slug)) {
     const cmsUrl = getCmsUrl();
     const query = new URLSearchParams({
       "where[slug][equals]": slug,
       limit: "1",
-      depth: "0",
+      depth: "1",
     });
 
     const request = fetch(`${cmsUrl}/api/pages?${query}`, {
@@ -57,10 +67,10 @@ export function fetchPageCopy(slug) {
         }
         return response.json();
       })
-      .then(normalizePageCopy)
+      .then(normalizePageContent)
       .catch(() => {
         pageRequests.delete(slug);
-        return {};
+        return { found: false, copy: {}, images: {}, socialImage: null };
       });
 
     pageRequests.set(slug, request);
@@ -69,13 +79,17 @@ export function fetchPageCopy(slug) {
   return pageRequests.get(slug);
 }
 
+export function fetchPageCopy(slug) {
+  return fetchPageContent(slug).then((content) => content.copy);
+}
+
 /** Fetch published products from CMS */
 export function fetchShopProducts(category) {
   if (!shopProductsRequest) {
     const cmsUrl = getCmsUrl();
     const query = new URLSearchParams({
       limit: "50",
-      depth: "0",
+      depth: "1",
     });
 
     shopProductsRequest = fetch(`${cmsUrl}/api/shop-products?${query}`, {

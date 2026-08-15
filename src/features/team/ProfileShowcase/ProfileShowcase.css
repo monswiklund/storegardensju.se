@@ -657,3 +657,12 @@
     font-size: 1.4rem;
   }
 }
+.team-card-image--placeholder {
+  display: grid;
+  place-items: center;
+  background: var(--background-alt);
+  color: var(--primary-hover);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2rem;
+  font-weight: 600;
+}

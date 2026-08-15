@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { heroContent } from "../../../data/homeContent.js";
 import { canonicalPath } from "../../../config/routes.js";
 import usePageCopy from "../../../hooks/usePageCopy.js";
+import usePageMedia from "../../../hooks/usePageMedia.js";
 import "./Hero.css";
 import HomeHeroContent from "./HomeHeroContent.jsx";
 
 function HomeHeroSection() {
   const navigate = useNavigate();
   const copy = usePageCopy("home");
+  const siteMedia = usePageMedia("site");
+  const logo = siteMedia("brand.logo", "/images/logoTransp_cropped.png", "card");
   const { title, subtitle, paragraphs, primaryCta, secondaryCtas } =
     heroContent;
   const editableParagraphs = paragraphs.map((paragraph, index) =>
@@ -97,7 +100,8 @@ function HomeHeroSection() {
         className="hero-logo-section"
         style={{ 
           opacity: heroOpacity,
-          pointerEvents: heroOpacity <= 0.05 ? "none" : "auto"
+          pointerEvents: heroOpacity <= 0.05 ? "none" : "auto",
+          backgroundImage: logo ? `url(${logo})` : "none",
         }}
       >
 

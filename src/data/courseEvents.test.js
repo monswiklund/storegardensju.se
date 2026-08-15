@@ -272,6 +272,34 @@ describe("apiEventToCoursePass and mergeCoursePasses", () => {
     expect(merged[1].id).toBe("api-yoga-new");
   });
 
+  it("does not restore a static image after the CMS event image is cleared", () => {
+    const startAt = "2026-08-15T18:00:00+02:00";
+    const merged = mergeCoursePasses(
+      [{
+        id: "same-event",
+        title: "Yoga",
+        tracks: [YOGA_TRACK_ID],
+        primaryTrack: YOGA_TRACK_ID,
+        startAt,
+        endAt: "2026-08-15T19:30:00+02:00",
+        images: [{ url: "/images/legacy.jpg" }],
+      }],
+      [{
+        id: "same-event",
+        title: "Yoga",
+        category: "yoga",
+        startAt,
+        endAt: "2026-08-15T19:30:00+02:00",
+        mediaMigrated: true,
+        images: [],
+      }],
+      YOGA_TRACK_ID,
+      BEFORE_JULY_30,
+    );
+
+    expect(merged[0].images).toEqual([]);
+  });
+
     it("keeps one complete pass when an API duplicate has the same start time", () => {
         const staticPass = {
             id: "static-yoga-duplicate-slot",
@@ -334,4 +362,3 @@ describe("apiEventToCoursePass and mergeCoursePasses", () => {
     expect(merged[0].id).toBe("api-maleri-1");
   });
 });
-

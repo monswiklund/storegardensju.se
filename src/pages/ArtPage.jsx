@@ -23,6 +23,7 @@ import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import { fetchPublicEvents } from "../services/eventsService.js";
 import usePageCopy from "../hooks/usePageCopy.js";
+import usePageMedia from "../hooks/usePageMedia.js";
 import {
   COURSE_LOCATION,
   COURSE_PASSES,
@@ -68,6 +69,7 @@ const SPY_OFFSET = 130;
 
 function ArtPage() {
   const copy = usePageCopy("art");
+  const media = usePageMedia("art");
   const [showMailFallback, setShowMailFallback] = useState(false);
   const [apiEvents, setApiEvents] = useState([]);
   const onContactClick = () => setShowMailFallback(true);
@@ -121,7 +123,7 @@ function ArtPage() {
       <main id="main-content">
         {/* Hero Section */}
         <section className="art-hero" id="art-hero">
-          <div className="art-hero__bg" />
+          <div className="art-hero__bg" style={{ backgroundImage: media("hero.background", "/images/portfolio/ann-2.webp", "hero") ? `url(${media("hero.background", "/images/portfolio/ann-2.webp", "hero")})` : "none" }} />
           <div className="art-hero__overlay" />
 
           <div className="art-hero__content">

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
+import usePageMedia from "../../../hooks/usePageMedia.js";
 import "./Navbar.css";
 import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
@@ -22,6 +23,8 @@ const getCurrentTitle = (pathname) => {
 };
 
 function Navbar() {
+  const siteMedia = usePageMedia("site");
+  const logo = siteMedia("brand.logo", "/images/logoTransp_cropped.png", "thumbnail");
   const location = useLocation();
   const { isOpen, toggle, close, menuRef, triggerRef } = useNavbarToggle();
   const pendingScrollTargetRef = useRef(null);
@@ -86,7 +89,7 @@ function Navbar() {
           aria-label="Till startsidan"
           onClick={() => handleNavigate("/")}
         >
-          <img src="/images/logoTransp_cropped.png" alt="Storegården 7" className="navbar-logo" />
+          {logo && <img src={logo} alt="Storegården 7" className="navbar-logo" />}
         </Link>
 
         <div
