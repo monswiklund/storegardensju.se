@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { ADMIN_VIEW_GROUPS } from "../adminConstants";
+import { cdnAsset } from "../../../config/cdnAssets.js";
 
 const NAV_ICONS = {
   overview: LayoutDashboard,
@@ -92,12 +93,12 @@ function AdminSidebar({
           <div className="admin-sidebar-brand">
             <img
               className="admin-sidebar-logo admin-sidebar-logo-full"
-              src="/images/logoTransp_cropped.png"
+              src={cdnAsset("/images/logoTransp_cropped.png")}
               alt="Storegården 7"
             />
             <img
               className="admin-sidebar-logo admin-sidebar-logo-mini"
-              src="/images/logoTransp_cropped.png"
+              src={cdnAsset("/images/logoTransp_cropped.png")}
               alt=""
               aria-hidden="true"
             />

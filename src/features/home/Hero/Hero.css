@@ -12,7 +12,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('/images/logoTransp_cropped.png');
   background-size: clamp(260px, 45vw, 360px);
   background-repeat: no-repeat;
   background-position: center;

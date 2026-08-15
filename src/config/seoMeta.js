@@ -15,6 +15,7 @@ import {
   trackById,
   upcomingPasses,
 } from "../data/courseEvents.js";
+import { cdnAsset } from "./cdnAssets.js";
 
 const SITE_URL = "https://storegardensju.se";
 export const WEDDING_PATH = "/event/brollop";
@@ -49,7 +50,7 @@ export function canonicalUrl(path) {
 }
 
 const absoluteUrl = (path) =>
-  path.startsWith("http") ? path : `${SITE_URL}${path}`;
+  path.startsWith("http") ? path : cdnAsset(path);
 
 const schemaPlace = {
   "@type": "Place",

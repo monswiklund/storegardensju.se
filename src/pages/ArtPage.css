@@ -34,7 +34,9 @@
 
 .art-hero__bg {
   z-index: 0;
-  background: url("/images/portfolio/ann-2.webp") center / cover no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .art-hero__overlay {

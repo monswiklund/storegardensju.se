@@ -18,6 +18,7 @@ import { useSeo } from "../hooks/useSeo.js";
 import usePageCopy from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
 import { seoMeta } from "../config/seoMeta.js";
+import { cdnAsset } from "../config/cdnAssets.js";
 import {
   COURSE_LOCATION,
   MALERI_TRACK_ID,
@@ -29,8 +30,8 @@ import {
 } from "../data/courseEvents.js";
 import "./KurserPages.css";
 
-import yogaLoftImg from "/images/evenemang/yoga-loft.webp";
-import maleriKursImg from "/images/evenemang/maleri-kurs.webp";
+const yogaLoftImg = cdnAsset("/images/evenemang/yoga-loft.webp");
+const maleriKursImg = cdnAsset("/images/evenemang/maleri-kurs.webp");
 
 // /kurser was the yoga hub until the two subjects got a hub each. Links to its
 // old anchors are out in the wild (and were the url of every Event object in the

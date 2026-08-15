@@ -30,7 +30,7 @@
     addPreload({
       rel: "preload",
       as: "image",
-      href: "/images/logoTransp_cropped.png",
+      href: "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-c0a7592815264a8e7e550bd2a176c8c05dfcefd1ecaac1d9fe33f3096aac918d.webp",
       fetchpriority: "high",
     });
   }

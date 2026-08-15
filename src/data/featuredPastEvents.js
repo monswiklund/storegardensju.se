@@ -1,3 +1,5 @@
+import { cdnAsset } from "../config/cdnAssets.js";
+
 export const COURSE_DAY_EVENT = {
   id: "heldag-yoga-maleri-2026-07-13",
   title: "Heldag med yoga & måleri",
@@ -54,15 +56,15 @@ export const COURSE_DAY_EVENT = {
   ],
   images: [
     {
-      url: "/images/evenemang/yoga-loft.webp",
+      url: cdnAsset("/images/evenemang/yoga-loft.webp"),
       alt: "Yoga på loftet på Storegården 7",
     },
     {
-      url: "/images/evenemang/maleri-kurs.webp",
+      url: cdnAsset("/images/evenemang/maleri-kurs.webp"),
       alt: "Målarkurs på Storegården 7",
     },
     {
-      url: "/images/evenemang/heldag-paket.webp",
+      url: cdnAsset("/images/evenemang/heldag-paket.webp"),
       alt: "Heldag med yoga och måleri på Storegården 7",
     },
   ],

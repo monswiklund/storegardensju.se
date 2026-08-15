@@ -1,4 +1,6 @@
 // data/profileData.js
+import { cdnAsset } from "../config/cdnAssets.js";
+
 export const profiles = {
   ann: {
     title: "Ann Wiklund",
@@ -23,7 +25,7 @@ export const profiles = {
       "Utställningar",
       "Konstprojekt",
     ],
-    imageSrc: "/images/ann-profile.webp",
+    imageSrc: cdnAsset("/images/ann-profile.webp"),
     portfolio: [],
   },
 
@@ -46,7 +48,7 @@ export const profiles = {
         "Dekoration och möblering",
         "Byggnationer och snickeri",
     ],
-    imageSrc: "/images/carl-profile.webp",
+    imageSrc: cdnAsset("/images/carl-profile.webp"),
     portfolio: [],
   },
 
@@ -71,7 +73,7 @@ export const profiles = {
       "Digital design och illustration",
       "Yoga på loftet",
     ],
-    imageSrc: "/images/lina-profile.webp",
+    imageSrc: cdnAsset("/images/lina-profile.webp"),
     portfolio: [],
   },
   mans: {
@@ -89,7 +91,7 @@ export const profiles = {
       "Webb: TypeScript · React · Node.js",
       "DB: Postgres",
     ],
-    imageSrc: "/images/mans-profile.webp",
+    imageSrc: cdnAsset("/images/mans-profile.webp"),
     portfolioUrl: "/om-oss/portfolj/mans",
     portfolio: [
       {

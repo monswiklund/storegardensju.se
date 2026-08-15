@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchPageContent } from "../services/cmsService";
 import { resolveMediaUrl } from "../services/mediaService";
+import { cdnAsset } from "../config/cdnAssets";
 
 export default function usePageMedia(slug) {
   const [content, setContent] = useState({ status: "loading", images: {} });
@@ -27,7 +28,7 @@ export default function usePageMedia(slug) {
   }, [slug]);
 
   return useCallback((key, fallback, size) => {
-    if (content.status !== "ready") return fallback;
+    if (content.status !== "ready") return cdnAsset(fallback);
     return resolveMediaUrl(content.images[key], size);
   }, [content]);
 }

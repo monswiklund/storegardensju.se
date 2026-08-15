@@ -67,8 +67,7 @@ export function fetchGalleryCategories() {
             const catGroup = categoryMap.get(catId);
             const imagePath =
               absoluteMediaUrl(doc.externalUrl, cmsUrl) ||
-              absoluteMediaUrl(doc.url, cmsUrl) ||
-              `/images/gallery/${doc.filename}`;
+              absoluteMediaUrl(doc.url, cmsUrl);
             const thumbnailPath =
               absoluteMediaUrl(
                 doc.sizes?.thumbnail?.url || doc.thumbnailURL,
@@ -98,8 +97,7 @@ export function fetchGalleryCategories() {
               .map((doc) => {
                 const imagePath =
                   absoluteMediaUrl(doc.externalUrl, cmsUrl) ||
-                  absoluteMediaUrl(doc.url, cmsUrl) ||
-                  `/images/gallery/${doc.filename}`;
+                  absoluteMediaUrl(doc.url, cmsUrl);
                 return {
                   id: String(doc.legacyId || doc.id),
                   filename: doc.filename || doc.legacyId,

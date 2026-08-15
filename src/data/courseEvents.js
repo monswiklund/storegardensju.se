@@ -18,6 +18,8 @@
 // else needs touching - the upcoming/past split, the JSON-LD and the
 // prerendered copy all derive from startAt/endAt.
 
+import { cdnAsset } from "../config/cdnAssets.js";
+
 export const COURSE_LOCATION = {
   name: "Storegården 7",
   streetAddress: "Storegården 7",
@@ -270,7 +272,7 @@ export const COURSE_PASSES = [
       "Yogapass i lugnt tempo med Lina på loftet på Storegården 7 utanför Lidköping.",
     images: [
       {
-        url: "/images/evenemang/lina-yoga-header.jpg",
+        url: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
         alt: "Yoga på loftet med Lina på Storegården 7",
       },
     ],
@@ -292,7 +294,7 @@ export const COURSE_PASSES = [
     description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
     images: [
       {
-        url: "/images/evenemang/lina-yoga-header.jpg",
+        url: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
         alt: "Yoga på loftet på Storegården 7",
       },
     ],
@@ -314,7 +316,7 @@ export const COURSE_PASSES = [
     description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
     images: [
       {
-        url: "/images/evenemang/lina-yoga.jpg",
+        url: cdnAsset("/images/evenemang/lina-yoga.jpg"),
         alt: "Yoga på loftet",
       },
     ],
@@ -336,7 +338,7 @@ export const COURSE_PASSES = [
     description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
     images: [
       {
-        url: "/images/evenemang/lina-yoga-yta2.jpg",
+        url: cdnAsset("/images/evenemang/lina-yoga-yta2.jpg"),
         alt: "Yoga på loftet",
       },
     ],
@@ -358,7 +360,7 @@ export const COURSE_PASSES = [
     description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
     images: [
       {
-        url: "/images/evenemang/lina-yoga-header.jpg",
+        url: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
         alt: "Yoga på loftet på Storegården 7",
       },
     ],
@@ -380,7 +382,7 @@ export const COURSE_PASSES = [
     description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
     images: [
       {
-        url: "/images/evenemang/lina-yoga.jpg",
+        url: cdnAsset("/images/evenemang/lina-yoga.jpg"),
         alt: "Yoga på loftet",
       },
     ],
@@ -402,7 +404,7 @@ export const COURSE_PASSES = [
     description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
     images: [
       {
-        url: "/images/evenemang/lina-yoga-yta2.jpg",
+        url: cdnAsset("/images/evenemang/lina-yoga-yta2.jpg"),
         alt: "Yoga på loftet",
       },
     ],
@@ -423,11 +425,11 @@ export const COURSE_PASSES = [
       "Den 13 juli hade vi yoga med Lina och måleri med Ann på Storegården 7. Under dagen åt vi också lunch och fikade tillsammans.",
     images: [
       {
-        url: "/images/evenemang/yoga-loft.webp",
+        url: cdnAsset("/images/evenemang/yoga-loft.webp"),
         alt: "Yoga på loftet på Storegården 7",
       },
       {
-        url: "/images/evenemang/heldag-paket.webp",
+        url: cdnAsset("/images/evenemang/heldag-paket.webp"),
         alt: "Heldag med yoga och måleri på Storegården 7",
       },
     ],
@@ -541,10 +543,11 @@ export function apiEventToCoursePass(apiEvent, defaultTrackId = YOGA_TRACK_ID) {
     }
   }
 
-  const fallbackImage =
+  const fallbackImage = cdnAsset(
     primaryTrack === YOGA_TRACK_ID
       ? "/images/evenemang/lina-yoga-header.jpg"
-      : "/images/evenemang/maleri-kurs.webp";
+      : "/images/evenemang/maleri-kurs.webp",
+  );
 
   const images =
     Array.isArray(apiEvent.images) && apiEvent.images.length > 0

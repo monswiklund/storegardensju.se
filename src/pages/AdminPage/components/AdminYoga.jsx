@@ -15,6 +15,7 @@ import { useToast } from "../../../contexts/ToastContext";
 import { MAX_UPLOAD_BYTES } from "../adminConstants";
 import { AdminDrawer, AdminDrawerSection, AdminState } from "./ui/AdminUI";
 import { optimizeImageForWeb } from "../../../utils/imageOptimizer";
+import { cdnAsset } from "../../../config/cdnAssets.js";
 
 const YOGA_FORM_ID = "admin-yoga-form";
 
@@ -29,7 +30,7 @@ const emptyYogaForm = () => ({
   matInfo: "Yogamattor finns på plats. Har du en egen matta får du självklart gärna ta med den!",
   contactEmail: "bylinawiklund@gmail.com",
   status: "published",
-  image: "/images/evenemang/lina-yoga-header.jpg",
+  image: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
 });
 
 const DEFAULT_YOGA_EVENTS = [
@@ -45,7 +46,7 @@ const DEFAULT_YOGA_EVENTS = [
     category: "yoga",
     images: [
       {
-        url: "/images/evenemang/lina-yoga-header.jpg",
+        url: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
         alt: "Yoga på loftet event med Lina Wiklund"
       }
     ]
@@ -62,7 +63,7 @@ const DEFAULT_YOGA_EVENTS = [
     category: "yoga",
     images: [
       {
-        url: "/images/evenemang/yoga-loft.webp",
+        url: cdnAsset("/images/evenemang/yoga-loft.webp"),
         alt: "Yoga på loftet på Storegården 7"
       }
     ]
@@ -77,12 +78,10 @@ export default function AdminYoga({ adminKey }) {
   const [uploadingImage, setUploadingImage] = useState(false);
 
   const [galleryImages, setGalleryImages] = useState([
-    { id: "img-1", url: "/images/evenemang/lina-yoga-header.jpg", title: "Lina Yoga 1" },
-    { id: "img-2", url: "/images/evenemang/lina-yoga.jpg", title: "Lina Yoga 2" },
-    { id: "img-3", url: "/images/evenemang/lina-yoga-yta2.jpg", title: "Loftet miljö" },
-    { id: "img-4", url: "/images/evenemang/mala1.jpg", title: "Målarkurs 1" },
-    { id: "img-5", url: "/images/evenemang/mala2.jpg", title: "Målarkurs 2" },
-    { id: "img-6", url: "/images/evenemang/yoga-loft.webp", title: "Yoga på loftet" },
+    { id: "img-1", url: cdnAsset("/images/evenemang/lina-yoga-header.jpg"), title: "Lina Yoga 1" },
+    { id: "img-2", url: cdnAsset("/images/evenemang/lina-yoga.jpg"), title: "Lina Yoga 2" },
+    { id: "img-3", url: cdnAsset("/images/evenemang/lina-yoga-yta2.jpg"), title: "Loftet miljö" },
+    { id: "img-6", url: cdnAsset("/images/evenemang/yoga-loft.webp"), title: "Yoga på loftet" },
   ]);
   const [uploadingGallery, setUploadingGallery] = useState(false);
   const [draggedIdx, setDraggedIdx] = useState(null);
@@ -212,7 +211,7 @@ export default function AdminYoga({ adminKey }) {
       matInfo: "Yogamattor finns på plats.",
       contactEmail: "bylinawiklund@gmail.com",
       status: item.status || "published",
-      image: item.images?.[0]?.url || "/images/evenemang/lina-yoga-header.jpg",
+      image: item.images?.[0]?.url || cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
     });
     setIsDrawerOpen(true);
   };

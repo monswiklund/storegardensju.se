@@ -11,7 +11,7 @@
           "subcategory": "upper",
           "number": 1,
           "displayName": "Loftet - Övre våning 1",
-          "path": "/images/gallery/lokal-upper-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-13f41ef8816e0e0b2efb2d0c320c6a67c0684a3a6db2bf363880813a2fc39240.webp"
         },
         {
           "filename": "lokal-upper-2.webp",
@@ -19,7 +19,7 @@
           "subcategory": "upper",
           "number": 2,
           "displayName": "Loftet - Övre våning 2",
-          "path": "/images/gallery/lokal-upper-2.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-2df8719abf62769cdd21533755d91ab7098782830be92c9db3d5eb1bc628d9cb.webp"
         },
         {
           "filename": "lokal-upper-3.webp",
@@ -27,7 +27,7 @@
           "subcategory": "upper",
           "number": 3,
           "displayName": "Loftet - Övre våning 3",
-          "path": "/images/gallery/lokal-upper-3.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-e3716c7daf2470391678f3c454c5de889db41b47f59f7b6001c53132f760480e.webp"
         },
         {
           "filename": "lokal-upper-4.webp",
@@ -35,7 +35,7 @@
           "subcategory": "upper",
           "number": 4,
           "displayName": "Loftet - Övre våning 4",
-          "path": "/images/gallery/lokal-upper-4.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-160b5d6b3de4d6f3408e962641cf15783b883a7dd2cb4afb323153f054642330.webp"
         },
         {
           "filename": "lokal-upper-5.webp",
@@ -43,7 +43,7 @@
           "subcategory": "upper",
           "number": 5,
           "displayName": "Loftet - Övre våning 5",
-          "path": "/images/gallery/lokal-upper-5.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-d08a410260c3149e2a1c53374ccce252735c4bd23fc647dacc57276fe435bd91.webp"
         },
         {
           "filename": "lokal-under-1.webp",
@@ -51,7 +51,7 @@
           "subcategory": "under",
           "number": 1,
           "displayName": "Ladan - Nedre våning 1",
-          "path": "/images/gallery/lokal-under-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-2be52bfd1b3b784be36ca224dd09a3873525c073edca361847ae1977efc6e46e.webp"
         },
         {
           "filename": "lokal-under-2.webp",
@@ -59,7 +59,7 @@
           "subcategory": "under",
           "number": 2,
           "displayName": "Ladan - Nedre våning 2",
-          "path": "/images/gallery/lokal-under-2.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-09bcd49112868738a87713931dbe567a337c004d96135c86c2f093fad7fdafb5.webp"
         },
         {
           "filename": "lokal-under-3.webp",
@@ -67,7 +67,7 @@
           "subcategory": "under",
           "number": 3,
           "displayName": "Ladan - Nedre våning 3",
-          "path": "/images/gallery/lokal-under-3.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-efa46251b5b8a402c2be0f5d31492a8e6bb05055c3591852bce780fa174739ea.webp"
         },
         {
           "filename": "lokal-under-4.webp",
@@ -75,7 +75,7 @@
           "subcategory": "under",
           "number": 4,
           "displayName": "Ladan - Nedre våning 4",
-          "path": "/images/gallery/lokal-under-4.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-ea676fcd9279b53f791b23238661171e8a188f1c992813e696c6097cd9316942.webp"
         },
         {
           "filename": "lokal-under-5.webp",
@@ -83,7 +83,7 @@
           "subcategory": "under",
           "number": 5,
           "displayName": "Ladan - Nedre våning 5",
-          "path": "/images/gallery/lokal-under-5.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-32f9073a63efcb62699940f269dcf53c6b52ec3bde3f0e09470849ecac51d30f.webp"
         },
         {
           "filename": "lokal-under-6.webp",
@@ -91,7 +91,7 @@
           "subcategory": "under",
           "number": 6,
           "displayName": "Ladan - Nedre våning 6",
-          "path": "/images/gallery/lokal-under-6.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-cf057eff094e784433956c8b43799c84f1e24e5eedaab24b6cc1ce25152188b2.webp"
         },
         {
           "filename": "lokal-under-7.webp",
@@ -99,7 +99,7 @@
           "subcategory": "under",
           "number": 7,
           "displayName": "Ladan - Nedre våning 7",
-          "path": "/images/gallery/lokal-under-7.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-06dfb256e069aef06c3b779fc58c083ecc6aebbeb56cd20fe5c8212bf0fa783c.webp"
         },
         {
           "filename": "lokal-under-8.webp",
@@ -107,7 +107,7 @@
           "subcategory": "under",
           "number": 8,
           "displayName": "Ladan - Nedre våning 8",
-          "path": "/images/gallery/lokal-under-8.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-c67d0064f9526585af7d321cbc96ab2410c20e53cc66c4ae60ef0760ca63716f.webp"
         },
         {
           "filename": "lokal-under-9.webp",
@@ -115,7 +115,7 @@
           "subcategory": "under",
           "number": 9,
           "displayName": "Ladan - Nedre våning 9",
-          "path": "/images/gallery/lokal-under-9.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-ae725aa7805c9022c757eb2994a9e570722ce9ea990c2171160e158a9ab42592.webp"
         },
         {
           "filename": "lokal-under-10.webp",
@@ -123,7 +123,7 @@
           "subcategory": "under",
           "number": 10,
           "displayName": "Ladan - Nedre våning 10",
-          "path": "/images/gallery/lokal-under-10.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-bfffef7d2edf648a050d576ca36f4ede7de7f748ea6c88c7fb3a7c329980f056.webp"
         },
         {
           "filename": "lokal-under-11.webp",
@@ -131,39 +131,7 @@
           "subcategory": "under",
           "number": 11,
           "displayName": "Ladan - Nedre våning 11",
-          "path": "/images/gallery/lokal-under-11.webp"
-        },
-        {
-          "filename": "lokal-kok-1.webp",
-          "category": "undervaning",
-          "subcategory": "kok",
-          "number": 1,
-          "displayName": "Ladan - Kök 1",
-          "path": "/images/gallery/lokal-kok-1.webp"
-        },
-        {
-          "filename": "lokal-kok-2.webp",
-          "category": "undervaning",
-          "subcategory": "kok",
-          "number": 2,
-          "displayName": "Ladan - Kök 2",
-          "path": "/images/gallery/lokal-kok-2.webp"
-        },
-        {
-          "filename": "lokal-kok-3.webp",
-          "category": "undervaning",
-          "subcategory": "kok",
-          "number": 3,
-          "displayName": "Ladan - Kök 3",
-          "path": "/images/gallery/lokal-kok-3.webp"
-        },
-        {
-          "filename": "lokal-kok-4.webp",
-          "category": "undervaning",
-          "subcategory": "kok",
-          "number": 4,
-          "displayName": "Ladan - Kök 4",
-          "path": "/images/gallery/lokal-kok-4.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-d2307b05593321275f737071700ba53277f95f7ff8e363068034117191ee086a.webp"
         },
         {
           "filename": "lokal-service-1.webp",
@@ -171,7 +139,7 @@
           "subcategory": "service",
           "number": 1,
           "displayName": "Ladan - Serviceområde 1",
-          "path": "/images/gallery/lokal-service-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-872d21664af3e9486575b220ad2146bc9a257a83b808f11492f5a722a3a13d1a.webp"
         },
         {
           "filename": "lokal-service-2.webp",
@@ -179,7 +147,7 @@
           "subcategory": "service",
           "number": 2,
           "displayName": "Ladan - Serviceområde 2",
-          "path": "/images/gallery/lokal-service-2.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-3a41ba29c92751df44df1b1560e1ffbeccba06cb0fa343306f70fcc74a194e57.webp"
         },
         {
           "filename": "lokal-service-3.webp",
@@ -187,7 +155,7 @@
           "subcategory": "service",
           "number": 3,
           "displayName": "Ladan - Serviceområde 3",
-          "path": "/images/gallery/lokal-service-3.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-26484b4a095d3c48d76bdc3ec7eb88ad27842826c9fe59b39e7cf0c73fbb658c.webp"
         },
         {
           "filename": "lokal-ute-1.webp",
@@ -195,7 +163,7 @@
           "subcategory": "ute",
           "number": 1,
           "displayName": "Övrigt - Utemiljö 1",
-          "path": "/images/gallery/lokal-ute-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-3ca678a1ab6b5d83cdaeb6aa17adaf210a89f730ff55c532b74e1fa03ccd3c54.webp"
         },
         {
           "filename": "lokal-ute-toa-1.webp",
@@ -203,7 +171,7 @@
           "subcategory": "ute-toa",
           "number": 1,
           "displayName": "Övrigt - Toaletter 1",
-          "path": "/images/gallery/lokal-ute-toa-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-d37677d5181c7743cfcb8c12d75a74e755afb2623cdebc9aa6e708950ef35c47.webp"
         },
         {
           "filename": "lokal-ute-toa-2.webp",
@@ -211,7 +179,7 @@
           "subcategory": "ute-toa",
           "number": 2,
           "displayName": "Övrigt - Toaletter 2",
-          "path": "/images/gallery/lokal-ute-toa-2.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-a2f3f237f05c1bad7137f780ae456b0765967d452fa1fa4491f9419ae32c05a3.webp"
         }
       ]
     },
@@ -226,7 +194,7 @@
           "subcategory": "under",
           "number": 1,
           "displayName": "Ladan - Nedre våning 1",
-          "path": "/images/gallery/lokal-under-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-2be52bfd1b3b784be36ca224dd09a3873525c073edca361847ae1977efc6e46e.webp"
         },
         {
           "filename": "lokal-under-2.webp",
@@ -234,7 +202,7 @@
           "subcategory": "under",
           "number": 2,
           "displayName": "Ladan - Nedre våning 2",
-          "path": "/images/gallery/lokal-under-2.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-09bcd49112868738a87713931dbe567a337c004d96135c86c2f093fad7fdafb5.webp"
         },
         {
           "filename": "lokal-under-3.webp",
@@ -242,7 +210,7 @@
           "subcategory": "under",
           "number": 3,
           "displayName": "Ladan - Nedre våning 3",
-          "path": "/images/gallery/lokal-under-3.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-efa46251b5b8a402c2be0f5d31492a8e6bb05055c3591852bce780fa174739ea.webp"
         },
         {
           "filename": "lokal-under-4.webp",
@@ -250,7 +218,7 @@
           "subcategory": "under",
           "number": 4,
           "displayName": "Ladan - Nedre våning 4",
-          "path": "/images/gallery/lokal-under-4.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-ea676fcd9279b53f791b23238661171e8a188f1c992813e696c6097cd9316942.webp"
         },
         {
           "filename": "lokal-under-5.webp",
@@ -258,7 +226,7 @@
           "subcategory": "under",
           "number": 5,
           "displayName": "Ladan - Nedre våning 5",
-          "path": "/images/gallery/lokal-under-5.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-32f9073a63efcb62699940f269dcf53c6b52ec3bde3f0e09470849ecac51d30f.webp"
         },
         {
           "filename": "lokal-under-6.webp",
@@ -266,7 +234,7 @@
           "subcategory": "under",
           "number": 6,
           "displayName": "Ladan - Nedre våning 6",
-          "path": "/images/gallery/lokal-under-6.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-cf057eff094e784433956c8b43799c84f1e24e5eedaab24b6cc1ce25152188b2.webp"
         },
         {
           "filename": "lokal-under-7.webp",
@@ -274,7 +242,7 @@
           "subcategory": "under",
           "number": 7,
           "displayName": "Ladan - Nedre våning 7",
-          "path": "/images/gallery/lokal-under-7.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-06dfb256e069aef06c3b779fc58c083ecc6aebbeb56cd20fe5c8212bf0fa783c.webp"
         },
         {
           "filename": "lokal-under-8.webp",
@@ -282,7 +250,7 @@
           "subcategory": "under",
           "number": 8,
           "displayName": "Ladan - Nedre våning 8",
-          "path": "/images/gallery/lokal-under-8.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-c67d0064f9526585af7d321cbc96ab2410c20e53cc66c4ae60ef0760ca63716f.webp"
         },
         {
           "filename": "lokal-under-9.webp",
@@ -290,7 +258,7 @@
           "subcategory": "under",
           "number": 9,
           "displayName": "Ladan - Nedre våning 9",
-          "path": "/images/gallery/lokal-under-9.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-ae725aa7805c9022c757eb2994a9e570722ce9ea990c2171160e158a9ab42592.webp"
         },
         {
           "filename": "lokal-under-10.webp",
@@ -298,7 +266,7 @@
           "subcategory": "under",
           "number": 10,
           "displayName": "Ladan - Nedre våning 10",
-          "path": "/images/gallery/lokal-under-10.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-bfffef7d2edf648a050d576ca36f4ede7de7f748ea6c88c7fb3a7c329980f056.webp"
         },
         {
           "filename": "lokal-under-11.webp",
@@ -306,39 +274,7 @@
           "subcategory": "under",
           "number": 11,
           "displayName": "Ladan - Nedre våning 11",
-          "path": "/images/gallery/lokal-under-11.webp"
-        },
-        {
-          "filename": "lokal-kok-1.webp",
-          "category": "undervaning",
-          "subcategory": "kok",
-          "number": 1,
-          "displayName": "Ladan - Kök 1",
-          "path": "/images/gallery/lokal-kok-1.webp"
-        },
-        {
-          "filename": "lokal-kok-2.webp",
-          "category": "undervaning",
-          "subcategory": "kok",
-          "number": 2,
-          "displayName": "Ladan - Kök 2",
-          "path": "/images/gallery/lokal-kok-2.webp"
-        },
-        {
-          "filename": "lokal-kok-3.webp",
-          "category": "undervaning",
-          "subcategory": "kok",
-          "number": 3,
-          "displayName": "Ladan - Kök 3",
-          "path": "/images/gallery/lokal-kok-3.webp"
-        },
-        {
-          "filename": "lokal-kok-4.webp",
-          "category": "undervaning",
-          "subcategory": "kok",
-          "number": 4,
-          "displayName": "Ladan - Kök 4",
-          "path": "/images/gallery/lokal-kok-4.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-d2307b05593321275f737071700ba53277f95f7ff8e363068034117191ee086a.webp"
         },
         {
           "filename": "lokal-service-1.webp",
@@ -346,7 +282,7 @@
           "subcategory": "service",
           "number": 1,
           "displayName": "Ladan - Serviceområde 1",
-          "path": "/images/gallery/lokal-service-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-872d21664af3e9486575b220ad2146bc9a257a83b808f11492f5a722a3a13d1a.webp"
         },
         {
           "filename": "lokal-service-2.webp",
@@ -354,7 +290,7 @@
           "subcategory": "service",
           "number": 2,
           "displayName": "Ladan - Serviceområde 2",
-          "path": "/images/gallery/lokal-service-2.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-3a41ba29c92751df44df1b1560e1ffbeccba06cb0fa343306f70fcc74a194e57.webp"
         },
         {
           "filename": "lokal-service-3.webp",
@@ -362,7 +298,7 @@
           "subcategory": "service",
           "number": 3,
           "displayName": "Ladan - Serviceområde 3",
-          "path": "/images/gallery/lokal-service-3.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-26484b4a095d3c48d76bdc3ec7eb88ad27842826c9fe59b39e7cf0c73fbb658c.webp"
         }
       ]
     },
@@ -377,7 +313,7 @@
           "subcategory": "upper",
           "number": 1,
           "displayName": "Loftet - Övre våning 1",
-          "path": "/images/gallery/lokal-upper-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-13f41ef8816e0e0b2efb2d0c320c6a67c0684a3a6db2bf363880813a2fc39240.webp"
         },
         {
           "filename": "lokal-upper-2.webp",
@@ -385,7 +321,7 @@
           "subcategory": "upper",
           "number": 2,
           "displayName": "Loftet - Övre våning 2",
-          "path": "/images/gallery/lokal-upper-2.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-2df8719abf62769cdd21533755d91ab7098782830be92c9db3d5eb1bc628d9cb.webp"
         },
         {
           "filename": "lokal-upper-3.webp",
@@ -393,7 +329,7 @@
           "subcategory": "upper",
           "number": 3,
           "displayName": "Loftet - Övre våning 3",
-          "path": "/images/gallery/lokal-upper-3.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-e3716c7daf2470391678f3c454c5de889db41b47f59f7b6001c53132f760480e.webp"
         },
         {
           "filename": "lokal-upper-4.webp",
@@ -401,7 +337,7 @@
           "subcategory": "upper",
           "number": 4,
           "displayName": "Loftet - Övre våning 4",
-          "path": "/images/gallery/lokal-upper-4.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-160b5d6b3de4d6f3408e962641cf15783b883a7dd2cb4afb323153f054642330.webp"
         },
         {
           "filename": "lokal-upper-5.webp",
@@ -409,7 +345,7 @@
           "subcategory": "upper",
           "number": 5,
           "displayName": "Loftet - Övre våning 5",
-          "path": "/images/gallery/lokal-upper-5.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-d08a410260c3149e2a1c53374ccce252735c4bd23fc647dacc57276fe435bd91.webp"
         }
       ]
     },
@@ -424,7 +360,7 @@
           "subcategory": "ute",
           "number": 1,
           "displayName": "Övrigt - Utemiljö 1",
-          "path": "/images/gallery/lokal-ute-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-3ca678a1ab6b5d83cdaeb6aa17adaf210a89f730ff55c532b74e1fa03ccd3c54.webp"
         },
         {
           "filename": "lokal-ute-toa-1.webp",
@@ -432,7 +368,7 @@
           "subcategory": "ute-toa",
           "number": 1,
           "displayName": "Övrigt - Toaletter 1",
-          "path": "/images/gallery/lokal-ute-toa-1.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-d37677d5181c7743cfcb8c12d75a74e755afb2623cdebc9aa6e708950ef35c47.webp"
         },
         {
           "filename": "lokal-ute-toa-2.webp",
@@ -440,7 +376,7 @@
           "subcategory": "ute-toa",
           "number": 2,
           "displayName": "Övrigt - Toaletter 2",
-          "path": "/images/gallery/lokal-ute-toa-2.webp"
+          "path": "https://pub-fd3f0e7f69dc410c9cdaffdf1a0a35b1.r2.dev/media-a2f3f237f05c1bad7137f780ae456b0765967d452fa1fa4491f9419ae32c05a3.webp"
         }
       ]
     }

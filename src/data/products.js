@@ -1,34 +1,5 @@
-/**
- * Mock produktdata för Storegården 7 butik
- *
- * Struktur:
- * - id: Unik identifierare (används i routing, cart logic)
- * - name: Produktnamn
- * - price: Pris i SEK (heltal för att undvika floating point issues)
- * - description: Kort beskrivning
- * - longDescription: Detaljerad beskrivning för produktsidan
- * - images: Array av bildvägar (första bilden är primär)
- * - category: För filtrering ("keramik", "konst", etc.)
- * - stock: Lagerstatus (antal i lager)
- * - artist: Konstnärens namn
- */
-
-export const products = [
-  {
-    id: "keramik-vas-001",
-    name: "Handgjord Keramikvas - Blå",
-    price: 150,
-    description: "Elegant handgjord vas i blå glasyr",
-    longDescription: "Vasen är handgjord av en lokal keramiker. Små variationer i glasyr och form förekommer. Den kan användas till både torkade och färska blommor.",
-    images: [
-      "/images/products/taxam-1.webp",
-      "/images/products/vas-bla-2.jpg"
-    ],
-    category: "keramik",
-    stock: 3,
-    artist: "Ann Wiklund"
-  }
-];
+// Produkter kommer från CMS eller Stripe. Lokal mockdata får inte synas i butiken.
+export const products = [];
 
 /**
  * Utility-funktioner för produktdata

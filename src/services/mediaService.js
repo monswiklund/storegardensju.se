@@ -1,9 +1,10 @@
 import { getCmsUrl } from "./cmsService";
+import { cdnAsset } from "../config/cdnAssets";
 
 const absoluteUrl = (url) => {
   if (!url) return null;
   if (url.startsWith("http")) return url;
-  if (url.startsWith("/images/")) return url;
+  if (url.startsWith("/images/")) return cdnAsset(url);
   return `${getCmsUrl()}${url.startsWith("/") ? "" : "/"}${url}`;
 };
 

@@ -1,3 +1,5 @@
+import { cdnAsset } from "../config/cdnAssets.js";
+
 export const heroContent = {
   title: "Välkommen till Storegården\xa07",
   subtitle: "En gård för fest, kurser och konst",
@@ -35,7 +37,7 @@ export const services = [
       "Hyr gården för bröllop, företagsevent, födelsedagar eller andra tillställningar med långbord, bar och dansgolv.",
     meta: "Loft 150+ sittande · Lada 50+ sittande · Mingel 300+",
     route: "/event",
-    image: "/images/event/hero/hero.webp",
+    image: cdnAsset("/images/event/hero/hero.webp"),
     ctaLabel: "Se event",
   },
   {
@@ -46,7 +48,7 @@ export const services = [
       "Samla välkomstskål, middag och fest på samma gård. Ladan och loftet ger plats för både nära och många.",
     meta: "Middag · Mingel · Bar & dansgolv",
     route: "/event/brollop",
-    image: "/images/event/hero/hero-2.webp",
+    image: cdnAsset("/images/event/hero/hero-2.webp"),
     ctaLabel: "Se bröllopslokalen",
   },
   {
@@ -57,7 +59,7 @@ export const services = [
       "För möhippa, svensexa, teambuilding, afterwork och workshop. Lokal och hjälp på plats ingår, och ni väljer själva vilka aktiviteter ni vill lägga till.",
     meta: "Lokal 10:00-22:00 · Tillval per aktivitet",
     route: "/gruppdagar",
-    image: "/images/evenemang/slide10.webp",
+    image: cdnAsset("/images/evenemang/slide10.webp"),
     ctaLabel: "Planera er gruppdag",
   },
   {
@@ -68,7 +70,7 @@ export const services = [
       "Fira födelsedag, jubileum, afterwork eller företagsfest i två flexibla våningar med plats för både middag och mingel.",
     meta: "Bar · Kök · Ljud · Dansgolv",
     route: "/event#event-amenities-section",
-    image: "/images/event/hero/hero-3.webp",
+    image: cdnAsset("/images/event/hero/hero-3.webp"),
     ctaLabel: "Se festmöjligheterna",
   },
   {
@@ -79,7 +81,7 @@ export const services = [
       "Kurser i måleri, keramik och drejning för både nybörjare och vana. Det går också att boka ateljén för en egen grupp.",
     meta: "Målning · Keramik · Privata workshops",
     route: "/kurser/konst",
-    image: "/images/konst-keramik/slide16.webp",
+    image: cdnAsset("/images/konst-keramik/slide16.webp"),
     ctaLabel: "Se kurserna",
   },
   {
@@ -90,7 +92,7 @@ export const services = [
       "Yoga i lugnt tempo på loftet med guidning, rörelse och vila. Passar både dig som är nybörjare och dig som yogat länge.",
     meta: "Loftet · Lugnt tempo · Mattor finns",
     route: "/kurser/yoga",
-    image: "/images/evenemang/lina-yoga-header.jpg",
+    image: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
     ctaLabel: "Se yogan",
   },
 ];
@@ -103,7 +105,7 @@ export const venueIntro = {
 };
 
 export const featuredGalleryImages = [
-  { src: "/images/event/hero/hero.webp", alt: "Evenemang" },
+  { src: cdnAsset("/images/event/hero/hero.webp"), alt: "Evenemang" },
 ];
 
 export const creationContent = {

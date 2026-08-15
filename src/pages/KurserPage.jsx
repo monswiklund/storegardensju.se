@@ -19,6 +19,7 @@ import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import { fetchPublicEvents } from "../services/eventsService.js";
 import usePageCopy from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
+import { cdnAsset } from "../config/cdnAssets.js";
 import {
   COURSE_LOCATION,
   COURSE_PASSES,
@@ -33,11 +34,11 @@ import {
 import "./KurserPages.css";
 import "../features/gallery/ImageGallery/Gallery.css";
 
-import linaYogaHeaderImg from "/images/evenemang/lina-yoga-header.jpg";
-import linaYogaImg from "/images/evenemang/lina-yoga.jpg";
-import linaYogaYta2Img from "/images/evenemang/lina-yoga-yta2.jpg";
-import yogaLoftImg from "/images/evenemang/yoga-loft.webp";
-import maleriKursImg from "/images/evenemang/maleri-kurs.webp";
+const linaYogaHeaderImg = cdnAsset("/images/evenemang/lina-yoga-header.jpg");
+const linaYogaImg = cdnAsset("/images/evenemang/lina-yoga.jpg");
+const linaYogaYta2Img = cdnAsset("/images/evenemang/lina-yoga-yta2.jpg");
+const yogaLoftImg = cdnAsset("/images/evenemang/yoga-loft.webp");
+const maleriKursImg = cdnAsset("/images/evenemang/maleri-kurs.webp");
 
 // Module-level so the reference is stable across renders (useSeo dep) and so
 // the same date gating runs client-side as in the prerendered HTML.
