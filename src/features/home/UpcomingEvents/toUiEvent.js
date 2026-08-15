@@ -55,14 +55,14 @@ export const toUiEvent = (item) => {
     links = [
       {
         href: "/kurser/yoga",
-        label: "Läs mer & anmäl dig på Yogasidan",
+        label: "Läs mer",
       },
     ];
   } else if (isMaleri && (links.length === 0 || links[0]?.href?.startsWith("mailto:"))) {
     links = [
       {
         href: "/kurser/konst",
-        label: "Läs mer & anmäl dig på Kurssidan",
+        label: "Läs mer",
       },
     ];
   }
@@ -70,6 +70,12 @@ export const toUiEvent = (item) => {
   return {
     id: item?.id || "",
     title: item?.title || "",
+    category: item?.category || (isYoga ? "yoga" : isMaleri ? "konst" : "ovrigt"),
+    startAt,
+    endAt,
+    dropIn: Boolean(item?.dropIn),
+    price: item?.price,
+    durationMinutes: item?.durationMinutes,
     spots: item?.spots || "",
     date,
     time: startTime && endTime ? `${startTime} - ${endTime}` : "",

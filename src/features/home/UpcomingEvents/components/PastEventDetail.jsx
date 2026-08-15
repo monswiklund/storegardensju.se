@@ -192,6 +192,23 @@ function PastEventDetail({
           <p className="past-event-modal-description">{event.description}</p>
         ) : null}
 
+        {event.sessions?.length > 0 && (
+          <div className="past-event-modal-sessions">
+            <span className="past-event-modal-sessions-heading">
+              Genomförda tillfällen ({event.sessions.length} st)
+            </span>
+            <ul className="past-event-modal-sessions-list">
+              {event.sessions.map((session, idx) => (
+                <li key={session.id || idx} className="past-event-modal-session-item">
+                  <span className="session-date">{session.date}</span>
+                  {session.time && <span className="session-time">{session.time}</span>}
+                  <span className="session-title">{session.title}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {event.artists && (
           <p className="past-event-modal-artists">
             <strong>Konstnärer:</strong> {event.artists}
