@@ -72,7 +72,7 @@ function TeamPage() {
                   const profileData = {
                     title: m.name || fallback.title,
                     about: m.role || fallback.about,
-                    texts: m.bio ? [m.bio] : fallback.texts,
+                    texts: m.bio?.trim() ? [m.bio] : [],
                     listItems: Array.isArray(m.skills) ? m.skills.map((s) => s.label) : fallback.listItems,
                     imageSrc,
                     contact: {
