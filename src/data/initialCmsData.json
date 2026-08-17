@@ -1,0 +1,1243 @@
+{
+  "portfolio-mans": {
+    "copy": {
+      "hero.back-to-about": "Tillbaka till Om Oss",
+      "hero.title": "Måns Wiklund",
+      "hero.subtitle": "Fullstackutvecklare & Designer",
+      "hero.about-heading": "Om mig",
+      "hero.about-body": "Utvecklar moderna webbapplikationer med fokus på användarupplevelse, prestanda och ren kod.",
+      "hero.skills-heading": "Kompetensområden",
+      "hero.projects-heading": "Utvalda Projekt",
+      "explore.eyebrow": "NÄSTA STEG",
+      "explore.title": "Utforska mer på Storegården 7",
+      "explore.body": "Fortsätt till den del av sajten som passar dig bäst – lär känna gården, se miljöerna eller hör av dig.",
+      "explore.items.0.eyebrow": "Storegården 7",
+      "explore.items.0.title": "Tillbaka till Om oss",
+      "explore.items.0.body": "Lär känna gården och människorna bakom verksamheten.",
+      "explore.items.1.eyebrow": "Miljöer",
+      "explore.items.1.title": "Bildgalleri",
+      "explore.items.1.body": "Upptäck ladan, loftet och ateljén på nära håll.",
+      "explore.items.2.eyebrow": "Kontakt",
+      "explore.items.2.title": "Prata med oss",
+      "explore.items.2.body": "Skicka en fråga eller berätta vad du vill planera."
+    },
+    "lists": {},
+    "images": {}
+  },
+  "not-found": {
+    "copy": {
+      "hero.page-title": "Sidan hittades inte | Storegården 7",
+      "hero.title": "Sidan hittades inte",
+      "hero.lead": "Sidan du söker finns inte längre eller har flyttats.",
+      "hero.home-cta": "Hitta vidare på Storegården 7"
+    },
+    "lists": {},
+    "images": {}
+  },
+  "shop": {
+    "copy": {
+      "hero.eyebrow": "GÅRDSBUTIK",
+      "hero.title": "Butik",
+      "hero.lead": "Konst och handgjord keramik från gårdens ateljé",
+      "hero.primary-cta": "Besök butiken",
+      "empty.title": "Inga produkter tillgängliga just nu.",
+      "empty.body": "Sortimentet fylls på när det finns nya saker från ateljén.",
+      "cart.title": "Varukorg",
+      "recommendations.title": "Du kanske också gillar",
+      "recommendations.empty-eyebrow": "BUTIK",
+      "recommendations.empty-title": "Fortsätt upptäcka butiken",
+      "recommendations.empty-intro": "Utforska handgjord keramik och unika alster.",
+      "recommendations.item-eyebrow": "UTFORSKA",
+      "recommendations.item-title": "Se hela butiken",
+      "recommendations.item-text": "Upptäck alla tillgängliga produkter i butiken.",
+      "cart.empty-title": "Din varukorg är tom",
+      "cart.empty-lead": "Upptäck vårt utbud av unik keramik och originalkonst.",
+      "cart.continue-shopping": "Fortsätt handla",
+      "cart.checkout-btn": "Gå till kassan",
+      "checkout.title": "Kassa",
+      "checkout.summary-title": "Ordersammanfattning",
+      "checkout.customer-title": "Kunduppgifter",
+      "checkout.pay-btn": "Betala nu",
+      "success.title": "Tack för din beställning!",
+      "success.body": "Vi har tagit emot din order och skickat en orderbekräftelse till din e-postadress.",
+      "cancel.title": "Betalningen avbröts",
+      "cancel.body": "Ingen avgift har dragits från ditt konto. Du kan när som helst återgå till butiken eller försöka igen.",
+      "cancel.return-btn": "Tillbaka till butiken",
+      "explore.eyebrow": "MER FRÅN GÅRDEN",
+      "explore.title": "Fortsätt upptäcka",
+      "explore.body": "När du har hittat något i butiken finns det mer att se, uppleva och planera på Storegården 7.",
+      "explore.items.0.eyebrow": "Planera",
+      "explore.items.0.title": "Planera ett event",
+      "explore.items.0.body": "Se hur gården kan bli platsen för er nästa dag tillsammans.",
+      "explore.items.1.eyebrow": "Se gården",
+      "explore.items.1.title": "Bildgalleri",
+      "explore.items.1.body": "Titta närmare på ladan, loftet och ateljén.",
+      "explore.items.2.eyebrow": "Lär känna",
+      "explore.items.2.title": "Om oss",
+      "explore.items.2.body": "Möt människorna och idéerna bakom Storegården 7."
+    },
+    "lists": {},
+    "images": {
+      "hero": {
+        "id": 97,
+        "url": "/api/media/file/media-7a7f0df5c7506394fd44fb3ef652c24d8db6982e637454033019b240ceed38b5.webp",
+        "alt": "Profilbild på Ann Wiklund",
+        "width": 1075,
+        "height": 1074
+      }
+    }
+  },
+  "contact": {
+    "copy": {
+      "hero.eyebrow": "HITTA HIT OCH HÖR AV DIG",
+      "hero.title": "Kontakt och hitta hit",
+      "hero.lead": "Vi finns i Rackeby, 15 minuter från Lidköpings centrum",
+      "hero.email-cta": "Mejla oss",
+      "hero.map-cta": "Öppna vägbeskrivning",
+      "form.title": "Skicka ett meddelande",
+      "form.submit-cta": "Skicka meddelande",
+      "arrival.eyebrow": "Hitta hit",
+      "arrival.title": "Hitta hit",
+      "arrival.lead": "Gården ligger lättillgängligt med bil strax utanför Lidköping. Parkering finns på gårdsplanen.",
+      "arrival.body": "Storegården 7 ligger i Rackeby, cirka 15 minuter med bil från Lidköpings centrum.",
+      "arrival.visit-note": "Hör av dig före ett besök så ser vi till att någon är på plats.",
+      "explore.eyebrow": "FORTSÄTT UTFORSKA",
+      "explore.title": "Mer att uppleva på gården",
+      "explore.body": "När du har hört av dig kan du fortsätta upptäcka det som passar din dag på gården.",
+      "explore.items.0.eyebrow": "Fira",
+      "explore.items.0.title": "Bröllop & fest",
+      "explore.items.0.body": "Ladan, loftet och hela gårdens möjligheter.",
+      "explore.items.1.eyebrow": "Samlas",
+      "explore.items.1.title": "Gruppdagar",
+      "explore.items.1.body": "Möhippa, teambuilding eller en dag med vänner.",
+      "explore.items.2.eyebrow": "Landa",
+      "explore.items.2.title": "Yoga på loftet",
+      "explore.items.2.body": "Pass i lugnt tempo med Lina.",
+      "explore.items.3.eyebrow": "Skapa",
+      "explore.items.3.title": "Måleri & keramik",
+      "explore.items.3.body": "Kurser och privata grupper i gårdsateljén."
+    },
+    "lists": {},
+    "images": {
+      "hero": {
+        "id": 76,
+        "url": "/api/media/file/media-f587e1b504b5b69d7fa050e4be0a8c624a3ddd517ceb6c5e555c43837a4034df.webp",
+        "alt": "Hero – bild",
+        "width": 1205,
+        "height": 1600
+      }
+    }
+  },
+  "about": {
+    "copy": {
+      "hero.eyebrow": "VILKA VI ÄR",
+      "hero.title": "Om Storegården 7",
+      "hero.lead": "Vi som driver Storegården 7 och platsen vi delar med er",
+      "hero.primary-cta": "Kontakta oss",
+      "hero.secondary-cta": "Se våra event",
+      "story.eyebrow": "Vår historia",
+      "story.title": "En gård som väckts till liv",
+      "story.body": "Storegården 7 har en lång historia i Rackeby. Vi har varsamt renoverat ladan, loftet och ateljén för att skapa en levande mötesplats för fest, konst och gemenskap på landet.",
+      "services-section.eyebrow": "MER ATT SE & GÖRA",
+      "services-section.title": "Utforska mer"
+    },
+    "lists": {},
+    "images": {
+      "hero": {
+        "id": 97,
+        "url": "/api/media/file/media-7a7f0df5c7506394fd44fb3ef652c24d8db6982e637454033019b240ceed38b5.webp",
+        "alt": "Profilbild på Ann Wiklund",
+        "width": 1075,
+        "height": 1074
+      }
+    }
+  },
+  "gallery": {
+    "copy": {
+      "hero.eyebrow": "BILDER FRÅN STOREGÅRDEN 7",
+      "hero.title": "Galleri",
+      "hero.lead": "Bilder från fest, bröllop, kurser och livet på gården",
+      "hero.primary-cta": "Se alla bilder",
+      "showcase.title": "Utvalda ögonblick",
+      "showcase.lead": "Se hur gården och lokalerna kan se ut vid olika årstider och tillfällen."
+    },
+    "lists": {},
+    "images": {
+      "hero": {
+        "id": 97,
+        "url": "/api/media/file/media-7a7f0df5c7506394fd44fb3ef652c24d8db6982e637454033019b240ceed38b5.webp",
+        "alt": "Profilbild på Ann Wiklund",
+        "width": 1075,
+        "height": 1074
+      }
+    }
+  },
+  "art": {
+    "copy": {
+      "hero.eyebrow": "MÅLERI & KERAMIK PÅ STOREGÅRDEN 7",
+      "hero.title": "Konstkurser och ateljé",
+      "hero.lead": "Kurser i akvarell, akryl och keramik med Ann Wiklund i gårdens ateljé",
+      "hero.primary-cta": "Se kurserna",
+      "hero.secondary-cta": "Läs om ateljén",
+      "intro.eyebrow": "I ateljén",
+      "intro.title": "Skapa i ateljén",
+      "intro.body": "I ateljén på Storegården 7 får du utforska färg och form tillsammans med konstnären och keramikern Ann Wiklund. Kurserna passar både dig som aldrig hållit i en pensel och dig som vill utveckla ditt skapande.",
+      "instructor.eyebrow": "Konstnär & keramiker",
+      "instructor.title": "Ann Wiklund",
+      "instructor.role": "Konstnär och keramiker",
+      "instructor.bio": "Ann har arbetat med konst och keramik i många år och undervisar i akvarell, akryl, drejning och skulptur med stort engagemang och personlig handledning.",
+      "faq.eyebrow": "Bra att veta",
+      "faq.title": "Vanliga frågor om kurserna",
+      "offerings.title": "Det här kan du göra i ateljén",
+      "offerings.lead": "Kom på en kurs med fast datum eller boka en egen tid för din grupp.",
+      "contact.title": "Planerar du ett event eller vill du gå en kurs?",
+      "contact.body": "Vi tar emot möhippor, födelsedagar, företag och andra grupper. Berätta hur många ni är och om ni vill måla, arbeta med lera eller kombinera kursen med fika.",
+      "contact.cta": "Skicka en förfrågan",
+      "past.eyebrow": "Återblick",
+      "past.title": "Tidigare kurser och skapardagar",
+      "directions.eyebrow": "Hitta hit",
+      "directions.title": "Storegården 7, Rackeby",
+      "directions.body": "Ateljén ligger 15 minuter från Lidköping. Det finns gott om parkering vid ladan.",
+      "directions.cta": "Visa på karta",
+      "other.eyebrow": "Mer att göra hos oss",
+      "other.title": "Se även Yoga på loftet",
+      "contact.section-title": "Fråga om en kurs",
+      "contact.section-body": "Hör av dig till Ann Wiklund — hon svarar gärna på frågor om kurserna, nivån eller hur en dag i ateljén läggs upp."
+    },
+    "lists": {
+      "workshops": [
+        {
+          "id": "6a833f22f2b6d11d4586ce26",
+          "value": null,
+          "title": "Prova måleri eller keramik",
+          "body": "I ateljén håller Ann kurser i måleri och keramik. Du får hjälp under hela passet och behöver inte ha provat tidigare."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce27",
+          "value": null,
+          "title": "Kurser och workshops",
+          "body": "Du kan boka en plats på en kurs i måleri, keramik eller drejning. Vi tar också emot privata grupper, till exempel kompisgäng, kollegor, möhippor och svensexor."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce28",
+          "value": null,
+          "title": "Utställningar",
+          "body": "I ladan ordnar vi ibland utställningar och loppisar. Hör av dig om du vill ställa ut egen konst eller har en idé som skulle passa här."
+        }
+      ],
+      "offerings": [
+        {
+          "id": "6a833f22f2b6d11d4586ce2a",
+          "value": null,
+          "title": "Målningskurser",
+          "body": "Prova akvarell eller akryl. Ann visar tekniker och övningar och hjälper dig vidare under passet."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce2b",
+          "value": null,
+          "title": "Keramik och lera",
+          "body": "Arbeta med handbygge, ringling eller drejning i keramikverkstaden. Verktyg och material finns på plats."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce2c",
+          "value": null,
+          "title": "Privata workshops",
+          "body": "Boka ateljén för ett kompisgäng eller en annan grupp. Kursen anpassas efter vad ni vill prova och hur mycket erfarenhet ni har."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce2d",
+          "value": null,
+          "title": "Teambuilding och kalas",
+          "body": "Måleri och keramik går att boka för företag, möhippor, svensexor och kalas. Det går också att lägga till fika."
+        }
+      ],
+      "faq": [
+        {
+          "id": "6a833f22f2b6d11d4586ce2f",
+          "value": null,
+          "title": "Vilka kurser i måleri och keramik har ni?",
+          "body": "I ateljén håller Ann Wiklund kurser i måleri med akvarell och akryl samt i keramik med handbygge, ringling och drejning."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce30",
+          "value": null,
+          "title": "Behöver jag ha målat eller drejat tidigare?",
+          "body": "Nej. Ann visar momenten och hjälper dig under kursen. Du kan vara med oavsett om det är första gången eller om du har provat tidigare."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce31",
+          "value": null,
+          "title": "Kan vi boka en egen kurs för vår grupp?",
+          "body": "Ja. Måleri och keramik går att boka för möhippa, svensexa, födelsedag eller teambuilding. Gruppen får ateljén för sig själv och det går att lägga till fika eller lunch."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce32",
+          "value": null,
+          "title": "Behöver jag ta med eget material?",
+          "body": "Nej, material och verktyg finns i ateljén. Ta med kläder som får bli lite färg eller lera på."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce33",
+          "value": null,
+          "title": "Var ligger ateljén?",
+          "body": "Ateljén ligger på Storegården 7 i Rackeby, 15 minuter från Lidköpings centrum. Det finns gott om parkering på gården."
+        }
+      ]
+    },
+    "images": {
+      "hero.background": {
+        "id": 77,
+        "url": "/api/media/file/media-12b0984e1a2308c884eb48e43f579804174c82fe97902a5c09369945f917eeb0.webp",
+        "alt": "Hero – bakgrund",
+        "width": 1440,
+        "height": 1440
+      },
+      "workshops.0": {
+        "id": 78,
+        "url": "/api/media/file/media-1c5d6d5b6d8552aaf25009caa4c027e2f476e2c9ccc55862fb2c785cdf6b1068.webp",
+        "alt": "Workshop – Måleri eller keramik",
+        "width": 1080,
+        "height": 1080
+      },
+      "workshops.1": {
+        "id": 79,
+        "url": "/api/media/file/media-7f12de9cfeb4c113d535be774274b85dc34c207f9dc49845214eb37ad2c49d53.webp",
+        "alt": "Workshop – Kurser och grupper",
+        "width": 1513,
+        "height": 2009
+      },
+      "workshops.2": {
+        "id": 80,
+        "url": "/api/media/file/media-79739e6b98ab3e729c2726d20eea45fdc7dae38af0953a77a0150e451e8bd90c.webp",
+        "alt": "Workshop – Utställningar",
+        "width": 800,
+        "height": 1063
+      }
+    }
+  },
+  "yoga": {
+    "copy": {
+      "hero.eyebrow": "YOGA PÅ STOREGÅRDEN 7",
+      "hero.title": "Yoga på loftet",
+      "hero.lead": "Klasser i lugnt tempo med fokus på mjuka rörelser, andning och djup vila",
+      "hero.primary-cta": "Boka pass",
+      "hero.secondary-cta": "Läs om yogan",
+      "hero.next-cta": "Se nästa pass",
+      "hero.contact-cta": "Hör av dig",
+      "intro.eyebrow": "På loftet",
+      "intro.title": "En plats att landa",
+      "intro.body": "Välkommen upp på loftet för yoga i en lugn och ombonad miljö. Här rör vi oss i ett mjukt tempo som passar både dig som är nybörjare och dig med tidigare erfarenhet.",
+      "gallery.eyebrow": "Bilder från loftet",
+      "gallery.title": "Loftet på Storegården 7",
+      "instructor.eyebrow": "Kursledare",
+      "instructor.title": "Lina Wiklund",
+      "instructor.role": "Utbildad yogainstruktör",
+      "instructor.bio": "Lina är utbildad yogainstruktör och guidar klasserna med värme och närvaro. Målet är att varje deltagare ska få landa i sin egen kropp och sitt eget tempo.",
+      "contact.title": "Frågor om yogan?",
+      "contact.body": "Hör av dig till Lina Wiklund — hon svarar gärna på frågor om passen, nivån eller vad du behöver ta med.",
+      "past.title": "Tidigare pass",
+      "directions.body": "Yogan hålls på loftet på Storegården 7 i Rackeby, 15 minuter från Lidköping. Kör mot Rackeby och följ skyltningen till gården — det finns gott om parkering på grusplanen intill ladan.",
+      "other.eyebrow": "Mer hos oss",
+      "other.title": "Måla eller dreja i ateljén",
+      "other.body": "I gårdsateljén håller Ann Wiklund kurser i måleri och keramik, både på fasta datum och som privat kurs för grupper.",
+      "other.cta": "Se kurser i måleri och keramik",
+      "faq.eyebrow": "Bra att veta",
+      "faq.title": "Vanliga frågor om yogan",
+      "empty.title": "Inga planerade pass just nu",
+      "empty.body": "Vi lägger löpande upp nya datum. Följ oss på Instagram eller hör av dig för att få veta när nästa tillfälle släpps.",
+      "empty.cta": "Hör av dig"
+    },
+    "lists": {
+      "faq": [
+        {
+          "id": "6a833f22f2b6d11d4586ce1f",
+          "value": null,
+          "title": "Vilka klasser erbjuds på loftet?",
+          "body": "På loftet hålls klasser i lugnt tempo med fokus på mjuka rörelser, guidning och vila. Alla tillfällen passar både nybörjare och dig som har deltagit tidigare."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce20",
+          "value": null,
+          "title": "Vad kostar klasserna?",
+          "body": "Priset kan variera mellan passen. Aktuellt pris står på respektive tillfälle och betalning sker på plats."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce21",
+          "value": null,
+          "title": "Behöver jag ta med egen matta?",
+          "body": "Mattor finns att låna på plats, men om du har en egen matta får du gärna ta med den."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce22",
+          "value": null,
+          "title": "När bör man komma innan passet?",
+          "body": "Kom gärna en stund innan passet startar så att du hinner byta om, rulla ut mattan och göra dig i ordning."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce23",
+          "value": null,
+          "title": "Passar klasserna för nybörjare?",
+          "body": "Ja. Lina guidar passen i lugnt tempo med mjuka rörelser och vila som fungerar både för nybörjare och vana utövare."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce24",
+          "value": null,
+          "title": "Var ligger Storegården 7?",
+          "body": "Storegården 7 ligger i Rackeby, 15 minuter från Lidköpings centrum. Det finns gott om parkering på gården."
+        }
+      ]
+    },
+    "images": {
+      "hero.background": {
+        "id": 81,
+        "url": "/api/media/file/media-a42ee7c90d5d92e4f08ed4a8eb763028e0063a9d113d1eb23e8cc6cebf6270a4.webp",
+        "alt": "Hero – bakgrund",
+        "width": 1200,
+        "height": 1600
+      },
+      "gallery.0": {
+        "id": 82,
+        "url": "/api/media/file/media-31afbc73a67973595006b59221d432d90f154239c4e16eb9a5ea1c1d672614fe.webp",
+        "alt": "Bildgalleri – bild 1",
+        "width": 1448,
+        "height": 2048
+      },
+      "gallery.1": {
+        "id": 83,
+        "url": "/api/media/file/media-e62914be6435b35eacd2140aad29fa25236c7399e5502cddf49fef13a80cae09.webp",
+        "alt": "Bildgalleri – bild 2",
+        "width": 1200,
+        "height": 1600
+      },
+      "gallery.2": {
+        "id": 84,
+        "url": "/api/media/file/media-ad5abc352339cef42bcc2f57a2f3a2f45a167437fde28a8f4c51529690f4445f.webp",
+        "alt": "Bildgalleri – bild 3",
+        "width": 768,
+        "height": 1365
+      },
+      "other.art": {
+        "id": 78,
+        "url": "/api/media/file/media-1c5d6d5b6d8552aaf25009caa4c027e2f476e2c9ccc55862fb2c785cdf6b1068.webp",
+        "alt": "Workshop – Måleri eller keramik",
+        "width": 1080,
+        "height": 1080
+      }
+    }
+  },
+  "courses": {
+    "copy": {
+      "hero.eyebrow": "KURSER PÅ STOREGÅRDEN 7",
+      "hero.title": "Kurser och workshops",
+      "hero.lead": "Måleri, keramik och yoga i lugn miljö på landet strax utanför Lidköping",
+      "intro.eyebrow": "Skapa och landa",
+      "intro.title": "Kurser på landet",
+      "intro.body": "På Storegården 7 håller vi kurser i måleri och keramik i ateljén och yoga på loftet. Här får du skapa och landa i en lugn gårdsmiljö med utsikt över det västgötska landskapet.",
+      "groups.eyebrow": "Egen grupp",
+      "groups.title": "Boka för en egen grupp",
+      "groups.lead": "Vill ni samla kollegor, vänner eller familj? Vi ordnar skräddarsydda kurser och workshops för privata sällskap och företag.",
+      "groups.body": "Möhippa, svensexa, teambuilding eller ett gäng vänner som vill göra något tillsammans? Vi håller kurser i måleri, keramik och yoga som privat bokning, med lokalen och fikat på gården.",
+      "groups.card-title": "Gruppdagar",
+      "groups.card-body": "Baspaket från 500 kr per person, lokalen är er 10:00-22:00.",
+      "groups.cta": "Planera en gruppdag",
+      "hero.fact-level": "Kurser för både nybörjare och vana",
+      "hero.fact-groups": "Privata kurser för grupper",
+      "services-section.eyebrow": "MER HOS OSS",
+      "services-section.title": "Upptäck mer på gården",
+      "explore.eyebrow": "MER HOS OSS",
+      "explore.title": "Utforska mer",
+      "explore.body": "När du har hittat rätt kurs finns fler sätt att uppleva Storegården 7.",
+      "explore.items.0.eyebrow": "Landa",
+      "explore.items.0.title": "Yoga på loftet",
+      "explore.items.0.body": "Se kommande pass och läs mer om yogan.",
+      "explore.items.1.eyebrow": "Skapa",
+      "explore.items.1.title": "Måleri & keramik",
+      "explore.items.1.body": "Upptäck kurserna i gårdsateljén.",
+      "explore.items.2.eyebrow": "Samlas",
+      "explore.items.2.title": "Gruppdagar",
+      "explore.items.2.body": "Planera en egen dag för gruppen på gården."
+    },
+    "lists": {},
+    "images": {
+      "hubs.yoga": {
+        "id": 84,
+        "url": "/api/media/file/media-ad5abc352339cef42bcc2f57a2f3a2f45a167437fde28a8f4c51529690f4445f.webp",
+        "alt": "Bildgalleri – bild 3",
+        "width": 768,
+        "height": 1365
+      },
+      "hubs.art": {
+        "id": 78,
+        "url": "/api/media/file/media-1c5d6d5b6d8552aaf25009caa4c027e2f476e2c9ccc55862fb2c785cdf6b1068.webp",
+        "alt": "Workshop – Måleri eller keramik",
+        "width": 1080,
+        "height": 1080
+      }
+    }
+  },
+  "group-days": {
+    "copy": {
+      "hero.eyebrow": "Samla gruppen på gården",
+      "hero.title-prefix": "Er",
+      "hero.title-suffix": "på Storegården 7",
+      "hero.lead": "Boka ladan och loftet från 10:00 till 22:00. Vi hjälper till med det praktiska, och ni kan lägga till aktiviteter om ni vill.",
+      "hero.primary-cta": "Planera er dag",
+      "hero.secondary-cta": "Se tillval",
+      "hero.note": "Planera er dag",
+      "planner.summary-title": "Baspaketet",
+      "planner.summary-price": "500 kr/person",
+      "planner.summary-body": "Lokal, planering och praktisk hjälp ingår. Klicka på flikarna till höger för att forma er gruppdag och välja tillval.",
+      "package.eyebrow": "Baspaket",
+      "package.title": "Allt som ingår i grundpriset",
+      "package.lead": "Ett färdigt upplägg för en hel dag på gården, med plats att umgås och flexibilitet att välja till aktiviteter.",
+      "package.body": "Ni får tillgång till vår lokal, både ladan och loftet samt tillhörande uteplatser. Ni har tillgång 10:00-22:00.",
+      "package.details-title": "Bra att veta",
+      "addons.eyebrow": "Tillval",
+      "addons.title": "Välj till aktiviteter och mat",
+      "addons.lead": "Skräddarsy er gruppdag med workshops, yoga, mat och underhållning. Alla tillval kan kombineras fritt.",
+      "activities.eyebrow": "Tillval och aktiviteter",
+      "activities.title": "Lägg till det som passar gruppen",
+      "activities.lead": "Välj de aktiviteter som gruppen vill göra. När ni klickar på ett tillval läggs det direkt till i prisberäkningen.",
+      "booking.eyebrow": "Boka er dag",
+      "booking.title": "Skicka en förfrågan",
+      "booking.lead": "Fyll i datum, antal personer och vilka tillval ni önskar så återkommer vi med bekräftelse och detaljer.",
+      "booking.submit-cta": "Skicka förfrågan",
+      "calc.base-package": "Baspaketet",
+      "calc.base-price": "500 kr/person",
+      "calc.guest-count-label": "Antal personer",
+      "calc.decrease-guests": "Minska antal personer",
+      "calc.increase-guests": "Öka antal personer",
+      "calc.remove-addon": "Ta bort tillval",
+      "calc.add-addon": "Lägg till",
+      "calc.estimated-total": "Uppskattat totalpris:",
+      "calc.inquiry-btn": "Skicka förfrågan",
+      "calc.inquiry-subject": "Förfrågan gruppdag på Storegården 7",
+      "calc.no-addons": "Inga tillval valda"
+    },
+    "lists": {
+      "hero-facts": [
+        {
+          "id": "6a833f22f2b6d11d4586ce00",
+          "value": "500 kr/person",
+          "title": null,
+          "body": "Pris från"
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce01",
+          "value": "10:00-22:00",
+          "title": null,
+          "body": "Tid"
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce02",
+          "value": "Baspaket + tillval",
+          "title": null,
+          "body": "Upplägg"
+        }
+      ],
+      "package-features": [
+        {
+          "id": "6a833f22f2b6d11d4586ce04",
+          "value": null,
+          "title": "Planeringsmöte",
+          "body": "Vi ses på Storegården 7 och går igenom hur ni vill lägga upp dagen."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce05",
+          "value": null,
+          "title": "Välkomstskål",
+          "body": "Vi förbereder drycken ni själva köpt in och lämnat dagen innan för kylning."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce06",
+          "value": null,
+          "title": "Dukning och lokaler",
+          "body": "Vi dukar och dekorerar inomhus. Ni får använda ladan, loftet och uteplatserna."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce07",
+          "value": null,
+          "title": "Musik",
+          "body": "Vi sköter ljud och musik. Skicka gärna en spellista inför dagen."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce08",
+          "value": null,
+          "title": "Mat",
+          "body": "Ni köper maten själva, så hanterar vi den och lägger upp den åt er."
+        }
+      ],
+      "package-details": [
+        {
+          "id": "6a833f22f2b6d11d4586ce0a",
+          "value": null,
+          "title": null,
+          "body": "Möjlighet att lämna mat och dryck för kylning dagen innan."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce0b",
+          "value": null,
+          "title": null,
+          "body": "Vi finns på plats under dagen för att hjälpa till med det praktiska."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586ce0c",
+          "value": null,
+          "title": null,
+          "body": "Vi tar hand om disk och städning så att ni kan fokusera på varandra."
+        }
+      ]
+    },
+    "images": {
+      "hero": {
+        "id": 85,
+        "url": "/api/media/file/media-d2620566d5ab01c5542cf1202ee978e4fd94b77bdb3bae62301b1922da6dea43.webp",
+        "alt": "Hero – bild",
+        "width": 800,
+        "height": 1200
+      },
+      "activities.yoga": {
+        "id": 86,
+        "url": "/api/media/file/media-28c16c0e931fdff2dcee707570a7c44d56a87c73774bb369f016e7e8daf4b1b9.webp",
+        "alt": "Aktivitet – Yoga",
+        "width": 800,
+        "height": 1200
+      },
+      "activities.farg": {
+        "id": 87,
+        "url": "/api/media/file/media-fff08e87dd6eacc85ddf6f4063e2da2e14e16d75c1935900191191f601ca534e.webp",
+        "alt": "Aktivitet – Måla med färg",
+        "width": 675,
+        "height": 1200
+      },
+      "activities.collage": {
+        "id": 88,
+        "url": "/api/media/file/media-aa129af83c6fe75b45e8a40107d4655fea208a528e0dd0e276aa8c28eba1fa89.webp",
+        "alt": "Aktivitet – Collage",
+        "width": 800,
+        "height": 1200
+      },
+      "activities.cocktail": {
+        "id": 85,
+        "url": "/api/media/file/media-d2620566d5ab01c5542cf1202ee978e4fd94b77bdb3bae62301b1922da6dea43.webp",
+        "alt": "Hero – bild",
+        "width": 800,
+        "height": 1200
+      },
+      "activities.keramik": {
+        "id": 75,
+        "url": "/api/media/file/media-4dd01682f2c1ab8aae676e9d6ffc096753624daac78f0b1873bbf307d1de99b1.webp",
+        "alt": "Butik – delningsbild",
+        "width": 800,
+        "height": 1200
+      }
+    }
+  },
+  "wedding": {
+    "copy": {
+      "hero.eyebrow": "Bröllopslokal nära Lidköping",
+      "hero.title": "Bröllop på Storegården 7",
+      "hero.lead": "En lantlig plats för middag, mingel och dans under samma tak",
+      "intro.eyebrow": "Er dag på gården",
+      "intro.title": "Hyr ladan och loftet för hela bröllopsdagen",
+      "intro.paragraphs.0": "Storegården 7 ligger i Rackeby, strax utanför Lidköping. Här kan ni ha välkomstskål, middag och fest på samma gård.",
+      "intro.paragraphs.1": "Ni disponerar den renoverade ladan och loftet och bestämmer själva hur ni vill använda rummen under dagen.",
+      "spaces.eyebrow": "Ladan och loftet",
+      "spaces.title": "Plats för middag, mingel och dans",
+      "spaces.lead": "Gästerna kan röra sig mellan våningarna utan att lämna gården.",
+      "flow.eyebrow": "Ett möjligt upplägg",
+      "flow.title": "Från välkomstskål till dansgolv",
+      "flow.lead": "Så här kan ni använda de olika delarna av lokalen under dagen.",
+      "freedom.eyebrow": "Mat, dryck och hjälp",
+      "freedom.title": "Ni väljer upplägget själva",
+      "freedom.body": "Ni får ta med egen mat och dryck och kan välja det upplägg som passar er bäst. På plats finns glas, porslin, bestick, bord och stolar.",
+      "contact.eyebrow": "Skicka en förfrågan",
+      "contact.title": "Har ni ett datum och ett ungefärligt gästantal?",
+      "contact.body": "Berätta vilket datum ni tänker er, ungefär hur många ni blir och vilken hjälp ni behöver.",
+      "contact.cta": "Skicka en bröllopsförfrågan",
+      "faq.eyebrow": "Bra att veta",
+      "faq.title": "Vanliga frågor",
+      "services-section.eyebrow": "MER HOS OSS",
+      "services-section.title": "Utforska mer på gården"
+    },
+    "lists": {
+      "spaces": [
+        {
+          "id": "6a833f22f2b6d11d4586cded",
+          "value": "150+ sittande",
+          "title": "Middag på loftet",
+          "body": "På loftet finns plats för långbord, middag och tal under takbjälkarna."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586cdee",
+          "value": "300+ stående",
+          "title": "Mingel i hela ladan",
+          "body": "Använd båda våningarna så att gästerna kan röra sig mellan rummen under kvällen."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586cdef",
+          "value": "Bar & dansgolv",
+          "title": "Dans och sena timmar",
+          "body": "Fortsätt kvällen med lounge, bar, ljudanläggning och festbelysning på plats."
+        }
+      ],
+      "flow": [
+        {
+          "id": "6a833f22f2b6d11d4586cdf1",
+          "value": null,
+          "title": "Välkomna gästerna",
+          "body": "Börja med välkomstskål och mingel i ladan eller ute på gården."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586cdf2",
+          "value": null,
+          "title": "Samlas till bords",
+          "body": "Flytta upp till loftet för middag, tal och en lång kväll tillsammans."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586cdf3",
+          "value": null,
+          "title": "Öppna dansgolvet",
+          "body": "Runda av middagen och låt bar, musik och dans ta över resten av natten."
+        }
+      ],
+      "freedom-bullets": [
+        {
+          "id": "6a833f22f2b6d11d4586cdf5",
+          "value": "För middagen:",
+          "title": null,
+          "body": "I köket finns bra arbetsytor, handdisk samt varmt och kallt vatten. Muurikka-hällar kan hyras. Dukning och möbler finns på gården."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586cdf6",
+          "value": "För festen:",
+          "title": null,
+          "body": "Bar, lounge, dansgolv, ljud och festbelysning är redo att användas."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586cdf7",
+          "value": "För hjälpen:",
+          "title": null,
+          "body": "Vi kan hjälpa till att ordna serveringspersonal, bar eller DJ vid behov."
+        }
+      ],
+      "faq": [
+        {
+          "id": "6a833f22f2b6d11d4586cdf9",
+          "value": null,
+          "title": "Får vi ta med egen mat och dryck?",
+          "body": "Ja. Ni har full frihet att ta med egen mat och dryck och kan forma middagen efter era egna önskemål."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586cdfa",
+          "value": null,
+          "title": "Hur många gäster får plats på bröllopet?",
+          "body": "Loftet har plats för 150+ sittande gäster och ladan för 50+ sittande. För stående mingel rymmer lokalerna tillsammans 300+ gäster."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586cdfb",
+          "value": null,
+          "title": "Vad finns på plats i lokalen?",
+          "body": "Glas, tallrikar, bestick, bord och stolar finns på plats. Köket har bra arbetsytor, handdisk samt varmt och kallt vatten. Muurikka-hällar kan hyras. Ni har också tillgång till bar, lounge, dansgolv, toaletter, ljudanläggning och festbelysning."
+        },
+        {
+          "id": "6a833f22f2b6d11d4586cdfc",
+          "value": null,
+          "title": "Kan ni hjälpa till med personal?",
+          "body": "Ja. Vid behov kan vi hjälpa till att ordna serveringspersonal, bar eller DJ till bröllopsdagen."
+        }
+      ]
+    },
+    "images": {
+      "hero.background": {
+        "id": 89,
+        "url": "/api/media/file/media-07df8b97a7e67ff2453177016b5e28b080b177d0b41b11c95fc55ae1ed1bc008.webp",
+        "alt": "Hero – bakgrund",
+        "width": 1205,
+        "height": 1600
+      },
+      "intro": {
+        "id": 76,
+        "url": "/api/media/file/media-f587e1b504b5b69d7fa050e4be0a8c624a3ddd517ceb6c5e555c43837a4034df.webp",
+        "alt": "Hero – bild",
+        "width": 1205,
+        "height": 1600
+      },
+      "freedom": {
+        "id": 90,
+        "url": "/api/media/file/media-b27d7a68670348e4e9fd8fd615849cbd507ac958460d6cbf83732f75bf22b019.webp",
+        "alt": "Mat, dryck och hjälp – bild",
+        "width": 1205,
+        "height": 1600
+      }
+    }
+  },
+  "event": {
+    "copy": {
+      "hero.eyebrow": "Eventlokal på landet",
+      "hero.title": "Event på Storegården 7",
+      "hero.lead": "Lada och loft för bröllop, fest och företagsevent",
+      "hero.primary-cta": "Berätta om ert event",
+      "hero.secondary-cta": "Se eventtyper",
+      "intro.eyebrow": "Bröllop, fest eller gruppdag",
+      "intro.title": "Vad vill ni ordna?",
+      "intro.lead": "Här finns plats för bröllop, privata fester, företagsevent och gruppdagar i en renoverad lada strax utanför Lidköping.",
+      "intro.gallery-cta": "Se galleriet",
+      "types.0.title": "Bröllop",
+      "types.0.description": "Hyr ladan och loftet för bröllopsmiddag och fest. Ni får ta med egen mat och dryck.",
+      "types.0.cta": "Läs om bröllop",
+      "types.1.title": "Fest & företagsevent",
+      "types.1.description": "Födelsedag, jubileum, afterwork eller företagsfest med två flexibla våningar.",
+      "types.1.cta": "Se lokalens möjligheter",
+      "types.2.title": "Gruppdagar",
+      "types.2.description": "Ett färdigt upplägg för möhippa, svensexa, teambuilding eller en dag med vänner.",
+      "types.2.cta": "Planera en gruppdag",
+      "capacity.eyebrow": "Ytor och kapacitet",
+      "capacity.title": "Plats för både middag och mingel",
+      "capacity.body": "Ladan och loftet ger er totalt 360 kvm inomhus på två våningar. Ni kan använda en våning eller låta gästerna röra sig mellan båda.",
+      "amenities.eyebrow": "Det här finns på plats",
+      "amenities.title": "Möbler, bar, ljud och köksytor",
+      "amenities.body": "Mycket av det praktiska finns redan här och ingår i hyran. Ni får också ta med egen mat och dryck.",
+      "planning.eyebrow": "Så går planeringen till",
+      "planning.title": "Vi planerar det praktiska tillsammans",
+      "planning.lead": "Ni sätter tonen och vi hjälper er att få lokalerna och det praktiska på plats.",
+      "services-section.eyebrow": "MER HOS OSS",
+      "services-section.title": "Utforska mer på gården"
+    },
+    "lists": {
+      "facts": [
+        {
+          "id": "6a8066b9aac2d0d3d6e708ad",
+          "value": "360 kvm",
+          "title": null,
+          "body": "Inomhus på två våningar: ladan och loftet."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708ae",
+          "value": "150+",
+          "title": null,
+          "body": "Sittande gäster på loftet."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708af",
+          "value": "Bar, kök",
+          "title": null,
+          "body": "Kök med arbetsytor, handdisk samt varmt och kallt vatten."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708b0",
+          "value": "Personal",
+          "title": null,
+          "body": "Vi kan hjälpa till med servering, bar eller DJ vid behov."
+        }
+      ],
+      "capacity-bullets": [
+        {
+          "id": "6a8066b9aac2d0d3d6e708b2",
+          "value": "Loftet:",
+          "title": null,
+          "body": "Plats för 150+ sittande gäster vid middag eller föreläsning."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708b3",
+          "value": "Ladan:",
+          "title": null,
+          "body": "Plats för 50+ sittande gäster på bottenvåningen."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708b4",
+          "value": "Mingel:",
+          "title": null,
+          "body": "Tillsammans rymmer lokalerna 300+ stående gäster."
+        }
+      ],
+      "amenities-bullets": [
+        {
+          "id": "6a8066b9aac2d0d3d6e708b6",
+          "value": "Dukning & möbler:",
+          "title": null,
+          "body": "Glas, tallrikar, bestick, bord och stolar finns färdigt för alla gäster."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708b7",
+          "value": "Kök:",
+          "title": null,
+          "body": "Bra arbetsytor, handdisk samt varmt och kallt vatten. Muurikka-hällar kan hyras."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708b8",
+          "value": "Övriga ytor:",
+          "title": null,
+          "body": "Lounge med soffor, dansgolv, bar och toaletter."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708b9",
+          "value": "Ljud och ljus:",
+          "title": null,
+          "body": "Ljudanläggning och festbelysning är installerade."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708ba",
+          "value": "Mat och dryck:",
+          "title": null,
+          "body": "Ni får ta med egen mat och dryck. Vid behov kan vi hjälpa till att ordna serveringspersonal, bar eller DJ."
+        }
+      ],
+      "planning-steps": [
+        {
+          "id": "6a8066b9aac2d0d3d6e708bc",
+          "value": null,
+          "title": "Berätta vad ni planerar",
+          "body": "Skicka datum, ungefärligt antal gäster och vad ni vill ordna."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708bd",
+          "value": null,
+          "title": "Gå igenom det praktiska",
+          "body": "Vi går igenom lokalerna, dukningen, maten, drycken och vilken hjälp ni behöver."
+        },
+        {
+          "id": "6a8066b9aac2d0d3d6e708be",
+          "value": null,
+          "title": "Kom till gården",
+          "body": "När dagen kommer är ladan i ordning för det upplägg vi har kommit överens om."
+        }
+      ]
+    },
+    "images": {
+      "hero.background": {
+        "id": 76,
+        "url": "/api/media/file/media-f587e1b504b5b69d7fa050e4be0a8c624a3ddd517ceb6c5e555c43837a4034df.webp",
+        "alt": "Hero – bild",
+        "width": 1205,
+        "height": 1600
+      },
+      "types.0": {
+        "id": 89,
+        "url": "/api/media/file/media-07df8b97a7e67ff2453177016b5e28b080b177d0b41b11c95fc55ae1ed1bc008.webp",
+        "alt": "Hero – bakgrund",
+        "width": 1205,
+        "height": 1600
+      },
+      "types.2": {
+        "id": 79,
+        "url": "/api/media/file/media-7f12de9cfeb4c113d535be774274b85dc34c207f9dc49845214eb37ad2c49d53.webp",
+        "alt": "Workshop – Kurser och grupper",
+        "width": 1513,
+        "height": 2009
+      },
+      "capacity": {
+        "id": 89,
+        "url": "/api/media/file/media-07df8b97a7e67ff2453177016b5e28b080b177d0b41b11c95fc55ae1ed1bc008.webp",
+        "alt": "Hero – bakgrund",
+        "width": 1205,
+        "height": 1600
+      },
+      "amenities": {
+        "id": 90,
+        "url": "/api/media/file/media-b27d7a68670348e4e9fd8fd615849cbd507ac958460d6cbf83732f75bf22b019.webp",
+        "alt": "Mat, dryck och hjälp – bild",
+        "width": 1205,
+        "height": 1600
+      }
+    }
+  },
+  "home": {
+    "copy": {
+      "hero.title": "Välkommen till Storegården 7",
+      "hero.subtitle": "En gård för fest, kurser och konst",
+      "hero.paragraphs.0": "Här i Rackeby, 15 minuter från Lidköping, driver vi Storegården 7 tillsammans.",
+      "hero.paragraphs.1": "I ladan och på loftet ordnas bröllop, kalas och andra fester. I ateljén håller vi kurser i måleri och keramik.",
+      "hero.paragraphs.2": "På gården finns också en liten butik med konst och keramik. Ibland har vi loppis, yoga och andra aktiviteter.",
+      "hero.primary-cta": "Kontakta oss",
+      "hero.secondary-ctas.0": "Se galleriet",
+      "hero.secondary-ctas.1": "Hitta hit",
+      "services-section.eyebrow": "VAD VI HAR",
+      "services-section.title": "Vad vi erbjuder",
+      "services.event.kicker": "Ladan och loftet",
+      "services.event.title": "Event",
+      "services.event.description": "Hyr gården för bröllop, företagsevent, födelsedagar eller andra tillställningar med långbord, bar och dansgolv.",
+      "services.event.meta": "Loft 150+ sittande · Lada 50+ sittande · Mingel 300+",
+      "services.event.cta": "Se event",
+      "services.brollop.kicker": "En dag att minnas",
+      "services.brollop.title": "Bröllop",
+      "services.brollop.description": "Samla välkomstskål, middag och fest på samma gård. Ladan och loftet ger plats för både nära och många.",
+      "services.brollop.meta": "Middag · Mingel · Bar & dansgolv",
+      "services.brollop.cta": "Se bröllopslokalen",
+      "services.gruppdagar.kicker": "Samla gruppen på gården",
+      "services.gruppdagar.title": "Gruppdagar",
+      "services.gruppdagar.description": "För möhippa, svensexa, teambuilding, afterwork och workshop. Lokal och hjälp på plats ingår, och ni väljer själva vilka aktiviteter ni vill lägga till.",
+      "services.gruppdagar.meta": "Lokal 10:00-22:00 · Tillval per aktivitet",
+      "services.gruppdagar.cta": "Planera er gruppdag",
+      "services.fest.kicker": "Middag och dans",
+      "services.fest.title": "Fest & företagsevent",
+      "services.fest.description": "Fira födelsedag, jubileum, afterwork eller företagsfest i två flexibla våningar med plats för både middag och mingel.",
+      "services.fest.meta": "Bar · Kök · Ljud · Dansgolv",
+      "services.fest.cta": "Se festmöjligheterna",
+      "services.kurser-konst.kicker": "Ateljé och lera",
+      "services.kurser-konst.title": "Måleri & keramik",
+      "services.kurser-konst.description": "Kurser i måleri, keramik och drejning för både nybörjare och vana. Det går också att boka ateljén för en egen grupp.",
+      "services.kurser-konst.meta": "Målning · Keramik · Privata workshops",
+      "services.kurser-konst.cta": "Se kurserna",
+      "services.yoga.kicker": "På loftet",
+      "services.yoga.title": "Yoga",
+      "services.yoga.description": "Yoga i lugnt tempo på loftet med guidning, rörelse och vila. Passar både dig som är nybörjare och dig som yogat länge.",
+      "services.yoga.meta": "Loftet · Lugnt tempo · Mattor finns",
+      "services.yoga.cta": "Se yogan",
+      "venue.title": "Om platsen",
+      "venue.description": "Storegården 7 ligger i Rackeby, 15 minuter från Lidköpings centrum. Här finns en renoverad lada med loft, en ateljé och en gårdsbutik, med gott om plats både inne och ute.",
+      "venue.gallery-cta": "Se alla bilder",
+      "events.upcoming.eyebrow": "KOMMANDE EVENEMANG",
+      "events.upcoming.title": "Kommande tillfällen",
+      "events.upcoming.body": "Här hittar du kommande kurser, öppna ateljékvällar och andra aktiviteter på gården.",
+      "events.empty.eyebrow": "Just nu",
+      "events.empty.title": "Inget nytt datum än.",
+      "events.empty.body": "Det går fortfarande att fråga om en privat workshop eller gruppdag.",
+      "events.empty.contact-cta": "Hör av dig",
+      "events.empty.past-cta": "Se tidigare evenemang",
+      "events.past.eyebrow": "TIDIGARE EVENEMANG",
+      "events.past.title": "Tidigare evenemang",
+      "events.past.body": "Ett urval av kurser, öppna ateljékvällar och samarbeten.",
+      "events.past.empty": "Inga tidigare evenemang i denna kategori.",
+      "instagram.eyebrow": "Instagram",
+      "instagram.title": "Följ oss på Instagram",
+      "instagram.body": "Där lägger vi upp bilder från gården, kurserna och det som händer i ladan och ateljén."
+    },
+    "lists": {},
+    "images": {
+      "services.event": {
+        "id": 76,
+        "url": "/api/media/file/media-f587e1b504b5b69d7fa050e4be0a8c624a3ddd517ceb6c5e555c43837a4034df.webp",
+        "alt": "Hero – bild",
+        "width": 1205,
+        "height": 1600
+      },
+      "services.brollop": {
+        "id": 89,
+        "url": "/api/media/file/media-07df8b97a7e67ff2453177016b5e28b080b177d0b41b11c95fc55ae1ed1bc008.webp",
+        "alt": "Hero – bakgrund",
+        "width": 1205,
+        "height": 1600
+      },
+      "services.gruppdagar": {
+        "id": 88,
+        "url": "/api/media/file/media-aa129af83c6fe75b45e8a40107d4655fea208a528e0dd0e276aa8c28eba1fa89.webp",
+        "alt": "Aktivitet – Collage",
+        "width": 800,
+        "height": 1200
+      },
+      "services.fest": {
+        "id": 90,
+        "url": "/api/media/file/media-b27d7a68670348e4e9fd8fd615849cbd507ac958460d6cbf83732f75bf22b019.webp",
+        "alt": "Mat, dryck och hjälp – bild",
+        "width": 1205,
+        "height": 1600
+      },
+      "services.kurser-konst": {
+        "id": 75,
+        "url": "/api/media/file/media-4dd01682f2c1ab8aae676e9d6ffc096753624daac78f0b1873bbf307d1de99b1.webp",
+        "alt": "Butik – delningsbild",
+        "width": 800,
+        "height": 1200
+      },
+      "services.yoga": {
+        "id": 81,
+        "url": "/api/media/file/media-a42ee7c90d5d92e4f08ed4a8eb763028e0063a9d113d1eb23e8cc6cebf6270a4.webp",
+        "alt": "Hero – bakgrund",
+        "width": 1200,
+        "height": 1600
+      }
+    }
+  },
+  "site": {
+    "copy": {
+      "contact.eyebrow": "KONTAKT",
+      "contact.title": "Kontakta oss",
+      "contact.lead": "Har du frågor, vill boka en kurs eller funderar på ett datum för fest? Berätta vad du planerar, så återkommer vi så snart vi kan.",
+      "contact.response-time": "Vi brukar svara inom 24 timmar.",
+      "contact.thanks": "Tack för att du hör av dig.",
+      "contact.direct-title": "Du kan också nå oss direkt",
+      "contact.methods.email.note": "Vi svarar vanligtvis inom 24 timmar.",
+      "contact.methods.instagram.note": "Följ oss för inspiration och uppdateringar.",
+      "footer.name": "Storegården 7",
+      "footer.tagline": "Fest, kurser och konst på landet",
+      "footer.social-title": "Följ oss gärna på",
+      "footer.collaboration-title": "Samarbeta med oss",
+      "footer.collaboration-body": "Vill du ställa ut konst, ordna ett evenemang eller har du en idé som skulle passa på gården?",
+      "footer.contact-email": "storegardensju@gmail.com",
+      "footer.copyright": "Storegården 7. Alla rättigheter förbehållna.",
+      "nav.home": "Hem",
+      "nav.event": "Event",
+      "nav.wedding": "Bröllop",
+      "nav.group-days": "Gruppdagar",
+      "nav.courses": "Kurser",
+      "nav.yoga": "Yoga",
+      "nav.art": "Måleri & keramik",
+      "nav.gallery": "Galleri",
+      "nav.shop": "Butik",
+      "nav.about": "Om oss",
+      "nav.contact": "Kontakt",
+      "ui.loading": "Laddar...",
+      "ui.error": "Ett fel uppstod",
+      "ui.retry": "Försök igen",
+      "ui.back": "Tillbaka",
+      "ui.close": "Stäng",
+      "ui.menu": "Meny",
+      "ui.menu-subtitle": "Utforska Storegården 7",
+      "ui.open-menu": "Öppna meny",
+      "ui.close-menu": "Stäng meny",
+      "ui.scroll-to-top": "Till toppen av sidan",
+      "ui.scroll-top": "Till toppen",
+      "ui.loading-gallery": "Laddar bildgalleri...",
+      "ui.loading-products": "Laddar produkter...",
+      "ui.loading-product": "Laddar produkt...",
+      "ui.loading-page": "Laddar sida...",
+      "ui.error-boundary-title": "Något gick fel",
+      "ui.error-boundary-message": "Ett oväntat fel har inträffat. Försök att ladda om sidan.",
+      "ui.error-boundary-retry": "Ladda om sidan",
+      "ui.error-boundary-home": "Gå till startsidan",
+      "ui.image-placeholder": "Ingen produktbild",
+      "ui.fullscreen-image": "Visa i fullskärm",
+      "ui.prev-image": "Föregående bild",
+      "ui.next-image": "Nästa bild",
+      "ui.close-lightbox": "Stäng bildvisning",
+      "ui.scroll-down": "Scrolla ner",
+      "ui.notification-bell-label": "Aviseringar",
+      "ui.notification-unread-suffix": "oläst",
+      "ui.notification-panel-title": "Aktuellt",
+      "ui.notification-empty": "Inga nya meddelanden",
+      "ui.notification-read-all": "Markera alla som lästa",
+      "ui.notification-unread": "Oläst",
+      "ui.cart-badge-label": "Varukorg",
+      "ui.cart-items-count": "artiklar i varukorgen",
+      "ui.spot-few-left": "Fåtal platser kvar",
+      "ui.spot-sold-out": "Fullbokat",
+      "contact.form.name-label": "Namn *",
+      "contact.form.name-placeholder": "Ditt namn",
+      "contact.form.email-label": "E-post *",
+      "contact.form.email-placeholder": "din@email.se",
+      "contact.form.date-label": "Önskat datum (valfritt)",
+      "contact.form.subject-label": "Ämne *",
+      "contact.form.subject-placeholder": "Välj ovan eller skriv eget ämne",
+      "contact.form.message-label": "Meddelande *",
+      "contact.form.message-placeholder": "Berätta vad du vill boka och ungefär hur många ni blir.",
+      "contact.form.submit-label": "Skicka meddelande",
+      "contact.form.sending-label": "Skickar meddelande...",
+      "contact.form.success-title": "Tack för ditt meddelande!",
+      "contact.form.success-message": "Vi återkommer till dig så snart som möjligt.",
+      "contact.form.toggle-open": "Öppna kontaktformuläret",
+      "contact.form.toggle-close": "Dölj kontaktformuläret",
+      "contact.chips.group": "Gruppdagar",
+      "contact.chips.wedding": "Bröllop",
+      "contact.chips.party": "Fest & kalas",
+      "contact.chips.corporate": "Företagsevent",
+      "contact.chips.course": "Kurs & workshop",
+      "contact.chips.exhibition": "Utställning & loppis",
+      "contact.fallback.title": "Kunde inte öppna e-postprogrammet",
+      "contact.fallback.lead": "Kopiera texten nedan och skicka ett mejl till oss:",
+      "contact.fallback.copy-btn": "Kopiera text",
+      "contact.fallback.copied": "Kopierat!",
+      "courses.yoga-series-title": "Yogapass på loftet",
+      "courses.yoga-series-time": "Kvällspass & Drop-in",
+      "courses.sessions-suffix": "tillfällen",
+      "courses.yoga-series-description": "Klasser i lugnt tempo med Lina på loftet på Storegården 7. Anpassat för både nybörjare och övade.",
+      "courses.all-passes-prefix": "Alla pass:",
+      "courses.inquiry-prefix": "Fråga om",
+      "courses.courses-label": "Kurser",
+      "courses.groups-label": "Grupper",
+      "courses.upcoming-label": "Kommande",
+      "courses.faq-label": "Frågor",
+      "courses.photos-label": "Bilder",
+      "courses.directions-label": "Hitta hit",
+      "courses.past-label": "Tidigare",
+      "courses.dropin-badge": "DROP-IN",
+      "courses.signup-badge": "FÖRANMÄLAN",
+      "courses.dropin-note": "Ingen föranmälan behövs – betalning på plats",
+      "courses.pay-on-site": "Betalas på plats",
+      "courses.pre-register-cta": "Föranmäl dig",
+      "cart.drawer-title": "Varukorg",
+      "cart.close": "Stäng varukorg",
+      "cart.empty-message": "Din varukorg är tom",
+      "cart.empty-subtext": "Se våra unika produkter i gårdsbutiken.",
+      "cart.continue-shopping": "Fortsätt handla",
+      "cart.checkout": "Gå till kassan",
+      "cart.total": "Totalt:",
+      "cart.subtotal": "Delsumma:",
+      "cart.shipping-note": "Frakt och eventuella tillägg beräknas i kassan.",
+      "cart.remove-item": "Ta bort artikel",
+      "cart.increase-qty": "Öka antal",
+      "cart.decrease-qty": "Minska antal",
+      "cart.quantity-label": "Antal:",
+      "cart.in-cart": "I korgen",
+      "cart.added": "Tillagd!",
+      "cart.add-to-cart": "Köp",
+      "cart.add-to-cart-btn": "Lägg i varukorg",
+      "cart.sold-out": "Slutsåld",
+      "cart.in-stock": "i lager",
+      "cart.unique-item": "Unikt exemplar",
+      "cart.category-all": "Alla",
+      "cart.category-art": "Konst",
+      "cart.category-craft": "Keramik",
+      "cart.category-other": "Övrigt",
+      "cart.product-not-found": "Produkten hittades inte",
+      "cart.product-not-found-desc": "Den produkt du söker finns inte längre.",
+      "cart.back-to-shop": "Tillbaka till butiken",
+      "cart.product-category-label": "Kategori:",
+      "cart.product-id-label": "Produkt-ID:",
+      "cart.view-image": "Visa produktbild",
+      "checkout.page-title": "Kassa",
+      "checkout.order-summary": "Ordersammanfattning",
+      "checkout.customer-info": "Kunduppgifter",
+      "checkout.first-name-label": "Förnamn *",
+      "checkout.last-name-label": "Efternamn *",
+      "checkout.email-label": "E-postadress *",
+      "checkout.phone-label": "Telefonnummer *",
+      "checkout.address-label": "Gatuadress *",
+      "checkout.postal-code-label": "Postnummer *",
+      "checkout.city-label": "Postort *",
+      "checkout.payment-method": "Betalsätt",
+      "checkout.stripe-notice": "Säker betalning med kort eller Swish via Stripe.",
+      "checkout.terms-notice": "Genom att slutföra köpet godkänner du våra köpvillkor.",
+      "checkout.pay-button": "Slutför köp",
+      "checkout.processing": "Bearbetar beställning...",
+      "checkout.coupon-label": "Rabattkod",
+      "checkout.coupon-placeholder": "Ange rabattkod",
+      "checkout.coupon-apply": "Använd",
+      "checkout.coupon-applied": "Rabatt dragen",
+      "checkout.coupon-invalid": "Ogiltig rabattkod",
+      "checkout.empty-cart-warning": "Din varukorg är tom. Lägg till produkter innan du går till kassan.",
+      "success.page-title": "Tack för din beställning!",
+      "success.heading": "Tack för din beställning!",
+      "success.lead": "Vi har tagit emot din order och skickat en orderbekräftelse till din e-postadress.",
+      "success.order-id-label": "Ordernummer:",
+      "success.order-date-label": "Datum:",
+      "success.order-total-label": "Totalsumma:",
+      "success.continue-btn": "Fortsätt upptäcka Storegården 7",
+      "cancel.page-title": "Betalningen avbröts",
+      "cancel.heading": "Betalningen avbröts",
+      "cancel.lead": "Ingen avgift har dragits från ditt konto. Du kan när som helst återgå till butiken eller försöka igen.",
+      "cancel.return-btn": "Tillbaka till butiken",
+      "gallery.cat.all": "Alla bilder",
+      "gallery.cat.all-desc": "Alla bilder från Storegården 7",
+      "gallery.cat.overvaning": "Loftet – Övervåning",
+      "gallery.cat.undervaning": "Ladan – Bottenvåning",
+      "gallery.cat.kok": "Kök & Arbetsytor",
+      "gallery.cat.brollop": "Bröllop & Fest",
+      "gallery.cat.yoga": "Yoga på loftet",
+      "gallery.cat.butik": "Gårdsbutik & Hantverk",
+      "gallery.cat.ute": "Gården & Utemiljö",
+      "gallery.cat.ovrigt": "Övriga bilder",
+      "footer.collaboration-cta": "Hör av dig till oss."
+    },
+    "lists": {},
+    "images": {
+      "brand.logo": {
+        "id": 91,
+        "url": "/api/media/file/media-37e9d8c322f3dd3f9a65222b03772f9de2d0fc6e4ae6a13ef9dcfa3fec420fa7.webp",
+        "alt": "Logotyp i meny och sociala sektioner",
+        "width": 1112,
+        "height": 399
+      }
+    }
+  }
+}
