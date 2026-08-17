@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchPageContent, getPageContentSync } from "../services/cmsService";
+import { extractPreviewData } from "../services/livePreviewBridge.js";
 
 export default function usePageLists(slug) {
   const [lists, setLists] = useState(() => getPageContentSync(slug)?.lists || {});
@@ -11,7 +12,7 @@ export default function usePageLists(slug) {
     });
 
     const handleMessage = (event) => {
-      const data = event.data?.data || event.data;
+      const data = extractPreviewData(event);
       if (!active || data?.slug !== slug || !Array.isArray(data.contentLists)) return;
       setLists(Object.fromEntries(
         data.contentLists

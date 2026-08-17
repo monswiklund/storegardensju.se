@@ -16,7 +16,7 @@ function HomeHeroSection() {
   // The logo is a wide, transparent mark. Generated card/thumbnail variants
   // are 4:3 crops and distort it, so keep the original aspect ratio here.
   const logo = siteMedia("brand.logo", "/images/logoTransp_cropped.png");
-  const { title, subtitle, paragraphs, primaryCta, secondaryCtas } =
+  const { paragraphs, primaryCta, secondaryCtas } =
     heroContent;
   const editableParagraphs = paragraphs.map((paragraph, index) =>
     copy(`hero.paragraphs.${index}`),

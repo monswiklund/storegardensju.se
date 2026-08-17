@@ -28,10 +28,6 @@ const getDirectionMultiplier = (index, columnCount) => {
 function GalleryGrid({
   images,
   onImageSelect,
-  onImageClick,
-  activeCategory,
-  onCategoryChange,
-  showToggle = true,
 }) {
   const siteCopy = useSiteCopy();
   const [visibleCount, setVisibleCount] = useState(IMAGE_BATCH_SIZE);

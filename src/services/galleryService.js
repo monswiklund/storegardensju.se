@@ -6,7 +6,8 @@ let galleryCategoriesRequest = null;
 
 const getCategoryName = (catId) => {
   const siteCopy = getPageCopySync("site");
-  return siteCopy ? siteCopy(`gallery.cat.${catId}`) : catId;
+  const copyId = catId === "alla" ? "all" : catId;
+  return siteCopy ? siteCopy(`gallery.cat.${copyId}`) : catId;
 };
 
 const absoluteMediaUrl = (url, cmsUrl) => {

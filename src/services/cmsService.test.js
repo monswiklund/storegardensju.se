@@ -70,8 +70,27 @@ describe("fetchPageCopy", () => {
     await Promise.all([fetchPageCopy("home"), fetchPageCopy("home")]);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    await expect(fetchPageCopy("home")).resolves.toEqual({});
+    await expect(fetchPageCopy("home")).resolves.toEqual(
+      expect.objectContaining({ "events.upcoming.title": "Kommande tillfällen" }),
+    );
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps compiled values for keys missing from an older CMS document", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          docs: [{ copy: [{ key: "instagram.title", value: "Ny rubrik" }] }],
+        }),
+      }),
+    );
+
+    const copy = await fetchPageCopy("home");
+
+    expect(copy["instagram.title"]).toBe("Ny rubrik");
+    expect(copy["events.upcoming.title"]).toBe("Kommande tillfällen");
   });
 });
 

@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import cmsMockData from "./cmsMockData.json";
-import { normalizePageContent, fetchPageContent } from "../services/cmsService";
+import { fetchPageContent } from "../services/cmsService";
 
 const createStorageMock = () => {
   let store = {};
@@ -67,7 +67,6 @@ if (typeof globalThis.fetch === "undefined" || !globalThis.fetch._isMock) {
 }
 
 // Preload mock pages into cache
-for (const [slug, payload] of Object.entries(cmsMockData)) {
+for (const slug of Object.keys(cmsMockData)) {
   fetchPageContent(slug);
 }
-

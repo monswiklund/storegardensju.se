@@ -23,6 +23,7 @@ import HomeInstagramSection from "../features/home/InstagramFeed/HomeInstagramSe
 import { ToastProvider } from "../contexts/ToastContext";
 import usePageAppearance, { pageSlugForPath } from "../hooks/usePageAppearance.js";
 import "./PageAppearance.css";
+import LivePreviewEditorBridge from "../components/cms/LivePreviewEditorBridge.jsx";
 
 // Pages — HomePage eager (initial route/LCP), rest lazy per route
 import HomePage from "../pages/HomePage.jsx";
@@ -168,6 +169,7 @@ function AppContent() {
       data-cms-hero-overlay={appearance.heroOverlay}
       data-cms-section-spacing={appearance.sectionSpacing}
     >
+      <LivePreviewEditorBridge pathname={location.pathname} />
       {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <SectionSubnav />}
       {!isAdminRoute && <CartDrawer />}

@@ -1,0 +1,23 @@
+html[data-cms-preview="true"] [data-cms-fields] {
+  cursor: crosshair;
+}
+
+/* Preview navigation must not leave editor targets hidden behind reveal-on-scroll. */
+html[data-cms-preview="true"] .fade-in-section {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
+
+html[data-cms-preview="true"] .sg-live-preview-highlight {
+  outline: 3px solid hsl(160, 32%, 50%) !important;
+  outline-offset: 5px !important;
+  box-shadow: 0 0 0 7px color-mix(in srgb, hsl(160, 32%, 50%) 22%, transparent) !important;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-cms-preview="true"] .sg-live-preview-highlight {
+    scroll-behavior: auto;
+  }
+}

@@ -110,7 +110,7 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange, classNam
     const activeCategoryData = sortedCategories[selectedIndex] || { name: "Kategori", images: [] };
 
     return (
-        <div className="category-toggle">
+        <div className={`category-toggle ${className}`.trim()}>
             {/* Desktop Segmented Control */}
             <div className="category-toggle-container desktop-only" ref={containerRef}>
                 {sortedCategories.map((category, index) => (

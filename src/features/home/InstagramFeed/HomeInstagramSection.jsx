@@ -33,6 +33,7 @@ const handleImageError = (event, item) => {
 
 function HomeInstagramSection() {
   const copy = usePageCopy("home");
+  const profileUrl = copy("instagram.profile-url");
   const siteMedia = usePageMedia("site");
   const logo = siteMedia("brand.logo", "/images/logoTransp_cropped.png", "thumbnail");
   const [items, setItems] = useState([]);
@@ -123,14 +124,14 @@ function HomeInstagramSection() {
             <header className="instagram-app-header">
               <a 
                 className="instagram-app-back" 
-                href="https://www.instagram.com/storegarden7/"
+                href={profileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <ChevronLeft size={24} />
               </a>
               <div className="instagram-app-title">
-                <span className="instagram-app-username">storegarden7</span>
+                <span className="instagram-app-username">{copy("instagram.username")}</span>
               </div>
               <div className="instagram-app-header-actions">
                 <button className="instagram-icon-button">
@@ -156,15 +157,15 @@ function HomeInstagramSection() {
                   </div>
                   <div className="instagram-stats-container">
                     <div className="instagram-stat">
-                      <span className="instagram-stat-value">42</span>
+                      <span className="instagram-stat-value">{copy("instagram.posts-count")}</span>
                       <span className="instagram-stat-label">{copy("instagram.posts-label")}</span>
                     </div>
                     <div className="instagram-stat">
-                      <span className="instagram-stat-value">237</span>
+                      <span className="instagram-stat-value">{copy("instagram.followers-count")}</span>
                       <span className="instagram-stat-label">{copy("instagram.followers-label")}</span>
                     </div>
                     <div className="instagram-stat">
-                      <span className="instagram-stat-value">4</span>
+                      <span className="instagram-stat-value">{copy("instagram.following-count")}</span>
                       <span className="instagram-stat-label">{copy("instagram.following-label")}</span>
                     </div>
                   </div>
@@ -178,19 +179,19 @@ function HomeInstagramSection() {
                     {copy("instagram.bio-line3")}
                   </div>
                   <a 
-                    href="https://storegardensju.se" 
+                    href={copy("instagram.website-url")}
                     className="instagram-bio-link"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <LinkIcon size={12} className="instagram-link-icon" />
-                    <span>storegardensju.se</span>
+                    <span>{copy("instagram.website-label")}</span>
                   </a>
                 </div>
  
                 <div className="instagram-profile-actions">
                   <a 
-                    href="https://www.instagram.com/storegarden7/" 
+                    href={profileUrl}
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="instagram-btn instagram-btn-primary"
@@ -198,7 +199,7 @@ function HomeInstagramSection() {
                     {copy("instagram.follow-cta")}
                   </a>
                   <a 
-                    href="https://www.instagram.com/storegarden7/" 
+                    href={profileUrl}
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="instagram-btn instagram-btn-secondary"
@@ -261,7 +262,7 @@ function HomeInstagramSection() {
         <div className="instagram-actions">
           <a
             className="instagram-cta"
-            href="https://www.instagram.com/storegarden7/"
+            href={profileUrl}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -23,7 +23,6 @@ import usePageLists from "../hooks/usePageLists.js";
 import usePageMedia from "../hooks/usePageMedia.js";
 import { cdnAsset } from "../config/cdnAssets.js";
 import {
-  COURSE_LOCATION,
   COURSE_PASSES,
   TRACKS,
   YOGA_TRACK_ID,

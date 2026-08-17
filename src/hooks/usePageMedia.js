@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { fetchPageContent, getPageContentSync } from "../services/cmsService";
 import { resolveMediaUrl } from "../services/mediaService";
 import { cdnAsset } from "../config/cdnAssets";
+import { extractPreviewData } from "../services/livePreviewBridge.js";
 
 export default function usePageMedia(slug) {
   const [content, setContent] = useState(() => {
@@ -19,7 +20,7 @@ export default function usePageMedia(slug) {
     });
 
     const handleMessage = (event) => {
-      const data = event.data?.data || event.data;
+      const data = extractPreviewData(event);
       if (!active || data?.slug !== slug || !Array.isArray(data.imageSlots)) return;
       setContent({
         status: "ready",

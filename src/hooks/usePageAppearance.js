@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchPageContent, normalizePageAppearance } from "../services/cmsService";
+import { extractPreviewData } from "../services/livePreviewBridge.js";
 
 const originalAppearance = normalizePageAppearance();
 
@@ -31,7 +32,7 @@ export default function usePageAppearance(slug) {
     });
 
     const handleMessage = (event) => {
-      const data = event.data?.data || event.data;
+      const data = extractPreviewData(event);
       if (active && data?.slug === slug) setAppearance(normalizePageAppearance(data));
     };
     window.addEventListener("message", handleMessage);

@@ -66,18 +66,21 @@ export function normalizePageCopy(payload) {
 import initialCmsData from "../data/initialCmsData.json";
 
 const pageContentCache = new Map();
+const compiledPageContent = new Map();
 
 function initPageContentCache() {
   if (initialCmsData && typeof initialCmsData === "object") {
     for (const [slug, data] of Object.entries(initialCmsData)) {
-      pageContentCache.set(slug, Object.freeze({
+      const content = Object.freeze({
         found: true,
         copy: Object.freeze(data.copy || {}),
         lists: Object.freeze(data.lists || {}),
         images: Object.freeze(data.images || {}),
         socialImage: null,
         appearance: normalizePageAppearance(),
-      }));
+      });
+      compiledPageContent.set(slug, content);
+      pageContentCache.set(slug, content);
     }
   }
 }
@@ -118,9 +121,16 @@ export function fetchPageContent(slug) {
       .then((json) => {
         const normalized = normalizePageContent(json);
         if (normalized.found) {
-          pageContentCache.set(slug, normalized);
+          const fallback = pageContentCache.get(slug);
+          pageContentCache.set(slug, Object.freeze({
+            ...normalized,
+            copy: Object.freeze({
+              ...(fallback?.copy || {}),
+              ...normalized.copy,
+            }),
+          }));
         }
-        return normalized;
+        return pageContentCache.get(slug) || normalized;
       })
       .catch(() => {
         pageRequests.delete(slug);
@@ -214,6 +224,9 @@ export function fetchTeamMembers() {
 export function clearCmsPageCache() {
   pageRequests.clear();
   pageContentCache.clear();
+  for (const [slug, content] of compiledPageContent) {
+    pageContentCache.set(slug, content);
+  }
   shopProductsRequest = null;
   teamMembersRequest = null;
 }

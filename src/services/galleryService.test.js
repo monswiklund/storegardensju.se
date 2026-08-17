@@ -9,6 +9,22 @@ describe("galleryService", () => {
     vi.restoreAllMocks();
   });
 
+  it("uses the editable all-category label for the internal alla id", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          docs: [{ id: 1, category: "overvaning", externalUrl: "https://example.com/loft.webp" }],
+        }),
+      }),
+    );
+
+    const data = await fetchGalleryCategories();
+
+    expect(data.categories.find((category) => category.id === "alla")?.name).toBe("Alla bilder");
+  });
+
   it("keeps the original dimensions for the grid and a thumbnail for the lightbox", async () => {
     vi.stubGlobal(
       "fetch",

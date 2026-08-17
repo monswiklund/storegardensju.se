@@ -34,7 +34,6 @@ import {
   formatPassDate,
   mergeCoursePasses,
   pastPasses,
-  resolvedFaq,
 } from "../data/courseEvents.js";
 import "./ArtPage.css";
 
@@ -44,8 +43,6 @@ import "./ArtPage.css";
 const KONST_JSONLD = activeJsonLd(seoMeta.kurserKonst);
 
 const PAST_PASSES = pastPasses(MALERI_TRACK_ID);
-const FAQ = resolvedFaq(MALERI_TRACK_ID);
-
 const MALERI_TRACK = TRACKS[MALERI_TRACK_ID];
 const INSTRUCTOR = MALERI_TRACK.instructor;
 const CONTACT_EMAIL = INSTRUCTOR.email;

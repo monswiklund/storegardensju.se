@@ -121,7 +121,7 @@
     "images": {
       "hero": {
         "id": 76,
-        "url": "/api/media/file/media-f587e1b504b5b69d7fa050e4be0a8c624a3ddd517ceb6c5e555c43837a4034df.webp",
+        "url": "https://media.storegardensju.se/media-ce29422fa2a743f701c9d0facf651e2fde99e24830e456ec9e9528d84fc031a6.webp",
         "alt": "Hero – bild",
         "width": 1205,
         "height": 1600
@@ -751,14 +751,14 @@
     "images": {
       "hero.background": {
         "id": 89,
-        "url": "/api/media/file/media-07df8b97a7e67ff2453177016b5e28b080b177d0b41b11c95fc55ae1ed1bc008.webp",
+        "url": "https://media.storegardensju.se/media-dff6a2a272afadabeb1dda43b1d18767bb2becfafb54faf719415169eb882118.webp",
         "alt": "Hero – bakgrund",
         "width": 1205,
         "height": 1600
       },
       "intro": {
         "id": 76,
-        "url": "/api/media/file/media-f587e1b504b5b69d7fa050e4be0a8c624a3ddd517ceb6c5e555c43837a4034df.webp",
+        "url": "https://media.storegardensju.se/media-ce29422fa2a743f701c9d0facf651e2fde99e24830e456ec9e9528d84fc031a6.webp",
         "alt": "Hero – bild",
         "width": 1205,
         "height": 1600
@@ -907,14 +907,14 @@
     "images": {
       "hero.background": {
         "id": 76,
-        "url": "/api/media/file/media-f587e1b504b5b69d7fa050e4be0a8c624a3ddd517ceb6c5e555c43837a4034df.webp",
+        "url": "https://media.storegardensju.se/media-ce29422fa2a743f701c9d0facf651e2fde99e24830e456ec9e9528d84fc031a6.webp",
         "alt": "Hero – bild",
         "width": 1205,
         "height": 1600
       },
       "types.0": {
         "id": 89,
-        "url": "/api/media/file/media-07df8b97a7e67ff2453177016b5e28b080b177d0b41b11c95fc55ae1ed1bc008.webp",
+        "url": "https://media.storegardensju.se/media-dff6a2a272afadabeb1dda43b1d18767bb2becfafb54faf719415169eb882118.webp",
         "alt": "Hero – bakgrund",
         "width": 1205,
         "height": 1600
@@ -928,7 +928,7 @@
       },
       "capacity": {
         "id": 89,
-        "url": "/api/media/file/media-07df8b97a7e67ff2453177016b5e28b080b177d0b41b11c95fc55ae1ed1bc008.webp",
+        "url": "https://media.storegardensju.se/media-dff6a2a272afadabeb1dda43b1d18767bb2becfafb54faf719415169eb882118.webp",
         "alt": "Hero – bakgrund",
         "width": 1205,
         "height": 1600
@@ -990,6 +990,8 @@
       "events.upcoming.eyebrow": "KOMMANDE EVENEMANG",
       "events.upcoming.title": "Kommande tillfällen",
       "events.upcoming.body": "Här hittar du kommande kurser, öppna ateljékvällar och andra aktiviteter på gården.",
+      "events.upcoming.choose-date": "Välj datum:",
+      "events.upcoming.read-more": "Läs mer & anmäl dig",
       "events.empty.eyebrow": "Just nu",
       "events.empty.title": "Inget nytt datum än.",
       "events.empty.body": "Det går fortfarande att fråga om en privat workshop eller gruppdag.",
@@ -999,50 +1001,69 @@
       "events.past.title": "Tidigare evenemang",
       "events.past.body": "Ett urval av kurser, öppna ateljékvällar och samarbeten.",
       "events.past.empty": "Inga tidigare evenemang i denna kategori.",
+      "events.past.show-more": "Visa fler",
+      "events.past.show-less": "Visa färre",
       "instagram.eyebrow": "Instagram",
       "instagram.title": "Följ oss på Instagram",
-      "instagram.body": "Där lägger vi upp bilder från gården, kurserna och det som händer i ladan och ateljén."
+      "instagram.body": "Där lägger vi upp bilder från gården, kurserna och det som händer i ladan och ateljén.",
+      "instagram.username": "storegarden7",
+      "instagram.posts-count": "42",
+      "instagram.posts-label": "inlägg",
+      "instagram.followers-count": "237",
+      "instagram.followers-label": "följare",
+      "instagram.following-count": "4",
+      "instagram.following-label": "följer",
+      "instagram.bio-name": "Storegården 7",
+      "instagram.bio-line1": "Eventlokal, keramikbutik & ateljé",
+      "instagram.bio-line2": "Mer info & hitta hit:",
+      "instagram.bio-line3": "Rackeby Storegården 7, Lidköping 53198",
+      "instagram.website-label": "storegardensju.se",
+      "instagram.website-url": "https://storegardensju.se",
+      "instagram.profile-url": "https://www.instagram.com/storegarden7/",
+      "instagram.follow-cta": "Följ",
+      "instagram.message-cta": "Meddelande",
+      "instagram.cta": "Se allt på Instagram"
     },
     "lists": {},
     "images": {
       "services.event": {
         "id": 76,
-        "url": "/api/media/file/media-f587e1b504b5b69d7fa050e4be0a8c624a3ddd517ceb6c5e555c43837a4034df.webp",
+        "url": "https://media.storegardensju.se/media-ce29422fa2a743f701c9d0facf651e2fde99e24830e456ec9e9528d84fc031a6.webp",
         "alt": "Hero – bild",
         "width": 1205,
         "height": 1600
       },
       "services.brollop": {
         "id": 89,
-        "url": "/api/media/file/media-07df8b97a7e67ff2453177016b5e28b080b177d0b41b11c95fc55ae1ed1bc008.webp",
+        "url": "https://media.storegardensju.se/media-dff6a2a272afadabeb1dda43b1d18767bb2becfafb54faf719415169eb882118.webp",
         "alt": "Hero – bakgrund",
         "width": 1205,
         "height": 1600
       },
       "services.gruppdagar": {
         "id": 88,
-        "url": "/api/media/file/media-aa129af83c6fe75b45e8a40107d4655fea208a528e0dd0e276aa8c28eba1fa89.webp",
+        "url": "https://media.storegardensju.se/media-8c1ed13330582ca52244842eddf11572ba46dce29b50eb167678d714e9976d8c.webp",
         "alt": "Aktivitet – Collage",
         "width": 800,
         "height": 1200
       },
       "services.fest": {
         "id": 90,
-        "url": "/api/media/file/media-b27d7a68670348e4e9fd8fd615849cbd507ac958460d6cbf83732f75bf22b019.webp",
+        "url": "https://media.storegardensju.se/media-d69c59504d96e8b7110a7ec7debbf92006197846dcaca05e1c42d821933891ab.webp",
         "alt": "Mat, dryck och hjälp – bild",
         "width": 1205,
         "height": 1600
       },
       "services.kurser-konst": {
         "id": 75,
-        "url": "/api/media/file/media-4dd01682f2c1ab8aae676e9d6ffc096753624daac78f0b1873bbf307d1de99b1.webp",
+        "url": "https://media.storegardensju.se/media-fe40af419ba45578623c199b08c14e569087511e62dacf98cdf6683da9275f01.webp",
         "alt": "Butik – delningsbild",
         "width": 800,
         "height": 1200
       },
       "services.yoga": {
         "id": 81,
-        "url": "/api/media/file/media-a42ee7c90d5d92e4f08ed4a8eb763028e0063a9d113d1eb23e8cc6cebf6270a4.webp",
+        "url": "https://media.storegardensju.se/media-e7839e9c79596fef7c265a5eb559b5dd462bcf527e1dc8fdc5fcc791ff33feeb.webp",
         "alt": "Hero – bakgrund",
         "width": 1200,
         "height": 1600

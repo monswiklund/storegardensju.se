@@ -28,7 +28,6 @@ import {
   formatPassTime,
   nextPass,
 } from "../data/courseEvents.js";
-import { smoothScrollTo } from "../utils/scrollUtils.js";
 import "./KurserPages.css";
 
 const yogaLoftImg = cdnAsset("/images/evenemang/yoga-loft.webp");
