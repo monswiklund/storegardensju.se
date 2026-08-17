@@ -1,0 +1,6 @@
+import{j as e,L as c}from"./vendor-k7HI4dN3.js";import{c as s,b as n,P as i,an as l}from"./index-DGI_MG60.js";/**
+ * @license lucide-react v0.454.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const r=s("CircleX",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"m15 9-6 6",key:"1uzhvr"}],["path",{d:"m9 9 6 6",key:"z0biqf"}]]);function d(){const a=n();return e.jsx("main",{role:"main",id:"main-content",children:e.jsx(i,{background:"alt",spacing:"default",children:e.jsxs("div",{className:"cancel-container",children:[e.jsx(r,{size:80,className:"cancel-icon"}),e.jsx("h1",{children:a("cancel.title")}),e.jsx("p",{className:"cancel-message",children:a("cancel.lead")}),e.jsx("p",{className:"reassurance",children:a("cancel.reassurance")}),e.jsxs("div",{className:"cancel-actions",children:[e.jsxs(c,{to:"/varukorg",className:"btn-primary",children:[e.jsx(l,{size:20}),a("ui.back")]}),e.jsx(c,{to:"/butik/",className:"btn-secondary",children:a("cart.continue-shopping")})]}),e.jsxs("div",{className:"help-section",children:[e.jsx("p",{children:a("cancel.help-title")}),e.jsxs("p",{children:[a("cancel.help-lead")," ",e.jsx("a",{href:"mailto:storegardensju@gmail.com",children:"storegardensju@gmail.com"})]})]})]})})})}export{d as default};
