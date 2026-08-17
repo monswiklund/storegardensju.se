@@ -62,7 +62,10 @@ function GalleryShowcase({ eyebrow = "GALLERI", title = "Bildgalleri" }) {
 
     return activeCategoryData.images.map((imageData) => ({
       original: imageData.path,
+      galleryPath: imageData.path,
       thumbnail: imageData.thumbnailPath || imageData.path,
+      width: imageData.width,
+      height: imageData.height,
       description: imageData.displayName,
       originalAlt: imageData.displayName,
       thumbnailAlt: imageData.displayName,

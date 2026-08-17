@@ -180,6 +180,9 @@
 .gallery-thumbnail img {
   width: 100%;
   height: auto;
+  max-width: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
   display: block;
   border-radius: 0;
   border: 1px solid rgba(0, 0, 0, 0.04); /* Subtle edge separation for the image */

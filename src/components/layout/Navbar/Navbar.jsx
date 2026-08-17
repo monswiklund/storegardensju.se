@@ -24,7 +24,8 @@ const getCurrentTitle = (pathname) => {
 
 function Navbar() {
   const siteMedia = usePageMedia("site");
-  const logo = siteMedia("brand.logo", "/images/logoTransp_cropped.png", "thumbnail");
+  // Keep the wide logo's original aspect ratio; the generated thumbnail is 4:3.
+  const logo = siteMedia("brand.logo", "/images/logoTransp_cropped.png");
   const location = useLocation();
   const { isOpen, toggle, close, menuRef, triggerRef } = useNavbarToggle();
   const pendingScrollTargetRef = useRef(null);

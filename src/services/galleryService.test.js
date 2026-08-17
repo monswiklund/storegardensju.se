@@ -9,7 +9,7 @@ describe("galleryService", () => {
     vi.restoreAllMocks();
   });
 
-  it("uses the CMS thumbnail for the grid and keeps the original for the lightbox", async () => {
+  it("keeps the original dimensions for the grid and a thumbnail for the lightbox", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
@@ -23,6 +23,8 @@ describe("galleryService", () => {
               alt: "Loftet dukat för fest",
               category: "overvaning",
               url: "/media/loftet.webp",
+              width: 1600,
+              height: 1000,
               sizes: {
                 thumbnail: { url: "/media/loftet-400x300.webp" },
               },
@@ -39,6 +41,8 @@ describe("galleryService", () => {
     expect(image.thumbnailPath).toBe(
       "https://cms.storegardensju.se/media/loftet-400x300.webp"
     );
+    expect(image.width).toBe(1600);
+    expect(image.height).toBe(1000);
   });
 
   it("preserves zero-based CMS order and legacy identities for featured images", async () => {

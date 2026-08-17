@@ -111,8 +111,10 @@ function GalleryGrid({ images, onImageSelect }) {
               }}
             >
               <img
-                src={image.thumbnail}
+                src={image.galleryPath || image.original || image.thumbnail}
                 alt={image.thumbnailAlt}
+                width={image.width || undefined}
+                height={image.height || undefined}
                 loading={index < 6 ? "eager" : "lazy"}
                 decoding="async"
               />
@@ -139,8 +141,11 @@ GalleryGrid.propTypes = {
     PropTypes.shape({
       thumbnail: PropTypes.string,
       thumbnailAlt: PropTypes.string,
+      galleryPath: PropTypes.string,
       filename: PropTypes.string,
       original: PropTypes.string,
+      width: PropTypes.number,
+      height: PropTypes.number,
     })
   ).isRequired,
   onImageSelect: PropTypes.func.isRequired,

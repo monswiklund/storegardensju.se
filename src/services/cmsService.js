@@ -9,13 +9,6 @@ export function getCmsUrl() {
   return "https://cms.storegardensju.se";
 }
 
-function getCmsWriteUrl() {
-  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-    return "http://localhost:3002";
-  }
-  return getCmsUrl();
-}
-
 const pageRequests = new Map();
 let shopProductsRequest = null;
 
@@ -177,26 +170,6 @@ export function fetchTeamMembers() {
   }
 
   return teamMembersRequest;
-}
-
-/** Save an inquiry to CMS log in the background without blocking email */
-export async function logInquiry(data) {
-  try {
-    const cmsUrl = getCmsWriteUrl();
-    await fetch(`${cmsUrl}/api/inquiries`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        ...data,
-        status: "new",
-      }),
-    });
-  } catch {
-    // Non-blocking log, swallow gracefully
-  }
 }
 
 export function clearCmsPageCache() {

@@ -82,6 +82,8 @@ export function fetchGalleryCategories() {
               category: catId,
               path: imagePath,
               thumbnailPath,
+              width: doc.width,
+              height: doc.height,
               order: mediaOrder(doc, "order"),
               allOrder: mediaOrder(doc, "allOrder"),
             });
@@ -108,6 +110,8 @@ export function fetchGalleryCategories() {
                   thumbnailPath:
                     absoluteMediaUrl(doc.sizes?.thumbnail?.url || doc.thumbnailURL, cmsUrl) ||
                     imagePath,
+                  width: doc.width,
+                  height: doc.height,
                   order: mediaOrder(doc, "allOrder"),
                 };
               }),

@@ -3,7 +3,6 @@ import {
   ArrowDown,
   ArrowUpRight,
   Building2,
-  CalendarCheck,
   Heart,
   Maximize2,
   PartyPopper,
@@ -15,7 +14,6 @@ import { PageSection, ScrollSpyNav, SectionDivider } from "../../components";
 import { HomeServicesSection } from "../../features/home";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import { useSeo } from "../../hooks/useSeo.js";
-import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
 import usePageCopy from "../../hooks/usePageCopy.js";
 import usePageMedia from "../../hooks/usePageMedia.js";
 import usePageLists from "../../hooks/usePageLists.js";
@@ -40,21 +38,6 @@ const EVENT_FACTS = [
   {
     value: "Personal",
     label: "Vi kan hjälpa till med servering, bar eller DJ vid behov.",
-  },
-];
-
-const EVENT_STEPS = [
-  {
-    title: "Berätta vad ni planerar",
-    body: "Skicka datum, ungefärligt antal gäster och vad ni vill ordna.",
-  },
-  {
-    title: "Gå igenom det praktiska",
-    body: "Vi går igenom lokalerna, dukningen, maten, drycken och vilken hjälp ni behöver.",
-  },
-  {
-    title: "Kom till gården",
-    body: "När dagen kommer är ladan i ordning för det upplägg vi har kommit överens om.",
   },
 ];
 
@@ -113,7 +96,6 @@ const SPY_SECTIONS = [
   { id: "event-details-section", label: "Välj event" },
   { id: "event-loft-section", label: "Kapacitet" },
   { id: "event-amenities-section", label: "Möjligheter" },
-  { id: "event-planning-section", label: "Planering" },
   { id: "event-services-recommendation", label: "Utforska mer" },
 ];
 
@@ -135,14 +117,8 @@ function EventPage() {
     linkLabel: copy(`types.${index}.cta`, item.linkLabel),
   }));
   const eventFacts = list("facts", EVENT_FACTS.map(({ label, value }) => ({ body: label, value })));
-  const eventSteps = list("planning-steps", EVENT_STEPS);
   const capacityBullets = list("capacity-bullets", CAPACITY_BULLETS.map(({ label, body }) => ({ value: label, body })));
   const amenitiesBullets = list("amenities-bullets", AMENITIES_BULLETS.map(({ label, body }) => ({ value: label, body })));
-  const {
-    timelineRef,
-    activeSteps: activeTimelineSteps,
-    progress: timelineProgress,
-  } = useSequentialScrollTimeline(eventSteps.length);
 
   const handleGalleryClick = () => {
     navigate(canonicalPath("/galleri"));
@@ -380,57 +356,7 @@ function EventPage() {
           </PageSection>
         </div>
 
-        <SectionDivider above="green" below="alt" variant="hill" />
-
-        <div id="event-planning-section">
-          <PageSection background="alt" spacing="default">
-            <FadeInSection>
-              <div className="event-planning">
-                <div className="event-section-intro event-section-intro--compact">
-                  <span className="event-section-eyebrow">{copy("planning.eyebrow", "Så går planeringen till")}</span>
-                  <div className="section-ornament" aria-hidden="true">
-                    <span className="section-ornament-line"></span>
-                    <CalendarCheck size={20} />
-                    <span className="section-ornament-line"></span>
-                  </div>
-                  <h2>{copy("planning.title", "Vi planerar det praktiska tillsammans")}</h2>
-                  <p className="event-section-lead">
-                    {copy("planning.lead", "Ni sätter tonen och vi hjälper er att få lokalerna och det praktiska på plats.")}
-                  </p>
-                </div>
-
-                <ol
-                  className="event-timeline event-timeline--scroll"
-                  ref={timelineRef}
-                  style={{
-                    "--event-timeline-progress": timelineProgress,
-                  }}
-                >
-                  {eventSteps.map((step, index) => (
-                    <li
-                      key={step.title}
-                      className={`event-timeline__item${
-                        index < activeTimelineSteps
-                          ? " event-timeline__item--active"
-                          : ""
-                      }`}
-                    >
-                      <span className="event-timeline__number" aria-hidden="true">
-                        {index + 1}
-                      </span>
-                      <div className="event-timeline__content">
-                        <h3>{step.title}</h3>
-                        <p>{step.body}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </FadeInSection>
-          </PageSection>
-        </div>
-
-        <SectionDivider above="alt" below="white" variant="wave" />
+        <SectionDivider above="green" below="white" variant="hill" />
 
         <div id="event-services-recommendation">
           <PageSection background="white" spacing="none">

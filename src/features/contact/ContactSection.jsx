@@ -4,7 +4,6 @@ import { contactMethods, contactEmail } from "./contact.js";
 import MailtoFallback from "./MailtoFallback.jsx";
 import "./Contact.css";
 import usePageCopy from "../../hooks/usePageCopy.js";
-import { logInquiry } from "../../services/cmsService.js";
 
 const chipIcons = {
   heart: <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />,
@@ -135,21 +134,13 @@ function ContactSection({ defaultOpen = false }) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const name = data.get("name");
+    const email = data.get("email");
     const subject = data.get("subject") || "Allmän fråga";
     const date = data.get("date");
     const message = data.get("message");
 
-    // Save inquiry in CMS background log without blocking email client
-    logInquiry({
-      name: String(name || "Besökare"),
-      email: "kontakt@storegardensju.se",
-      type: "general",
-      preferredDate: date ? String(date) : undefined,
-      message: `${subject}: ${message}`,
-    });
-
     const subjectLine = `${subject} – ${name}`;
-    const bodyText = `${date ? `Önskat datum: ${date}\n\n` : ""}${message}\n\n${name}`;
+    const bodyText = `${date ? `Önskat datum: ${date}\n\n` : ""}${message}\n\n${name}\nE-post: ${email}`;
     window.location.href = `mailto:${contactEmail}?subject=${encodeURIComponent(subjectLine)}&body=${encodeURIComponent(bodyText)}`;
     setFallbackText(`Till: ${contactEmail}\nÄmne: ${subjectLine}\n\n${bodyText}`);
   };
@@ -222,9 +213,21 @@ function ContactSection({ defaultOpen = false }) {
                   />
                 </div>
                 <div className="contact-field">
-                  <label htmlFor="contact-date">Önskat datum (valfritt)</label>
-                  <input id="contact-date" name="date" type="date" />
+                  <label htmlFor="contact-email">E-post *</label>
+                  <input
+                    id="contact-email"
+                    name="email"
+                    type="email"
+                    placeholder="din@email.se"
+                    autoComplete="email"
+                    required
+                  />
                 </div>
+              </div>
+
+              <div className="contact-field">
+                <label htmlFor="contact-date">Önskat datum (valfritt)</label>
+                <input id="contact-date" name="date" type="date" />
               </div>
 
               <div className="contact-field">

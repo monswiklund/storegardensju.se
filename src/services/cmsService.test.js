@@ -3,7 +3,6 @@ import {
   clearCmsPageCache,
   fetchPageCopy,
   fetchTeamMembers,
-  logInquiry,
   normalizePageAppearance,
   normalizePageContent,
   normalizePageCopy,
@@ -69,24 +68,6 @@ describe("fetchPageCopy", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
     await expect(fetchPageCopy("home")).resolves.toEqual({});
     expect(fetchMock).toHaveBeenCalledTimes(2);
-  });
-});
-
-describe("logInquiry", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it("never writes from localhost to the production CMS", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
-    vi.stubGlobal("fetch", fetchMock);
-
-    await logInquiry({ name: "Test" });
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      "http://localhost:3002/api/inquiries",
-      expect.objectContaining({ method: "POST" }),
-    );
   });
 });
 
