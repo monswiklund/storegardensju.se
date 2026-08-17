@@ -24,6 +24,18 @@ function visibleElement(elements) {
   });
 }
 
+function highlightField(field, scroll = false) {
+  document.querySelectorAll(".sg-live-preview-highlight").forEach((element) =>
+    element.classList.remove("sg-live-preview-highlight"),
+  );
+  const targets = Array.from(document.querySelectorAll("[data-cms-fields]"))
+    .filter((element) => element.dataset.cmsFields?.split(" ").includes(field));
+  const target = visibleElement(targets);
+  if (!target) return;
+  target.classList.add("sg-live-preview-highlight");
+  if (scroll) target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+}
+
 export function collectPreviewFields(slug, data) {
   const fields = [];
   const copy = Array.isArray(data?.copy)
@@ -55,11 +67,23 @@ function decorateTextFields(slug, data) {
     element.removeAttribute("data-cms-fields");
   });
 
+  const fields = collectPreviewFields(slug, data);
   const byValue = new Map();
-  for (const field of collectPreviewFields(slug, data)) {
+  for (const field of fields) {
     const ids = byValue.get(field.value) || [];
     ids.push(field.id);
     byValue.set(field.value, ids);
+  }
+
+  for (const field of fields) {
+    if (!/^(?:https?:|mailto:|tel:|\/|#)/i.test(field.value)) continue;
+    const expected = new URL(field.value, window.location.href).href;
+    document.querySelectorAll("a[href]").forEach((link) => {
+      if (link.href !== expected) return;
+      const previous = link.dataset.cmsFields?.split(" ").filter(Boolean) || [];
+      link.dataset.cmsFields = [...new Set([...previous, field.id])].join(" ");
+      link.dataset.cmsFieldGenerated = "true";
+    });
   }
 
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -123,16 +147,7 @@ export default function LivePreviewEditorBridge({ pathname }) {
         const field = String(event.data.field || "");
         if (!field || field === activeFieldRef.current) return;
         activeFieldRef.current = field;
-        document.querySelectorAll(".sg-live-preview-highlight").forEach((element) =>
-          element.classList.remove("sg-live-preview-highlight"),
-        );
-        const targets = Array.from(document.querySelectorAll("[data-cms-fields]"))
-          .filter((element) => element.dataset.cmsFields?.split(" ").includes(field));
-        const target = visibleElement(targets);
-        if (target) {
-          target.classList.add("sg-live-preview-highlight");
-          target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-        }
+        highlightField(field, true);
         return;
       }
       const next = extractPreviewData(event);
@@ -162,7 +177,10 @@ export default function LivePreviewEditorBridge({ pathname }) {
     let frame = 0;
     const decorate = () => {
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => decorateTextFields(slug, data));
+      frame = requestAnimationFrame(() => {
+        decorateTextFields(slug, data);
+        if (activeFieldRef.current) highlightField(activeFieldRef.current);
+      });
     };
     decorate();
     const observer = new MutationObserver(decorate);
