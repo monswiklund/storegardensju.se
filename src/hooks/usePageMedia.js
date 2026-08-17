@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchPageContent } from "../services/cmsService";
+import { fetchPageContent, getPageContentSync } from "../services/cmsService";
 import { resolveMediaUrl } from "../services/mediaService";
 import { cdnAsset } from "../config/cdnAssets";
 
 export default function usePageMedia(slug) {
-  const [content, setContent] = useState({ status: "loading", images: {} });
+  const [content, setContent] = useState(() => {
+    const sync = getPageContentSync(slug);
+    return {
+      status: sync?.found ? "ready" : "loading",
+      images: sync?.images || {},
+    };
+  });
 
   useEffect(() => {
     let active = true;
@@ -28,7 +34,8 @@ export default function usePageMedia(slug) {
   }, [slug]);
 
   return useCallback((key, fallback, size) => {
-    if (content.status !== "ready") return cdnAsset(fallback);
-    return resolveMediaUrl(content.images[key], size);
+    if (content.status !== "ready") return fallback ? cdnAsset(fallback) : null;
+    const resolved = resolveMediaUrl(content.images[key], size);
+    return resolved || (fallback ? cdnAsset(fallback) : null);
   }, [content]);
 }

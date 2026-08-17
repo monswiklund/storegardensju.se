@@ -1,3 +1,5 @@
+import { getPageCopySync } from "../../../hooks/usePageCopy.js";
+
 export const PAST_EVENT_CATEGORIES = [
   { id: "all", label: "Alla" },
   { id: "events", label: "Evenemang & Marknad" },
@@ -141,22 +143,22 @@ export function groupPastEvents(events) {
         }
       }
 
+      const siteCopy = getPageCopySync("site");
       groupedResults.push({
         id: `yoga-series-${yearMonth}`,
-        title: "Yogapass på loftet",
+        title: siteCopy ? siteCopy("courses.yoga-series-title") : "",
         date: dayRange && monthYearParts ? `${dayRange} ${monthYearParts}` : firstSession.date,
-        time: "Kvällspass & Drop-in",
-        badge: `${sessions.length} tillfällen`,
-        location: firstSession.location || "Storegården 7, Rackeby (Lidköping)",
-        description:
-          "Klasser i lugnt tempo med Lina på loftet på Storegården 7. Anpassat för både nybörjare och övade.",
+        time: siteCopy ? siteCopy("courses.yoga-series-time") : "",
+        badge: `${sessions.length} ${siteCopy ? siteCopy("courses.sessions-suffix") : ""}`,
+        location: firstSession.location || "",
+        description: siteCopy ? siteCopy("courses.yoga-series-description") : "",
         category: "yoga",
         startAt: firstSession.startAt,
         endAt: firstSession.endAt,
         links: [
           {
             href: "/kurser/yoga",
-            label: "Läs mer",
+            label: siteCopy ? siteCopy("ui.read-more") : "",
           },
         ],
         image: primaryImage,

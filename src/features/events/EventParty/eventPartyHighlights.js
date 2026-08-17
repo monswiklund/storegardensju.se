@@ -1,11 +1,5 @@
 // src/data/eventPartyHighlights.js
 
-const eventTypesData = [
-    "Bröllop",
-    "Företagsevent",
-    "Födelsedagsfester",
-    "Vernissage",
-    "Workshops"
-];
+const eventTypesData = [];
 
 export default eventTypesData;

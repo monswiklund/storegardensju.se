@@ -10,26 +10,18 @@ import {
   X,
 } from "lucide-react";
 import { canonicalPath } from "../../../../config/routes.js";
+import { useSiteCopy } from "../../../../hooks/usePageCopy.js";
 import "../../PastEvents/PastEvents.css";
 
 export const PAST_EVENT_VARIANT_MODAL = "modal";
 export const PAST_EVENT_VARIANT_PREVIEW = "preview";
 
 const MAPS_HOST = "maps.google.com";
-const DEFAULT_LINK_LABEL = "Läs mer";
 
 const getEventImages = (event) => {
   if (!event) return [];
   if (event.images?.length > 0) return event.images.filter((image) => image?.src);
   if (event.image?.src) return [event.image];
-  return [];
-};
-
-const getEventLinks = (event) => {
-  if (event?.links?.length > 0) return event.links.filter((link) => link?.href);
-  if (event?.link) {
-    return [{ href: event.link, label: event.linkLabel || DEFAULT_LINK_LABEL }];
-  }
   return [];
 };
 
@@ -43,6 +35,7 @@ function PastEventDetail({
   onClose,
   titleId = "modal-title",
 }) {
+  const siteCopy = useSiteCopy();
   const [imageIndex, setImageIndex] = useState(0);
 
   const images = getEventImages(event);
@@ -52,7 +45,12 @@ function PastEventDetail({
   // leave the carousel pointing past the end.
   const safeIndex = hasImages ? Math.min(imageIndex, images.length - 1) : 0;
   const currentImage = hasImages ? images[safeIndex] : null;
-  const links = getEventLinks(event);
+  const defaultLinkLabel = siteCopy("ui.read-more");
+  const links = event?.links?.length > 0
+    ? event.links.filter((link) => link?.href)
+    : event?.link
+      ? [{ href: event.link, label: event.linkLabel || defaultLinkLabel }]
+      : [];
 
   useEffect(() => {
     setImageIndex(0);
@@ -89,7 +87,7 @@ function PastEventDetail({
           type="button"
           className="past-event-modal-close"
           onClick={onClose}
-          aria-label="Stäng"
+          aria-label={siteCopy("ui.close")}
         >
           <X size={24} />
         </button>
@@ -108,7 +106,7 @@ function PastEventDetail({
                 type="button"
                 className="carousel-nav prev"
                 onClick={step(-1)}
-                aria-label="Föregående bild"
+                aria-label={siteCopy("ui.previous-image")}
               >
                 <ChevronLeft size={24} />
               </button>
@@ -116,11 +114,11 @@ function PastEventDetail({
                 type="button"
                 className="carousel-nav next"
                 onClick={step(1)}
-                aria-label="Nästa bild"
+                aria-label={siteCopy("ui.next-image")}
               >
                 <ChevronRight size={24} />
               </button>
-              <div className="carousel-dots" aria-label="Bildval">
+              <div className="carousel-dots">
                 {images.map((image, index) => (
                   <button
                     type="button"
@@ -130,7 +128,6 @@ function PastEventDetail({
                       clickEvent.stopPropagation();
                       setImageIndex(index);
                     }}
-                    aria-label={`Visa bild ${index + 1}`}
                     aria-current={index === safeIndex}
                   />
                 ))}
@@ -143,19 +140,19 @@ function PastEventDetail({
       <div className="past-event-modal-body">
         <div className="past-event-modal-meta-grid">
           <div className="past-event-modal-date-card">
-            <span>Datum</span>
+            <span>{siteCopy("ui.date-label")}</span>
             <strong>{event.date}</strong>
           </div>
           <div className="past-event-modal-facts">
             {event.time && (
               <span className="past-event-modal-fact">
-                <strong>Tid</strong>
+                <strong>{siteCopy("ui.time-label")}</strong>
                 {event.time}
               </span>
             )}
             {event.location && (
               <span className="past-event-modal-fact">
-                <strong>Plats</strong>
+                <strong>{siteCopy("ui.location-label")}</strong>
                 {event.location}
               </span>
             )}
@@ -172,7 +169,7 @@ function PastEventDetail({
 
         {event.moments?.length > 0 ? (
           <div className="past-event-modal-moments">
-            <span>Dagen</span>
+            <span>{siteCopy("ui.day-label")}</span>
             <ol>
               {event.moments.map((moment) => (
                 <li
@@ -211,7 +208,7 @@ function PastEventDetail({
 
         {event.artists && (
           <p className="past-event-modal-artists">
-            <strong>Konstnärer:</strong> {event.artists}
+            <strong>{siteCopy("ui.artists-label") || "Konstnärer"}:</strong> {event.artists}
           </p>
         )}
 
@@ -229,7 +226,7 @@ function PastEventDetail({
                     className="past-event-modal-button"
                   >
                     <ArrowUpRight size={16} aria-hidden="true" />
-                    {link.label || DEFAULT_LINK_LABEL}
+                    {link.label || defaultLinkLabel}
                   </Link>
                 );
               }
@@ -247,7 +244,7 @@ function PastEventDetail({
                   ) : (
                     <ExternalLink size={16} aria-hidden="true" />
                   )}
-                  {link.label || DEFAULT_LINK_LABEL}
+                  {link.label || defaultLinkLabel}
                 </a>
               );
             })}

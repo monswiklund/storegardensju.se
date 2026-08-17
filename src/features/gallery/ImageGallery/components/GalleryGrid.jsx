@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Masonry from "react-masonry-css";
+import { useSiteCopy } from "../../../../hooks/usePageCopy.js";
 
 const IMAGE_BATCH_SIZE = 12;
 
@@ -24,8 +25,56 @@ const getDirectionMultiplier = (index, columnCount) => {
   return (row + column) % 2 === 0 ? 1 : -1;
 };
 
-function GalleryGrid({ images, onImageSelect }) {
+function GalleryGrid({
+  images,
+  onImageSelect,
+  onImageClick,
+  activeCategory,
+  onCategoryChange,
+  showToggle = true,
+}) {
+  const siteCopy = useSiteCopy();
   const [visibleCount, setVisibleCount] = useState(IMAGE_BATCH_SIZE);
+  const sentinelRef = useRef(null);
+
+  // Reset batch size if images change (e.g. category switch)
+  useEffect(() => {
+    setVisibleCount(IMAGE_BATCH_SIZE);
+  }, [images]);
+
+  useEffect(() => {
+    if (visibleCount >= images.length) return;
+
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      setVisibleCount(images.length);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry && entry.isIntersecting) {
+          setVisibleCount((prev) =>
+            Math.min(prev + IMAGE_BATCH_SIZE, images.length)
+          );
+        }
+      },
+      {
+        rootMargin: "350px 0px",
+        threshold: 0.01,
+      }
+    );
+
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [visibleCount, images.length]);
+
   const visibleImages = images.slice(0, visibleCount);
   const remainingCount = images.length - visibleImages.length;
 
@@ -91,7 +140,7 @@ function GalleryGrid({ images, onImageSelect }) {
               onClick={() => onImageSelect(index)}
               role="button"
               tabIndex={0}
-              aria-label={`Öppna bild ${index + 1} av ${images.length} i lightbox`}
+              aria-label={image.alt || `${index + 1}`}
               style={{
                 "--item-rotation-3-columns": `${threeColumnRotation}deg`,
                 "--item-rotation-2-columns": `${twoColumnRotation}deg`,
@@ -124,13 +173,21 @@ function GalleryGrid({ images, onImageSelect }) {
       </Masonry>
 
       {remainingCount > 0 && (
-        <button
-          type="button"
-          className="show-more-button"
-          onClick={() => setVisibleCount((count) => count + IMAGE_BATCH_SIZE)}
+        <div
+          ref={sentinelRef}
+          className="gallery-scroll-sentinel"
+          data-testid="gallery-scroll-sentinel"
+          aria-hidden="true"
         >
-          Visa fler bilder ({Math.min(IMAGE_BATCH_SIZE, remainingCount)})
-        </button>
+          <div
+            className="gallery-scroll-loader"
+            aria-label={siteCopy("gallery.loading-more")}
+          >
+            <span className="gallery-scroll-dot" />
+            <span className="gallery-scroll-dot" />
+            <span className="gallery-scroll-dot" />
+          </div>
+        </div>
       )}
     </>
   );

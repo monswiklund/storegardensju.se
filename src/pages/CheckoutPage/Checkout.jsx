@@ -1,14 +1,16 @@
 import { useState, useContext } from 'react';
 import { CartContext } from '../../components/layout/CartContext/CartContext.jsx';
+import { useSiteCopy } from '../../hooks/usePageCopy';
 
 const CheckoutButton = () => {
     const { cart } = useContext(CartContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const siteCopy = useSiteCopy();
 
     const handleCheckout = async () => {
         if (!cart || cart.length === 0) {
-            setError('Varukorgen är tom.');
+            setError(siteCopy('checkout.empty-cart-warning'));
             return;
         }
 
@@ -42,7 +44,7 @@ const CheckoutButton = () => {
             window.location.href = url;
         } catch (err) {
             console.error('Checkout error:', err);
-            setError('Något gick fel. Försök igen.');
+            setError(siteCopy('ui.error'));
             setLoading(false);
         }
     };
@@ -62,7 +64,7 @@ const CheckoutButton = () => {
                     cursor: loading ? 'not-allowed' : 'pointer',
                 }}
             >
-                {loading ? 'Laddar...' : 'Gå till kassan'}
+                {loading ? siteCopy('ui.loading') : siteCopy('cart.checkout')}
             </button>
             {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>

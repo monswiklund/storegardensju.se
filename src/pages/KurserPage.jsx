@@ -18,7 +18,7 @@ import {
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import { fetchPublicEvents } from "../services/eventsService.js";
-import usePageCopy from "../hooks/usePageCopy.js";
+import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import usePageLists from "../hooks/usePageLists.js";
 import usePageMedia from "../hooks/usePageMedia.js";
 import { cdnAsset } from "../config/cdnAssets.js";
@@ -59,30 +59,11 @@ const SPY_OFFSET = 130;
 // Yoga imagery only - the painting shots belong on /kurser/konst, which is its
 // own hub for maleri and keramik.
 const RECAP_IMAGES = [
-  {
-    original: linaYogaImg,
-    thumbnail: linaYogaImg,
-    description: "Yoga på loftet event med Lina Wiklund på Storegården 7 i Lidköping",
-    originalAlt: "Yoga på loftet event med Lina Wiklund på Storegården 7 i Lidköping",
-  },
-  {
-    original: linaYogaYta2Img,
-    thumbnail: linaYogaYta2Img,
-    description: "Yogapass på loftet på Storegården 7",
-    originalAlt: "Yogapass på loftet på Storegården 7",
-  },
-  {
-    original: yogaLoftImg,
-    thumbnail: yogaLoftImg,
-    description: "Yoga på loftet på Storegården 7",
-    originalAlt: "Yoga på loftet på Storegården 7",
-  },
+  { original: linaYogaImg, thumbnail: linaYogaImg },
+  { original: linaYogaYta2Img, thumbnail: linaYogaYta2Img },
+  { original: yogaLoftImg, thumbnail: yogaLoftImg },
 ];
 
-// Colour spine: photo hero -> alt -> white -> green -> white -> alt -> green ->
-// white, with a SectionDivider on every colour change. /kurser/konst runs the
-// colours and the layout variants in the opposite order on purpose, so the two
-// hubs do not read as one template with the nouns swapped.
 function KurserPage() {
   const copy = usePageCopy("yoga");
   const list = usePageLists("yoga");
@@ -95,9 +76,9 @@ function KurserPage() {
     .map(({ title, body }) => ({ question: title, answer: body }));
   const instructor = {
     ...INSTRUCTOR,
-    name: copy("instructor.title", INSTRUCTOR.name),
-    role: copy("instructor.role", INSTRUCTOR.role),
-    bio: copy("instructor.bio", INSTRUCTOR.bio),
+    name: copy("instructor.title"),
+    role: copy("instructor.role"),
+    bio: copy("instructor.bio"),
   };
   const recapImages = RECAP_IMAGES.map((item, index) => {
     const next = media(`gallery.${index}`, item.original, "card");
@@ -136,21 +117,22 @@ function KurserPage() {
     upcomingPassesList[0] ||
     null;
 
+  const siteCopy = useSiteCopy();
   const contactSubject = nextPassItem
-    ? `Fråga om ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
-    : "Fråga om yoga på Storegården 7";
+    ? `${siteCopy("courses.inquiry-prefix") || "Fråga om"} ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
+    : copy("hero.contact-cta");
 
   const spySections = [
-    { id: "kurser-hero", label: "Start" },
+    { id: "kurser-hero", label: siteCopy("nav.start") },
     ...(nextPassItem
-      ? [{ id: passAnchor(nextPassItem), label: "Nästa pass" }]
-      : [{ id: "kommande", label: "Kommande" }]),
-    { id: "om-lina", label: `Om ${instructor.name.split(" ")[0]}` },
-    { id: "fragor-och-svar", label: "Frågor" },
-    { id: "gardens-atmosfar", label: "Bilder" },
-    { id: "hitta-hit", label: "Hitta hit" },
-    { id: "tidigare-pass", label: "Tidigare" },
-    { id: "kontakt", label: "Kontakt" },
+      ? [{ id: passAnchor(nextPassItem), label: copy("hero.next-pass-badge") }]
+      : [{ id: "kommande", label: siteCopy("courses.upcoming-label") }]),
+    { id: "om-lina", label: instructor.name.split(" ")[0] },
+    { id: "fragor-och-svar", label: siteCopy("courses.faq-label") },
+    { id: "gardens-atmosfar", label: siteCopy("courses.photos-label") },
+    { id: "hitta-hit", label: siteCopy("courses.directions-label") },
+    { id: "tidigare-pass", label: siteCopy("courses.past-label") },
+    { id: "kontakt", label: siteCopy("nav.contact") },
   ];
 
   useSeo({
@@ -188,10 +170,10 @@ function KurserPage() {
             {nextPassItem && (
               <div className="kurser-hero__badge">
                 <span className="kurser-hero__badge-pulse" />
-                <span>Nästa tillfälle: {formatPassDate(nextPassItem)}</span>
+                <span>{copy("hero.next-pass-badge") || "Nästa tillfälle:"} {formatPassDate(nextPassItem)}</span>
               </div>
             )}
-            <h1>{copy("hero.title", "Yoga")}</h1>
+            <h1>{copy("hero.title")}</h1>
             <a
               className="kurser-hero__link"
               href={nextPassItem ? `#${passAnchor(nextPassItem)}` : "#kontakt"}
@@ -204,21 +186,19 @@ function KurserPage() {
               }}
             >
               {nextPassItem
-                ? copy("hero.next-cta", "Se nästa pass")
-                : copy("hero.contact-cta", "Hör av dig")}
+                ? copy("hero.next-cta")
+                : copy("hero.contact-cta")}
               <ArrowDown size={16} aria-hidden="true" />
             </a>
           </div>
         </header>
 
-        {/* No divider straight after the hero: the photo already closes the
-            section, and a curve would only lay a pale strip across it. */}
         {upcomingPassesList.length === 0 ? (
           <NoUpcomingSection
             trackId={YOGA_TRACK_ID}
             background="alt"
-            heading={copy("empty.title", "Inget pass inbokat just nu")}
-            body={copy("empty.body", `Vi har för tillfället inget yogapass i kalendern. Håll utkik här, eller hör av dig till ${instructor.name} så berättar hon när nästa tillfälle släpps.`)}
+            heading={copy("empty.title")}
+            body={copy("empty.body")}
           />
         ) : (
           <YogaScheduleSection
@@ -233,11 +213,10 @@ function KurserPage() {
 
         <SectionDivider above="alt" below="white" variant="valley" />
 
-        {/* No portrait here by request - the section runs as text only. */}
         <InstructorSection
           id="om-lina"
           instructor={instructor}
-          label={copy("instructor.eyebrow", copy("instructor.label", "Vem leder passen"))}
+          label={copy("instructor.eyebrow")}
           background="white"
           variant="split"
         />
@@ -246,18 +225,21 @@ function KurserPage() {
 
         <FaqSection
           faq={faq}
-          label={copy("faq.eyebrow", "Bra att veta")}
-          heading={copy("faq.title", "Vanliga frågor")}
+          label={copy("faq.eyebrow")}
+          heading={copy("faq.title")}
           background="green"
-          variant="columns"
         />
 
-        <SectionDivider above="green" below="white" variant="hill" />
+        <SectionDivider above="green" below="alt" variant="hill" />
 
-        <CourseBand id="gardens-atmosfar" background="white" className="kurser-recap">
-          <div className="kurser-recap__copy">
-            <span className="kurser-label">{copy("gallery.eyebrow", "Bilder från loftet")}</span>
-            <h2>{copy("gallery.title", "Loftet på Storegården 7")}</h2>
+        <CourseBand
+          id="gardens-atmosfar"
+          background="alt"
+          className="kurser-recap"
+        >
+          <div className="kurser-recap__header">
+            <span className="kurser-label">{copy("gallery.eyebrow")}</span>
+            <h2>{copy("gallery.title")}</h2>
           </div>
 
           <div className="kurser-recap__gallery">
@@ -269,7 +251,6 @@ function KurserPage() {
                 style={{ cursor: "pointer" }}
                 tabIndex={0}
                 role="button"
-                aria-label={`Visa ${imgItem.description} i fullskärm`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -277,7 +258,7 @@ function KurserPage() {
                   }
                 }}
               >
-                <img src={imgItem.thumbnail} alt={imgItem.originalAlt} />
+                <img src={imgItem.thumbnail} alt="" />
               </figure>
             ))}
           </div>
@@ -286,7 +267,7 @@ function KurserPage() {
         <DirectionsSection
           background="white"
           variant="split-reverse"
-          description={copy("directions.body", `Yogan hålls på loftet på ${COURSE_LOCATION.name} i ${COURSE_LOCATION.locality}, ${COURSE_LOCATION.travelNote}. Kör mot Rackeby och följ skyltningen till gården — det finns gott om parkering på grusplanen intill ladan.`)}
+          description={copy("directions.body")}
         />
 
         <SectionDivider above="white" below="alt" variant="wave" />
@@ -294,19 +275,16 @@ function KurserPage() {
         <PastPassesSection
           passes={PAST_PASSES}
           trackId={YOGA_TRACK_ID}
-          heading={copy("past.title", "Tidigare pass")}
+          heading={copy("past.title")}
           background="alt"
           variant="timeline"
         />
 
         <SectionDivider above="alt" below="green" variant="hill" />
 
-        {/* Kept off the very bottom on purpose: the global contact section that
-            App.jsx renders below is a centred block, so a second centred contact
-            block right above it read as the same section twice. */}
         <ContactSection
-          heading={copy("contact.title", "Frågor om yogan?")}
-          body={copy("contact.body", `Hör av dig till ${instructor.name} — hon svarar gärna på frågor om passen, nivån eller vad du behöver ta med.`)}
+          heading={copy("contact.title")}
+          body={copy("contact.body")}
           email={instructor.email}
           subject={contactSubject}
           background="green"
@@ -321,11 +299,11 @@ function KurserPage() {
           background="white"
           variant="band"
           image={media("other.art", maleriKursImg, "card")}
-          imageAlt="Målarkurs i ateljén på Storegården 7"
-          eyebrow={copy("other.eyebrow", "Mer hos oss")}
-          heading={copy("other.title", "Måla eller dreja i ateljén")}
-          body={copy("other.body", `I gårdsateljén håller ${TRACKS.maleri.instructor.name} kurser i måleri och keramik, både på fasta datum och som privat kurs för grupper.`)}
-          linkLabel={copy("other.cta", "Se kurser i måleri och keramik")}
+          imageAlt=""
+          eyebrow={copy("other.eyebrow")}
+          heading={copy("other.title")}
+          body={copy("other.body")}
+          linkLabel={copy("other.cta")}
         />
 
         {/* White -> alt for the global contact section below. */}

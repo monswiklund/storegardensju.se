@@ -58,7 +58,7 @@ function HomeFeaturedGallery({ onViewAll }) {
         if (!img) return null;
         return {
           src: img.path,
-          alt: img.displayName || img.title || img.alt || "Bild",
+          alt: img.displayName || img.title || img.alt || "",
         };
       })
       .filter(Boolean);
@@ -79,7 +79,7 @@ function HomeFeaturedGallery({ onViewAll }) {
             onClick={onViewAll}
             role="button"
             tabIndex={0}
-            aria-label={`Visa alla bilder - ${image.alt}`}
+            aria-label={copy("venue.gallery-cta") || undefined}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
@@ -90,15 +90,15 @@ function HomeFeaturedGallery({ onViewAll }) {
             <img src={image.src} alt={image.alt} loading="eager" />
             <div className="featured-text-overlay">
               <h3 className="featured-title">
-                {copy("venue.title", venueIntro.title)}
+                {copy("venue.title")}
               </h3>
               <p className="featured-subtitle">
-                {copy("venue.description", venueIntro.description)}
+                {copy("venue.description")}
               </p>
             </div>
             <div className="featured-overlay">
               <span className="view-more-text">
-                {copy("venue.gallery-cta", "Se alla bilder")}
+                {copy("venue.gallery-cta")}
               </span>
             </div>
           </div>

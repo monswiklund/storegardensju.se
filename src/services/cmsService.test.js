@@ -54,6 +54,10 @@ describe("normalizePageAppearance", () => {
 });
 
 describe("fetchPageCopy", () => {
+  beforeEach(() => {
+    clearCmsPageCache();
+  });
+
   afterEach(() => {
     clearCmsPageCache();
     vi.unstubAllGlobals();

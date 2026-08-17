@@ -29,11 +29,14 @@ const SmartLink = ({ href, className, children, ...props }) => {
   );
 };
 
+import { useSiteCopy } from "../../../../hooks/usePageCopy.js";
+
 function EventCard({ event }) {
+  const siteCopy = useSiteCopy();
   const { title, spots, date, time, location, links, link, linkLabel, image } = event;
   const eventDate = splitDateString(date);
   
-  const eventLinks = links || (link ? [{ href: link, label: linkLabel ?? "Läs mer" }] : []);
+  const eventLinks = links || (link ? [{ href: link, label: linkLabel ?? siteCopy("ui.read-more") }] : []);
   const primaryLink = eventLinks[0] || null;
 
   return (
@@ -70,7 +73,7 @@ function EventCard({ event }) {
             {event.seriesText && (
               <div className="upcoming-meta-item upcoming-meta-series">
                 <Calendar size={16} />
-                <span>Alla pass: {event.seriesText}</span>
+                <span>{siteCopy("courses.all-passes-prefix") || "Alla pass:"} {event.seriesText}</span>
               </div>
             )}
           </div>

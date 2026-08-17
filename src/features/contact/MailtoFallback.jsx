@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useSiteCopy } from "../../hooks/usePageCopy";
 import "./Contact.css";
 
 // Shown after a mailto link/submit: rescue path for users without a mail client.
 function MailtoFallback({ email, copyText }) {
   const [copied, setCopied] = useState(false);
+  const siteCopy = useSiteCopy();
 
   const handleCopy = async () => {
     try {
@@ -17,17 +19,17 @@ function MailtoFallback({ email, copyText }) {
   return (
     <div className="contact-fallback" role="status">
       <p>
-        <strong>Öppnades inget mailprogram?</strong>
+        <strong>{siteCopy("contact.fallback.title")}</strong>
         <br />
-        Kopiera ditt meddelande och skicka det till{" "}
-        <a href={`mailto:${email}`}>{email}</a> från din webbmail.
+        {siteCopy("contact.fallback.lead")}{" "}
+        <a href={`mailto:${email}`}>{email}</a>
       </p>
       <button
         type="button"
         className="contact-fallback-copy"
         onClick={handleCopy}
       >
-        {copied ? "Kopierat!" : "Kopiera meddelandet"}
+        {copied ? siteCopy("contact.fallback.copied") : siteCopy("contact.fallback.copy-btn")}
       </button>
     </div>
   );

@@ -13,27 +13,15 @@ import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
 import { ExploreMoreSection, PageSection } from "../components";
 import { formatPrice } from "../services/stripeService";
-import usePageCopy from "../hooks/usePageCopy.js";
+import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import "./ButikPage.css";
 
-/**
- * ButikPage - Huvudsida för produktkatalog
- *
- * Mål: Lära dig React hooks (useState) och list rendering
- *
- * Koncept som övas:
- * - useState för filter-state
- * - useContext för cart management och produkter
- * - Array.map() för att rendera produkter
- * - Conditional rendering
- * - Event handlers (onClick)
- */
-
 function ButikPage() {
   useSeo(seoMeta.butik);
   const copy = usePageCopy("shop");
+  const siteCopy = useSiteCopy();
   // Hämta produkter från global ProductContext (prefetchade vid app start)
   const { products, loading, error, categories, refetch } =
     useContext(ProductContext);
@@ -59,20 +47,17 @@ function ButikPage() {
     if (count === 2) return "products-grid products-grid-2";
     if (count === 3) return "products-grid products-grid-3";
     if (count === 4) return "products-grid products-grid-4";
-    return "products-grid"; // 5+ produkter - standard grid
+    return "products-grid";
   };
 
   const handleAddToCart = (product, qty = 1) => {
-    if (!product.active) return; // Kan inte köpa inaktiva/slutsålda produkter
+    if (!product.active) return;
     addItem(product, qty);
     setAddedToCart(product.id);
-    // Återställ antal till 1 efter tillägg
     setQuantities((prev) => ({ ...prev, [product.id]: 1 }));
-    // Ta bort feedback efter 2 sekunder
     setTimeout(() => setAddedToCart(null), 2000);
   };
 
-  // Hantera +/- för antal
   const handleQuantityChange = (productId, stock, delta) => {
     setQuantities((prev) => {
       const current = prev[productId] || 1;
@@ -87,19 +72,16 @@ function ButikPage() {
         {/* Header */}
         <div className="butik-header" data-cms-hero data-cms-hero-content>
           <span className="section-eyebrow">
-            {copy("hero.eyebrow", "GÅRDSBUTIK")}
+            {copy("hero.eyebrow")}
           </span>
           <div className="section-ornament" aria-hidden="true">
             <span className="section-ornament-line"></span>
             <ShoppingBag size={20} />
             <span className="section-ornament-line"></span>
           </div>
-          <h1>{copy("hero.title", "Butik")}</h1>
+          <h1>{copy("hero.title")}</h1>
           <p>
-            {copy(
-              "hero.lead",
-              "Konst och handgjord keramik från gårdens ateljé",
-            )}
+            {copy("hero.lead")}
           </p>
         </div>
 
@@ -108,6 +90,7 @@ function ButikPage() {
           <div className="category-filters">
             {categories.map((category) => {
               const label =
+                siteCopy(`cart.category-${category}`) ||
                 category.charAt(0).toUpperCase() + category.slice(1);
               return (
                 <button
@@ -126,7 +109,7 @@ function ButikPage() {
         {loading && (
           <div className="products-loading">
             <Loader2 className="spinner" size={48} />
-            <p>Laddar produkter...</p>
+            <p>{siteCopy("ui.loading-products")}</p>
           </div>
         )}
 
@@ -134,7 +117,7 @@ function ButikPage() {
         {error && !loading && (
           <div className="products-error">
             <p>{error}</p>
-            <button onClick={refetch}>Försök igen</button>
+            <button onClick={refetch}>{siteCopy("ui.retry")}</button>
           </div>
         )}
 
@@ -142,13 +125,10 @@ function ButikPage() {
         {!loading && !error && products.length === 0 && (
           <div className="products-empty">
             <p>
-              {copy("empty.title", "Inga produkter tillgängliga just nu.")}
+              {copy("empty.title")}
             </p>
             <p>
-              {copy(
-                "empty.body",
-                "Sortimentet fylls på när det finns nya saker från ateljén.",
-              )}
+              {copy("empty.body")}
             </p>
           </div>
         )}
@@ -159,7 +139,7 @@ function ButikPage() {
             {filteredProducts.map((product) => {
               const alreadyInCart = isInCart(product.id);
               const justAdded = addedToCart === product.id;
-              const stock = product.stock ?? 1; // Default 1 endast om stock är undefined/null
+              const stock = product.stock ?? 1;
               const isSoldOut = !product.active || stock === 0;
 
               return (
@@ -170,7 +150,7 @@ function ButikPage() {
                   <Link
                     className="product-card-image-link"
                     to={`/butik/${product.id}/`}
-                    aria-label={`Visa ${product.name}`}
+                    aria-label={product.name}
                   >
                     <div className="product-card-image">
                       {product.images?.[0] ? <img
@@ -178,12 +158,12 @@ function ButikPage() {
                         alt=""
                         loading="lazy"
                         decoding="async"
-                      /> : <div className="product-card-image-placeholder" aria-label="Ingen produktbild">Ingen bild</div>}
+                      /> : <div className="product-card-image-placeholder">{siteCopy("ui.image-placeholder")}</div>}
                       {/* Endast SÅLD badge visas på bilden */}
                       {isSoldOut && (
                         <div className="product-badges">
                           <span className="product-badge badge-sold-out">
-                            SÅLD
+                            {siteCopy("cart.sold-badge")}
                           </span>
                         </div>
                       )}
@@ -201,13 +181,13 @@ function ButikPage() {
                     {/* Kategori och Unikt exemplar som text under beskrivning */}
                     <p className="product-meta">
                       {product.category}
-                      {stock === 1 && !isSoldOut && " · Unikt exemplar"}
+                      {stock === 1 && !isSoldOut && ` · ${siteCopy("cart.unique-item")}`}
                     </p>
 
                     {/* Quantity selector med stock till vänster */}
                     {stock > 1 && !isSoldOut && !alreadyInCart && (
                       <div className="quantity-row">
-                        <span className="stock-text">{stock} i lager</span>
+                        <span className="stock-text">{stock} {siteCopy("cart.in-stock")}</span>
                         <div className="quantity-selector">
                           <button
                             type="button"
@@ -216,7 +196,7 @@ function ButikPage() {
                               handleQuantityChange(product.id, stock, -1)
                             }
                             disabled={(quantities[product.id] || 1) <= 1}
-                            aria-label="Minska antal"
+                            aria-label={siteCopy("cart.decrease-qty")}
                           >
                             <Minus size={16} />
                           </button>
@@ -230,7 +210,7 @@ function ButikPage() {
                               handleQuantityChange(product.id, stock, 1)
                             }
                             disabled={(quantities[product.id] || 1) >= stock}
-                            aria-label="Öka antal"
+                            aria-label={siteCopy("cart.increase-qty")}
                           >
                             <Plus size={16} />
                           </button>
@@ -253,25 +233,25 @@ function ButikPage() {
                         disabled={isSoldOut || (alreadyInCart && !justAdded)}
                       >
                         {isSoldOut ? (
-                          <>SÅLD</>
+                          <>{siteCopy("cart.sold-badge")}</>
                         ) : justAdded ? (
                           <>
-                            <Check size={14} /> Tillagd!
+                            <Check size={14} /> {siteCopy("cart.added")}
                           </>
                         ) : alreadyInCart ? (
                           <>
-                            <Check size={14} /> I korgen
+                            <Check size={14} /> {siteCopy("cart.in-cart")}
                           </>
                         ) : (
                           <>
-                            <ShoppingCart size={14} /> Köp
+                            <ShoppingCart size={14} /> {siteCopy("cart.buy-btn")}
                           </>
                         )}
                       </button>
                     </div>
                     {alreadyInCart && !justAdded && (
                       <Link to="/varukorg" className="btn-go-to-cart">
-                        Till varukorgen <ArrowRight size={16} />
+                        {siteCopy("cart.drawer-title")} <ArrowRight size={16} />
                       </Link>
                     )}
                   </div>
@@ -284,29 +264,29 @@ function ButikPage() {
 
       <ExploreMoreSection
         id="shop-explore-more"
-        eyebrow={copy("explore.eyebrow", "MER FRÅN GÅRDEN")}
-        title={copy("explore.title", "Fortsätt upptäcka")}
-        intro={copy("explore.body", "När du har hittat något i butiken finns det mer att se, uppleva och planera på Storegården 7.")}
+        eyebrow={copy("explore.eyebrow")}
+        title={copy("explore.title")}
+        intro={copy("explore.body")}
         background="green"
         items={[
           {
             to: "/event/",
-            eyebrow: copy("explore.items.0.eyebrow", "Planera"),
-            title: copy("explore.items.0.title", "Planera ett event"),
-            text: copy("explore.items.0.body", "Se hur gården kan bli platsen för er nästa dag tillsammans."),
+            eyebrow: copy("explore.items.0.eyebrow"),
+            title: copy("explore.items.0.title"),
+            text: copy("explore.items.0.body"),
             featured: true,
           },
           {
             to: "/galleri/",
-            eyebrow: copy("explore.items.1.eyebrow", "Se gården"),
-            title: copy("explore.items.1.title", "Bildgalleri"),
-            text: copy("explore.items.1.body", "Titta närmare på ladan, loftet och ateljén."),
+            eyebrow: copy("explore.items.1.eyebrow"),
+            title: copy("explore.items.1.title"),
+            text: copy("explore.items.1.body"),
           },
           {
             to: "/om-oss/",
-            eyebrow: copy("explore.items.2.eyebrow", "Lär känna"),
-            title: copy("explore.items.2.title", "Om oss"),
-            text: copy("explore.items.2.body", "Möt människorna och idéerna bakom Storegården 7."),
+            eyebrow: copy("explore.items.2.eyebrow"),
+            title: copy("explore.items.2.title"),
+            text: copy("explore.items.2.body"),
           },
         ]}
       />

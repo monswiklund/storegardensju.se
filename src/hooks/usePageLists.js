@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchPageContent } from "../services/cmsService";
+import { fetchPageContent, getPageContentSync } from "../services/cmsService";
 
 export default function usePageLists(slug) {
-  const [lists, setLists] = useState({});
+  const [lists, setLists] = useState(() => getPageContentSync(slug)?.lists || {});
 
   useEffect(() => {
     let active = true;

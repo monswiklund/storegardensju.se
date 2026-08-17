@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { heroContent } from "../../../data/homeContent.js";
 import { canonicalPath } from "../../../config/routes.js";
-import usePageCopy from "../../../hooks/usePageCopy.js";
+import usePageCopy, { useSiteCopy } from "../../../hooks/usePageCopy.js";
 import usePageMedia from "../../../hooks/usePageMedia.js";
 import { smoothScrollTo } from "../../../utils/scrollUtils.js";
 import "./Hero.css";
@@ -11,6 +11,7 @@ import HomeHeroContent from "./HomeHeroContent.jsx";
 function HomeHeroSection() {
   const navigate = useNavigate();
   const copy = usePageCopy("home");
+  const siteCopy = useSiteCopy();
   const siteMedia = usePageMedia("site");
   // The logo is a wide, transparent mark. Generated card/thumbnail variants
   // are 4:3 crops and distort it, so keep the original aspect ratio here.
@@ -18,7 +19,7 @@ function HomeHeroSection() {
   const { title, subtitle, paragraphs, primaryCta, secondaryCtas } =
     heroContent;
   const editableParagraphs = paragraphs.map((paragraph, index) =>
-    copy(`hero.paragraphs.${index}`, paragraph),
+    copy(`hero.paragraphs.${index}`),
   );
 
   const contentRef = useRef(null);
@@ -115,9 +116,9 @@ function HomeHeroSection() {
             type="button"
             className="hero-scroll-indicator"
             onClick={handleScrollIndicatorClick}
-            aria-label="Skrolla ned"
+            aria-label={siteCopy("ui.scroll-down")}
           >
-            <span className="hero-scroll-indicator-label">Upptäck mer</span>
+            <span className="hero-scroll-indicator-label">{copy("hero.discover-more")}</span>
             <div className="hero-scroll-indicator-line-container">
               <div className="hero-scroll-indicator-line-active" />
             </div>
@@ -135,13 +136,13 @@ function HomeHeroSection() {
         ref={contentRef}
       >
         <HomeHeroContent
-          title={copy("hero.title", title)}
-          subtitle={copy("hero.subtitle", subtitle)}
+          title={copy("hero.title")}
+          subtitle={copy("hero.subtitle")}
           paragraphs={editableParagraphs}
-          primaryCta={{ ...primaryCta, label: copy("hero.primary-cta", primaryCta.label) }}
+          primaryCta={{ ...primaryCta, label: copy("hero.primary-cta") }}
           secondaryCtas={secondaryCtas.map((cta, index) => ({
             ...cta,
-            label: copy(`hero.secondary-ctas.${index}`, cta.label),
+            label: copy(`hero.secondary-ctas.${index}`),
           }))}
           onPrimaryClick={handlePrimaryCta}
           onRouteClick={handleSecondaryRoute}

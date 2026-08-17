@@ -11,6 +11,7 @@ import {
 } from "../../../data/courseEvents.js";
 import { canonicalPath } from "../../../config/routes.js";
 import { fetchPublicNotifications } from "../../../services/notificationsService.js";
+import { useSiteCopy } from "../../../hooks/usePageCopy.js";
 import "./NotificationBell.css";
 
 const STORAGE_KEY = "storegarden-read-notifications";
@@ -46,6 +47,7 @@ export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const [readIds, setReadIds] = useState(readStoredIds);
   const [notifications, setNotifications] = useState([]);
+  const siteCopy = useSiteCopy();
   const unreadCount = notifications.filter(
     (notification) => !readIds.includes(notification.id),
   ).length;
@@ -60,11 +62,12 @@ export default function NotificationBell() {
           id: item.updatedAt ? `${item.id}:${item.updatedAt}` : item.id,
           title: item.title,
           detail: item.message,
-          href: item.href || "/",
+          href: item.link || item.href || "/event/",
         })));
       })
       .catch(() => {
-        if (!cancelled) setNotifications(buildNotifications());
+        if (cancelled) return;
+        setNotifications(buildNotifications());
       });
 
     return () => {
@@ -74,16 +77,21 @@ export default function NotificationBell() {
 
   useEffect(() => {
     setIsOpen(false);
-  }, [location.pathname, location.hash]);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
 
     const handlePointerDown = (event) => {
-      if (!wrapperRef.current?.contains(event.target)) setIsOpen(false);
+      if (!wrapperRef.current?.contains(event.target)) {
+        setIsOpen(false);
+      }
     };
+
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") setIsOpen(false);
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
@@ -95,38 +103,47 @@ export default function NotificationBell() {
     };
   }, [isOpen]);
 
-  const storeReadIds = (nextIds) => {
-    setReadIds(nextIds);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextIds));
-    } catch {
-      // Keep the current session working when browser storage is unavailable.
-    }
-  };
-
   const markAsRead = (id) => {
-    if (!readIds.includes(id)) storeReadIds([...readIds, id]);
+    setReadIds((prev) => {
+      if (prev.includes(id)) return prev;
+      const next = [...prev, id];
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // Storage might fail in private browsing mode; state is still updated
+      }
+      return next;
+    });
   };
 
   const markAllAsRead = () => {
-    storeReadIds(notifications.map((notification) => notification.id));
+    const allIds = notifications.map((n) => n.id);
+    setReadIds((prev) => {
+      const next = Array.from(new Set([...prev, ...allIds]));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // Fallback for storage errors
+      }
+      return next;
+    });
   };
 
+  const buttonLabel = unreadCount > 0
+    ? `${siteCopy("ui.notification-bell-label")}, ${unreadCount} ${siteCopy("ui.notification-unread-suffix")}`
+    : siteCopy("ui.notification-bell-label");
+
   return (
-    <div className="notification-bell" ref={wrapperRef}>
+    <div className="notification-bell-wrapper" ref={wrapperRef}>
       <button
         type="button"
-        className="notification-bell-trigger"
-        aria-label={
-          unreadCount > 0
-            ? `Visa aktuellt, ${unreadCount} oläst`
-            : "Visa aktuellt"
-        }
+        className="notification-bell-btn"
+        aria-label={buttonLabel}
         aria-expanded={isOpen}
         aria-controls="notification-panel"
-        onClick={() => setIsOpen((open) => !open)}
+        onClick={() => setIsOpen((prev) => !prev)}
       >
-        <Bell size={23} strokeWidth={1.8} />
+        <Bell size={20} aria-hidden="true" />
         {unreadCount > 0 && (
           <span className="notification-bell-count" aria-hidden="true">
             {unreadCount}
@@ -138,12 +155,12 @@ export default function NotificationBell() {
         <section
           id="notification-panel"
           className="notification-panel"
-          aria-label="Aktuellt"
+          aria-label={siteCopy("ui.notification-panel-title")}
         >
           <div className="notification-panel-header">
             <div>
               <span className="notification-panel-eyebrow">Storegården 7</span>
-              <h2>Aktuellt</h2>
+              <h2>{siteCopy("ui.notification-panel-title")}</h2>
             </div>
             {unreadCount > 0 && (
               <button
@@ -152,7 +169,7 @@ export default function NotificationBell() {
                 onClick={markAllAsRead}
               >
                 <Check size={15} aria-hidden="true" />
-                Markera lästa
+                {siteCopy("ui.notification-read-all")}
               </button>
             )}
           </div>
@@ -178,7 +195,7 @@ export default function NotificationBell() {
                       </span>
                       {isUnread && (
                         <span className="notification-unread-dot">
-                          <span className="sr-only">Oläst</span>
+                          <span className="sr-only">{siteCopy("ui.notification-unread")}</span>
                         </span>
                       )}
                     </Link>
@@ -188,7 +205,7 @@ export default function NotificationBell() {
             </ul>
           ) : (
             <p className="notification-empty">
-              Inget nytt just nu. Nästa aktivitet dyker upp här.
+              {siteCopy("ui.notification-empty")}
             </p>
           )}
         </section>

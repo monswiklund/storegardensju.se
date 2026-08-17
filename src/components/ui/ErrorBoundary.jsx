@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { getPageCopySync } from '../../services/cmsService';
 import './ErrorBoundary.css';
 
 class ErrorBoundary extends Component {
@@ -18,16 +19,21 @@ class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
+      const siteCopy = getPageCopySync('site') || {};
+      const title = siteCopy['ui.error-boundary-title'];
+      const message = siteCopy['ui.error-boundary-message'];
+      const retry = siteCopy['ui.error-boundary-retry'];
+
       return (
         <div className="error-boundary">
           <div className="error-content">
-            <h3>Något gick fel</h3>
-            <p>Vi ber om ursäkt för besväret. Vänligen ladda om sidan eller försök igen senare.</p>
+            {title && <h3>{title}</h3>}
+            {message && <p>{message}</p>}
             <button 
               onClick={() => window.location.reload()} 
               className="error-reload-button"
             >
-              Ladda om sidan
+              {retry}
             </button>
           </div>
         </div>

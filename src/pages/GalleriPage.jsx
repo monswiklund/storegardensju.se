@@ -27,20 +27,20 @@ function GalleriPage() {
         ariaLabel="gallery-page-heading"
       >
         <div className="gallery-page-intro" data-cms-hero data-cms-hero-content>
-          <span className="section-eyebrow">{copy("hero.eyebrow", "SE PLATSEN")}</span>
-          <h1 id="gallery-page-heading">{copy("hero.title", "Bildgalleri")}</h1>
+          <span className="section-eyebrow">{copy("hero.eyebrow")}</span>
+          <h1 id="gallery-page-heading">{copy("hero.title")}</h1>
           <p>
-            {copy("hero.lead", "Se ladan, loftet och ateljén inför ert nästa event, besök eller kurs på Storegården 7.")}
+            {copy("hero.lead")}
           </p>
           <Link to="/event/" className="gallery-page-intro__cta">
-            {copy("hero.primary-cta", "Planera ett event")}
+            {copy("hero.primary-cta")}
             <ArrowUpRight size={18} aria-hidden="true" />
           </Link>
         </div>
         <ErrorBoundary>
           <Suspense
             fallback={
-              <LoadingSpinner size="large" text="Laddar bildgalleri..." />
+              <LoadingSpinner size="large" />
             }
           >
             <GalleryShowcase />
@@ -55,8 +55,8 @@ function GalleriPage() {
         <PageSection background="green" spacing="default">
           <HomeServicesSection
             cmsPage="gallery"
-            title={copy("services-section.title", "Utforska mer")}
-            eyebrow={copy("services-section.eyebrow", "BOKA & BESÖK")}
+            title={copy("services-section.title")}
+            eyebrow={copy("services-section.eyebrow")}
           />
         </PageSection>
       </div>

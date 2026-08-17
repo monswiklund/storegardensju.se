@@ -1,3 +1,5 @@
+import { getPageCopySync } from "../../../hooks/usePageCopy.js";
+
 const formatDate = (value) => {
   if (!value) return "";
   const date = new Date(value);
@@ -29,6 +31,8 @@ export const toUiEvent = (item) => {
   const date = formatDate(startAt);
   const startTime = formatTime(startAt);
   const endTime = formatTime(endAt);
+  const siteCopy = getPageCopySync("site");
+  const readMoreLabel = siteCopy ? siteCopy("ui.read-more") : "";
 
   const mappedImages = (Array.isArray(item?.images) ? item.images : []).map(
     (image) => ({
@@ -55,14 +59,14 @@ export const toUiEvent = (item) => {
     links = [
       {
         href: "/kurser/yoga",
-        label: "Läs mer",
+        label: readMoreLabel,
       },
     ];
   } else if (isMaleri && (links.length === 0 || links[0]?.href?.startsWith("mailto:"))) {
     links = [
       {
         href: "/kurser/konst",
-        label: "Läs mer",
+        label: readMoreLabel,
       },
     ];
   }

@@ -40,26 +40,23 @@ function TeamPage() {
         <ErrorBoundary>
           <div className="profile-showcase-container">
             <div className="team-page-hero" data-cms-hero data-cms-hero-content>
-              <span className="section-eyebrow">{copy("hero.eyebrow", "STOREGÅRDEN 7")}</span>
+              <span className="section-eyebrow">{copy("hero.eyebrow")}</span>
             <div className="section-ornament align-left" aria-hidden="true">
               <span className="section-ornament-line"></span>
               <Users size={18} />
               <span className="section-ornament-line"></span>
             </div>
-            <h1 id="about-heading">{copy("hero.title", "Om oss")}</h1>
+            <h1 id="about-heading">{copy("hero.title")}</h1>
             <p className="team-page-intro">
-              {copy(
-                "hero.lead",
-                "Lär känna människorna bakom Storegården 7 och hur vi tar hand om våra gäster, grupper och samarbeten.",
-              )}
+              {copy("hero.lead")}
             </p>
             <div className="team-page-actions" data-cms-hero-actions>
               <Link to="/kontakt/" className="team-page-action team-page-action--primary">
-                {copy("hero.primary-cta", "Kontakta oss")}
+                {copy("hero.primary-cta")}
                 <ArrowUpRight size={18} aria-hidden="true" />
               </Link>
               <Link to="/event/" className="team-page-action team-page-action--secondary">
-                {copy("hero.secondary-cta", "Se våra event")}
+                {copy("hero.secondary-cta")}
               </Link>
             </div>
             </div>
@@ -110,8 +107,8 @@ function TeamPage() {
         <PageSection background="white" spacing="default">
           <HomeServicesSection
             cmsPage="about"
-            title={copy("services-section.title", "Utforska mer")}
-            eyebrow={copy("services-section.eyebrow", "MER ATT SE & GÖRA")}
+            title={copy("services-section.title")}
+            eyebrow={copy("services-section.eyebrow")}
           />
         </PageSection>
       </div>

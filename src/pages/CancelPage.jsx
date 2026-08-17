@@ -1,36 +1,39 @@
 import { Link } from "react-router-dom";
 import { XCircle, ShoppingCart } from "lucide-react";
 import { PageSection } from "../components";
+import { useSiteCopy } from "../hooks/usePageCopy";
 import "./CancelPage.css";
 
 export default function CancelPage() {
+  const siteCopy = useSiteCopy();
+
   return (
     <main role="main" id="main-content">
       <PageSection background="alt" spacing="default">
         <div className="cancel-container">
           <XCircle size={80} className="cancel-icon" />
-          <h1>Betalning avbruten</h1>
+          <h1>{siteCopy("cancel.title")}</h1>
           <p className="cancel-message">
-            Din betalning har avbrutits och ingen debitering har gjorts.
+            {siteCopy("cancel.lead")}
           </p>
           <p className="reassurance">
-            Inga problem! Dina produkter finns kvar i varukorgen.
+            {siteCopy("cancel.reassurance")}
           </p>
 
           <div className="cancel-actions">
             <Link to="/varukorg" className="btn-primary">
               <ShoppingCart size={20} />
-              Tillbaka till varukorgen
+              {siteCopy("ui.back")}
             </Link>
             <Link to="/butik/" className="btn-secondary">
-              Fortsätt handla
+              {siteCopy("cart.continue-shopping")}
             </Link>
           </div>
 
           <div className="help-section">
-            <p>Behöver du hjälp eller har du frågor?</p>
+            <p>{siteCopy("cancel.help-title")}</p>
             <p>
-              Kontakta oss på{" "}
+              {siteCopy("cancel.help-lead")}{" "}
               <a href="mailto:storegardensju@gmail.com">
                 storegardensju@gmail.com
               </a>

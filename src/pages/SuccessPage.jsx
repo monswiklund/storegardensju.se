@@ -4,6 +4,7 @@ import { CheckCircle, ShoppingBag, Home } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { PageSection } from "../components";
 import { verifySession } from "../services/stripeService";
+import { useSiteCopy } from "../hooks/usePageCopy";
 import "./SuccessPage.css";
 
 export default function SuccessPage() {
@@ -11,20 +12,18 @@ export default function SuccessPage() {
   const sessionId = searchParams.get("session_id");
   const { clearCart } = useContext(CartContext);
   const hasCleared = useRef(false);
+  const siteCopy = useSiteCopy();
 
   useEffect(() => {
     // Verifiera sessionen innan varukorgen töms
     const verifyAndClear = async () => {
       if (sessionId && !hasCleared.current) {
-        // Enkel klient-side kontroll först för att undvika onödiga anrop
         if (sessionId === "undefined" || sessionId === "null") return;
 
         try {
           const token = sessionStorage.getItem(
             `checkout_verify_token:${sessionId}`
           );
-          // Importera service dynamiskt eller lägg till import i toppen av filen
-          // För nu antar vi att vi har lagt till importen
           const isValid = await verifySession(sessionId, token);
 
           if (isValid) {
@@ -34,12 +33,10 @@ export default function SuccessPage() {
               sessionStorage.removeItem(`checkout_verify_token:${sessionId}`);
             }
           } else {
-            console.warn("Ogiltig session, tömmer ej varukorg");
-            // Här kan man redirecta eller visa felmeddelande om man vill
-            // Men vi låter användaren se sidan, bara inte tömma korgen
+            console.warn("Invalid session, cart not cleared");
           }
         } catch (error) {
-          console.error("Kunde inte verifiera session", error);
+          console.error("Failed to verify session", error);
         }
       }
     };
@@ -53,14 +50,14 @@ export default function SuccessPage() {
       <main role="main" id="main-content">
         <PageSection background="alt" spacing="default">
           <div className="success-container">
-            <h1>Ingen aktiv order</h1>
+            <h1>{siteCopy("success.no-order-title")}</h1>
             <p className="success-message">
-              Det verkar som att du inte har en aktiv orderbekräftelse.
+              {siteCopy("success.no-order-lead")}
             </p>
             <div className="success-actions">
               <Link to="/butik/" className="btn-primary">
                 <ShoppingBag size={18} />
-                Gå till butiken
+                {siteCopy("cart.continue-shopping")}
               </Link>
             </div>
           </div>
@@ -74,26 +71,26 @@ export default function SuccessPage() {
       <PageSection background="alt" spacing="default">
         <div className="success-container">
           <CheckCircle size={80} className="success-icon" />
-          <h1>Tack för din beställning!</h1>
+          <h1>{siteCopy("success.title")}</h1>
           <p className="success-message">
-            Din betalning har genomförts och din order är bekräftad.
+            {siteCopy("success.lead")}
           </p>
 
           <div className="order-details">
             <p className="session-id">
-              <strong>Order-ID:</strong>{" "}
+              <strong>{siteCopy("success.order-id-label")}</strong>{" "}
               <span className="order-id-value">{sessionId}</span>
             </p>
             <p className="info-text">
-              Spara detta ID om du behöver kontakta oss angående din order.
+              {siteCopy("success.order-id-hint")}
             </p>
             <p className="info-text">
-              Vi återkommer med leveransbesked och uppdatering via e-post.
+              {siteCopy("success.email-hint")}
             </p>
           </div>
 
           <p className="contact-info">
-            Har du frågor om din beställning? Kontakta oss på{" "}
+            {siteCopy("success.contact-hint")}{" "}
             <a href="mailto:storegardensju@gmail.com">
               storegardensju@gmail.com
             </a>
@@ -102,11 +99,11 @@ export default function SuccessPage() {
           <div className="success-actions">
             <Link to="/butik/" className="btn-primary">
               <ShoppingBag size={18} />
-              Fortsätt handla
+              {siteCopy("cart.continue-shopping")}
             </Link>
             <Link to="/" className="btn-secondary">
               <Home size={18} />
-              Tillbaka till startsidan
+              {siteCopy("nav.home")}
             </Link>
           </div>
         </div>

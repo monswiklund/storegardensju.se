@@ -5,6 +5,8 @@ import { ExploreMoreSection } from "../../../components";
 import { formatPrice } from "../../../services/stripeService";
 import "./ProductRecommendations.css";
 
+import usePageCopy from "../../../hooks/usePageCopy";
+
 function isAvailable(product) {
   return Boolean(product?.active) && (product.stock ?? 0) > 0;
 }
@@ -28,22 +30,23 @@ export function getRelatedProducts(products = [], currentProduct) {
 }
 
 function ProductRecommendations({ products, currentProduct }) {
+  const copy = usePageCopy("shop");
   const relatedProducts = getRelatedProducts(products, currentProduct);
 
   if (relatedProducts.length === 0) {
     return (
       <ExploreMoreSection
         id="product-explore-more"
-        eyebrow="GÅRDSBUTIK"
-        title="Fortsätt upptäcka butiken"
-        intro="Se fler handgjorda saker från gårdens ateljé och hitta din nästa favorit."
+        eyebrow={copy("recommendations.empty-eyebrow")}
+        title={copy("recommendations.empty-title")}
+        intro={copy("recommendations.empty-intro")}
         background="alt"
         items={[
           {
             to: "/butik/",
-            eyebrow: "Till sortimentet",
-            title: "Se hela butiken",
-            text: "Tillbaka till alla produkter och aktuellt sortiment.",
+            eyebrow: copy("recommendations.item-eyebrow"),
+            title: copy("recommendations.item-title"),
+            text: copy("recommendations.item-text"),
             featured: true,
           },
         ]}
@@ -58,9 +61,9 @@ function ProductRecommendations({ products, currentProduct }) {
     >
       <div className="product-recommendations__inner">
         <div className="product-recommendations__heading">
-          <span>Från ateljén</span>
-          <h2 id="product-recommendations-title">Fler saker att upptäcka</h2>
-          <p>Fortsätt titta bland handgjorda produkter från Storegården 7.</p>
+          <span>{copy("recommendations.eyebrow")}</span>
+          <h2 id="product-recommendations-title">{copy("recommendations.title")}</h2>
+          <p>{copy("recommendations.body")}</p>
         </div>
 
         <div className="product-recommendations__grid">

@@ -72,15 +72,15 @@ function HomeInstagramSection() {
     <section className="instagram-section" aria-labelledby="instagram-heading">
       <div className="instagram-container">
         <header className="instagram-section-header">
-          <span className="instagram-eyebrow">{copy("instagram.eyebrow", "Instagram")}</span>
+          <span className="instagram-eyebrow">{copy("instagram.eyebrow")}</span>
           <div className="instagram-ornament" aria-hidden="true">
             <span className="instagram-ornament-line"></span>
             <Sprout size={20} />
             <span className="instagram-ornament-line"></span>
           </div>
-          <h2 id="instagram-heading">{copy("instagram.title", "Följ oss på Instagram")}</h2>
+          <h2 id="instagram-heading">{copy("instagram.title")}</h2>
           <p className="instagram-subtitle">
-            {copy("instagram.body", "Där lägger vi upp bilder från gården, kurserna och det som händer i ladan och ateljén.")}
+            {copy("instagram.body")}
           </p>
         </header>
 
@@ -92,8 +92,8 @@ function HomeInstagramSection() {
           {/* Status Bar */}
           <div className="iphone-status-bar">
             <span className="iphone-time">{timeStr}</span>
-            <div className="iphone-status-icons">
-              <span className="iphone-signal" aria-label="Mobil signal">
+            <div className="iphone-status-icons" aria-hidden="true">
+              <span className="iphone-signal">
                 <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor">
                   <rect x="0" y="8" width="2.5" height="3" rx="0.5" />
                   <rect x="3.5" y="6" width="2.5" height="5" rx="0.5" />
@@ -102,12 +102,12 @@ function HomeInstagramSection() {
                   <rect x="14" y="0" width="2.5" height="11" rx="0.5" opacity="0.3" />
                 </svg>
               </span>
-              <span className="iphone-wifi" aria-label="Wi-Fi">
+              <span className="iphone-wifi">
                 <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
                   <path d="M8 12a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm-3.535-4.95a5 5 0 0 1 7.07 0 1 1 0 1 0 1.415-1.414 7 7 0 0 0-9.9 0 1 1 0 1 0 1.415 1.414zm-2.829-2.829a9 9 0 0 1 12.728 0 1 1 0 1 0 1.414-1.414 11 11 0 0 0-15.556 0 1 1 0 1 0 1.414 1.414z" fill="currentColor" />
                 </svg>
               </span>
-              <span className="iphone-battery" aria-label="Batteri">
+              <span className="iphone-battery">
                 <svg width="22" height="11" viewBox="0 0 22 11" fill="currentColor">
                   <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" fill="none" stroke="currentColor" />
                   <rect x="2.5" y="2.5" width="14" height="6" rx="1.5" />
@@ -126,7 +126,6 @@ function HomeInstagramSection() {
                 href="https://www.instagram.com/storegarden7/"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Föregående sida"
               >
                 <ChevronLeft size={24} />
               </a>
@@ -134,10 +133,10 @@ function HomeInstagramSection() {
                 <span className="instagram-app-username">storegarden7</span>
               </div>
               <div className="instagram-app-header-actions">
-                <button className="instagram-icon-button" aria-label="Meddelanden">
+                <button className="instagram-icon-button">
                   <Bell size={20} />
                 </button>
-                <button className="instagram-icon-button" aria-label="Fler alternativ">
+                <button className="instagram-icon-button">
                   <MoreHorizontal size={20} />
                 </button>
               </div>
@@ -151,32 +150,32 @@ function HomeInstagramSection() {
                   <div className="instagram-avatar-container">
                     <div className="instagram-avatar-ring">
                       <div className="instagram-avatar-bg">
-                        {logo && <img src={logo} alt="Storegården 7" className="instagram-avatar-img" />}
+                        {logo && <img src={logo} alt="" className="instagram-avatar-img" />}
                       </div>
                     </div>
                   </div>
                   <div className="instagram-stats-container">
                     <div className="instagram-stat">
                       <span className="instagram-stat-value">42</span>
-                      <span className="instagram-stat-label">inlägg</span>
+                      <span className="instagram-stat-label">{copy("instagram.posts-label")}</span>
                     </div>
                     <div className="instagram-stat">
                       <span className="instagram-stat-value">237</span>
-                      <span className="instagram-stat-label">följare</span>
+                      <span className="instagram-stat-label">{copy("instagram.followers-label")}</span>
                     </div>
                     <div className="instagram-stat">
                       <span className="instagram-stat-value">4</span>
-                      <span className="instagram-stat-label">följer</span>
+                      <span className="instagram-stat-label">{copy("instagram.following-label")}</span>
                     </div>
                   </div>
                 </div>
  
                 <div className="instagram-bio-section">
-                  <h3 className="instagram-bio-name">Storegården 7</h3>
+                  <h3 className="instagram-bio-name">{copy("instagram.bio-name")}</h3>
                   <div className="instagram-bio-text">
-                    Eventlokal, keramikbutik & ateljé<br />
-                    Mer info & hitta hit:<br />
-                    Rackeby Storegården 7, Lidköping 53198
+                    {copy("instagram.bio-line1")}<br />
+                    {copy("instagram.bio-line2")}<br />
+                    {copy("instagram.bio-line3")}
                   </div>
                   <a 
                     href="https://storegardensju.se" 
@@ -196,7 +195,7 @@ function HomeInstagramSection() {
                     rel="noopener noreferrer" 
                     className="instagram-btn instagram-btn-primary"
                   >
-                    Följ
+                    {copy("instagram.follow-cta")}
                   </a>
                   <a 
                     href="https://www.instagram.com/storegarden7/" 
@@ -204,20 +203,20 @@ function HomeInstagramSection() {
                     rel="noopener noreferrer" 
                     className="instagram-btn instagram-btn-secondary"
                   >
-                    Meddelande
+                    {copy("instagram.message-cta")}
                   </a>
                 </div>
               </div>
 
               {/* Tabs */}
               <div className="instagram-tabs">
-                <button className="instagram-tab active" aria-label="Rutnät">
+                <button className="instagram-tab active">
                   <Grid size={20} />
                 </button>
-                <button className="instagram-tab" aria-label="Reels">
+                <button className="instagram-tab">
                   <Film size={20} />
                 </button>
-                <button className="instagram-tab" aria-label="Taggad">
+                <button className="instagram-tab">
                   <User size={20} />
                 </button>
               </div>
@@ -234,7 +233,7 @@ function HomeInstagramSection() {
                   >
                     <img
                       src={toImageSrc(item)}
-                      alt={item.caption || "Instagram-inlägg från Storegården 7"}
+                      alt={item.caption || ""}
                       loading={index < 3 ? "eager" : "lazy"}
                       decoding="async"
                       onError={(event) => handleImageError(event, item)}
@@ -267,7 +266,7 @@ function HomeInstagramSection() {
             rel="noopener noreferrer"
           >
             <Instagram size={16} />
-            Se allt på Instagram
+            {copy("instagram.cta")}
           </a>
         </div>
       </div>

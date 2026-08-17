@@ -14,8 +14,11 @@ import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import { canonicalPath } from "../config/routes.js";
 
+import { useSiteCopy } from "../hooks/usePageCopy.js";
+
 function HomePage() {
   useSeo(seoMeta.home);
+  const siteCopy = useSiteCopy();
   const navigate = useNavigate();
   const [eventsData, setEventsData] = useState({ upcoming: [], past: [] });
   const [loading, setLoading] = useState(false);
@@ -36,7 +39,7 @@ function HomePage() {
       } catch {
         if (!active) return;
         setEventsData({ upcoming: [], past: [] });
-        setError("Kunde inte hämta evenemangen just nu.");
+        setError(siteCopy("ui.events-fetch-error"));
       } finally {
         if (active) {
           setLoading(false);
@@ -48,7 +51,7 @@ function HomePage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [siteCopy]);
 
   const upcomingEvents = useMemo(() => {
     return [...eventsData.upcoming]

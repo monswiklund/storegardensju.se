@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { X, Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { CartContext } from "../CartContext/CartContext";
 import { formatPrice } from "../../../services/stripeService";
+import { useSiteCopy } from "../../../hooks/usePageCopy";
 import "./CartDrawer.css";
 
 function CartDrawer() {
@@ -16,6 +17,7 @@ function CartDrawer() {
   } = useContext(CartContext);
   
   const navigate = useNavigate();
+  const siteCopy = useSiteCopy();
 
   // Close on Escape key
   useEffect(() => {
@@ -50,8 +52,8 @@ function CartDrawer() {
       
       <aside className={`cart-drawer ${isCartOpen ? "is-open" : ""}`}>
         <div className="cart-drawer-header">
-          <h2>Varukorg</h2>
-          <button className="close-drawer-btn" onClick={closeCart} aria-label="Stäng">
+          <h2>{siteCopy("cart.drawer-title")}</h2>
+          <button className="close-drawer-btn" onClick={closeCart} aria-label={siteCopy("ui.close")}>
             <X size={24} />
           </button>
         </div>
@@ -60,13 +62,13 @@ function CartDrawer() {
           {cart.length === 0 ? (
             <div className="cart-empty-state">
               <ShoppingBag size={48} strokeWidth={1} />
-              <p>Din varukorg är tom</p>
+              <p>{siteCopy("cart.empty-message")}</p>
               <button 
                 className="btn btn-secondary" 
                 style={{ marginTop: '1rem' }}
                 onClick={closeCart}
               >
-                Fortsätt handla
+                {siteCopy("cart.continue-shopping")}
               </button>
             </div>
           ) : (
@@ -101,7 +103,7 @@ function CartDrawer() {
                   <button 
                     className="remove-item-btn" 
                     onClick={() => removeItem(item.id)}
-                    aria-label="Ta bort"
+                    aria-label={siteCopy("cart.remove-item")}
                   >
                     <Trash2 size={18} />
                   </button>
@@ -114,11 +116,11 @@ function CartDrawer() {
         {cart.length > 0 && (
           <div className="cart-drawer-footer">
             <div className="cart-total-row">
-              <span>Totalt</span>
+              <span>{siteCopy("cart.total")}</span>
               <span>{formatPrice(getTotal())}</span>
             </div>
             <button className="btn btn-primary checkout-btn" onClick={handleCheckout}>
-              Gå till kassan <ArrowRight size={18} />
+              {siteCopy("cart.checkout")} <ArrowRight size={18} />
             </button>
           </div>
         )}

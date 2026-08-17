@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 
 const HOME_SECTIONS = [
-  { id: "home-events", label: "Kommande evenemang" },
-  { id: "past-events", label: "Tidigare evenemang" },
-  { id: "home-services", label: "Vad vi erbjuder" },
-  { id: "home-contact", label: "Kontakta oss" },
+  { id: "home-events", key: "events.upcoming.title" },
+  { id: "past-events", key: "events.past.title" },
+  { id: "home-services", key: "services-section.title" },
+  { id: "home-contact", key: "hero.primary-cta" },
 ];
 
 function scrollToSection(id) {
@@ -26,6 +27,7 @@ function scrollToSection(id) {
 }
 
 function HomeSubnav() {
+  const homeCopy = usePageCopy("home");
   const [activeId, setActiveId] = useState(null);
 
   useEffect(() => {
@@ -60,25 +62,29 @@ function HomeSubnav() {
     <div
       className="event-subnav home-subnav active"
       role="navigation"
-      aria-label="Startsida undernavigering"
     >
       <div className="event-subnav-inner">
-        {HOME_SECTIONS.map((section) => (
-          <button
-            key={section.id}
-            type="button"
-            className={`event-subnav-link home-subnav-link ${
-              activeId === section.id ? "active" : ""
-            }`}
-            aria-current={activeId === section.id ? "location" : undefined}
-            onClick={() => scrollToSection(section.id)}
-          >
-            {section.label}
-          </button>
-        ))}
+        {HOME_SECTIONS.map((section) => {
+          const label = homeCopy(section.key);
+          if (!label) return null;
+          return (
+            <button
+              key={section.id}
+              type="button"
+              className={`event-subnav-link home-subnav-link ${
+                activeId === section.id ? "active" : ""
+              }`}
+              aria-current={activeId === section.id ? "location" : undefined}
+              onClick={() => scrollToSection(section.id)}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 }
 
 export default HomeSubnav;
+

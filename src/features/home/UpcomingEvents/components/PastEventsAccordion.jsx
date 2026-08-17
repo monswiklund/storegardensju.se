@@ -13,13 +13,14 @@ import {
   groupPastEvents,
 } from "../pastEventsUtils.js";
 import "../../PastEvents/PastEvents.css";
-import usePageCopy from "../../../../hooks/usePageCopy.js";
+import usePageCopy, { useSiteCopy } from "../../../../hooks/usePageCopy.js";
 
 const pastEventHistoryStateKey = "__storegardenPastEvent";
 const INITIAL_LIMIT = 5;
 
 function PastEventsAccordion({ events }) {
   const copy = usePageCopy("home");
+  const siteCopy = useSiteCopy();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -252,7 +253,7 @@ function PastEventsAccordion({ events }) {
         {/* Right component: Action Link */}
         <div className="past-event-action-side">
           <span className="past-event-open-link">
-            <span>Läs mer</span>
+            <span>{siteCopy("ui.read-more")}</span>
             <ArrowUpRight size={16} />
           </span>
         </div>
@@ -268,23 +269,22 @@ function PastEventsAccordion({ events }) {
     >
       {/* Mobile-only header row */}
       <div className="past-events-mobile-header mobile-only">
-        <span className="past-events-eyebrow">{copy("events.past.eyebrow", "TIDIGARE EVENEMANG")}</span>
+        <span className="past-events-eyebrow">{copy("events.past.eyebrow")}</span>
       </div>
 
       <div className="past-events-split-layout">
         {/* Left Column (Desktop only) */}
         <div className="past-events-info-col desktop-only">
-          <span className="past-events-eyebrow">{copy("events.past.eyebrow", "TIDIGARE EVENEMANG")}</span>
-          <h2 className="past-events-heading">{copy("events.past.title", "Tidigare evenemang")}</h2>
+          <span className="past-events-eyebrow">{copy("events.past.eyebrow")}</span>
+          <h2 className="past-events-heading">{copy("events.past.title")}</h2>
           <p className="past-events-intro">
-            {copy("events.past.body", "Ett urval av kurser, öppna ateljékvällar och samarbeten.")}
+            {copy("events.past.body")}
           </p>
 
           {/* Desktop Filter Pills */}
           <div
             className="past-events-filter-bar"
             role="tablist"
-            aria-label="Filtrera tidigare evenemang efter kategori"
           >
             {PAST_EVENT_CATEGORIES.map((cat) => {
               const count = categoryCounts[cat.id] || 0;
@@ -318,7 +318,6 @@ function PastEventsAccordion({ events }) {
           <div
             className="past-events-filter-bar past-events-filter-bar--mobile mobile-only"
             role="tablist"
-            aria-label="Filtrera tidigare evenemang efter kategori"
           >
             {PAST_EVENT_CATEGORIES.map((cat) => {
               const count = categoryCounts[cat.id] || 0;
@@ -348,7 +347,7 @@ function PastEventsAccordion({ events }) {
           <div className="past-events-list" onMouseEnter={handleItemMouseEnter}>
             {filteredEvents.length === 0 && (
               <div className="past-events-empty">
-                <p>{copy("events.past.empty", "Inga tidigare evenemang i denna kategori.")}</p>
+                <p>{copy("events.past.empty")}</p>
               </div>
             )}
 
@@ -387,8 +386,8 @@ function PastEventsAccordion({ events }) {
               >
                 <span>
                   {isExpanded
-                    ? "Visa färre"
-                    : `Visa fler (${extraEvents.length})`}
+                    ? (copy("events.past.show-less") || "Visa färre")
+                    : `${copy("events.past.show-more") || "Visa fler"} (${extraEvents.length})`}
                 </span>
                 <ChevronDown
                   className={`past-events-expand-icon ${

@@ -1,10 +1,12 @@
 // ScrollToTopButton.jsx
 import { useState, useEffect } from 'react';
 import { ChevronUp } from 'lucide-react';
+import { useSiteCopy } from '../../../hooks/usePageCopy';
 import './ScrollToTop.css';
 
 const ScrollToTopButton = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const siteCopy = useSiteCopy();
 
     // Kontrollera scroll-positionen för att avgöra om knappen ska visas
     useEffect(() => {
@@ -36,11 +38,11 @@ const ScrollToTopButton = () => {
         <button
             className={`scroll-to-top ${isVisible ? 'visible' : ''}`}
             onClick={scrollToTop}
-            aria-label="Scrolla till toppen"
-            title="Tillbaka upp"
+            aria-label={siteCopy("ui.scroll-to-top")}
+            title={siteCopy("ui.scroll-top")}
         >
             <ChevronUp size={20} />
-            <span>Tillbaka upp</span>
+            <span>{siteCopy("ui.scroll-top")}</span>
         </button>
     );
 };

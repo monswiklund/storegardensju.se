@@ -1,9 +1,15 @@
-.notification-bell {
+.notification-bell,
+.notification-bell-wrapper {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.notification-bell-trigger {
+.notification-bell-trigger,
+.notification-bell-btn {
   appearance: none;
+  -webkit-appearance: none;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -11,17 +17,22 @@
   width: 40px;
   height: 40px;
   padding: 0;
-  color: var(--text-main);
+  margin: 0;
+  color: var(--text-main, #2c352c);
   background: transparent;
   border: 0;
+  outline: none;
   border-radius: 50%;
+  cursor: pointer;
   transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .notification-bell-trigger:hover,
-.notification-bell-trigger[aria-expanded="true"] {
-  color: var(--primary-hover);
-  background: var(--background-green);
+.notification-bell-btn:hover,
+.notification-bell-trigger[aria-expanded="true"],
+.notification-bell-btn[aria-expanded="true"] {
+  color: var(--primary-hover, #4a6741);
+  background: var(--background-green, #f0f4ee);
 }
 
 .notification-bell-count {

@@ -17,30 +17,10 @@ import usePageMedia from "../hooks/usePageMedia.js";
 import "./ContactPage.css";
 
 const QUICK_LINKS = [
-  {
-    to: "/event/brollop/",
-    eyebrow: "Fira",
-    title: "Bröllop & fest",
-    text: "Ladan, loftet och hela gårdens möjligheter.",
-  },
-  {
-    to: "/gruppdagar/",
-    eyebrow: "Samlas",
-    title: "Gruppdagar",
-    text: "Möhippa, teambuilding eller en dag med vänner.",
-  },
-  {
-    to: "/kurser/yoga/",
-    eyebrow: "Landa",
-    title: "Yoga på loftet",
-    text: "Pass i lugnt tempo med Lina.",
-  },
-  {
-    to: "/kurser/konst/",
-    eyebrow: "Skapa",
-    title: "Måleri & keramik",
-    text: "Kurser och privata grupper i gårdsateljén.",
-  },
+  { to: "/event/brollop/" },
+  { to: "/gruppdagar/" },
+  { to: "/kurser/yoga/" },
+  { to: "/kurser/konst/" },
 ];
 
 function ContactPage() {
@@ -49,9 +29,9 @@ function ContactPage() {
   const media = usePageMedia("contact");
   const quickLinks = QUICK_LINKS.map((item, index) => ({
     ...item,
-    eyebrow: copy(`explore.items.${index}.eyebrow`, item.eyebrow),
-    title: copy(`explore.items.${index}.title`, item.title),
-    text: copy(`explore.items.${index}.body`, item.text),
+    eyebrow: copy(`explore.items.${index}.eyebrow`),
+    title: copy(`explore.items.${index}.title`),
+    text: copy(`explore.items.${index}.body`),
   }));
   const routeRef = useRef(null);
 
@@ -128,19 +108,19 @@ function ContactPage() {
         {media("hero", "/images/event/hero/hero.webp", "hero") && <img
           className="contact-page__hero-image"
           src={media("hero", "/images/event/hero/hero.webp", "hero")}
-          alt="Loftet på Storegården 7 med träbjälkar och ljusinsläpp"
+          alt=""
         />}
         <div className="contact-page__hero-overlay" data-cms-hero-overlay />
         <div className="contact-page__hero-content" data-cms-hero-content>
-          <span className="contact-page__eyebrow">{copy("hero.eyebrow", "Kontakt & hitta hit")}</span>
-          <h1 id="contact-page-title">{copy("hero.title", "Vi ses på Storegården 7")}</h1>
+          <span className="contact-page__eyebrow">{copy("hero.eyebrow")}</span>
+          <h1 id="contact-page-title">{copy("hero.title")}</h1>
           <p>
-            {copy("hero.lead", "I Rackeby, en kvart från Lidköping. Hör av dig om du vill boka, planera ett besök eller bara fråga något om gården.")}
+            {copy("hero.lead")}
           </p>
           <div className="contact-page__hero-actions" data-cms-hero-actions>
             <a className="contact-page__button contact-page__button--light" href={`mailto:${contactEmail}`}>
               <Mail size={18} aria-hidden="true" />
-              {copy("hero.email-cta", "Mejla oss")}
+              {copy("hero.email-cta")}
             </a>
             <a
               className="contact-page__button contact-page__button--ghost"
@@ -149,7 +129,7 @@ function ContactPage() {
               rel="noopener noreferrer"
             >
               <Navigation size={18} aria-hidden="true" />
-              {copy("hero.map-cta", "Öppna vägbeskrivning")}
+              {copy("hero.map-cta")}
             </a>
           </div>
         </div>
@@ -160,17 +140,16 @@ function ContactPage() {
         <div className="contact-page__arrival-grid">
           <div className="contact-page__arrival-copy">
             <span className="contact-page__eyebrow contact-page__eyebrow--dark">
-              {copy("arrival.eyebrow", "Hitta hit")}
+              {copy("arrival.eyebrow")}
             </span>
-            <h2 id="arrival-title">{copy("arrival.title", "Nära stan. Mitt på landet.")}</h2>
+            <h2 id="arrival-title">{copy("arrival.title")}</h2>
             <p>
-              {copy("arrival.body", "Storegården 7 ligger i Rackeby, cirka 15 minuter med bil från Lidköpings centrum.")}
+              {copy("arrival.body")}
             </p>
 
             <div
               ref={routeRef}
               className="contact-page__route"
-              aria-label="Avstånd från Lidköping"
             >
               <span className="contact-page__route-dot" aria-hidden="true" />
               <span className="contact-page__route-line" aria-hidden="true" />
@@ -178,27 +157,27 @@ function ContactPage() {
                 7
               </span>
               <div className="contact-page__route-label contact-page__route-label--start">
-                Lidköping
+                {copy("arrival.route-start")}
               </div>
-              <div className="contact-page__route-time">ca 15 min</div>
+              <div className="contact-page__route-time">{copy("arrival.route-time")}</div>
               <div className="contact-page__route-label contact-page__route-label--end">
-                Storegården
+                {copy("arrival.route-end")}
               </div>
             </div>
           </div>
 
-          <aside className="contact-page__address-card" aria-label="Besöksinformation">
+          <aside className="contact-page__address-card">
             <div className="contact-page__address-heading">
               <MapPin size={23} aria-hidden="true" />
               <div>
-                <span>Besöksadress</span>
+                <span>{copy("arrival.address-label")}</span>
                 <strong>{fullAddress}</strong>
               </div>
             </div>
             <ul className="contact-page__facts">
               <li>
                 <Clock3 size={19} aria-hidden="true" />
-                <span>{copy("arrival.visit-note", "Hör av dig före ett besök så ser vi till att någon är på plats.")}</span>
+                <span>{copy("arrival.visit-note")}</span>
               </li>
             </ul>
             <a
@@ -207,7 +186,7 @@ function ContactPage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Visa i Google Maps
+              {copy("arrival.maps-cta")}
               <ExternalLink size={16} aria-hidden="true" />
             </a>
           </aside>
@@ -218,9 +197,9 @@ function ContactPage() {
 
       <ExploreMoreSection
         id="contact-explore-more"
-        eyebrow={copy("explore.eyebrow", "Vad vill du veta mer om?")}
-        title={copy("explore.title", "Hitta rätt direkt")}
-        intro={copy("explore.body", "När du har hört av dig kan du fortsätta upptäcka det som passar din dag på gården.")}
+        eyebrow={copy("explore.eyebrow")}
+        title={copy("explore.title")}
+        intro={copy("explore.body")}
         items={quickLinks}
       />
     </main>

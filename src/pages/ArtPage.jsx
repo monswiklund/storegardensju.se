@@ -23,7 +23,7 @@ import {
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import { fetchPublicEvents } from "../services/eventsService.js";
-import usePageCopy from "../hooks/usePageCopy.js";
+import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
 import usePageLists from "../hooks/usePageLists.js";
 import {
@@ -50,45 +50,25 @@ const MALERI_TRACK = TRACKS[MALERI_TRACK_ID];
 const INSTRUCTOR = MALERI_TRACK.instructor;
 const CONTACT_EMAIL = INSTRUCTOR.email;
 
-// The dash rail on the right: how many sections the page has and where you are.
-// Module-level for a stable array reference (ScrollSpyNav keys its listener on
-// it); ids missing from the DOM are skipped at runtime.
-const SPY_SECTIONS = [
-  { id: "art-hero", label: "Start" },
-  { id: "art-courses-section", label: "Kurser" },
-  { id: "art-content-section", label: "Ateljén" },
-  { id: "art-offerings-section", label: "Utbud" },
-  { id: "art-cta-section", label: "Boka" },
-  { id: "om-ann", label: "Om Ann" },
-  { id: "fragor-och-svar", label: "Frågor" },
-  { id: "tidigare-pass", label: "Tidigare" },
-  { id: "hitta-hit", label: "Hitta hit" },
-  { id: "kontakt", label: "Kontakt" },
-];
-
 // Navbar (60px) plus the section subnav (48px).
 const SPY_OFFSET = 130;
 
 function ArtPage() {
   const copy = usePageCopy("art");
+  const siteCopy = useSiteCopy();
   const media = usePageMedia("art");
   const list = usePageLists("art");
-  const offerings = list("offerings", [
-    { title: "Målningskurser", body: "Prova akvarell eller akryl. Ann visar tekniker och övningar och hjälper dig vidare under passet." },
-    { title: "Keramik och lera", body: "Arbeta med handbygge, ringling eller drejning i keramikverkstaden. Verktyg och material finns på plats." },
-    { title: "Privata workshops", body: "Boka ateljén för ett kompisgäng eller en annan grupp. Kursen anpassas efter vad ni vill prova och hur mycket erfarenhet ni har." },
-    { title: "Teambuilding och kalas", body: "Måleri och keramik går att boka för företag, möhippor, svensexor och kalas. Det går också att lägga till fika." },
-  ]);
+  const offerings = list("offerings", []);
   const offeringIcons = [Palette, Flame, Users, Sparkles];
   const offeringClasses = ["offering-terracotta", "offering-green", "offering-slate", "offering-gold"];
-  const faq = list("faq", FAQ.map(({ answer, question }) => ({ body: answer, title: question })))
+  const faq = list("faq", [])
     .filter((item) => item.title && item.body)
     .map((item) => ({ question: item.title, answer: item.body }));
   const instructor = {
     ...INSTRUCTOR,
-    name: copy("instructor.title", INSTRUCTOR.name),
-    role: copy("instructor.role", INSTRUCTOR.role),
-    bio: copy("instructor.bio", INSTRUCTOR.bio),
+    name: copy("instructor.title"),
+    role: copy("instructor.role"),
+    bio: copy("instructor.bio"),
   };
   const [showMailFallback, setShowMailFallback] = useState(false);
   const [apiEvents, setApiEvents] = useState([]);
@@ -121,8 +101,21 @@ function ArtPage() {
   const nextPassItem = upcomingPassesList[0] || null;
 
   const contactSubject = nextPassItem
-    ? `Fråga om ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
-    : "Förfrågan: Workshop eller kurs på Storegården 7";
+    ? `${siteCopy("courses.inquiry-prefix") || "Fråga om"} ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
+    : copy("hero.contact-cta");
+
+  const spySections = [
+    { id: "art-hero", label: siteCopy("nav.start") },
+    { id: "art-courses-section", label: siteCopy("courses.courses-label") },
+    { id: "art-content-section", label: copy("content.title") },
+    { id: "art-offerings-section", label: copy("offerings.title") },
+    { id: "art-cta-section", label: copy("cta.button") },
+    { id: "om-ann", label: instructor.name },
+    { id: "fragor-och-svar", label: siteCopy("courses.faq-label") },
+    { id: "tidigare-pass", label: siteCopy("courses.past-label") },
+    { id: "hitta-hit", label: siteCopy("courses.directions-label") },
+    { id: "kontakt", label: siteCopy("nav.contact") },
+  ];
 
   useSeo({
     ...seoMeta.kurserKonst,
@@ -135,7 +128,7 @@ function ArtPage() {
 
   return (
     <div className="art-page">
-      <ScrollSpyNav sections={SPY_SECTIONS} offset={SPY_OFFSET} />
+      <ScrollSpyNav sections={spySections} offset={SPY_OFFSET} />
 
       <main id="main-content">
         {/* Hero Section */}
@@ -146,13 +139,13 @@ function ArtPage() {
           <div className="art-hero__content" data-cms-hero-content>
             <span className="art-hero__eyebrow">
               <Sparkles size={16} aria-hidden="true" />
-              {copy("hero.eyebrow", "Gårdsateljén på Storegården 7")}
+              {copy("hero.eyebrow")}
             </span>
 
-            <h1 className="art-hero__heading">{copy("hero.title", "Måleri & keramik")}</h1>
+            <h1 className="art-hero__heading">{copy("hero.title")}</h1>
 
             <p className="art-hero__subheading">
-              {copy("hero.lead", "Kurser i akvarell, akryl och lera i inspirerande miljö på gården utanför Lidköping. Inga förkunskaper krävs.")}
+              {copy("hero.lead")}
             </p>
 
             <div className="art-hero__actions" data-cms-hero-actions>
@@ -161,14 +154,14 @@ function ArtPage() {
                 className="art-btn art-btn--primary"
                 onClick={() => scrollToSection("art-courses-section")}
               >
-                {copy("hero.primary-cta", "Se kommande kurser")}
+                {copy("hero.primary-cta")}
               </button>
               <button
                 type="button"
                 className="art-btn art-btn--secondary"
                 onClick={() => scrollToSection("art-cta-section")}
               >
-                {copy("hero.secondary-cta", "Boka för egen grupp")}
+                {copy("hero.secondary-cta")}
               </button>
             </div>
           </div>
@@ -196,8 +189,8 @@ function ArtPage() {
             <NoUpcomingSection
               trackId={MALERI_TRACK_ID}
               background="white"
-              heading={copy("empty.title", "Kurser med fast datum släpps här")}
-              body={copy("empty.body", `Just nu har vi ingen kurs med fast datum i kalendern. Nya tillfällen läggs upp här — och du kan alltid höra av dig till ${INSTRUCTOR.name} för att boka en egen kurs i måleri eller keramik för din grupp.`)}
+              heading={copy("empty.title")}
+              body={copy("empty.body")}
             />
           ) : (
             upcomingPassesList.map((pass) => (
@@ -244,8 +237,8 @@ function ArtPage() {
                     style={{ background: "var(--accent-color)" }}
                   />
                 </div>
-                <h2>{copy("offerings.title", "Det här kan du göra i ateljén")}</h2>
-                <p>{copy("offerings.lead", "Kom på en kurs med fast datum eller boka en egen tid för din grupp.")}</p>
+                <h2>{copy("offerings.title")}</h2>
+                <p>{copy("offerings.lead")}</p>
               </div>
 
               <div className="art-offerings-grid">
@@ -275,14 +268,14 @@ function ArtPage() {
             <FadeInSection>
               <div className="art-cta-banner">
                 <div className="art-cta-banner__inner">
-                  <h2>{copy("contact.title", "Planerar du ett event eller vill du gå en kurs?")}</h2>
-                  <p>{copy("contact.body", "Vi tar emot möhippor, födelsedagar, företag och andra grupper. Berätta hur många ni är och om ni vill måla, arbeta med lera eller kombinera kursen med fika.")}</p>
+                  <h2>{copy("contact.title")}</h2>
+                  <p>{copy("contact.body")}</p>
                   <a
-                    href={`mailto:${CONTACT_EMAIL}?subject=Förfrågan: Workshop eller kurs på Storegården 7`}
+                    href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(contactSubject)}`}
                     className="art-button art-button--premium"
                   >
                     <Mail size={18} />
-                    {copy("contact.cta", "Skicka en förfrågan")}
+                    {copy("contact.cta")}
                   </a>
                 </div>
               </div>
@@ -290,49 +283,49 @@ function ArtPage() {
           </PageSection>
         </div>
 
-        <SectionDivider above="green" below="white" variant="hill" />
+        <SectionDivider above="alt" below="white" variant="wave" />
 
-        {/* Every shared section below runs a different colour and a different
-            variant than the same section on /kurser/yoga - portrait vs avatar,
-            two columns vs one, timeline vs cards - so the two hubs read as two
-            pages rather than one template with the nouns swapped. */}
+        {/* Instruktör */}
         <InstructorSection
           id="om-ann"
           instructor={instructor}
-          label={copy("instructor.eyebrow", "Vem håller kurserna")}
+          label={copy("instructor.eyebrow")}
           background="white"
-          variant="band"
+          variant="portrait"
+          image={media("instructor.image", "/images/ann-profile.webp", "avatar") || instructor.image}
         />
 
-        <SectionDivider above="white" below="alt" variant="wave" />
+        <SectionDivider above="white" below="green" variant="hill" />
 
-        {/* FAQ stays visible: the FAQPage JSON-LD reads the same answers, and
-            Google requires markup to match what a visitor can see. */}
+        {/* Frågor & Svar */}
         <FaqSection
           faq={faq}
-          label={copy("faq.eyebrow", "Bra att veta")}
-          heading={copy("faq.title", "Vanliga frågor")}
-          background="alt"
+          label={copy("faq.eyebrow")}
+          heading={copy("faq.title")}
+          background="green"
           variant="stack"
+          centered
         />
 
-        <SectionDivider above="alt" below="white" variant="valley" />
+        <SectionDivider above="green" below="alt" variant="valley" />
 
+        {/* Tidigare kurser / Inspiration */}
         <PastPassesSection
           passes={PAST_PASSES}
           trackId={MALERI_TRACK_ID}
-          heading={copy("past.title", "Tidigare kurser och skapardagar")}
-          background="white"
-          variant="timeline"
+          heading={copy("past.title")}
+          background="alt"
+          variant="cards"
         />
 
-        <SectionDivider above="white" below="alt" variant="wave" />
+        <SectionDivider above="alt" below="white" variant="wave" />
 
-        <section className="art-location" id="hitta-hit" aria-labelledby="art-location-title">
-          <div className="art-location__copy">
-            <span className="art-location__eyebrow">{copy("directions.eyebrow", "Hitta hit")}</span>
-            <h2 id="art-location-title">{copy("directions.title", "Storegården 7, Rackeby")}</h2>
-            <p>{copy("directions.body", `Ateljén ligger ${COURSE_LOCATION.travelNote} från Lidköping. Det finns gott om parkering vid ladan.`)}</p>
+        {/* Hitta hit */}
+        <section id="hitta-hit" className="art-location">
+          <div className="art-location__content">
+            <span className="art-eyebrow">{copy("directions.eyebrow")}</span>
+            <h2>{copy("directions.title")}</h2>
+            <p>{copy("directions.body")}</p>
           </div>
           <div className="art-location__details">
             <address>
@@ -345,23 +338,23 @@ function ArtPage() {
               rel="noopener noreferrer"
             >
               <MapPin size={17} aria-hidden="true" />
-              {copy("directions.cta", "Visa på karta")}
+              {copy("directions.cta")}
               <ArrowRight size={16} aria-hidden="true" />
             </a>
           </div>
         </section>
 
-        <section className="art-next-course" aria-label="Andra kurser på gården">
-          <span>{copy("other.eyebrow", "Mer att göra hos oss")}</span>
+        <section className="art-next-course">
+          <span>{copy("other.eyebrow")}</span>
           <a href={`${TRACKS.yoga.hubPath}/`}>
-            {copy("other.title", "Se även Yoga på loftet")}
+            {copy("other.title")}
             <ArrowRight size={16} aria-hidden="true" />
           </a>
         </section>
 
         <ContactSection
-          heading={copy("contact.section-title", "Fråga om en kurs")}
-          body={copy("contact.section-body", `Hör av dig till ${instructor.name} — hon svarar gärna på frågor om kurserna, nivån eller hur en dag i ateljén läggs upp.`)}
+          heading={copy("contact.section-title")}
+          body={copy("contact.section-body")}
           email={CONTACT_EMAIL}
           subject={contactSubject}
           background="alt"

@@ -43,12 +43,12 @@ const chipIcons = {
 };
 
 const subjectSuggestions = [
-  { label: "Bröllop", icon: "heart" },
-  { label: "Fest & kalas", icon: "sparkles" },
-  { label: "Företagsevent", icon: "briefcase" },
-  { label: "Möhippa & svensexa", icon: "users" },
-  { label: "Kurs & workshop", icon: "brush" },
-  { label: "Utställning & loppis", icon: "tag" },
+  { id: "wedding", icon: "heart" },
+  { id: "party", icon: "sparkles" },
+  { id: "corporate", icon: "briefcase" },
+  { id: "group", icon: "users" },
+  { id: "course", icon: "brush" },
+  { id: "exhibition", icon: "tag" },
 ];
 
 const iconMap = {
@@ -89,11 +89,6 @@ const iconMap = {
   ),
 };
 
-const methodNotes = {
-  email: "Vi svarar vanligtvis inom 24 timmar.",
-  instagram: "Följ oss för inspiration och uppdateringar.",
-};
-
 const leafIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -112,44 +107,56 @@ const leafIcon = (
   </svg>
 );
 
-function ContactSection({ defaultOpen = false }) {
-  const copy = usePageCopy("site");
-  const [subjectValue, setSubjectValue] = useState("");
-  const [fallbackText, setFallbackText] = useState("");
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+function ContactSection({
+  initialSubject = "",
+  startOpen = false,
+  cmsPage = "site",
+}) {
+  const copy = usePageCopy(cmsPage);
+  const [subjectValue, setSubjectValue] = useState(initialSubject);
+  const [isOpen, setIsOpen] = useState(startOpen);
+  const [fallbackText, setFallbackText] = useState(null);
 
   useEffect(() => {
-    const handleExpand = () => {
-      setTimeout(() => {
-        setIsOpen(true);
-      }, 500);
-    };
-    window.addEventListener("expand-contact-form", handleExpand);
-    return () => {
-      window.removeEventListener("expand-contact-form", handleExpand);
-    };
-  }, []);
+    if (initialSubject) {
+      setSubjectValue(initialSubject);
+      setIsOpen(true);
+    }
+  }, [initialSubject]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const name = data.get("name");
-    const email = data.get("email");
-    const subject = data.get("subject") || "Allmän fråga";
-    const date = data.get("date");
-    const message = data.get("message");
+    const form = e.target;
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const date = form.date.value;
+    const subject = subjectValue || form.subject.value.trim();
+    const message = form.message.value.trim();
 
-    const subjectLine = `${subject} – ${name}`;
-    const bodyText = `${date ? `Önskat datum: ${date}\n\n` : ""}${message}\n\n${name}\nE-post: ${email}`;
-    window.location.href = `mailto:${contactEmail}?subject=${encodeURIComponent(subjectLine)}&body=${encodeURIComponent(bodyText)}`;
-    setFallbackText(`Till: ${contactEmail}\nÄmne: ${subjectLine}\n\n${bodyText}`);
+    const bodyLines = [
+      `Namn: ${name}`,
+      `E-post: ${email}`,
+      date ? `Önskat datum: ${date}` : null,
+      `Ämne: ${subject}`,
+      "",
+      message,
+    ].filter((line) => line !== null);
+
+    const body = bodyLines.join("\n");
+    const mailtoUrl = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailtoUrl;
+
+    setTimeout(() => {
+      setFallbackText(body);
+    }, 1000);
   };
 
   return (
     <section className="contact-section" aria-labelledby="contact-heading">
       <div className="contact-container">
         <span className="section-eyebrow">
-          {copy("contact.eyebrow", "KONTAKT")}
+          {copy("contact.eyebrow")}
         </span>
         <div className="section-ornament" aria-hidden="true">
           <span className="section-ornament-line"></span>
@@ -157,13 +164,10 @@ function ContactSection({ defaultOpen = false }) {
           <span className="section-ornament-line"></span>
         </div>
         <h2 id="contact-heading">
-          {copy("contact.title", "Kontakta oss")}
+          {copy("contact.title")}
         </h2>
         <p className="contact-subtitle">
-          {copy(
-            "contact.lead",
-            "Har du frågor, vill boka en kurs eller funderar på ett datum för fest? Berätta vad du planerar, så återkommer vi så snart vi kan.",
-          )}
+          {copy("contact.lead")}
         </p>
 
         <div className="contact-trigger-wrapper">
@@ -174,7 +178,7 @@ function ContactSection({ defaultOpen = false }) {
             aria-controls="contact-collapsible-content"
             onClick={() => setIsOpen((prev) => !prev)}
           >
-            {isOpen ? "Dölj kontaktformuläret" : "Öppna kontaktformuläret"}
+            {isOpen ? copy("contact.form.toggle-close") : copy("contact.form.toggle-open")}
             <svg
               className={`contact-toggle-chevron ${isOpen ? "contact-toggle-chevron--open" : ""}`}
               xmlns="http://www.w3.org/2000/svg"
@@ -203,22 +207,22 @@ function ContactSection({ defaultOpen = false }) {
             <form className="contact-form contact-panel" onSubmit={handleSubmit}>
               <div className="contact-field-row">
                 <div className="contact-field">
-                  <label htmlFor="contact-name">Namn *</label>
+                  <label htmlFor="contact-name">{copy("contact.form.name-label")}</label>
                   <input
                     id="contact-name"
                     name="name"
                     type="text"
-                    placeholder="Ditt namn"
+                    placeholder={copy("contact.form.name-placeholder")}
                     required
                   />
                 </div>
                 <div className="contact-field">
-                  <label htmlFor="contact-email">E-post *</label>
+                  <label htmlFor="contact-email">{copy("contact.form.email-label")}</label>
                   <input
                     id="contact-email"
                     name="email"
                     type="email"
-                    placeholder="din@email.se"
+                    placeholder={copy("contact.form.email-placeholder")}
                     autoComplete="email"
                     required
                   />
@@ -226,42 +230,45 @@ function ContactSection({ defaultOpen = false }) {
               </div>
 
               <div className="contact-field">
-                <label htmlFor="contact-date">Önskat datum (valfritt)</label>
+                <label htmlFor="contact-date">{copy("contact.form.date-label")}</label>
                 <input id="contact-date" name="date" type="date" />
               </div>
 
               <div className="contact-field">
-                <label htmlFor="contact-subject">Ämne *</label>
-                <div className="contact-chips" role="group" aria-label="Föreslagna ämnen">
-                  {subjectSuggestions.map((suggestion) => (
-                    <button
-                      key={suggestion.label}
-                      type="button"
-                      className={`contact-chip${
-                        subjectValue === suggestion.label
-                          ? " contact-chip--active"
-                          : ""
-                      }`}
-                      aria-pressed={subjectValue === suggestion.label}
-                      onClick={() => setSubjectValue(suggestion.label)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
+                <label htmlFor="contact-subject">{copy("contact.form.subject-label")}</label>
+                <div className="contact-chips" role="group">
+                  {subjectSuggestions.map((suggestion) => {
+                    const label = copy(`contact.chips.${suggestion.id}`) || suggestion.id;
+                    return (
+                      <button
+                        key={suggestion.id}
+                        type="button"
+                        className={`contact-chip${
+                          subjectValue === label
+                            ? " contact-chip--active"
+                            : ""
+                        }`}
+                        aria-pressed={subjectValue === label}
+                        onClick={() => setSubjectValue(label)}
                       >
-                        {chipIcons[suggestion.icon]}
-                      </svg>
-                      {suggestion.label}
-                    </button>
-                  ))}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          {chipIcons[suggestion.icon]}
+                        </svg>
+                        {label}
+                      </button>
+                    );
+                  })}
                 </div>
                 <input
                   id="contact-subject"
@@ -269,18 +276,18 @@ function ContactSection({ defaultOpen = false }) {
                   type="text"
                   value={subjectValue}
                   onChange={(e) => setSubjectValue(e.target.value)}
-                  placeholder="Välj ovan eller skriv eget ämne"
+                  placeholder={copy("contact.form.subject-placeholder")}
                   required
                 />
               </div>
 
               <div className="contact-field">
-                <label htmlFor="contact-message">Meddelande *</label>
+                <label htmlFor="contact-message">{copy("contact.form.message-label")}</label>
                 <textarea
                   id="contact-message"
                   name="message"
                   rows={5}
-                  placeholder="Berätta vad du vill boka och ungefär hur många ni blir."
+                  placeholder={copy("contact.form.message-placeholder")}
                   required
                 />
               </div>
@@ -289,10 +296,10 @@ function ContactSection({ defaultOpen = false }) {
                 <span className="contact-note-icon">{leafIcon}</span>
                 <p>
                   <strong>
-                    {copy("contact.response-time", "Vi brukar svara inom 24 timmar.")}
+                    {copy("contact.response-time")}
                   </strong>
                   <br />
-                  {copy("contact.thanks", "Tack för att du hör av dig.")}
+                  {copy("contact.thanks")}
                 </p>
               </div>
 
@@ -313,7 +320,7 @@ function ContactSection({ defaultOpen = false }) {
                     <rect x="2" y="4" width="20" height="16" rx="2" />
                     <path d="m2 7 10 7 10-7" />
                   </svg>
-                  Skicka meddelande
+                  {copy("contact.form.submit-label")}
                 </button>
               </div>
 
@@ -328,7 +335,7 @@ function ContactSection({ defaultOpen = false }) {
 
             <div className="contact-aside">
               <h3 className="contact-aside-heading">
-                {copy("contact.direct-title", "Du kan också nå oss direkt")}
+                {copy("contact.direct-title")}
               </h3>
               {contactMethods.map((method) => {
                 const icon = iconMap[method.icon] ?? null;
@@ -348,10 +355,7 @@ function ContactSection({ defaultOpen = false }) {
                       <h4>{method.label}</h4>
                       <p className="contact-info">{method.display}</p>
                       <p className="contact-card-note">
-                        {copy(
-                          `contact.methods.${method.id}.note`,
-                          methodNotes[method.id],
-                        )}
+                        {copy(`contact.methods.${method.id}.note`)}
                       </p>
                     </div>
                     <svg

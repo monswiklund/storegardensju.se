@@ -24,104 +24,46 @@ import "./MohippaPage.css";
 
 const CONTACT_EMAIL = "bylinawiklund@gmail.com";
 
-const GROUP_OCCASIONS = ["Svensexa", "Teambuilding", "Afterwork", "Workshop"];
+const DEFAULT_OCCASIONS = ["Svensexa", "Teambuilding", "Afterwork", "Workshop"];
 
-const HERO_FACTS = [
-  { label: "Pris från", value: "500 kr/person" },
-  { label: "Tid", value: "10:00-22:00" },
-  { label: "Upplägg", value: "Baspaket + tillval" },
+const BASE_FEATURE_DEFINITIONS = [
+  { id: "planning", icon: <Calendar size={20} /> },
+  { id: "toast", icon: <Heart size={20} /> },
+  { id: "setting", icon: <Sparkles size={20} /> },
+  { id: "music", icon: <Music size={20} /> },
+  { id: "food", icon: <Utensils size={20} /> },
 ];
 
-const BASE_FEATURES = [
-  {
-    title: "Planeringsmöte",
-    text: "Vi ses på Storegården 7 och går igenom hur ni vill lägga upp dagen.",
-    icon: <Calendar size={20} />,
-  },
-  {
-    title: "Välkomstskål",
-    text: "Vi förbereder drycken ni själva köpt in och lämnat dagen innan för kylning.",
-    icon: <Heart size={20} />,
-  },
-  {
-    title: "Dukning och lokaler",
-    text: "Vi dukar och dekorerar inomhus. Ni får använda ladan, loftet och uteplatserna.",
-    icon: <Sparkles size={20} />,
-  },
-  {
-    title: "Musik",
-    text: "Vi sköter ljud och musik. Skicka gärna en spellista inför dagen.",
-    icon: <Music size={20} />,
-  },
-  {
-    title: "Mat",
-    text: "Ni köper maten själva, så hanterar vi den och lägger upp den åt er.",
-    icon: <Utensils size={20} />,
-  },
-];
-
-const DETAILS = [
-  "Möjlighet att lämna mat och dryck för kylning dagen innan.",
-  "Vi finns på plats under dagen för att hjälpa till med det praktiska.",
-  "Vi tar hand om disk och städning så att ni kan fokusera på varandra.",
-];
-
-const ACTIVITIES = [
+const ACTIVITY_DEFINITIONS = [
   {
     id: "yoga",
-    title: "Yoga",
-    tone: "Starta lugnt",
-    duration: "1 h",
-    description:
-      "Ett guidat yogapass anpassat för gruppen. Mattor finns på plats. Ta gärna med eget bubbel för extra festlig stämning.",
-    price: "200 kr/person",
     priceVal: 200,
     category: "lugn",
-    image: "/images/evenemang/slide12.webp",
+    defaultImage: "/images/evenemang/slide12.webp",
   },
   {
     id: "farg",
-    title: "Måla med färg",
-    tone: "Målarpass",
-    description:
-      "Måla din egen tavla och testa olika tekniker. Tavla, färg och utrustning ingår.",
-    price: "300 kr/person",
     priceVal: 300,
     category: "kreativt",
-    image: "/images/evenemang/konstafton/konstafton-2025.webp",
+    defaultImage: "/images/evenemang/konstafton/konstafton-2025.webp",
   },
   {
     id: "collage",
-    title: "Gör ett eget collage",
-    tone: "Moodboard",
-    description:
-      "Bläddra i tidningar och böcker, välj bilder och bygg ett eget collage eller en moodboard.",
-    price: "100 kr/person",
     priceVal: 100,
     category: "lugn",
-    image: "/images/evenemang/slide10.webp",
+    defaultImage: "/images/evenemang/slide10.webp",
   },
   {
     id: "cocktail",
-    title: "Cocktailkurs",
-    tone: "Höj tempot",
-    description:
-      "Lär er att blanda två valfria drinkar. Ni köper själva in alkohol, vi står för utrustning, juicer, mixers och garnityr.",
-    price: "300 kr/person",
     priceVal: 300,
     category: "festligt",
-    image: "/images/evenemang/slide2.webp",
+    defaultImage: "/images/evenemang/slide2.webp",
   },
   {
     id: "keramik",
-    title: "Måla din egen keramikskål",
-    tone: "Minne från dagen",
-    description:
-      "Alla får varsin handgjord keramikskål och pennor för porslin. Motivet bränns hemma i ugn efteråt.",
-    price: "400 kr/person",
     priceVal: 400,
     category: "kreativt",
-    image: "/images/konst-keramik/slide16.webp",
+    defaultImage: "/images/konst-keramik/slide16.webp",
   },
 ];
 
@@ -132,19 +74,20 @@ function MohippaPage() {
   const copy = usePageCopy("group-days");
   const media = usePageMedia("group-days");
   const list = usePageLists("group-days");
-  const heroFacts = list("hero-facts", HERO_FACTS.map(({ label, value }) => ({ body: label, value })));
-  const featureIcons = BASE_FEATURES.map((feature) => feature.icon);
-  const baseFeatures = list("package-features", BASE_FEATURES.map(({ title, text }) => ({ body: text, title }))).map((feature, index) => ({
+  const heroFacts = list("hero-facts", []);
+  const baseFeatures = list("package-features", []).map((feature, index) => ({
     ...feature,
-    icon: featureIcons[index % featureIcons.length],
+    icon: BASE_FEATURE_DEFINITIONS[index % BASE_FEATURE_DEFINITIONS.length]?.icon || <Sparkles size={20} />,
   }));
-  const activities = ACTIVITIES.map((activity) => ({
-    ...activity,
-    image: media(`activities.${activity.id}`, activity.image, "card"),
-    title: copy(`activities.items.${activity.id}.title`, activity.title),
-    description: copy(`activities.items.${activity.id}.body`, activity.description),
+  const activities = ACTIVITY_DEFINITIONS.map((def) => ({
+    ...def,
+    image: media(`activities.${def.id}`, def.defaultImage, "card"),
+    title: copy(`activities.items.${def.id}.title`),
+    description: copy(`activities.items.${def.id}.body`),
+    duration: copy(`activities.items.${def.id}.duration`),
+    price: copy(`activities.items.${def.id}.price`),
   }));
-  const details = list("package-details", DETAILS.map((body) => ({ body })));
+  const details = list("package-details", []);
   const [activeSection, setActiveSection] = useState("top");
   const [mainTab, setMainTab] = useState("baspaket"); // "baspaket" or "aktiviteter"
   const [activeTab, setActiveTab] = useState("alla");
@@ -166,21 +109,21 @@ function MohippaPage() {
   const getMailtoLink = () => {
     const activitiesText = selectedObjects.length > 0
       ? selectedObjects.map((a) => `- ${a.title} (${a.price})`).join("\n")
-      : "- Inga tillval valda";
+      : copy("calc.email-no-options");
 
-    const subject = encodeURIComponent("Förfrågan gruppdag på Storegården 7");
+    const subject = encodeURIComponent(copy("calc.email-subject") || "Förfrågan gruppdag på Storegården 7");
     const body = encodeURIComponent(
-      `Hej Storegården 7!\n\n` +
-      `Vi är intresserade av en gruppdag hos er.\n\n` +
-      `- Antal personer: ${guestCount} st\n` +
-      `- Paket: Baspaket (500 kr/person)\n` +
-      `- Valda aktiviteter:\n${activitiesText}\n\n` +
-      `Uppskattad totalkostnad: ${grandTotal.toLocaleString("sv-SE")} kr (${totalPerPerson} kr/person)\n\n` +
-      `Önskat datum: [Fyll i datum här]\n\n` +
-      `Hör gärna av er och berätta om datumet är ledigt.\n\n` +
-      `Med vänliga hälsningar,\n` +
-      `[Ditt namn]\n` +
-      `[Ditt telefonnummer]`
+      `${copy("calc.email-greeting")}\n\n` +
+      `${copy("calc.email-intro")}\n\n` +
+      `- ${copy("calc.guests-label")}: ${guestCount} st\n` +
+      `- ${copy("calc.package-label")}: ${copy("calc.base-package-name")} (500 kr/person)\n` +
+      `- ${copy("calc.chosen-activities")}:\n${activitiesText}\n\n` +
+      `${copy("calc.estimated-total")}: ${grandTotal.toLocaleString("sv-SE")} kr (${totalPerPerson} kr/person)\n\n` +
+      `${copy("calc.requested-date")}: [Fyll i datum här]\n\n` +
+      `${copy("calc.email-closing")}\n\n` +
+      `${copy("calc.email-regards")}\n` +
+      `[${copy("calc.email-name-placeholder") || "Ditt namn"}]\n` +
+      `[${copy("calc.email-phone-placeholder") || "Ditt telefonnummer"}]`
     );
 
     return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
@@ -223,42 +166,42 @@ function MohippaPage() {
   return (
     <div className="mohippa-page-container">
       {/* Floating Scroll Indicator Dot Navigation (Scroll Spy) */}
-      <nav className="scroll-indicator-nav" aria-label="Sidinnehåll">
+      <nav className="scroll-indicator-nav">
         <ul>
           <li>
             <button
               onClick={() => scrollToSection("mohippa-hero-section")}
               className={`scroll-dot ${activeSection === "top" ? "active" : ""}`}
-              title="Gruppdagar"
+              title={copy("nav.start")}
             >
-              <span className="dot-label">Start</span>
+              <span className="dot-label">{copy("nav.start")}</span>
             </button>
           </li>
           <li>
             <button
               onClick={() => scrollToSection("mohippa-planering")}
               className={`scroll-dot ${activeSection === "planering" ? "active" : ""}`}
-              title="Planera er dag"
+              title={copy("nav.planning")}
             >
-              <span className="dot-label">Planering</span>
+              <span className="dot-label">{copy("nav.planning")}</span>
             </button>
           </li>
           <li>
             <button
               onClick={() => scrollToSection("mohippa-cta-section")}
               className={`scroll-dot ${activeSection === "cta" ? "active" : ""}`}
-              title="Planera er dag"
+              title={copy("nav.request")}
             >
-              <span className="dot-label">Förfrågan</span>
+              <span className="dot-label">{copy("nav.request")}</span>
             </button>
           </li>
           <li>
             <button
               onClick={() => scrollToSection("mohippa-contact")}
               className={`scroll-dot ${activeSection === "contact" ? "active" : ""}`}
-              title="Hitta hit & kontakt"
+              title={copy("nav.contact")}
             >
-              <span className="dot-label">Kontakt</span>
+              <span className="dot-label">{copy("nav.contact")}</span>
             </button>
           </li>
         </ul>
@@ -269,25 +212,25 @@ function MohippaPage() {
           <section id="mohippa-hero-section" data-cms-hero className="mohippa-hero" aria-labelledby="mohippa-heading">
             <div className="mohippa-hero__inner">
               <div className="mohippa-hero__copy" data-cms-hero-content>
-                <span className="mohippa-eyebrow">{copy("hero.eyebrow", "Samla gruppen")}</span>
-                <h1 id="mohippa-heading" aria-label="Gruppdag på Storegården 7">
-                  {copy("hero.title-prefix", "Er")}{" "}
+                <span className="mohippa-eyebrow">{copy("hero.eyebrow")}</span>
+                <h1 id="mohippa-heading" aria-label={copy("hero.title-prefix")}>
+                  {copy("hero.title-prefix")}{" "}
                   <span className="mohippa-word-switch" aria-hidden="true">
                     <span className="mohippa-word-switch__track">
-                      {[...GROUP_OCCASIONS, GROUP_OCCASIONS[0]].map((occasion, index) => (
+                      {[...DEFAULT_OCCASIONS, DEFAULT_OCCASIONS[0]].map((occasion, index) => (
                         <span key={`${occasion}-${index}`}>{occasion}</span>
                       ))}
                     </span>
                   </span>{" "}
-                  {copy("hero.title-suffix", "på Storegården 7")}
+                  {copy("hero.title-suffix")}
                 </h1>
                 <p>
-                  {copy("hero.lead", "Boka ladan och loftet från 10:00 till 22:00. Vi hjälper till med det praktiska, och ni kan lägga till aktiviteter om ni vill.")}
+                  {copy("hero.lead")}
                 </p>
 
                 <div className="mohippa-hero__facts" aria-label="Snabbfakta">
-                  {heroFacts.map((fact) => (
-                    <div key={fact.label}>
+                  {heroFacts.map((fact, index) => (
+                    <div key={fact.id || fact.body || fact.value || index}>
                       <span>{fact.body}</span>
                       <strong>{fact.value}</strong>
                     </div>
@@ -304,7 +247,7 @@ function MohippaPage() {
                     }}
                     style={{ cursor: "pointer" }}
                   >
-                    {copy("hero.primary-cta", "Planera er dag")}
+                    {copy("hero.primary-cta")}
                   </button>
                   <button
                     type="button"
@@ -315,7 +258,7 @@ function MohippaPage() {
                     }}
                     style={{ background: "none", border: "1px solid rgba(0,0,0,0.15)", cursor: "pointer" }}
                   >
-                    {copy("hero.secondary-cta", "Se tillval")}
+                    {copy("hero.secondary-cta")}
                     <ArrowDown size={17} />
                   </button>
                 </div>
@@ -324,7 +267,7 @@ function MohippaPage() {
               <div className="mohippa-hero__media" aria-hidden="true">
                 {media("hero", "/images/evenemang/slide2.webp", "hero") && <img src={media("hero", "/images/evenemang/slide2.webp", "hero")} alt="" />}
                 <div className="mohippa-hero__note">
-                  <strong>{copy("hero.note", "Planera er dag")}</strong>
+                  <strong>{copy("hero.note")}</strong>
                 </div>
               </div>
             </div>
@@ -338,21 +281,21 @@ function MohippaPage() {
                   {/* Left Column: Sticky Calculator */}
                   <div className="mohippa-package-card__summary">
                     <div className="mohippa-summary__header">
-                      <span>Baspaketet</span>
-                      <strong>500 kr/person</strong>
+                      <span>{copy("calc.base-package-title")}</span>
+                      <strong>{copy("calc.base-package-price")}</strong>
                     </div>
                     <p className="mohippa-summary__desc">
-                      Lokal, planering och praktisk hjälp ingår. Klicka på flikarna till höger för att forma er gruppdag och välja tillval.
+                      {copy("calc.summary-desc")}
                     </p>
 
                     <div className="mohippa-calculator">
                       <div className="mohippa-calculator__field">
-                        <label htmlFor="guest-count">Antal personer</label>
+                        <label htmlFor="guest-count">{copy("calc.guest-count-label")}</label>
                         <div className="mohippa-guest-picker">
                           <button
                             type="button"
                             onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                            aria-label="Minska antal personer"
+                            aria-label={copy("calc.decrease-guests")}
                           >
                             -
                           </button>
@@ -367,7 +310,7 @@ function MohippaPage() {
                           <button
                             type="button"
                             onClick={() => setGuestCount(guestCount + 1)}
-                            aria-label="Öka antal personer"
+                            aria-label={copy("calc.increase-guests")}
                           >
                             +
                           </button>
@@ -376,12 +319,12 @@ function MohippaPage() {
 
                       <div className="mohippa-calculator__breakdown">
                         <div className="mohippa-breakdown-row">
-                          <span>Baspaket ({guestCount} st):</span>
+                          <span>{copy("calc.base-package-title")} ({guestCount} st):</span>
                           <span>{(guestCount * basePricePerPerson).toLocaleString("sv-SE")} kr</span>
                         </div>
                         {selectedObjects.length > 0 && (
                           <div className="mohippa-breakdown-row mohippa-breakdown-row--details">
-                            <span>Tillval ({selectedObjects.length} st):</span>
+                            <span>{copy("calc.addon-title")} ({selectedObjects.length} st):</span>
                             <span>{(guestCount * activitiesPricePerPerson).toLocaleString("sv-SE")} kr</span>
                           </div>
                         )}
@@ -393,8 +336,8 @@ function MohippaPage() {
                                 <button
                                   type="button"
                                   onClick={() => toggleActivity(a.id)}
-                                  title="Ta bort tillval"
-                                  aria-label={`Ta bort ${a.title}`}
+                                  title={copy("calc.remove-addon")}
+                                  aria-label={copy("calc.remove-addon")}
                                 >
                                   &times;
                                 </button>
@@ -403,7 +346,7 @@ function MohippaPage() {
                           </ul>
                         )}
                         <div className="mohippa-breakdown-row mohippa-breakdown-row--total">
-                          <span>Uppskattat totalpris:</span>
+                          <span>{copy("calc.total-price-label")}</span>
                           <strong>{grandTotal.toLocaleString("sv-SE")} kr</strong>
                         </div>
                         <div className="mohippa-price-per-person">
@@ -416,7 +359,7 @@ function MohippaPage() {
                         href={getMailtoLink()}
                       >
                         <Mail size={18} />
-                        Skicka förfrågan
+                        {copy("calc.send-inquiry")}
                       </a>
                     </div>
                   </div>
@@ -430,14 +373,14 @@ function MohippaPage() {
                         className={`mohippa-main-tab-btn ${mainTab === "baspaket" ? "active" : ""}`}
                         onClick={() => setMainTab("baspaket")}
                       >
-                        1. Baspaket
+                        {copy("calc.tab-base")}
                       </button>
                       <button
                         type="button"
                         className={`mohippa-main-tab-btn ${mainTab === "aktiviteter" ? "active" : ""}`}
                         onClick={() => setMainTab("aktiviteter")}
                       >
-                        2. Välj tillvalsaktiviteter
+                        {copy("calc.tab-addons")}
                       </button>
                     </div>
 
@@ -445,14 +388,14 @@ function MohippaPage() {
                     {mainTab === "baspaket" && (
                       <div className="mohippa-tab-content-pane">
                         <div className="mohippa-section-heading">
-                          <span className="mohippa-eyebrow">{copy("package.eyebrow", "Baspaket")}</span>
+                          <span className="mohippa-eyebrow">{copy("package.eyebrow")}</span>
                           <div className="section-ornament align-left" aria-hidden="true">
                             <span className="section-ornament-line"></span>
                             <Heart size={18} />
                             <span className="section-ornament-line"></span>
                           </div>
-                          <h2 id="mohippa-package-heading">{copy("package.title", "Det här ingår i baspaketet")}</h2>
-                          <p>{copy("package.body", "Ni får tillgång till vår lokal, både ladan och loftet samt tillhörande uteplatser. Ni har tillgång 10:00-22:00.")}</p>
+                          <h2 id="mohippa-package-heading">{copy("package.title")}</h2>
+                          <p>{copy("package.body")}</p>
                         </div>
                         
                         <div className="mohippa-checklist">
@@ -470,7 +413,7 @@ function MohippaPage() {
                         </div>
 
                         <div className="mohippa-good-to-know">
-                          <h3>{copy("package.details-title", "Bra att veta")}</h3>
+                          <h3>{copy("package.details-title")}</h3>
                           <ul>
                             {details.map((detail, index) => (
                               <li key={detail.id || index}>
@@ -486,16 +429,16 @@ function MohippaPage() {
                     {mainTab === "aktiviteter" && (
                       <div className="mohippa-tab-content-pane">
                         <div className="mohippa-section-heading">
-                          <span className="mohippa-eyebrow">{copy("activities.eyebrow", "Tillval och aktiviteter")}</span>
+                          <span className="mohippa-eyebrow">{copy("activities.eyebrow")}</span>
                           <div className="section-ornament align-left" aria-hidden="true">
                             <span className="section-ornament-line"></span>
                             <Palette size={18} />
                             <span className="section-ornament-line"></span>
                           </div>
                           <h2 id="mohippa-activities-heading">
-                            {copy("activities.title", "Lägg till det som passar gruppen")}
+                            {copy("activities.title")}
                           </h2>
-                          <p>{copy("activities.lead", "Välj de aktiviteter som gruppen vill göra. När ni klickar på ett tillval läggs det direkt till i prisberäkningen.")}</p>
+                          <p>{copy("activities.lead")}</p>
                         </div>
 
                         <div className="mohippa-tabs">
@@ -504,28 +447,28 @@ function MohippaPage() {
                             className={`mohippa-tab-btn ${activeTab === "alla" ? "active" : ""}`}
                             onClick={() => setActiveTab("alla")}
                           >
-                            Visa alla
+                            {copy("calc.filter-all")}
                           </button>
                           <button
                             type="button"
                             className={`mohippa-tab-btn ${activeTab === "lugn" ? "active" : ""}`}
                             onClick={() => setActiveTab("lugn")}
                           >
-                            Lugnt
+                            {copy("calc.filter-calm")}
                           </button>
                           <button
                             type="button"
                             className={`mohippa-tab-btn ${activeTab === "kreativt" ? "active" : ""}`}
                             onClick={() => setActiveTab("kreativt")}
                           >
-                            Måleri och keramik
+                            {copy("calc.filter-creative")}
                           </button>
                           <button
                             type="button"
                             className={`mohippa-tab-btn ${activeTab === "festligt" ? "active" : ""}`}
                             onClick={() => setActiveTab("festligt")}
                           >
-                            Mat, dryck och fest
+                            {copy("calc.filter-festive")}
                           </button>
                         </div>
 
@@ -569,10 +512,10 @@ function MohippaPage() {
                                     {isSelected ? (
                                       <>
                                         <CheckCircle2 size={14} />
-                                        Vald
+                                        {copy("calc.addon-selected")}
                                       </>
                                     ) : (
-                                      "Lägg till"
+                                      copy("calc.add-addon")
                                     )}
                                   </button>
                                 </div>
@@ -599,8 +542,8 @@ function MohippaPage() {
                 <HomeServicesSection
                   cmsPage="group-days"
                   excludeId="gruppdagar"
-                  title={copy("services-section.title", "Utforska mer")}
-                  eyebrow={copy("services-section.eyebrow", "FLER AKTIVITETER")}
+                  title={copy("services-section.title")}
+                  eyebrow={copy("services-section.eyebrow")}
                 />
               </FadeInSection>
             </PageSection>

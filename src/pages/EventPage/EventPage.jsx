@@ -14,7 +14,7 @@ import { PageSection, ScrollSpyNav, SectionDivider } from "../../components";
 import { HomeServicesSection } from "../../features/home";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import { useSeo } from "../../hooks/useSeo.js";
-import usePageCopy from "../../hooks/usePageCopy.js";
+import usePageCopy, { useSiteCopy } from "../../hooks/usePageCopy.js";
 import usePageMedia from "../../hooks/usePageMedia.js";
 import usePageLists from "../../hooks/usePageLists.js";
 import { seoMeta } from "../../config/seoMeta.js";
@@ -22,103 +22,54 @@ import { canonicalPath } from "../../config/routes.js";
 import { smoothScrollTo } from "../../utils/scrollUtils.js";
 import "./EventPage.css";
 
-const EVENT_FACTS = [
+// Layout configuration for the 3 event cards in the hero section
+const EVENT_TYPES_CONFIG = [
   {
-    value: "360 kvm",
-    label: "Inomhus på två våningar: ladan och loftet.",
-  },
-  {
-    value: "150+",
-    label: "Sittande gäster på loftet.",
-  },
-  {
-    value: "Bar, kök",
-    label: "Kök med arbetsytor, handdisk samt varmt och kallt vatten.",
-  },
-  {
-    value: "Personal",
-    label: "Vi kan hjälpa till med servering, bar eller DJ vid behov.",
-  },
-];
-
-const CAPACITY_BULLETS = [
-  { label: "Loftet:", body: "Plats för 150+ sittande gäster vid middag eller föreläsning." },
-  { label: "Ladan:", body: "Plats för 50+ sittande gäster på bottenvåningen." },
-  { label: "Mingel:", body: "Tillsammans rymmer lokalerna 300+ stående gäster." },
-];
-
-const AMENITIES_BULLETS = [
-  { label: "Dukning & möbler:", body: "Glas, tallrikar, bestick, bord och stolar finns färdigt för alla gäster." },
-  { label: "Kök:", body: "Bra arbetsytor, handdisk samt varmt och kallt vatten. Muurikka-hällar kan hyras." },
-  { label: "Övriga ytor:", body: "Lounge med soffor, dansgolv, bar och toaletter." },
-  { label: "Ljud och ljus:", body: "Ljudanläggning och festbelysning är installerade." },
-  { label: "Mat och dryck:", body: "Ni får ta med egen mat och dryck. Vid behov kan vi hjälpa till att ordna serveringspersonal, bar eller DJ." },
-];
-
-const EVENT_TYPES = [
-  {
-    title: "Bröllop",
-    description:
-      "Hyr ladan och loftet för bröllopsmiddag och fest. Ni får ta med egen mat och dryck.",
-    to: "/event/brollop/",
-    linkLabel: "Läs om bröllop",
     variant: "wedding",
-    image: "/images/event/hero/hero-2.webp",
-    imageAlt: "Dukade långbord på loftet inför ett bröllop",
+    to: "/event/brollop/",
+    defaultImage: "/images/event/hero/hero-2.webp",
     Icon: Heart,
   },
   {
-    title: "Fest & företagsevent",
-    description:
-      "Födelsedag, jubileum, afterwork eller företagsfest med två flexibla våningar.",
-    href: "#event-loft-section",
-    linkLabel: "Se lokalens möjligheter",
     variant: "celebration",
+    href: "#event-loft-section",
     Icon: Building2,
   },
   {
-    title: "Gruppdagar",
-    description:
-      "Ett färdigt upplägg för möhippa, svensexa, teambuilding eller en dag med vänner.",
-    to: "/gruppdagar/",
-    linkLabel: "Planera en gruppdag",
     variant: "group",
-    image: "/images/evenemang/heldag-paket.webp",
-    imageAlt: "Samlingsplats utomhus vid ladan",
+    to: "/gruppdagar/",
+    defaultImage: "/images/evenemang/heldag-paket.webp",
     Icon: UsersRound,
   },
 ];
 
-// The rail follows EventPage's own sections. The global contact and Instagram
-// bands belong to the shared page shell and should not change this page's map.
-const SPY_SECTIONS = [
-  { id: "event-hero", label: "Start" },
-  { id: "event-details-section", label: "Välj event" },
-  { id: "event-loft-section", label: "Kapacitet" },
-  { id: "event-amenities-section", label: "Möjligheter" },
-  { id: "event-services-recommendation", label: "Utforska mer" },
-];
-
-// Navbar (60px) plus the section subnav (48px), with breathing room for the
-// heading so a dot click never hides it behind the fixed navigation.
 const SPY_OFFSET = 130;
 
 function EventPage() {
   useSeo(seoMeta.event);
   const navigate = useNavigate();
   const copy = usePageCopy("event");
+  const siteCopy = useSiteCopy();
   const media = usePageMedia("event");
   const list = usePageLists("event");
-  const eventTypes = EVENT_TYPES.map((item, index) => ({
+  const eventTypes = EVENT_TYPES_CONFIG.map((item, index) => ({
     ...item,
-    image: item.image ? media(`types.${index}`, item.image, "card") : null,
-    title: copy(`types.${index}.title`, item.title),
-    description: copy(`types.${index}.description`, item.description),
-    linkLabel: copy(`types.${index}.cta`, item.linkLabel),
+    image: item.defaultImage ? media(`types.${index}`, item.defaultImage, "card") : null,
+    title: copy(`types.${index}.title`),
+    description: copy(`types.${index}.description`),
+    linkLabel: copy(`types.${index}.cta`),
   }));
-  const eventFacts = list("facts", EVENT_FACTS.map(({ label, value }) => ({ body: label, value })));
-  const capacityBullets = list("capacity-bullets", CAPACITY_BULLETS.map(({ label, body }) => ({ value: label, body })));
-  const amenitiesBullets = list("amenities-bullets", AMENITIES_BULLETS.map(({ label, body }) => ({ value: label, body })));
+  const eventFacts = list("facts", []);
+  const capacityBullets = list("capacity-bullets", []);
+  const amenitiesBullets = list("amenities-bullets", []);
+
+  const spySections = [
+    { id: "event-hero", label: siteCopy("nav.start") },
+    { id: "event-details-section", label: copy("intro.title") },
+    { id: "event-loft-section", label: copy("capacity.title") },
+    { id: "event-amenities-section", label: copy("amenities.title") },
+    { id: "event-services-recommendation", label: copy("services.title") },
+  ];
 
   const handleGalleryClick = () => {
     navigate(canonicalPath("/galleri"));
@@ -133,7 +84,7 @@ function EventPage() {
 
   return (
     <div className="event-page-container">
-      <ScrollSpyNav sections={SPY_SECTIONS} offset={SPY_OFFSET} />
+      <ScrollSpyNav sections={spySections} offset={SPY_OFFSET} />
 
       <main role="main" id="main-content" className="event-page">
         {/* Hero Section */}
@@ -146,17 +97,17 @@ function EventPage() {
           aria-labelledby="event-heading"
         >
           <div className="event-hero__inner" data-cms-hero-content>
-            <span className="event-eyebrow">{copy("hero.eyebrow", "Eventlokal på landet")}</span>
+            <span className="event-eyebrow">{copy("hero.eyebrow")}</span>
             <div className="section-ornament event-hero__ornament" aria-hidden="true">
               <span className="section-ornament-line"></span>
               <PartyPopper size={20} />
               <span className="section-ornament-line"></span>
             </div>
-            <h1 id="event-heading">{copy("hero.title", "Event på Storegården 7")}</h1>
-            <p>{copy("hero.lead", "Lada och loft för bröllop, fest och företagsevent")}</p>
+            <h1 id="event-heading">{copy("hero.title")}</h1>
+            <p>{copy("hero.lead")}</p>
             <div className="event-hero__actions" data-cms-hero-actions>
               <Link to="/kontakt/" className="event-button event-button--primary">
-                {copy("hero.primary-cta", "Berätta om ert event")}
+                {copy("hero.primary-cta")}
                 <ArrowUpRight size={18} aria-hidden="true" />
               </Link>
               <a
@@ -164,7 +115,7 @@ function EventPage() {
                 className="event-button event-button--secondary"
                 onClick={(e) => handleScrollToSection(e, "event-details-section")}
               >
-                {copy("hero.secondary-cta", "Se eventtyper")}
+                {copy("hero.secondary-cta")}
                 <ArrowDown size={18} aria-hidden="true" />
               </a>
             </div>
@@ -190,15 +141,15 @@ function EventPage() {
           <PageSection background="alt" spacing="default">
             <FadeInSection>
               <div className="event-section-intro">
-                <span className="event-section-eyebrow">{copy("intro.eyebrow", "Bröllop, fest eller gruppdag")}</span>
+                <span className="event-section-eyebrow">{copy("intro.eyebrow")}</span>
                 <div className="section-ornament" aria-hidden="true">
                   <span className="section-ornament-line"></span>
                   <Wine size={20} />
                   <span className="section-ornament-line"></span>
                 </div>
-                <h2>{copy("intro.title", "Vad vill ni ordna?")}</h2>
+                <h2>{copy("intro.title")}</h2>
                 <p className="event-section-lead">
-                  {copy("intro.lead", "Här finns plats för bröllop, privata fester, företagsevent och gruppdagar i en renoverad lada strax utanför Lidköping.")}
+                  {copy("intro.lead")}
                 </p>
               </div>
 
@@ -285,9 +236,8 @@ function EventPage() {
                   className="event-gallery-button event-gallery-button--solid"
                   type="button"
                   onClick={handleGalleryClick}
-                  aria-label="Gå till bildgalleri"
                 >
-                  {copy("intro.gallery-cta", "Se galleriet")}
+                  {copy("intro.gallery-cta")}
                 </button>
               </div>
             </FadeInSection>
@@ -301,18 +251,18 @@ function EventPage() {
             <FadeInSection>
               <div className="event-split-layout">
                 <div className="event-split-image">
-                  {media("capacity", "/images/event/hero/hero-2.webp", "card") && <img src={media("capacity", "/images/event/hero/hero-2.webp", "card")} alt="Dukade bord för fest på loftet" />}
+                  {media("capacity", "/images/event/hero/hero-2.webp", "card") && <img src={media("capacity", "/images/event/hero/hero-2.webp", "card")} alt="" />}
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">{copy("capacity.eyebrow", "Ytor och kapacitet")}</span>
+                  <span className="event-section-eyebrow">{copy("capacity.eyebrow")}</span>
                   <div className="section-ornament align-left" aria-hidden="true">
                     <span className="section-ornament-line"></span>
                     <Maximize2 size={18} />
                     <span className="section-ornament-line"></span>
                   </div>
-                  <h2>{copy("capacity.title", "Plats för både middag och mingel")}</h2>
+                  <h2>{copy("capacity.title")}</h2>
                   <p>
-                    {copy("capacity.body", "Ladan och loftet ger er totalt 360 kvm inomhus på två våningar. Ni kan använda en våning eller låta gästerna röra sig mellan båda.")}
+                    {copy("capacity.body")}
                   </p>
                   <ul className="event-bullets">
                     {capacityBullets.map((item, index) => (
@@ -335,15 +285,15 @@ function EventPage() {
                   {media("amenities", "/images/event/hero/hero-3.webp", "card") && <img src={media("amenities", "/images/event/hero/hero-3.webp", "card")} alt="Detaljbild från baren i ladan" />}
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">{copy("amenities.eyebrow", "Det här finns på plats")}</span>
+                  <span className="event-section-eyebrow">{copy("amenities.eyebrow")}</span>
                   <div className="section-ornament align-left" aria-hidden="true">
                     <span className="section-ornament-line"></span>
                     <Sparkles size={18} />
                     <span className="section-ornament-line"></span>
                   </div>
-                  <h2>{copy("amenities.title", "Möbler, bar, ljud och köksytor")}</h2>
+                  <h2>{copy("amenities.title")}</h2>
                   <p>
-                    {copy("amenities.body", "Mycket av det praktiska finns redan här och ingår i hyran. Ni får också ta med egen mat och dryck.")}
+                    {copy("amenities.body")}
                   </p>
                   <ul className="event-bullets">
                     {amenitiesBullets.map((item, index) => (
@@ -364,8 +314,8 @@ function EventPage() {
               <HomeServicesSection
                 cmsPage="event"
                 excludeId="event"
-                title={copy("services-section.title", "Utforska mer")}
-                eyebrow={copy("services-section.eyebrow", "MER HOS OSS")}
+                title={copy("services-section.title")}
+                eyebrow={copy("services-section.eyebrow")}
               />
             </FadeInSection>
           </PageSection>

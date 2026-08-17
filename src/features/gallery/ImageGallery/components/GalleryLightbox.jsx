@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { useSiteCopy } from "../../../../hooks/usePageCopy";
 
 function GalleryLightbox({
   isOpen,
@@ -18,10 +19,10 @@ function GalleryLightbox({
   activeCategory,
   onCategoryChange,
 }) {
+  const siteCopy = useSiteCopy();
   const [immersive, setImmersive] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
-  // const [isSliding, setIsSliding] = useState(false); // Animations temporarily disabled
 
   const containerRef = useRef(null);
   const imageRef = useRef(null);
@@ -60,15 +61,6 @@ function GalleryLightbox({
       }
     };
   }, [isOpen]);
-
-  // Reset sliding state on image change
-  // useEffect(() => {
-  //   setIsSliding(true);
-  //   const timer = setTimeout(() => setIsSliding(false), 300);
-  //   return () => clearTimeout(timer);
-  // }, [currentIndex]);
-
-
 
   // Swipe Handlers
   const onTouchStart = (e) => {
@@ -116,11 +108,6 @@ function GalleryLightbox({
       }}
     >
       <div className="gallery-model-content">
-        <div className="sr-only">
-          Bildgalleri med {totalCount} bilder. Använd pilarna eller swipa för
-          att navigera. Tryck på bilden för helskärm.
-        </div>
-
         {/* Top Controls */}
         <div className={`lightbox-controls ${immersive ? "is-hidden" : ""}`}>
           <div className="lightbox-header-left">
@@ -152,7 +139,7 @@ function GalleryLightbox({
           <button
             className="gallery-close-button"
             onClick={onClose}
-            aria-label="Stäng bildgalleri"
+            aria-label={siteCopy("ui.close")}
             ref={closeButtonRef}
           >
             <X size={24} />
@@ -176,7 +163,7 @@ function GalleryLightbox({
                 e.stopPropagation();
                 onPrevious();
               }}
-              aria-label="Föregående bild"
+              aria-label={siteCopy("ui.prev-image")}
             >
               <ChevronLeft size={36} />
             </button>
@@ -187,11 +174,11 @@ function GalleryLightbox({
             <img
               ref={imageRef}
               src={currentImage.original}
-              alt={currentImage.originalAlt || "Bild i galleriet"}
+              alt={currentImage.originalAlt || ""}
               loading="eager"
               onClick={handleImageClick}
               className="lightbox-image"
-              style={{ opacity: 1 }} // Force visibility
+              style={{ opacity: 1 }}
             />
           </figure>
 
@@ -206,7 +193,7 @@ function GalleryLightbox({
                 e.stopPropagation();
                 onNext();
               }}
-              aria-label="Nästa bild"
+              aria-label={siteCopy("ui.next-image")}
             >
               <ChevronRight size={36} />
             </button>
@@ -252,7 +239,7 @@ function GalleryLightbox({
                       e.stopPropagation();
                       onSelectImage(idx);
                     }}
-                    aria-label={`Gå till bild ${idx + 1}`}
+                    aria-label={`${idx + 1}`}
                     aria-current={isActive || undefined}
                   >
                     <img src={image.thumbnail} alt="" loading="lazy" />
@@ -261,7 +248,7 @@ function GalleryLightbox({
               })}
             </div>
             <p className="lightbox-hint mobile-only">
-              Swipa för att bläddra • Tryck för helskärm
+              {siteCopy("ui.lightbox-hint")}
             </p>
           </div>
         )}

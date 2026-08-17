@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { smoothScrollTo } from "../../../utils/scrollUtils.js";
+import { useSiteCopy } from "../../../hooks/usePageCopy.js";
 
 /**
  * The floating dash rail on the right that shows how many sections a page has
@@ -12,7 +13,9 @@ import { smoothScrollTo } from "../../../utils/scrollUtils.js";
  * The active section is the last one whose top has passed the probe line, so
  * short sections at the bottom of the page still light up.
  */
-function ScrollSpyNav({ sections, label = "Sidinnehåll", offset = 90 }) {
+function ScrollSpyNav({ sections, label, offset = 90 }) {
+  const siteCopy = useSiteCopy();
+  const navLabel = label || siteCopy("ui.page-content");
   const [activeId, setActiveId] = useState(sections[0]?.id);
 
   useEffect(() => {
@@ -60,7 +63,7 @@ function ScrollSpyNav({ sections, label = "Sidinnehåll", offset = 90 }) {
   };
 
   return (
-    <nav className="scroll-indicator-nav" aria-label={label}>
+    <nav className="scroll-indicator-nav" aria-label={navLabel}>
       <ul>
         {sections.map((section) => (
           <li key={section.id}>

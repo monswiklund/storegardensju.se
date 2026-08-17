@@ -4,11 +4,13 @@ import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { PageSection } from "../components";
 import { formatPrice } from "../services/stripeService";
+import { useSiteCopy } from "../hooks/usePageCopy";
 import "./CartPage.css";
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, getTotal, clearCart, getItemCount } =
     useContext(CartContext);
+  const siteCopy = useSiteCopy();
 
   if (cart.length === 0) {
     return (
@@ -16,10 +18,10 @@ export default function CartPage() {
         <PageSection background="alt" spacing="default">
           <div className="cart-empty">
             <ShoppingBag size={64} strokeWidth={1.5} />
-            <h1>Din varukorg är tom</h1>
-            <p>Lägg till produkter från vår butik</p>
+            <h1>{siteCopy("cart.empty-message")}</h1>
+            <p>{siteCopy("cart.empty-subtext")}</p>
             <Link to="/butik/" className="btn-primary">
-              Till butiken
+              {siteCopy("cart.continue-shopping")}
             </Link>
           </div>
         </PageSection>
@@ -27,19 +29,18 @@ export default function CartPage() {
     );
   }
 
-
   return (
     <main role="main" id="main-content">
       <PageSection background="alt" spacing="default">
         <div className="cart-container">
           <div className="cart-header">
-            <h1>Varukorg</h1>
+            <h1>{siteCopy("cart.drawer-title")}</h1>
             <button
               onClick={clearCart}
               className="btn-text"
-              aria-label="Töm varukorg"
+              aria-label={siteCopy("cart.remove-item")}
             >
-              Töm varukorg
+              {siteCopy("cart.remove-item")}
             </button>
           </div>
 
@@ -56,7 +57,7 @@ export default function CartPage() {
                   <h3>{item.name}</h3>
                   <p className="cart-item-price">{formatPrice(item.price)}</p>
                   {item.artist && (
-                    <p className="cart-item-artist">Av {item.artist}</p>
+                    <p className="cart-item-artist">{item.artist}</p>
                   )}
                 </div>
 
@@ -70,7 +71,7 @@ export default function CartPage() {
                             Math.max(1, item.quantity - 1)
                           )
                         }
-                        aria-label="Minska antal"
+                        aria-label={siteCopy("cart.decrease-qty")}
                         disabled={item.quantity <= 1}
                       >
                         <Minus size={16} />
@@ -83,14 +84,14 @@ export default function CartPage() {
                             Math.min(item.stock || 1, item.quantity + 1)
                           )
                         }
-                        aria-label="Öka antal"
+                        aria-label={siteCopy("cart.increase-qty")}
                         disabled={item.quantity >= (item.stock || 1)}
                       >
                         <Plus size={16} />
                       </button>
                     </>
                   ) : (
-                    <span className="unique-item">Unikt exemplar</span>
+                    <span className="unique-item">{siteCopy("cart.unique-item")}</span>
                   )}
                 </div>
 
@@ -101,7 +102,7 @@ export default function CartPage() {
                 <button
                   onClick={() => removeItem(item.id)}
                   className="cart-item-remove"
-                  aria-label={`Ta bort ${item.name}`}
+                  aria-label={siteCopy("cart.remove-item")}
                 >
                   <Trash2 size={20} />
                 </button>
@@ -111,20 +112,20 @@ export default function CartPage() {
 
         <div className="cart-summary">
           <div className="cart-summary-row">
-            <span>Antal produkter:</span>
-            <span>{getItemCount()} st</span>
+            <span>{siteCopy("cart.quantity-label")}</span>
+            <span>{getItemCount()}</span>
           </div>
           <div className="cart-summary-row cart-total">
-            <span>Totalt att betala:</span>
+            <span>{siteCopy("cart.total")}</span>
             <span>{formatPrice(getTotal())}</span>
           </div>
           
           <Link to="/checkout" className="btn btn-primary checkout-btn">
-            Gå till kassan
+            {siteCopy("cart.checkout")}
           </Link>
           
           <Link to="/butik/" className="btn btn-secondary" style={{ marginTop: '1rem' }}>
-            Fortsätt handla
+            {siteCopy("cart.continue-shopping")}
           </Link>
         </div>
         </div>

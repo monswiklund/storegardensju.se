@@ -63,7 +63,40 @@ export function normalizePageCopy(payload) {
   return normalizePageContent(payload).copy;
 }
 
-/** Fetch one published page document; callers keep their compiled copy as fallback. */
+import initialCmsData from "../data/initialCmsData.json";
+
+const pageContentCache = new Map();
+
+function initPageContentCache() {
+  if (initialCmsData && typeof initialCmsData === "object") {
+    for (const [slug, data] of Object.entries(initialCmsData)) {
+      pageContentCache.set(slug, Object.freeze({
+        found: true,
+        copy: Object.freeze(data.copy || {}),
+        lists: Object.freeze(data.lists || {}),
+        images: Object.freeze(data.images || {}),
+        socialImage: null,
+        appearance: normalizePageAppearance(),
+      }));
+    }
+  }
+}
+
+initPageContentCache();
+
+export function getPageContentSync(slug) {
+  return pageContentCache.get(slug) || null;
+}
+
+export function getPageCopySync(slug) {
+  const cached = pageContentCache.get(slug);
+  if (cached?.copy) {
+    return (key) => cached.copy[key] || "";
+  }
+  return () => "";
+}
+
+/** Fetch one published page document */
 export function fetchPageContent(slug) {
   if (!pageRequests.has(slug)) {
     const cmsUrl = getCmsUrl();
@@ -82,10 +115,16 @@ export function fetchPageContent(slug) {
         }
         return response.json();
       })
-      .then(normalizePageContent)
+      .then((json) => {
+        const normalized = normalizePageContent(json);
+        if (normalized.found) {
+          pageContentCache.set(slug, normalized);
+        }
+        return normalized;
+      })
       .catch(() => {
         pageRequests.delete(slug);
-        return { found: false, copy: {}, lists: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
+        return pageContentCache.get(slug) || { found: false, copy: {}, lists: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
       });
 
     pageRequests.set(slug, request);
@@ -174,6 +213,7 @@ export function fetchTeamMembers() {
 
 export function clearCmsPageCache() {
   pageRequests.clear();
+  pageContentCache.clear();
   shopProductsRequest = null;
   teamMembersRequest = null;
 }

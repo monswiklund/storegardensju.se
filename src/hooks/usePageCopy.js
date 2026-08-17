@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchPageCopy } from "../services/cmsService";
+import { fetchPageCopy, getPageContentSync, getPageCopySync } from "../services/cmsService";
 
 function highlightAndScrollElement(key, value, sectionId) {
   try {
@@ -69,13 +69,15 @@ function highlightAndScrollElement(key, value, sectionId) {
 
 /** Resolve editor-owned text without making a CMS outage visible to visitors. */
 export default function usePageCopy(slug) {
-  const [values, setValues] = useState({});
+  const [values, setValues] = useState(() => getPageContentSync(slug)?.copy || {});
 
   useEffect(() => {
     let active = true;
 
     fetchPageCopy(slug).then((nextValues) => {
-      if (active) setValues(nextValues);
+      if (active && nextValues && Object.keys(nextValues).length > 0) {
+        setValues(nextValues);
+      }
     });
 
     // Support live preview updates & element highlighting from Payload CMS
@@ -128,9 +130,26 @@ export default function usePageCopy(slug) {
   }, [slug]);
 
   return useCallback(
-    (key, fallback) => {
-      return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : fallback;
+    (key) => {
+      if (
+        typeof process !== "undefined" &&
+        process.env &&
+        process.env.NODE_ENV !== "production" &&
+        values &&
+        Object.keys(values).length > 0 &&
+        !Object.prototype.hasOwnProperty.call(values, key)
+      ) {
+        // Warn in development when a required CMS key is not configured
+        console.warn(`[CMS Warning] Missing CMS copy key: "${slug}.${key}"`);
+      }
+      return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : "";
     },
-    [values],
+    [values, slug],
   );
 }
+
+export function useSiteCopy() {
+  return usePageCopy("site");
+}
+
+export { getPageCopySync };

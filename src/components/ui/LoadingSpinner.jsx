@@ -1,7 +1,11 @@
 import PropTypes from 'prop-types';
+import { useSiteCopy } from '../../hooks/usePageCopy';
 import './LoadingSpinner.css';
 
-function LoadingSpinner({ size = "medium", text = "Laddar..." }) {
+function LoadingSpinner({ size = "medium", text }) {
+  const siteCopy = useSiteCopy();
+  const loadingText = text !== undefined ? text : siteCopy("ui.loading");
+
   const sizeClasses = {
     small: "loading-spinner--small",
     medium: "loading-spinner--medium", 
@@ -9,9 +13,9 @@ function LoadingSpinner({ size = "medium", text = "Laddar..." }) {
   };
 
   return (
-    <div className={`loading-spinner ${sizeClasses[size]}`} role="status" aria-label={text}>
+    <div className={`loading-spinner ${sizeClasses[size]}`} role="status" aria-label={loadingText || undefined}>
       <div className="spinner-circle"></div>
-      {text && <span className="loading-text">{text}</span>}
+      {loadingText && <span className="loading-text">{loadingText}</span>}
     </div>
   );
 }

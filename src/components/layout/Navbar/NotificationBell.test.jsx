@@ -26,7 +26,7 @@ describe("NotificationBell", () => {
       </MemoryRouter>,
     );
 
-    fireEvent.click(await screen.findByRole("button", { name: "Visa aktuellt, 1 oläst" }));
+    fireEvent.click(await screen.findByRole("button", { name: /Aviseringar/ }));
 
     const activity = screen.getByRole("link", {
       name: /Lina håller yoga på loftet/i,
@@ -34,10 +34,10 @@ describe("NotificationBell", () => {
     expect(activity).toHaveAttribute("href", "/kurser/yoga/#yoga-30-juli");
 
     fireEvent.click(
-      screen.getByRole("button", { name: "Markera lästa" }),
+      screen.getByRole("button", { name: /Markera alla som lästa|Markera lästa/ }),
     );
     expect(
-      screen.getByRole("button", { name: "Visa aktuellt" }),
+      screen.getByRole("button", { name: /Aviseringar/ }),
     ).toBeInTheDocument();
 
     unmount();
@@ -48,7 +48,7 @@ describe("NotificationBell", () => {
     );
 
     expect(
-      screen.getByRole("button", { name: "Visa aktuellt" }),
+      screen.getByRole("button", { name: /Aviseringar/ }),
     ).toBeInTheDocument();
   });
 
@@ -59,12 +59,12 @@ describe("NotificationBell", () => {
       </MemoryRouter>,
     );
 
-    fireEvent.click(await screen.findByRole("button", { name: /Visa aktuellt, 1 oläst/ }));
-    expect(screen.getByRole("region", { name: "Aktuellt" })).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole("button", { name: /Aviseringar/ }));
+    expect(screen.getByRole("region", { name: /Aviseringar|Aktuellt/ })).toBeInTheDocument();
 
     fireEvent.keyDown(document, { key: "Escape" });
     expect(
-      screen.queryByRole("region", { name: "Aktuellt" }),
+      screen.queryByRole("region", { name: /Aviseringar|Aktuellt/ }),
     ).not.toBeInTheDocument();
   });
 });

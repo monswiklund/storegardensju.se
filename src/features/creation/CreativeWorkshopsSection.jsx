@@ -42,7 +42,7 @@ function CreativeWorkshopsSection() {
                 <div className="creation-row__image-wrapper">
                   {sectionImages[index] && <img
                     src={sectionImages[index]} 
-                    alt={section.title || "Bild från ateljén"}
+                    alt={section.title || ""}
                     className="creation-row__image"
                     loading="lazy"
                     decoding="async"

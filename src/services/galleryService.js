@@ -1,19 +1,12 @@
 import { getCmsUrl } from "./cmsService";
+import { getPageCopySync } from "../hooks/usePageCopy";
 
 let galleryCategoriesCache = null;
 let galleryCategoriesRequest = null;
 
-const CATEGORY_NAMES = {
-  overvaning: "Loftet – Övervåning",
-  undervaning: "Ladan – Bottenvåning",
-  kok: "Kök & Arbetsytor",
-  brollop: "Bröllop & Fest",
-  kurser: "Kurser & Workshops",
-  yoga: "Yoga på loftet",
-  butik: "Gårdsbutik & Hantverk",
-  ute: "Gården & Utemiljö",
-  detaljer: "Detaljer & Dukning",
-  ovrigt: "Övriga bilder",
+const getCategoryName = (catId) => {
+  const siteCopy = getPageCopySync("site");
+  return siteCopy ? siteCopy(`gallery.cat.${catId}`) : catId;
 };
 
 const absoluteMediaUrl = (url, cmsUrl) => {
@@ -58,8 +51,8 @@ export function fetchGalleryCategories() {
             if (!categoryMap.has(catId)) {
               categoryMap.set(catId, {
                 id: catId,
-                name: CATEGORY_NAMES[catId] || catId,
-                description: `Bilder i kategorin ${CATEGORY_NAMES[catId] || catId}`,
+                name: getCategoryName(catId),
+                description: "",
                 images: [],
               });
             }
@@ -91,8 +84,8 @@ export function fetchGalleryCategories() {
 
           categoryMap.set("alla", {
             id: "alla",
-            name: "Alla bilder",
-            description: "Alla bilder från Storegården 7",
+            name: getCategoryName("alla"),
+            description: "",
             order: -1,
             images: [...data.docs]
               .sort(compareMedia("allOrder"))

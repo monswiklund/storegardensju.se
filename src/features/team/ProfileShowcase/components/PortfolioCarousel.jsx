@@ -3,10 +3,13 @@ import PropTypes from "prop-types";
 import ProfileCard from "./ProfileCard";
 import PortfolioSlide from "./PortfolioSlide";
 
+import { useSiteCopy } from "../../../../hooks/usePageCopy";
+
 function SwipeIndicator() {
+  const siteCopy = useSiteCopy();
   return (
     <div className="swipe-indicator">
-      <span>Swipe</span>
+      <span>{siteCopy("ui.swipe") || "Swipe"}</span>
       <svg
         width="20"
         height="20"
@@ -27,6 +30,7 @@ function SwipeIndicator() {
 }
 
 function PortfolioCarousel({ profile }) {
+  const siteCopy = useSiteCopy();
   const scrollContainerRef = useRef(null);
   const hasPortfolio = profile.portfolio && profile.portfolio.length > 0;
 
@@ -54,7 +58,7 @@ function PortfolioCarousel({ profile }) {
           <button
             className="nav-arrow prev"
             onClick={() => scroll("left")}
-            aria-label="Föregående bild"
+            aria-label={siteCopy("ui.previous-image")}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M15 18l-6-6 6-6" />
@@ -63,7 +67,7 @@ function PortfolioCarousel({ profile }) {
           <button
             className="nav-arrow next"
             onClick={() => scroll("right")}
-            aria-label="Nästa bild"
+            aria-label={siteCopy("ui.next-image")}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M9 18l6-6-6-6" />

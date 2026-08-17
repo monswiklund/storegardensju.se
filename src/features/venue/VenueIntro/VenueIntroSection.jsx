@@ -1,23 +1,23 @@
-import { venueIntro } from "../../../data/homeContent.js";
 import usePageCopy from "../../../hooks/usePageCopy.js";
+import usePageLists from "../../../hooks/usePageLists.js";
 import "./VenueIntro.css";
 
 function VenueIntroSection() {
   const copy = usePageCopy("home");
-  const { title, description, highlights } = venueIntro;
+  const list = usePageLists("home");
+  const highlights = list("venue-highlights", []).map((item) => item.body || item.title).filter(Boolean);
 
   return (
     <div className="venue-intro">
       <div className="venue-intro__copy">
-        <h2 id="venue-intro-heading">{copy("venue.title", title)}</h2>
-        <p>{copy("venue.description", description)}</p>
+        <h2 id="venue-intro-heading">{copy("venue.title")}</h2>
+        <p>{copy("venue.description")}</p>
       </div>
       <ul
         className="venue-intro__highlights"
-        aria-label="Praktisk information om platsen"
       >
-        {highlights.map((highlight) => (
-          <li key={highlight} className="venue-intro__highlight">
+        {highlights.map((highlight, index) => (
+          <li key={index} className="venue-intro__highlight">
             <span className="venue-intro__icon" aria-hidden="true">
               ✦
             </span>

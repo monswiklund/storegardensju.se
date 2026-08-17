@@ -5,13 +5,17 @@ const absoluteUrl = (url) => {
   if (!url) return null;
   if (url.startsWith("http")) return url;
   if (url.startsWith("/images/")) return cdnAsset(url);
-  return `${getCmsUrl()}${url.startsWith("/") ? "" : "/"}${url}`;
+  const normalizedPath = url.replace(/^\/api\/media\/file\//, "/media/");
+  return `${getCmsUrl()}${normalizedPath.startsWith("/") ? "" : "/"}${normalizedPath}`;
 };
 
 export function resolveMediaUrl(media, size) {
   if (!media || typeof media !== "object") return null;
   const sizeUrl = size && media.sizes?.[size]?.url;
-  return absoluteUrl(sizeUrl || media.url || media.externalUrl);
+  const sizeFilename = size && media.sizes?.[size]?.filename;
+  const sizeFileUrl = sizeFilename ? `/media/${sizeFilename}` : null;
+  const mainFileUrl = media.filename ? `/media/${media.filename}` : null;
+  return absoluteUrl(sizeUrl || sizeFileUrl || media.url || mainFileUrl || media.externalUrl);
 }
 
 export function normalizeMedia(media, size) {

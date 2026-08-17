@@ -2,19 +2,17 @@ import { useParams, Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { PageSection } from "../components";
+import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
 import { ProductRecommendations } from "../features/shop";
 import { getStripeProductById, formatPrice } from "../services/stripeService";
+import { useSiteCopy } from "../hooks/usePageCopy";
 import "./ProductDetailPage.css";
 
-/**
- * ProductDetailPage - Detaljsida för enskild produkt
- *
- * Hämtar produktdata från Stripe via backend API
- */
-
 function ProductDetailPage() {
+  const siteCopy = useSiteCopy();
   const { productId } = useParams();
+  const cartContext = useContext(CartContext);
   const productContext = useContext(ProductContext);
   const products = productContext?.products ?? [];
   const productsLoading = productContext?.loading ?? false;
@@ -34,7 +32,7 @@ function ProductDetailPage() {
         const resolvedProduct = contextProduct || await getStripeProductById(productId);
 
         if (!resolvedProduct) {
-          setError("Produkten hittades inte");
+          setError(siteCopy("cart.product-not-found") || "error");
           setProduct(null);
         } else {
           setProduct(resolvedProduct);
@@ -43,7 +41,7 @@ function ProductDetailPage() {
         }
       } catch (err) {
         console.error("Failed to fetch product:", err);
-        setError("Kunde inte ladda produkten. Försök igen senare.");
+        setError(siteCopy("ui.error"));
       } finally {
         setLoading(false);
       }
@@ -52,7 +50,7 @@ function ProductDetailPage() {
     if (productId) {
       fetchProduct();
     }
-  }, [productId, products, productsLoading]);
+  }, [productId, products, productsLoading, siteCopy]);
 
   // Loading state
   if (loading) {
@@ -61,7 +59,7 @@ function ProductDetailPage() {
         <PageSection background="alt" spacing="default">
           <div className="product-loading">
             <Loader2 className="spinner" size={48} />
-            <p>Laddar produkt...</p>
+            <p>{siteCopy("ui.loading-product")}</p>
           </div>
         </PageSection>
       </main>
@@ -74,9 +72,9 @@ function ProductDetailPage() {
       <main role="main" id="main-content">
         <PageSection background="alt" spacing="default">
           <div className="product-not-found">
-            <h1>Produkten hittades inte</h1>
-            <p>{error || "Den produkt du söker finns inte längre."}</p>
-            <Link to="/butik/">Tillbaka till butiken</Link>
+            <h1>{siteCopy("cart.product-not-found")}</h1>
+            <p>{siteCopy("cart.product-not-found-desc")}</p>
+            <Link to="/butik/">{siteCopy("cart.back-to-shop")}</Link>
           </div>
         </PageSection>
       </main>
@@ -88,11 +86,11 @@ function ProductDetailPage() {
       <PageSection background="alt" spacing="default">
         {/* Breadcrumb navigation */}
         <nav className="breadcrumb" aria-label="breadcrumb">
-          <Link to="/">Hem</Link>
+          <Link to="/">{siteCopy("nav.home")}</Link>
           <span> / </span>
-          <Link to="/butik/">Butik</Link>
+          <Link to="/butik/">{siteCopy("nav.shop")}</Link>
           <span> / </span>
-          <span aria-current="page">{product?.name || "Produkt"}</span>
+          <span aria-current="page">{product?.name || ""}</span>
         </nav>
 
         <div className="product-detail">
@@ -101,17 +99,17 @@ function ProductDetailPage() {
             {product?.images?.[activeImage] ? (
               <img src={product.images[activeImage]} alt={product.name} className="main-image" />
             ) : (
-              <div className="main-image product-image-placeholder">Ingen produktbild</div>
+              <div className="main-image product-image-placeholder">{siteCopy("ui.image-placeholder")}</div>
             )}
             {product?.images?.length > 1 && (
-              <div className="product-image-thumbnails" aria-label="Produktbilder">
+              <div className="product-image-thumbnails">
                 {product.images.map((image, index) => (
                   <button
                     type="button"
                     key={image}
                     className={index === activeImage ? "is-active" : ""}
                     onClick={() => setActiveImage(index)}
-                    aria-label={`Visa produktbild ${index + 1}`}
+                    aria-label={`${siteCopy("cart.view-image")} ${index + 1}`}
                     aria-pressed={index === activeImage}
                   >
                     <img src={image} alt="" />
@@ -125,62 +123,51 @@ function ProductDetailPage() {
           <div className="product-info">
             <h1>{product?.name}</h1>
 
-            <p className="artist">Av {product?.artist}</p>
+            {product?.artist && <p className="artist">{product.artist}</p>}
 
             <p className="price">{product && formatPrice(product.price)}</p>
 
             <div className="description">
-              {/* TODO(human): Visa product.longDescription här
-               *
-               * Tips: longDescription är längre än description
-               * och ger mer detaljer om produkten
-               */}
               <p>{product?.longDescription}</p>
             </div>
 
             {/* Lagerstatus */}
             <div className="stock-status">
-              {/* TODO(human): Visa lagerstatus
-               *
-               * Tips: Conditional rendering baserat på product.stock
-               * - Om stock > 0: "I lager ({stock} st)"
-               * - Om stock === 0: "Slutsåld"
-               *
-               * Använd olika CSS-klasser för olika status
-               */}
               {product && product.active && product.stock > 0 ? (
-                <span className="in-stock">I lager ({product.stock} st)</span>
+                <span className="in-stock">{product.stock} {siteCopy("cart.in-stock")}</span>
               ) : (
-                <span className="out-of-stock">Slutsåld</span>
+                <span className="out-of-stock">{siteCopy("cart.sold-out")}</span>
               )}
             </div>
 
             {/* Köp-sektion */}
             <div className="purchase-section">
-              {/* TODO(human): Lägg till kvantitet-väljare
-               *
-               * Tips:
-               * - Input type="number" med min="1" max={product.stock}
-               * - Använd useState för att hålla vald kvantitet
-               * - Default value: 1
-               */}
               <button
                 type="button"
                 className="add-to-cart-btn"
-                disabled={product && !product.active}
+                disabled={product && (!product.active || product.stock === 0)}
+                onClick={() => {
+                  if (product && product.active) {
+                    cartContext?.addItem?.(product, 1);
+                  }
+                }}
               >
-                {product && product.active ? "Lägg i varukorg" : "Slutsåld"}
+                {product && product.active && product.stock > 0 ? siteCopy("cart.add-to-cart-btn") : siteCopy("cart.sold-out")}
               </button>
             </div>
 
             {/* Metadata */}
             <div className="product-metadata">
-              <p>
-                <strong>Kategori:</strong> {product?.category}
-              </p>
-              <p>
-                <strong>Produkt-ID:</strong> {product?.id}
-              </p>
+              {product?.category && (
+                <p>
+                  <strong>{siteCopy("cart.product-category-label")}</strong> {product.category}
+                </p>
+              )}
+              {product?.id && (
+                <p>
+                  <strong>{siteCopy("cart.product-id-label")}</strong> {product.id}
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -1,8 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 import {
   appRoutes,
   canonicalPath,
   normalizePath,
+  routeLabel,
 } from "../../../config/routes.js";
 import HomeSubnav from "./HomeSubnav.jsx";
 
@@ -31,6 +33,7 @@ export function sectionForPath(pathname) {
 }
 
 function SectionSubnav() {
+  const siteCopy = usePageCopy("site");
   const location = useLocation();
   const currentPath = normalizePath(location.pathname);
 
@@ -48,12 +51,13 @@ function SectionSubnav() {
   // above this bar, so repeating it here weakens the hierarchy. The subnav is
   // reserved for the section's child pages.
   const links = (section.children ?? []).filter((child) => !child.hidden);
+  const sectionLabel = routeLabel(section, siteCopy);
 
   return (
     <div
       className="event-subnav active"
       role="navigation"
-      aria-label={`${section.label} undernavigering`}
+      aria-label={sectionLabel || undefined}
     >
       <div className="event-subnav-inner">
         {links.map((link) => (
@@ -64,7 +68,7 @@ function SectionSubnav() {
               currentPath === link.path ? "active" : ""
             }`}
           >
-            {link.subnavLabel ?? link.label}
+            {routeLabel(link, siteCopy)}
           </Link>
         ))}
       </div>

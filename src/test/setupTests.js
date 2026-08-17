@@ -1,4 +1,6 @@
 import "@testing-library/jest-dom/vitest";
+import cmsMockData from "./cmsMockData.json";
+import { normalizePageContent, fetchPageContent } from "../services/cmsService";
 
 const createStorageMock = () => {
   let store = {};
@@ -30,3 +32,42 @@ Object.defineProperty(globalThis, "localStorage", {
   value: storageMock,
   writable: true,
 });
+
+if (typeof globalThis.fetch === "undefined" || !globalThis.fetch._isMock) {
+  const originalFetch = globalThis.fetch;
+  const mockFetch = async (input, init) => {
+    const urlStr = typeof input === "string" ? input : input?.url || "";
+    if (urlStr.includes("/api/pages")) {
+      const match = urlStr.match(/where(?:%5B|\[)slug(?:%5D|\])(?:%5B|\[)equals(?:%5D|\])=([^&]+)/);
+      const slug = match ? decodeURIComponent(match[1]) : null;
+      if (slug && cmsMockData[slug]) {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => cmsMockData[slug],
+        };
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({ docs: [] }),
+      };
+    }
+    if (originalFetch) {
+      return originalFetch(input, init);
+    }
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({ docs: [] }),
+    };
+  };
+  mockFetch._isMock = true;
+  globalThis.fetch = mockFetch;
+}
+
+// Preload mock pages into cache
+for (const [slug, payload] of Object.entries(cmsMockData)) {
+  fetchPageContent(slug);
+}
+

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import pastEventsData from "../../../data/PastEventsData.js";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 import "./PastEvents.css";
 
-
-  function PastEvents() {
+function PastEvents() {
   const [isOpen, setIsOpen] = useState(false);
+  const copy = usePageCopy("home");
   return (
     <section
       id="past-events-section"
@@ -19,17 +20,16 @@ import "./PastEvents.css";
           aria-controls="past-events-collapsible-content"
           onClick={() => setIsOpen(o => !o)}
         >
-          <span className="collapsible-title" id="past-events-heading">Tidigare evenemang</span>
+          <span className="collapsible-title" id="past-events-heading">{copy("past-events.title")}</span>
           <span className={`chevron ${isOpen ? 'open' : ''}`} aria-hidden>▾</span>
         </button>
         <div className="collapsible-intro-wrapper" aria-hidden={!isOpen}>
-            <p className="past-events-intro">Ett urval av våra tidigare workshops, kurser och evenemang.</p>
+            <p className="past-events-intro">{copy("past-events.lead")}</p>
         </div>
         <div
           id="past-events-collapsible-content"
           className={`collapsible-content ${isOpen ? 'open' : ''}`}
           role="region"
-          aria-label="Lista över tidigare evenemang"
         >
           {isOpen && (
             <div className="past-events-grid" data-testid="past-events-grid">

@@ -1,28 +1,30 @@
 import { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
+import usePageCopy from "../../../hooks/usePageCopy.js";
 import usePageMedia from "../../../hooks/usePageMedia.js";
 import "./Navbar.css";
 import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
-import { appRoutes, normalizePath } from "../../../config/routes.js";
+import { appRoutes, normalizePath, routeLabel } from "../../../config/routes.js";
 import CartBadge from "./CartBadge.jsx";
 import NotificationBell from "./NotificationBell.jsx";
 
 const ALL_NAV_ITEMS = appRoutes.filter((route) => !route.hidden);
 const NAV_ITEMS = ALL_NAV_ITEMS.filter((route) => !route.headerHidden);
 
-const getCurrentTitle = (pathname) => {
+const getCurrentTitle = (pathname, copy) => {
   for (const item of ALL_NAV_ITEMS) {
     const children = item.children ?? [];
     const child = children.find(route => route.path === pathname);
-    if (child) return child.label;
-    if (item.path === pathname) return item.label;
+    if (child) return routeLabel(child, copy);
+    if (item.path === pathname) return routeLabel(item, copy);
   }
 
-  return "Hem";
+  return (copy && copy("nav.home")) || "";
 };
 
 function Navbar() {
+  const siteCopy = usePageCopy("site");
   const siteMedia = usePageMedia("site");
   // Keep the wide logo's original aspect ratio; the generated thumbnail is 4:3.
   const logo = siteMedia("brand.logo", "/images/logoTransp_cropped.png");
@@ -31,7 +33,7 @@ function Navbar() {
   const pendingScrollTargetRef = useRef(null);
   // Trailing slash: GitHub Pages serves /kurser/ but appRoutes holds /kurser.
   const currentPath = normalizePath(location.pathname);
-  const currentTitle = getCurrentTitle(currentPath);
+  const currentTitle = getCurrentTitle(currentPath, siteCopy);
 
   const scrollToHeroTitle = () => {
     if (typeof window === "undefined") return;
@@ -80,14 +82,14 @@ function Navbar() {
   }, [location.pathname]);
 
   return (
-    <nav className="navbar" role="navigation" aria-label="Huvudnavigation">
+    <nav className="navbar" role="navigation">
       <div className="navbar-container">
         <span className="navbar-page-title">{currentTitle}</span>
 
         <Link
           to="/"
           className="navbar-brand"
-          aria-label="Till startsidan"
+          aria-label={siteCopy("nav.home")}
           onClick={() => handleNavigate("/")}
         >
           {logo && <img src={logo} alt="Storegården 7" className="navbar-logo" />}
@@ -97,16 +99,17 @@ function Navbar() {
           id="mobile-navigation"
           ref={menuRef}
           className={`nav-menu ${isOpen ? "open" : ""}`}
-          aria-label="Meny"
+          aria-label={siteCopy("ui.menu")}
         >
           <div className="nav-menu-header" tabIndex="-1">
-            <span className="nav-menu-title">Meny</span>
-            <span className="nav-menu-subtitle">Utforska Storegården 7</span>
+            <span className="nav-menu-title">{siteCopy("ui.menu")}</span>
+            <span className="nav-menu-subtitle">{siteCopy("ui.menu-subtitle")}</span>
           </div>
           <NavLinks
             items={NAV_ITEMS}
             currentPath={currentPath}
             onNavigate={handleNavigate}
+            copy={siteCopy}
           />
         </div>
 
@@ -114,7 +117,7 @@ function Navbar() {
           <button
             type="button"
             className="nav-overlay"
-            aria-label="Stäng meny"
+            aria-label={siteCopy("ui.close-menu")}
             tabIndex="-1"
             onClick={close}
           />
@@ -127,7 +130,7 @@ function Navbar() {
             ref={triggerRef}
             className={`hamburger ${isOpen ? "open" : ""}`}
             onClick={toggle}
-            aria-label={isOpen ? "Stäng meny" : "Öppna meny"}
+            aria-label={isOpen ? siteCopy("ui.close-menu") : siteCopy("ui.open-menu")}
             aria-expanded={isOpen}
             aria-controls="mobile-navigation"
             type="button"

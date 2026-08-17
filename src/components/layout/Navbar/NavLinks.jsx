@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { canonicalPath } from "../../../config/routes.js";
+import { canonicalPath, routeLabel } from "../../../config/routes.js";
 
 function activeSectionPath(items, currentPath) {
   return (
@@ -16,7 +16,7 @@ function activeSectionPath(items, currentPath) {
   );
 }
 
-function NavLinks({ items, currentPath, onNavigate }) {
+function NavLinks({ items, currentPath, onNavigate, copy }) {
   const [openSection, setOpenSection] = useState(() =>
     activeSectionPath(items, currentPath),
   );
@@ -27,7 +27,8 @@ function NavLinks({ items, currentPath, onNavigate }) {
 
   return (
     <ul className="nav-list">
-      {items.map((item) => {
+      {items.map((item, index) => {
+        const itemLabel = routeLabel(item, copy);
         const children = (item.children ?? []).filter(
           (child) => !child.hidden,
         );
@@ -46,6 +47,7 @@ function NavLinks({ items, currentPath, onNavigate }) {
         return (
           <li
             key={item.path}
+            style={{ "--i": index }}
             className={`nav-item ${hasChildren ? "has-submenu" : ""} ${
               isExpanded ? "submenu-open" : ""
             }`}
@@ -58,13 +60,13 @@ function NavLinks({ items, currentPath, onNavigate }) {
                 }`}
                 onClick={handleParentClick}
               >
-                <span className="nav-link-label">{item.label}</span>
+                <span className="nav-link-label">{itemLabel}</span>
               </Link>
               {hasChildren && (
                 <button
                   type="button"
                   className="nav-submenu-toggle"
-                  aria-label={`Visa undersidor för ${item.label}`}
+                  aria-label={itemLabel || undefined}
                   aria-expanded={isExpanded}
                   aria-controls={submenuId}
                   onClick={() =>
@@ -78,25 +80,31 @@ function NavLinks({ items, currentPath, onNavigate }) {
               )}
             </div>
             {hasChildren && (
-              <ul
-                id={submenuId}
-                className="nav-submenu"
-                aria-label={`${item.label} undermeny`}
-              >
-                {children.map((child) => (
-                  <li key={child.path} className="nav-submenu-item">
-                    <Link
-                      to={canonicalPath(child.path)}
-                      className={`nav-sublink ${
-                        currentPath === child.path ? "active" : ""
-                      }`}
-                      onClick={() => onNavigate(child.path)}
+              <div className="nav-submenu-wrapper">
+                <ul
+                  id={submenuId}
+                  className="nav-submenu"
+                  aria-label={itemLabel || undefined}
+                >
+                  {children.map((child, childIndex) => (
+                    <li
+                      key={child.path}
+                      style={{ "--sub-i": childIndex }}
+                      className="nav-submenu-item"
                     >
-                      <span className="nav-link-label">{child.label}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+                      <Link
+                        to={canonicalPath(child.path)}
+                        className={`nav-sublink ${
+                          currentPath === child.path ? "active" : ""
+                        }`}
+                        onClick={() => onNavigate(child.path)}
+                      >
+                        <span className="nav-link-label">{routeLabel(child, copy)}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </li>
         );

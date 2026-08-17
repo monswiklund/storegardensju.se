@@ -5,6 +5,7 @@ import { CartContext } from "../../components/layout/CartContext/CartContext.jsx
 import { PageSection } from "../../components";
 import { formatPrice } from "../../data/products";
 import { getApiBaseUrl } from "../../config/apiBaseUrl";
+import { useSiteCopy } from "../../hooks/usePageCopy";
 import "./CheckoutPage.css";
 
 export default function CheckoutPage() {
@@ -13,6 +14,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const siteCopy = useSiteCopy();
 
   // Om varukorgen är tom, redirecta till butiken
   if (!cart || cart.length === 0) {
@@ -20,10 +22,10 @@ export default function CheckoutPage() {
       <main role="main" id="main-content">
         <PageSection background="alt" spacing="default">
           <div className="checkout-empty">
-            <h1>Din varukorg är tom</h1>
-            <p>Lägg till produkter innan du går till kassan</p>
+            <h1>{siteCopy("cart.empty-message")}</h1>
+            <p>{siteCopy("checkout.empty-cart-warning")}</p>
             <Link to="/butik/" className="btn-primary">
-              Till butiken
+              {siteCopy("cart.continue-shopping")}
             </Link>
           </div>
         </PageSection>
@@ -36,24 +38,16 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
-      console.log("Calling API:", `${API_URL}/create-checkout-session`);
-      console.log("Cart items:", cart);
-
-      // Konvertera pris från SEK till öre (Stripe förväntar sig smallest currency unit)
-      // Och säkerställ att bildvägar är absoluta URLs
-      // VIKTIGT: Inkludera priceId så backend kan koppla till rätt produkt i Stripe
       const cartItemsForStripe = cart.map((item) => ({
         id: item.id,
-        priceId: item.priceId, // Stripe Price ID (price_xxx) - krävs för lagerhantering
+        priceId: item.priceId,
         name: item.name,
-        price: item.price * 100, // 150 SEK -> 15000 öre
+        price: item.price * 100,
         quantity: item.quantity,
         images: item.images.map((img) =>
           img.startsWith("http") ? img : `${window.location.origin}${img}`
         ),
       }));
-
-      console.log("Cart items for Stripe (prices in öre):", cartItemsForStripe);
 
       const response = await fetch(`${API_URL}/create-checkout-session`, {
         method: "POST",
@@ -61,17 +55,12 @@ export default function CheckoutPage() {
         body: JSON.stringify({ items: cartItemsForStripe }),
       });
 
-      console.log("Response status:", response.status);
-      console.log("Response ok:", response.ok);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Error response:", errorText);
         throw new Error(`Backend error: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
-      console.log("Response data:", data);
 
       if (!data.url) {
         throw new Error("No checkout URL received from backend");
@@ -88,15 +77,12 @@ export default function CheckoutPage() {
       window.location.href = data.url;
     } catch (err) {
       console.error("Checkout error:", err);
-      setError(
-        `Fel: ${err.message}. Kontrollera att backend körs på http://localhost:4242`
-      );
+      setError(siteCopy("ui.error"));
       setLoading(false);
     }
   };
 
   const subtotal = getTotal();
-  // Fraktlogik: Fri frakt över 500 kr, annars 49 kr (eller hämta i butik gratis)
   const FREE_SHIPPING_THRESHOLD = 500;
   const SHIPPING_COST = 49;
   const shippingEstimate =
@@ -111,18 +97,18 @@ export default function CheckoutPage() {
             <button
               onClick={() => navigate("/varukorg")}
               className="back-button"
-              aria-label="Tillbaka till varukorgen"
+              aria-label={siteCopy("ui.back")}
             >
               <ArrowLeft size={20} />
-              Tillbaka till varukorgen
+              {siteCopy("ui.back")}
             </button>
-            <h1>Kassa</h1>
+            <h1>{siteCopy("checkout.page-title")}</h1>
           </div>
 
           <div className="checkout-content">
             {/* Order Summary */}
             <div className="order-summary">
-              <h2>Ordersammanfattning</h2>
+              <h2>{siteCopy("checkout.order-summary")}</h2>
 
               <div className="order-items">
                 {cart.map((item) => (
@@ -135,7 +121,7 @@ export default function CheckoutPage() {
                     <div className="order-item-details">
                       <h3>{item.name}</h3>
                       <p className="order-item-quantity">
-                        Antal: {item.quantity}
+                        {siteCopy("cart.quantity-label")} {item.quantity}
                       </p>
                     </div>
                     <div className="order-item-price">
@@ -147,26 +133,11 @@ export default function CheckoutPage() {
 
               <div className="order-totals">
                 <div className="order-total-row">
-                  <span>Delsumma:</span>
+                  <span>{siteCopy("cart.subtotal")}</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>
-                <div className="order-total-row">
-                  <span>Frakt:</span>
-                  <span>
-                    {shippingEstimate === 0
-                      ? "Fri frakt!"
-                      : `från ${formatPrice(shippingEstimate)}`}
-                  </span>
-                </div>
-                {shippingEstimate > 0 && (
-                  <p className="shipping-note">
-                    Fri frakt vid köp över{" "}
-                    {formatPrice(FREE_SHIPPING_THRESHOLD)} • Hämta i butik
-                    alltid gratis
-                  </p>
-                )}
                 <div className="order-total-row order-total-final">
-                  <span>Totalt:</span>
+                  <span>{siteCopy("cart.total")}</span>
                   <span>{formatPrice(total)}</span>
                 </div>
               </div>
@@ -177,8 +148,8 @@ export default function CheckoutPage() {
               <div className="payment-info">
                 <Lock size={24} />
                 <div>
-                  <h3>Säker betalning</h3>
-                  <p>Din betalning hanteras säkert av Stripe</p>
+                  <h3>{siteCopy("checkout.payment-method")}</h3>
+                  <p>{siteCopy("checkout.stripe-notice")}</p>
                 </div>
               </div>
 
@@ -189,12 +160,11 @@ export default function CheckoutPage() {
                 disabled={loading}
                 className="checkout-button"
               >
-                {loading ? "Laddar..." : "Gå till betalning"}
+                {loading ? siteCopy("checkout.processing") : siteCopy("checkout.pay-button")}
               </button>
 
               <p className="payment-disclaimer">
-                Du kommer att omdirigeras till Stripe för att slutföra
-                betalningen
+                {siteCopy("checkout.terms-notice")}
               </p>
             </div>
           </div>

@@ -4,9 +4,9 @@ import { normalizeMediaList, resolveMediaUrl } from "./mediaService";
 describe("mediaService", () => {
   it("prefers the requested generated size and resolves CMS paths", () => {
     expect(resolveMediaUrl({
-      url: "/api/media/file/original.webp",
-      sizes: { card: { url: "/api/media/file/card.webp" } },
-    }, "card")).toBe("https://cms.storegardensju.se/api/media/file/card.webp");
+      url: "/media/original.webp",
+      sizes: { card: { url: "/media/card.webp" } },
+    }, "card")).toBe("https://cms.storegardensju.se/media/card.webp");
   });
 
   it("preserves order and ignores cleared relationships", () => {

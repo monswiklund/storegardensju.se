@@ -1,5 +1,6 @@
 import { getCmsUrl } from "./cmsService";
 import { normalizeMediaList } from "./mediaService";
+import { getPageCopySync } from "../hooks/usePageCopy";
 
 export function partitionCmsEvents(docs, now = Date.now()) {
   const result = { upcoming: [], past: [] };
@@ -27,13 +28,48 @@ export function partitionCmsEvents(docs, now = Date.now()) {
   return result;
 }
 
+export async function fetchPublicCoursePasses() {
+  try {
+    const query = new URLSearchParams({ limit: "100", depth: "1", sort: "startAt" });
+    const response = await fetch(`${getCmsUrl()}/api/course-passes?${query}`, {
+      headers: { Accept: "application/json" },
+    });
+    if (!response.ok) return [];
+    const data = await response.json();
+    const siteCopy = getPageCopySync("site");
+    return (data?.docs || []).map((pass) => ({
+      ...pass,
+      id: `course-pass-${pass.id}`,
+      category: pass.track || "yoga",
+      spots:
+        pass.status === "fully_booked"
+          ? (siteCopy ? siteCopy("ui.spot-full") : "")
+          : pass.status === "few_left"
+            ? (siteCopy ? siteCopy("ui.spot-few-left") : "")
+            : pass.spots
+              ? `${pass.spots} ${siteCopy ? siteCopy("ui.spots-label") : ""}`
+              : "",
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function fetchPublicEvents() {
   const query = new URLSearchParams({ limit: "100", depth: "1", sort: "sortOrder" });
-  const response = await fetch(`${getCmsUrl()}/api/events?${query}`, {
-    headers: { Accept: "application/json" },
-  });
-  if (!response.ok) throw new Error(`Events request failed with status ${response.status}`);
+  const [eventsRes, coursePasses] = await Promise.all([
+    fetch(`${getCmsUrl()}/api/events?${query}`, {
+      headers: { Accept: "application/json" },
+    }).catch(() => null),
+    fetchPublicCoursePasses(),
+  ]);
 
-  const data = await response.json();
-  return partitionCmsEvents(data?.docs);
+  let eventDocs = [];
+  if (eventsRes && eventsRes.ok) {
+    const data = await eventsRes.json();
+    eventDocs = Array.isArray(data?.docs) ? data.docs : [];
+  }
+
+  const allDocs = [...eventDocs, ...coursePasses];
+  return partitionCmsEvents(allDocs);
 }

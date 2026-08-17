@@ -39,10 +39,6 @@ export const appRoutes = [
     ],
   },
   {
-    // /kurser is an index over the two course hubs, one per subject. The maleri
-    // hub used to sit at /konst under Event, which buried it one hover away from
-    // where anyone looking for a kurs would start; both hubs now live under the
-    // section they belong to.
     path: "/kurser",
     label: "Kurser",
     children: [
@@ -58,3 +54,25 @@ export const appRoutes = [
     children: [{ path: "/kontakt", label: "Kontakt" }],
   },
 ];
+
+const navKeyMap = {
+  "/": "nav.home",
+  "/event": "nav.event",
+  "/event/brollop": "nav.wedding",
+  "/gruppdagar": "nav.group-days",
+  "/kurser": "nav.courses",
+  "/kurser/yoga": "nav.yoga",
+  "/kurser/konst": "nav.art",
+  "/galleri": "nav.gallery",
+  "/butik": "nav.shop",
+  "/om-oss": "nav.about",
+  "/kontakt": "nav.contact",
+};
+
+export function routeLabel(route, copy) {
+  if (copy && navKeyMap[route.path]) {
+    const custom = copy(navKeyMap[route.path]);
+    if (custom) return custom;
+  }
+  return route.label;
+}

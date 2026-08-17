@@ -6,16 +6,21 @@ import { ExploreMoreSection, PageSection } from "../components";
 import { profiles } from "../data/profileData.js";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
+import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import "./MansPortfolioPage.css";
 
 function MansPortfolioPage() {
   useSeo(seoMeta.mansPortfolio || seoMeta.omOss);
+  const copy = usePageCopy("portfolio-mans");
+  const siteCopy = useSiteCopy();
   const profile = profiles.mans;
-  const [filter, setFilter] = useState("Alla");
+  const allLabel = siteCopy("cart.category-all") || "Alla";
+  const [filter, setFilter] = useState("all");
 
-  const allTags = ["Alla", ...new Set(profile.portfolio.flatMap((p) => p.tags || []))];
+  const allTags = profile.portfolio.flatMap((p) => p.tags || []);
+  const uniqueTags = Array.from(new Set(allTags));
 
-  const filteredProjects = filter === "Alla"
+  const filteredProjects = filter === "all"
     ? profile.portfolio
     : profile.portfolio.filter((p) => p.tags && p.tags.includes(filter));
 
@@ -26,7 +31,7 @@ function MansPortfolioPage() {
           <FadeInSection>
             <div className="retro-wrapper">
               <nav className="retro-nav">
-                <Link to="/om-oss/">&larr; Tillbaka till Om Oss</Link>
+                <Link to="/om-oss/">&larr; {copy("hero.back-to-about")}</Link>
               </nav>
 
               <hr className="retro-hr" />
@@ -44,14 +49,14 @@ function MansPortfolioPage() {
               <hr className="retro-hr" />
 
               <section className="retro-section">
-                <h2>Om mig</h2>
+                <h2>{copy("hero.about-heading")}</h2>
                 <p>
-                  Junior Fullstack- & DevOps-utvecklare. Arbetar med Go, C# (.NET Core), SvelteKit, React / React Native, TypeScript, Postgres, SQLite samt moln- & containerinfrastruktur.
+                  {copy("hero.about-body")}
                 </p>
               </section>
 
               <section className="retro-section">
-                <h2>Kompetensområden</h2>
+                <h2>{copy("hero.skills-heading")}</h2>
                 <ul className="retro-list">
                   {profile.listItems.map((item, index) => (
                     <li key={index}>{item}</li>
@@ -62,19 +67,24 @@ function MansPortfolioPage() {
               <hr className="retro-hr" />
 
               <section className="retro-section">
-                <h2>Utvalda Projekt</h2>
+                <h2>{copy("hero.projects-heading")}</h2>
 
                 <div className="retro-filter">
-                  Filtrera:{" "}
-                  {allTags.map((tag, i) => (
+                  <button
+                    className={`retro-filter-btn ${filter === "all" ? "active" : ""}`}
+                    onClick={() => setFilter("all")}
+                  >
+                    {allLabel}
+                  </button>
+                  {uniqueTags.map((tag) => (
                     <span key={tag}>
+                      {" | "}
                       <button
                         className={`retro-filter-btn ${filter === tag ? "active" : ""}`}
                         onClick={() => setFilter(tag)}
                       >
                         {tag}
                       </button>
-                      {i < allTags.length - 1 ? " | " : ""}
                     </span>
                   ))}
                 </div>
@@ -86,7 +96,7 @@ function MansPortfolioPage() {
                       <p>{project.caption}</p>
                       {project.tags && (
                         <p className="retro-tags">
-                          <em>Tekniker: {project.tags.join(", ")}</em>
+                          <em>{project.tags.join(", ")}</em>
                         </p>
                       )}
                     </article>
@@ -106,29 +116,29 @@ function MansPortfolioPage() {
 
       <ExploreMoreSection
         id="portfolio-explore-more"
-        eyebrow="NÄSTA STEG"
-        title="Utforska mer på Storegården 7"
-        intro="Fortsätt till den del av sajten som passar dig bäst – lär känna gården, se miljöerna eller hör av dig."
+        eyebrow={copy("explore.eyebrow")}
+        title={copy("explore.title")}
+        intro={copy("explore.body")}
         background="green"
         items={[
           {
             to: "/om-oss/",
-            eyebrow: "Storegården 7",
-            title: "Tillbaka till Om oss",
-            text: "Lär känna gården och människorna bakom verksamheten.",
+            eyebrow: copy("explore.items.0.eyebrow"),
+            title: copy("explore.items.0.title"),
+            text: copy("explore.items.0.body"),
             featured: true,
           },
           {
             to: "/galleri/",
-            eyebrow: "Se platsen",
-            title: "Bildgalleri",
-            text: "Upptäck ladan, loftet och ateljén på nära håll.",
+            eyebrow: copy("explore.items.1.eyebrow"),
+            title: copy("explore.items.1.title"),
+            text: copy("explore.items.1.body"),
           },
           {
             to: "/kontakt/",
-            eyebrow: "Prata med oss",
-            title: "Kontakt",
-            text: "Skicka en fråga eller berätta vad du vill planera.",
+            eyebrow: copy("explore.items.2.eyebrow"),
+            title: copy("explore.items.2.title"),
+            text: copy("explore.items.2.body"),
           },
         ]}
       />

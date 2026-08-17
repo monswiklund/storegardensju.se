@@ -73,8 +73,11 @@ export const isAllGalleryCategory = (category) => {
   );
 };
 
+import { getPageCopySync } from "../../hooks/usePageCopy.js";
+
 export const normalizeGalleryData = (data) => {
   const raw = data?.categories ? data : staticGalleryData;
+  const siteCopy = getPageCopySync("site");
   const normalizedCategories = (raw?.categories || []).map((category) => ({
     ...category,
     images: deduplicateCategoryImages(category),
@@ -106,11 +109,7 @@ export const normalizeGalleryData = (data) => {
     });
   });
 
-  // "Alla bilder" is a real membership category: an image that belongs to it has
-  // its own sort_order there, curated independently of the specific categories.
-  // Images not yet a member (mid-migration, or just uploaded) keep their
-  // category-derived position and land after the curated ones, so the view
-  // degrades gracefully instead of dropping them.
+  // "Alla bilder" is a real membership category
   const curatedAllOrder = new Map();
   const curatedAllImages = new Map();
   (storedAllCategory?.images || []).forEach((image, index) => {
@@ -120,9 +119,6 @@ export const normalizeGalleryData = (data) => {
   });
 
   const allImages = Array.from(uniqueImages.entries())
-    // A curated member is taken from the stored category, not from the union:
-    // its `order` is the position in Alla bilder, while the union copy carries
-    // the order of whichever specific category it came from.
     .map(([identity, image], index) => ({
       identity,
       image: curatedAllImages.get(identity) || image,
@@ -149,10 +145,10 @@ export const normalizeGalleryData = (data) => {
           {
             ...storedAllCategory,
             id: storedAllCategory?.id || "alla",
-            name: storedAllCategory?.name || "Alla bilder",
+            name: storedAllCategory?.name || (siteCopy ? siteCopy("gallery.all-label") : "Alla bilder"),
             description:
               storedAllCategory?.description ||
-              "Alla bilder från Storegården 7",
+              (siteCopy ? siteCopy("gallery.all-description") : ""),
             order: -1,
             images: allImages,
           },

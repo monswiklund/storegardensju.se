@@ -13,69 +13,16 @@ import { PageSection, ScrollSpyNav, SectionDivider } from "../../components";
 import { smoothScrollTo } from "../../utils/scrollUtils.js";
 import { HomeServicesSection } from "../../features/home";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
-import {
-  WEDDING_FAQ,
-  seoMeta,
-} from "../../config/seoMeta.js";
-import { useSeo } from "../../hooks/useSeo.js";
-import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
-import usePageCopy from "../../hooks/usePageCopy.js";
+import usePageCopy, { useSiteCopy } from "../../hooks/usePageCopy.js";
 import usePageMedia from "../../hooks/usePageMedia.js";
 import usePageLists from "../../hooks/usePageLists.js";
+import { seoMeta } from "../../config/seoMeta.js";
+import { useSeo } from "../../hooks/useSeo.js";
+import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
 import "./EventPage.css";
 import "./WeddingPage.css";
 
-const WEDDING_SPACES = [
-  {
-    title: "Middag på loftet",
-    value: "150+ sittande",
-    body: "På loftet finns plats för långbord, middag och tal under takbjälkarna.",
-    Icon: UtensilsCrossed,
-  },
-  {
-    title: "Mingel i hela ladan",
-    value: "300+ stående",
-    body: "Använd båda våningarna så att gästerna kan röra sig mellan rummen under kvällen.",
-    Icon: GlassWater,
-  },
-  {
-    title: "Dans och sena timmar",
-    value: "Bar & dansgolv",
-    body: "Fortsätt kvällen med lounge, bar, ljudanläggning och festbelysning på plats.",
-    Icon: Music,
-  },
-];
-
-const WEDDING_FLOW = [
-  {
-    title: "Välkomna gästerna",
-    body: "Börja med välkomstskål och mingel i ladan eller ute på gården.",
-  },
-  {
-    title: "Samlas till bords",
-    body: "Flytta upp till loftet för middag, tal och en lång kväll tillsammans.",
-  },
-  {
-    title: "Öppna dansgolvet",
-    body: "Runda av middagen och låt bar, musik och dans ta över resten av natten.",
-  },
-];
-
-const FREEDOM_BULLETS = [
-  { value: "För middagen:", body: "I köket finns bra arbetsytor, handdisk samt varmt och kallt vatten. Muurikka-hällar kan hyras. Dukning och möbler finns på gården." },
-  { value: "För festen:", body: "Bar, lounge, dansgolv, ljud och festbelysning är redo att användas." },
-  { value: "För hjälpen:", body: "Vi kan hjälpa till att ordna serveringspersonal, bar eller DJ vid behov." },
-];
-
-const SPY_SECTIONS = [
-  { id: "wedding-hero", label: "Start" },
-  { id: "wedding-intro", label: "Bröllopet" },
-  { id: "wedding-spaces", label: "Ytor" },
-  { id: "wedding-flow", label: "Dagen" },
-  { id: "wedding-freedom", label: "Friheten" },
-  { id: "wedding-contact", label: "Förfrågan" },
-  { id: "wedding-faq", label: "Frågor" },
-];
+const SPACE_ICONS = [UtensilsCrossed, GlassWater, Music];
 
 // Matches the fixed navbar and Event section subnav used throughout the hub.
 const SPY_OFFSET = 130;
@@ -98,40 +45,46 @@ function WeddingFaqItem({ question, answer }) {
         <ChevronDown
           className={`wedding-faq-card__chevron ${isOpen ? "is-open" : ""}`}
           size={20}
-          aria-hidden="true"
         />
       </button>
       <div
         id={contentId}
-        className={`wedding-faq-card__answer-wrapper ${isOpen ? "is-open" : ""}`}
+        className={`wedding-faq-card__body ${isOpen ? "is-open" : ""}`}
       >
-        <div className="wedding-faq-card__answer-inner">
-          <p>{answer}</p>
-        </div>
+        <p>{answer}</p>
       </div>
     </article>
   );
 }
 
 function WeddingPage() {
-  useSeo(seoMeta.eventWedding);
+  useSeo(seoMeta.eventWedding || seoMeta.brollop);
   const copy = usePageCopy("wedding");
+  const siteCopy = useSiteCopy();
   const media = usePageMedia("wedding");
   const list = usePageLists("wedding");
-  const spaceIcons = [UtensilsCrossed, GlassWater, Music];
-  const weddingSpaces = list("spaces", WEDDING_SPACES).map((item, index) => ({
-    ...item,
-    Icon: spaceIcons[index % spaceIcons.length],
+  const weddingSpaces = list("spaces", []).map((space, index) => ({
+    ...space,
+    Icon: SPACE_ICONS[index % SPACE_ICONS.length] || Sparkles,
   }));
-  const weddingFlow = list("flow", WEDDING_FLOW);
-  const freedomBullets = list("freedom-bullets", FREEDOM_BULLETS);
-  const weddingFaq = list("faq", WEDDING_FAQ.map(({ answer, question }) => ({ body: answer, title: question })))
-    .filter((item) => item.title && item.body);
+  const weddingFlow = list("flow", []);
+  const freedomBullets = list("freedom-bullets", []);
+  const weddingFaq = list("faq", []).filter((item) => item.title && item.body);
   const {
     timelineRef,
     activeSteps: activeTimelineSteps,
     progress: timelineProgress,
   } = useSequentialScrollTimeline(weddingFlow.length);
+
+  const spySections = [
+    { id: "wedding-hero", label: siteCopy("nav.start") },
+    { id: "wedding-intro", label: copy("intro.title") },
+    { id: "wedding-spaces", label: copy("spaces.title") },
+    { id: "wedding-flow", label: copy("flow.title") },
+    { id: "wedding-freedom", label: copy("freedom.title") },
+    { id: "wedding-contact", label: siteCopy("nav.contact") },
+    { id: "wedding-faq", label: siteCopy("courses.faq-label") },
+  ];
 
   const handleContactClick = () => {
     window.dispatchEvent(new Event("expand-contact-form"));
@@ -140,7 +93,7 @@ function WeddingPage() {
 
   return (
     <div className="event-page-container wedding-page">
-      <ScrollSpyNav sections={SPY_SECTIONS} offset={SPY_OFFSET} />
+      <ScrollSpyNav sections={spySections} offset={SPY_OFFSET} />
 
       <main id="main-content" className="event-page">
         <section
@@ -154,14 +107,14 @@ function WeddingPage() {
           aria-labelledby="wedding-heading"
         >
           <div className="event-hero__inner" data-cms-hero-content>
-            <span className="event-eyebrow">{copy("hero.eyebrow", "Bröllopslokal nära Lidköping")}</span>
+            <span className="event-eyebrow">{copy("hero.eyebrow")}</span>
             <div className="section-ornament wedding-hero__ornament" aria-hidden="true">
               <span className="section-ornament-line" />
               <Heart size={20} />
               <span className="section-ornament-line" />
             </div>
-            <h1 id="wedding-heading">{copy("hero.title", "Bröllop")}</h1>
-            <p>{copy("hero.lead", "En lantlig plats för middag, mingel och dans under samma tak")}</p>
+            <h1 id="wedding-heading">{copy("hero.title")}</h1>
+            <p>{copy("hero.lead")}</p>
           </div>
 
           {/* The photo remains full-height while the wave visually opens the
@@ -187,23 +140,23 @@ function WeddingPage() {
                 <div className="event-split-image wedding-intro__image">
                   {media("intro", "/images/event/hero/hero.webp", "card") && <img
                     src={media("intro", "/images/event/hero/hero.webp", "card")}
-                    alt="Den renoverade ladan förberedd för bröllop"
+                    alt=""
                     loading="lazy"
                   />}
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">{copy("intro.eyebrow", "Er bröllopsdag")}</span>
+                  <span className="event-section-eyebrow">{copy("intro.eyebrow")}</span>
                   <div className="section-ornament align-left" aria-hidden="true">
                     <span className="section-ornament-line" />
                     <CalendarHeart size={18} />
                     <span className="section-ornament-line" />
                   </div>
-                  <h2>{copy("intro.title", "Hyr ladan och loftet för hela bröllopsdagen")}</h2>
+                  <h2>{copy("intro.title")}</h2>
                   <p>
-                    {copy("intro.paragraphs.0", "Storegården 7 ligger i Rackeby, strax utanför Lidköping. Här kan ni ha välkomstskål, middag och fest på samma gård.")}
+                    {copy("intro.paragraphs.0")}
                   </p>
                   <p>
-                    {copy("intro.paragraphs.1", "Ni disponerar den renoverade ladan och loftet och bestämmer själva hur ni vill använda rummen under dagen.")}
+                    {copy("intro.paragraphs.1")}
                   </p>
                 </div>
               </div>
@@ -217,10 +170,10 @@ function WeddingPage() {
           <PageSection background="white" spacing="default">
             <FadeInSection>
               <div className="event-section-intro">
-                <span className="event-section-eyebrow">{copy("spaces.eyebrow", "Ladan och loftet")}</span>
-                <h2>{copy("spaces.title", "Plats för middag, mingel och dans")}</h2>
+                <span className="event-section-eyebrow">{copy("spaces.eyebrow")}</span>
+                <h2>{copy("spaces.title")}</h2>
                 <p className="event-section-lead">
-                  {copy("spaces.lead", "Gästerna kan röra sig mellan våningarna utan att lämna gården.")}
+                  {copy("spaces.lead")}
                 </p>
               </div>
 
@@ -247,15 +200,15 @@ function WeddingPage() {
             <FadeInSection>
               <div className="event-planning">
                 <div className="event-section-intro event-section-intro--compact">
-                  <span className="event-section-eyebrow">{copy("flow.eyebrow", "Ett möjligt upplägg")}</span>
+                  <span className="event-section-eyebrow">{copy("flow.eyebrow")}</span>
                   <div className="section-ornament" aria-hidden="true">
                     <span className="section-ornament-line" />
                     <Sparkles size={19} />
                     <span className="section-ornament-line" />
                   </div>
-                  <h2>{copy("flow.title", "Från välkomstskål till dansgolv")}</h2>
+                  <h2>{copy("flow.title")}</h2>
                   <p className="event-section-lead">
-                    {copy("flow.lead", "Så här kan ni använda de olika delarna av lokalen under dagen.")}
+                    {copy("flow.lead")}
                   </p>
                 </div>
 
@@ -299,14 +252,14 @@ function WeddingPage() {
                 <div className="event-split-image wedding-freedom__image">
                   {media("freedom", "/images/event/hero/hero-3.webp", "card") && <img
                     src={media("freedom", "/images/event/hero/hero-3.webp", "card")}
-                    alt="Glas och stämningsbelysning i bröllopslokalen"
+                    alt=""
                     loading="lazy"
                   />}
                 </div>
                 <div className="event-split-content">
-                  <span className="event-section-eyebrow">{copy("freedom.eyebrow", "Mat, dryck och hjälp")}</span>
-                  <h2>{copy("freedom.title", "Ni väljer upplägget själva")}</h2>
-                  <p>{copy("freedom.body", "Ni får ta med egen mat och dryck och kan välja det upplägg som passar er bäst. På plats finns glas, porslin, bestick, bord och stolar.")}</p>
+                  <span className="event-section-eyebrow">{copy("freedom.eyebrow")}</span>
+                  <h2>{copy("freedom.title")}</h2>
+                  <p>{copy("freedom.body")}</p>
                   <ul className="event-bullets">
                     {freedomBullets.map((item, index) => (
                       <li key={item.id || index}><strong>{item.value}</strong> {item.body}</li>
@@ -326,15 +279,15 @@ function WeddingPage() {
           <PageSection background="alt" spacing="default">
             <FadeInSection>
               <div className="wedding-cta">
-                <span className="event-section-eyebrow">{copy("contact.eyebrow", "Skicka en förfrågan")}</span>
-                <h2>{copy("contact.title", "Har ni ett datum och ett ungefärligt gästantal?")}</h2>
-                <p>{copy("contact.body", "Berätta vilket datum ni tänker er, ungefär hur många ni blir och vilken hjälp ni behöver.")}</p>
+                <span className="event-section-eyebrow">{copy("contact.eyebrow")}</span>
+                <h2>{copy("contact.title")}</h2>
+                <p>{copy("contact.body")}</p>
                 <button
                   type="button"
                   className="event-gallery-button event-gallery-button--solid"
                   onClick={handleContactClick}
                 >
-                  {copy("contact.cta", "Skicka en bröllopsförfrågan")}
+                  {copy("contact.cta")}
                   <ArrowUpRight size={17} aria-hidden="true" />
                 </button>
               </div>
@@ -348,8 +301,8 @@ function WeddingPage() {
           <PageSection background="green" spacing="default">
             <FadeInSection>
               <div className="event-section-intro wedding-faq__intro">
-                <span className="event-section-eyebrow">{copy("faq.eyebrow", "Bra att veta")}</span>
-                <h2>{copy("faq.title", "Vanliga frågor")}</h2>
+                <span className="event-section-eyebrow">{copy("faq.eyebrow")}</span>
+                <h2>{copy("faq.title")}</h2>
               </div>
 
               <div className="wedding-faq-grid">
@@ -369,8 +322,8 @@ function WeddingPage() {
               <HomeServicesSection
                 cmsPage="wedding"
                 excludeId="brollop"
-                title={copy("services-section.title", "Utforska mer")}
-                eyebrow={copy("services-section.eyebrow", "MER HOS OSS")}
+                title={copy("services-section.title")}
+                eyebrow={copy("services-section.eyebrow")}
               />
             </FadeInSection>
           </PageSection>

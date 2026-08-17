@@ -8,7 +8,10 @@ import "./ProfileShowcase.css";
 import ContactList from "./components/ContactList";
 import ActionButtons from "./components/ActionButtons";
 
+import { useSiteCopy } from "../../../hooks/usePageCopy";
+
 const TeamProfileShowcase = ({ profile }) => {
+  const siteCopy = useSiteCopy();
   const editableTitle = profile.title;
   const editableAbout = profile.about;
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,12 +86,12 @@ const TeamProfileShowcase = ({ profile }) => {
           <img
             className="team-card-image"
             src={profile.imageSrc}
-            alt={profile.imageAlt || `Profilbild för ${editableTitle}`}
+            alt={profile.imageAlt || ""}
             loading="lazy"
           />
         )}
         {!profile.imageSrc && (
-          <div className="team-card-image team-card-image--placeholder" aria-label={`Ingen profilbild för ${editableTitle}`}>
+          <div className="team-card-image team-card-image--placeholder">
             {editableTitle?.split(/\s+/).map((part) => part[0]).join("").slice(0, 2)}
           </div>
         )}
@@ -122,32 +125,30 @@ const TeamProfileShowcase = ({ profile }) => {
           <Link
             to={canonicalPath(profile.portfolioUrl)}
             className="team-card-portfolio-btn"
-            aria-label={`Visa portfolio för ${editableTitle}`}
           >
             <ImageIcon size={16} />
-            <span>Visa Portfolio</span>
+            <span>{siteCopy("team.view-portfolio")}</span>
           </Link>
         ) : hasPortfolio && (
           <button
             className="team-card-portfolio-btn"
             onClick={() => openModal(0)}
-            aria-label={`Visa portfolio för ${editableTitle}`}
           >
             <ImageIcon size={16} />
-            <span>Visa Portfolio</span>
+            <span>{siteCopy("team.view-portfolio")}</span>
           </button>
         )}
       </div>
 
       {isModalOpen && hasPortfolio && createPortal(
         <div className="portfolio-modal" onClick={closeModal} role="dialog" aria-modal="true">
-          <button className="portfolio-modal-close" onClick={closeModal} aria-label="Stäng modal">
+          <button className="portfolio-modal-close" onClick={closeModal} aria-label={siteCopy("ui.close")}>
             <X size={24} />
           </button>
           
           <div className="portfolio-modal-wrapper" onClick={(e) => e.stopPropagation()}>
             {profile.portfolio.length > 1 && (
-              <button className="portfolio-modal-nav prev" onClick={prevImage} aria-label="Föregående projekt">
+              <button className="portfolio-modal-nav prev" onClick={prevImage} aria-label={siteCopy("ui.previous-image")}>
                 <ChevronLeft size={36} />
               </button>
             )}
@@ -156,7 +157,7 @@ const TeamProfileShowcase = ({ profile }) => {
               {profile.portfolio[activeImageIndex].src ? (
                 <img
                   src={profile.portfolio[activeImageIndex].src}
-                  alt={profile.portfolio[activeImageIndex].alt || profile.portfolio[activeImageIndex].title || `Portföljbild ${activeImageIndex + 1}`}
+                  alt={profile.portfolio[activeImageIndex].alt || profile.portfolio[activeImageIndex].title || ""}
                 />
               ) : (
                 <div className="portfolio-modal-project-card">
@@ -179,7 +180,7 @@ const TeamProfileShowcase = ({ profile }) => {
                       rel="noopener noreferrer"
                       className="portfolio-project-link-btn"
                     >
-                      Besök projekt
+                      {siteCopy("team.visit-project")}
                     </a>
                   )}
                 </div>
@@ -193,7 +194,7 @@ const TeamProfileShowcase = ({ profile }) => {
             </div>
 
             {profile.portfolio.length > 1 && (
-              <button className="portfolio-modal-nav next" onClick={nextImage} aria-label="Nästa projekt">
+              <button className="portfolio-modal-nav next" onClick={nextImage} aria-label={siteCopy("ui.next-image")}>
                 <ChevronRight size={36} />
               </button>
             )}

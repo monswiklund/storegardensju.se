@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import PropTypes from "prop-types";
 import "./CategoryToggle.css";
+import { useSiteCopy } from "../../../hooks/usePageCopy.js";
 
-function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
+function CategoryToggle({ categories, activeCategory, onCategoryChange, className = "" }) {
+    const siteCopy = useSiteCopy();
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef(null);
@@ -136,7 +138,7 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
                     onClick={() => setIsOpen(!isOpen)}
                     aria-expanded={isOpen}
                     aria-haspopup="listbox"
-                    aria-label="Välj kategori"
+                    aria-label={siteCopy("gallery.choose-category")}
                     type="button"
                 >
                     <span className="select-trigger-text">
@@ -148,7 +150,7 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange }) {
                 </button>
 
                 {isOpen && (
-                    <ul className="category-dropdown-options" role="listbox" aria-label="Kategorier">
+                    <ul className="category-dropdown-options" role="listbox">
                         {sortedCategories.map((category, index) => {
                             const isActive = category.id === activeCategory;
                             return (

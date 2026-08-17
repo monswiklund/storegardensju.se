@@ -35,6 +35,7 @@ import {
 import { FEATURED_PAST_EVENTS_BY_ID } from "../../data/featuredPastEvents.js";
 import PastEventModal from "../home/UpcomingEvents/components/PastEventModal.jsx";
 import { toUiEvent } from "../home/UpcomingEvents/toUiEvent.js";
+import { useSiteCopy } from "../../hooks/usePageCopy.js";
 import "../../pages/KurserPages.css";
 
 const fullAddress = `${COURSE_LOCATION.streetAddress}, ${COURSE_LOCATION.postalCode} ${COURSE_LOCATION.locality}`;
@@ -42,14 +43,6 @@ const pastPassHistoryStateKey = "__storegardenPastPass";
 
 /**
  * Full-bleed colour band with a width-constrained inner column.
- *
- * The colour has to sit on a full-width element while the content stays in the
- * 1120px column - and the anchor id has to sit on that same outermost element,
- * since scroll-margin-top is what keeps a deep link from landing behind the
- * fixed navbar plus section subnav.
- *
- * `divided` draws a hairline rule, for the rare case where two neighbouring
- * sections share a background colour and would otherwise run together.
  */
 export function CourseBand({
   id,
@@ -107,10 +100,7 @@ function ContactCard({
 }
 
 /**
- * One upcoming pass as an anchored section. The id is the anchor the Event
- * JSON-LD points at, so it has to match passAnchor() exactly.
- *
- * variant: "split" (copy left, card right) | "split-reverse" (mirrored)
+ * One upcoming pass as an anchored section.
  */
 export function PassSection({
   pass,
@@ -122,6 +112,7 @@ export function PassSection({
   variant = "split",
   sticky = false,
 }) {
+  const siteCopy = useSiteCopy();
   const track = trackById(trackId);
   const instructor = trackById(pass.primaryTrack).instructor;
 
@@ -138,7 +129,7 @@ export function PassSection({
       >
         <div className="kurser-details__info">
           <span className="kurser-label">
-            {track.id === pass.primaryTrack ? "Kommande pass" : "Kommande dag"}
+            {track.id === pass.primaryTrack ? siteCopy("courses.upcoming-pass") : siteCopy("courses.upcoming-day")}
           </span>
           <h2>
             {pass.title}
@@ -155,11 +146,11 @@ export function PassSection({
             <li>
               <Clock size={20} aria-hidden="true" />
               <span>
-                <strong>Klockan {formatPassTime(pass.startAt)}</strong>
+                <strong>{siteCopy("ui.time-at")} {formatPassTime(pass.startAt)}</strong>
                 {pass.doorsOpenAt && (
                   <>
                     {" "}
-                    (du kan komma från {formatPassTime(pass.doorsOpenAt)})
+                    ({siteCopy("courses.doors-open-from")} {formatPassTime(pass.doorsOpenAt)})
                   </>
                 )}
               </span>
@@ -167,7 +158,7 @@ export function PassSection({
             <li>
               <MapPin size={20} aria-hidden="true" />
               <span>
-                {COURSE_LOCATION.name}, {COURSE_LOCATION.locality} (Lidköping)
+                {COURSE_LOCATION.name}, {COURSE_LOCATION.locality} ({COURSE_LOCATION.locality})
               </span>
             </li>
           </ul>
@@ -175,12 +166,12 @@ export function PassSection({
           <div className="kurser-details__extra">
             {pass.price && (
               <p>
-                <strong>Pris: {pass.price}:- /person</strong>
+                <strong>{siteCopy("cart.price-label")}: {pass.price}:- /person</strong>
               </p>
             )}
             {pass.dropIn && (
               <p style={{ marginTop: "4px" }}>
-                Betalning sker på plats, ingen föranmälan behövs.
+                {siteCopy("courses.drop-in-note")}
               </p>
             )}
             {pass.practicalNote && (
@@ -193,15 +184,15 @@ export function PassSection({
 
         <div className="kurser-details__action">
           <ContactCard
-            heading="Frågor och kontakt"
+            heading={siteCopy("courses.card-heading")}
             body={
               pass.dropIn
-                ? `Det är drop-in och ingen föranmälan behövs. Hör av dig till ${instructor.name.split(" ")[0]} om du undrar något inför passet.`
-                : "Vill du veta mer eller anmäla dig?"
+                ? `${siteCopy("courses.drop-in-note")} ${siteCopy("courses.contact-instructor-prefix")} ${instructor.name.split(" ")[0]}.`
+                : siteCopy("courses.sign-up-note")
             }
             email={instructor.email}
             subject={contactSubject}
-            linkLabel="Skicka ett meddelande"
+            linkLabel={siteCopy("courses.send-message")}
             onContactClick={onContactClick}
             showMailFallback={showMailFallback}
           />
@@ -218,6 +209,7 @@ export function NoUpcomingSection({
   body,
   background = "white",
 }) {
+  const siteCopy = useSiteCopy();
   const track = trackById(trackId);
 
   return (
@@ -227,7 +219,7 @@ export function NoUpcomingSection({
       className="kurser-details kurser-details--anchored"
     >
       <div className="kurser-details__info kurser-details__info--wide">
-        <span className="kurser-label">Kommande</span>
+        <span className="kurser-label">{siteCopy("courses.upcoming-label")}</span>
         <h2>{heading}</h2>
         <p className="kurser-details__description">
           {body ||
@@ -396,6 +388,7 @@ export function DirectionsSection({
   background = "white",
   variant = "stacked",
 }) {
+  const siteCopy = useSiteCopy();
   return (
     <CourseBand
       id="hitta-hit"
@@ -406,8 +399,8 @@ export function DirectionsSection({
         className={`kurser-details__container kurser-details__container--${variant}`}
       >
         <div className="kurser-details__info">
-          <span className="kurser-label">Hitta hit</span>
-          <h2>Hitta till {COURSE_LOCATION.name}</h2>
+          <span className="kurser-label">{siteCopy("courses.directions-label")}</span>
+          <h2>{siteCopy("courses.directions-title-prefix")} {COURSE_LOCATION.name}</h2>
           <p className="kurser-details__description">{description}</p>
           <ul className="kurser-details__meta">
             <li>
@@ -419,8 +412,8 @@ export function DirectionsSection({
 
         <div className="kurser-details__action">
           <div className="kurser-action-card">
-            <h3>Öppna i Google Maps</h3>
-            <p>Öppna kartan för vägbeskrivning ända fram till gården.</p>
+            <h3>{siteCopy("courses.directions-card-title")}</h3>
+            <p>{siteCopy("courses.directions-card-body")}</p>
             <a
               className="kurser-interest__link"
               href={COURSE_LOCATION.mapsUrl}
@@ -428,7 +421,7 @@ export function DirectionsSection({
               rel="noopener noreferrer"
             >
               <MapPin size={17} aria-hidden="true" />
-              Visa på karta
+              {siteCopy("courses.directions-map-cta")}
               <ArrowUpRight size={15} aria-hidden="true" />
             </a>
           </div>
@@ -454,6 +447,7 @@ export function PastPassesSection({
   background = "white",
   variant = "timeline",
 }) {
+  const siteCopy = useSiteCopy();
   const [selectedEvent, setSelectedEvent] = useState(null);
   const ownsHistoryEntryRef = useRef(false);
 
@@ -506,7 +500,7 @@ export function PastPassesSection({
         className="kurser-past"
       >
         <div className={`kurser-past__inner kurser-past__inner--${variant}`}>
-          <span className="kurser-label">Återblick</span>
+          <span className="kurser-label">{siteCopy("courses.recap-label")}</span>
           <h2>{heading}</h2>
           <ol className={`kurser-past__list kurser-past__list--${variant}`}>
             {passes.map((pass) => {
@@ -556,7 +550,7 @@ export function PastPassesSection({
                         onClick={() => openEvent(eventDetail)}
                         className="kurser-past__detail-link"
                       >
-                        {pass.recapLabel || "Se återblicken"}
+                        {pass.recapLabel || siteCopy("courses.see-recap")}
                         <ArrowUpRight size={15} aria-hidden="true" />
                       </button>
                     )}
@@ -683,6 +677,7 @@ export function YogaScheduleSection({
   showMailFallback,
   background = "alt",
 }) {
+  const siteCopy = useSiteCopy();
   const instructor = trackById(trackId).instructor;
 
   return (
@@ -723,7 +718,7 @@ export function YogaScheduleSection({
                   <div className="kurser-schedule-card__mobile-header-title">
                     <span className="kurser-schedule-card__weekday">{weekday}</span>
                     <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
-                      {isDropIn ? "DROP-IN" : "FÖRANMÄLAN"}
+                      {isDropIn ? (siteCopy("courses.dropin-badge") || "DROP-IN") : (siteCopy("courses.signup-badge") || "FÖRANMÄLAN")}
                     </span>
                   </div>
                   <span className="kurser-schedule-card__time">
@@ -753,20 +748,20 @@ export function YogaScheduleSection({
               {/* Tag Column */}
               <div className="kurser-schedule-card__tag-col desktop-only">
                 <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
-                  {isDropIn ? "DROP-IN" : "FÖRANMÄLAN"}
+                  {isDropIn ? (siteCopy("courses.dropin-badge") || "DROP-IN") : (siteCopy("courses.signup-badge") || "FÖRANMÄLAN")}
                 </span>
               </div>
 
               {/* Price Column */}
               <div className="kurser-schedule-card__price-col desktop-only">
-                <span className="kurser-schedule-card__price">{pass.price ? `${pass.price}:-` : "150:-"}</span>
+                <span className="kurser-schedule-card__price">{pass.price ? `${pass.price}:-` : ""}</span>
               </div>
 
               {/* Action Column */}
               <div className="kurser-schedule-card__action-col desktop-only">
                 {isDropIn ? (
                   <span className="kurser-schedule-card__note">
-                    Ingen föranmälan behövs – betalning på plats
+                    {siteCopy("courses.dropin-note")}
                   </span>
                 ) : (
                   <a
@@ -774,7 +769,7 @@ export function YogaScheduleSection({
                     className="kurser-btn kurser-btn--primary"
                     onClick={onContactClick}
                   >
-                    <span>Föranmäl dig</span>
+                    <span>{siteCopy("courses.pre-register-cta")}</span>
                     <Mail size={16} aria-hidden="true" />
                   </a>
                 )}
@@ -783,12 +778,12 @@ export function YogaScheduleSection({
               {/* Mobile Footer Row */}
               <div className="kurser-schedule-card__mobile-footer mobile-only">
                 <div className="kurser-schedule-card__mobile-price-chip">
-                  <span className="kurser-schedule-card__price-val">{pass.price ? `${pass.price}:-` : "150:-"}</span>
+                  <span className="kurser-schedule-card__price-val">{pass.price ? `${pass.price}:-` : ""}</span>
                 </div>
                 <div className="kurser-schedule-card__mobile-action">
                   {isDropIn ? (
                     <span className="kurser-schedule-card__note">
-                      Betalas på plats
+                      {siteCopy("courses.pay-on-site")}
                     </span>
                   ) : (
                     <a
@@ -796,7 +791,7 @@ export function YogaScheduleSection({
                       className="kurser-btn kurser-btn--primary"
                       onClick={onContactClick}
                     >
-                      <span>Föranmäl dig</span>
+                      <span>{siteCopy("courses.pre-register-cta")}</span>
                       <Mail size={15} aria-hidden="true" />
                     </a>
                   )}
