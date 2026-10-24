@@ -83,5 +83,7 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/test/setupTests.js',
     include: ['src/**/*.{test,spec}.{js,jsx,ts,tsx}'],
+    // jsdom runs on localhost, where getCmsUrl() would pick the local CMS; CI has no .env.
+    env: { VITE_CMS_URL: 'https://cms.storegardensju.se' },
   }
 })
