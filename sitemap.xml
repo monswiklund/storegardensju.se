@@ -1,129 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-
-  <!-- Homepage -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://storegardensju.se/</loc>
-    <lastmod>2026-07-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-    <image:image>
-      <image:loc>https://storegardensju.se/images/evenemang/slide4.jpg</image:loc>
-      <image:title>Storegården 7 Eventlokal</image:title>
-    </image:image>
+    <image:image><image:loc>https://media.storegardensju.se/media-7a04164feffef351d1beae026c8722f4f163c3d7e0cf82077e488cefd3a0d911-1920x1080.webp</image:loc></image:image>
   </url>
-
-  <!-- Wedding landing page -->
-  <url>
-    <loc>https://storegardensju.se/event/brollop/</loc>
-    <lastmod>2026-07-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-    <image:image>
-      <image:loc>https://storegardensju.se/images/event/hero/hero-2.webp</image:loc>
-      <image:title>Bröllopslokal på Storegården 7 utanför Lidköping</image:title>
-    </image:image>
-  </url>
-
-  <!-- Event Page -->
   <url>
     <loc>https://storegardensju.se/event/</loc>
-    <lastmod>2025-03-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://storegardensju.se/images/evenemang/slide2.webp</image:loc>
-      <image:title>Evenemang på Storegården 7</image:title>
-    </image:image>
+    <image:image><image:loc>https://media.storegardensju.se/media-ce29422fa2a743f701c9d0facf651e2fde99e24830e456ec9e9528d84fc031a6-1920x1080.webp</image:loc></image:image>
   </url>
-
-  <!-- Kurser index - links onward to the two hubs -->
+  <url>
+    <loc>https://storegardensju.se/event/brollop/</loc>
+    <image:image><image:loc>https://media.storegardensju.se/media-7a04164feffef351d1beae026c8722f4f163c3d7e0cf82077e488cefd3a0d911-1920x1080.webp</image:loc></image:image>
+  </url>
   <url>
     <loc>https://storegardensju.se/kurser/</loc>
-    <lastmod>2026-07-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <image:image><image:loc>https://media.storegardensju.se/media-8726c9e3085b089bb87ab02ded765ae0228d1834f7e777665a058a16d4197736-1920x1080.webp</image:loc></image:image>
   </url>
-
-  <!-- Yoga hub (was /kurser/ before the split) -->
   <url>
     <loc>https://storegardensju.se/kurser/yoga/</loc>
-    <lastmod>2026-07-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <image:image>
-      <image:loc>https://storegardensju.se/images/evenemang/lina-yoga-header.jpg</image:loc>
-      <image:title>Yoga på loftet med Lina Wiklund på Storegården 7</image:title>
-    </image:image>
+    <image:image><image:loc>https://media.storegardensju.se/media-e7839e9c79596fef7c265a5eb559b5dd462bcf527e1dc8fdc5fcc791ff33feeb-1920x1080.webp</image:loc></image:image>
   </url>
-
-  <!-- Maleri & keramik hub (was /konst/ before the split) -->
-  <url>
-    <loc>https://storegardensju.se/kurser/konst/</loc>
-    <lastmod>2026-07-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <image:image>
-      <image:loc>https://storegardensju.se/images/evenemang/maleri-kurs.webp</image:loc>
-      <image:title>Målarkurs med Ann Wiklund på Storegården 7</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://storegardensju.se/images/konst-keramik/slide16.webp</image:loc>
-      <image:title>Konst och keramik på Storegården 7</image:title>
-    </image:image>
-  </url>
-
-  <!-- Gruppdagar Page -->
   <url>
     <loc>https://storegardensju.se/gruppdagar/</loc>
-    <lastmod>2026-07-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <image:image><image:loc>https://media.storegardensju.se/media-4b889fb3f52d042602beedbf879e40f8f42b1dc0a511ec4da6c949d27c62f940-1920x1080.webp</image:loc></image:image>
   </url>
-
-  <!-- Butik Page -->
   <url>
-    <loc>https://storegardensju.se/butik/</loc>
-    <lastmod>2026-07-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://storegardensju.se/kurser/konst/</loc>
+    <image:image><image:loc>https://media.storegardensju.se/media-d7743fb09164a602a57c6c4c95adcded969067294675fffd758f2c63fb53e3f0-1920x1080.webp</image:loc></image:image>
   </url>
-
-  <!-- Galleri Page -->
   <url>
     <loc>https://storegardensju.se/galleri/</loc>
-    <lastmod>2025-03-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <image:image><image:loc>https://media.storegardensju.se/media-ce29422fa2a743f701c9d0facf651e2fde99e24830e456ec9e9528d84fc031a6-1920x1080.webp</image:loc></image:image>
   </url>
-
-  <!-- Team Page -->
   <url>
     <loc>https://storegardensju.se/om-oss/</loc>
-    <lastmod>2025-03-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <image:image><image:loc>https://media.storegardensju.se/media-ce29422fa2a743f701c9d0facf651e2fde99e24830e456ec9e9528d84fc031a6-1920x1080.webp</image:loc></image:image>
   </url>
-
-  <!-- Contact Page -->
   <url>
     <loc>https://storegardensju.se/kontakt/</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <image:image>
-      <image:loc>https://storegardensju.se/images/event/hero/hero.webp</image:loc>
-      <image:title>Storegården 7 i Rackeby utanför Lidköping</image:title>
-    </image:image>
+    <image:image><image:loc>https://media.storegardensju.se/media-ce29422fa2a743f701c9d0facf651e2fde99e24830e456ec9e9528d84fc031a6-1920x1080.webp</image:loc></image:image>
   </url>
-
-  <!-- Måns Portfolio Page -->
   <url>
     <loc>https://storegardensju.se/om-oss/portfolj/mans/</loc>
-    <lastmod>2026-07-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
   </url>
-
+  <url>
+    <loc>https://storegardensju.se/butik/</loc>
+    <image:image><image:loc>https://media.storegardensju.se/media-fe40af419ba45578623c199b08c14e569087511e62dacf98cdf6683da9275f01-1920x1080.webp</image:loc></image:image>
+  </url>
 </urlset>
