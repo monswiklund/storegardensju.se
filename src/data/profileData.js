@@ -11,7 +11,7 @@ export const profiles = {
     },
     texts: [
       "Jag bor på Storegården 7 i Rackeby utanför Lidköping. Här har jag min ateljé, kurs- och festlokal samt en liten keramikbutik.",
-      "Jag håller kurser i teckning, måleri och keramik, både i egen regi och för studieförbundet NBV.",
+      "Jag håller kurser i teckning och måleri, både i egen regi och för studieförbundet NBV.",
       "I mitt företag Ann Wiklund Studio säljer jag konst och keramik och arbetar med kurser, workshops, Skapande skola och andra konstnärliga uppdrag.",
       "Jag är medlem i Sjölundagruppen och konstnärskollektivet Alea. Vi arbetar och ställer ut tillsammans.",
     ],

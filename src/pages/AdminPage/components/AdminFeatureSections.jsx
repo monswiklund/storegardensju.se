@@ -1,20 +1,12 @@
 import AdminCustomers from "./AdminCustomers";
 import AdminCreateProduct from "./AdminCreateProduct";
 import AdminProductList from "./AdminProductList";
-import AdminGallery from "./AdminGallery";
-import AdminEvents from "./AdminEvents";
-import AdminYoga from "./AdminYoga";
 import AdminCoupons from "./AdminCoupons";
 import AdminPreviewPanel from "./AdminPreviewPanel";
-import AdminNotifications from "./AdminNotifications";
 
 export default function AdminFeatureSections({
   showCustomersSection,
   showProductsSection,
-  showYogaSection,
-  showGallerySection,
-  showEventsSection,
-  showNotificationsSection,
   showCouponsSection,
   orders,
   listLoading,
@@ -81,58 +73,6 @@ export default function AdminFeatureSections({
               onCancel={() => setProductViewMode("list")}
               onSuccess={() => setProductViewMode("list")}
             />
-          )}
-        </>
-      )}
-
-      {showGallerySection && (
-        <>
-          {isPreview ? (
-            <AdminPreviewPanel
-              message="Demo-läge: logga in för att hantera galleriet."
-              onLogin={onLogin}
-            />
-          ) : (
-            <AdminGallery adminKey={adminKey} />
-          )}
-        </>
-      )}
-
-      {showYogaSection && (
-        <>
-          {isPreview ? (
-            <AdminPreviewPanel
-              message="Demo-läge: logga in för att hantera yogapass."
-              onLogin={onLogin}
-            />
-          ) : (
-            <AdminYoga adminKey={adminKey} />
-          )}
-        </>
-      )}
-
-      {showEventsSection && (
-        <>
-          {isPreview ? (
-            <AdminPreviewPanel
-              message="Demo-läge: logga in för att hantera evenemang."
-              onLogin={onLogin}
-            />
-          ) : (
-            <AdminEvents adminKey={adminKey} />
-          )}
-        </>
-      )}
-
-      {showNotificationsSection && (
-        <>
-          {isPreview ? (
-            <AdminPreviewPanel
-              message="Demo-läge: logga in för att hantera notiser."
-              onLogin={onLogin}
-            />
-          ) : (
-            <AdminNotifications adminKey={adminKey} />
           )}
         </>
       )}

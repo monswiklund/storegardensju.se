@@ -16,6 +16,10 @@ function ProductDetailPage() {
   const productContext = useContext(ProductContext);
   const products = productContext?.products ?? [];
   const productsLoading = productContext?.loading ?? false;
+  const loadProducts = productContext?.load;
+  useEffect(() => {
+    loadProducts?.();
+  }, [loadProducts]);
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +36,7 @@ function ProductDetailPage() {
         const resolvedProduct = contextProduct || await getStripeProductById(productId);
 
         if (!resolvedProduct) {
-          setError(siteCopy("cart.product-not-found") || "error");
+          setError(siteCopy("cart.product-not-found", "error"));
           setProduct(null);
         } else {
           setProduct(resolvedProduct);

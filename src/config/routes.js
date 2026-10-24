@@ -43,7 +43,7 @@ export const appRoutes = [
     label: "Kurser",
     children: [
       { path: "/kurser/yoga", label: "Yoga" },
-      { path: "/kurser/konst", label: "Måleri & keramik" },
+      { path: "/kurser/konst", label: "Måleri" },
     ],
   },
   { path: "/galleri", label: "Galleri" },

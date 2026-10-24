@@ -5,7 +5,7 @@ export const heroContent = {
   subtitle: "En gård för fest, kurser och konst",
   paragraphs: [
     "Här i Rackeby, 15 minuter från Lidköping, driver vi Storegården 7 tillsammans.",
-    "I ladan och på loftet ordnas bröllop, kalas och andra fester. I ateljén håller vi kurser i måleri och keramik.",
+    "I ladan och på loftet ordnas bröllop, kalas och andra fester. I ateljén håller vi kurser i måleri.",
     "På gården finns också en liten butik med konst och keramik. Ibland har vi loppis, yoga och andra aktiviteter.",
   ],
   primaryCta: {
@@ -75,11 +75,11 @@ export const services = [
   },
   {
     id: "kurser-konst",
-    kicker: "Ateljé och lera",
-    title: "Måleri & keramik",
+    kicker: "Ateljén",
+    title: "Måleri",
     description:
-      "Kurser i måleri, keramik och drejning för både nybörjare och vana. Det går också att boka ateljén för en egen grupp.",
-    meta: "Målning · Keramik · Privata workshops",
+      "Kurser i måleri för både nybörjare och vana. Det går också att boka ateljén för en egen grupp.",
+    meta: "Målning · Privata workshops",
     route: "/kurser/konst",
     image: cdnAsset("/images/konst-keramik/slide16.webp"),
     ctaLabel: "Se kurserna",
@@ -109,18 +109,18 @@ export const featuredGalleryImages = [
 ];
 
 export const creationContent = {
-  title: "Måleri och keramik",
+  title: "Måleri",
   sections: [
     {
-      heading: "Prova måleri eller keramik",
+      heading: "Prova måleri",
       body: [
-        "I ateljén håller Ann kurser i måleri och keramik. Du får hjälp under hela passet och behöver inte ha provat tidigare.",
+        "I ateljén håller Ann kurser i måleri. Du får hjälp under hela passet och behöver inte ha provat tidigare.",
       ],
     },
     {
       heading: "Kurser och workshops",
       body: [
-        "Du kan boka en plats på en kurs i måleri, keramik eller drejning. Vi tar också emot privata grupper, till exempel kompisgäng, kollegor, möhippor och svensexor.",
+        "Du kan boka en plats på en kurs i måleri. Vi tar också emot privata grupper, till exempel kompisgäng, kollegor, möhippor och svensexor.",
       ],
     },
     {
@@ -132,7 +132,6 @@ export const creationContent = {
   ],
   offerings: [
     "Målningskurser i olika tekniker",
-    "Keramik och lerarbete",
     "Workshops för alla nivåer",
     "Privata kurser och teambuilding",
   ],

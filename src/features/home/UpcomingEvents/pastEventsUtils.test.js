@@ -13,14 +13,17 @@ describe("pastEventsUtils", () => {
 
     it("matches yoga category correctly", () => {
       expect(eventMatchesCategory({ title: "Yogapass på loftet", category: "yoga" }, "yoga")).toBe(true);
-      expect(eventMatchesCategory({ title: "Heldag med yoga & måleri", category: "ovrigt" }, "yoga")).toBe(true);
+      // The category decides: words in the title do not move an event between filters.
+      expect(eventMatchesCategory({ title: "Heldag med yoga & måleri", category: "ovrigt" }, "yoga")).toBe(false);
+      expect(eventMatchesCategory({ title: "Kvällsklass", description: "Lugn yoga", category: "konst" }, "yoga")).toBe(false);
       expect(eventMatchesCategory({ title: "Konstafton", category: "marknad" }, "yoga")).toBe(false);
     });
 
     it("matches courses category correctly", () => {
       expect(eventMatchesCategory({ title: "Helgkurs Keramik", category: "keramik" }, "courses")).toBe(true);
       expect(eventMatchesCategory({ title: "Målarkurs", category: "konst" }, "courses")).toBe(true);
-      expect(eventMatchesCategory({ title: "Heldag med yoga & måleri", category: "ovrigt" }, "courses")).toBe(true);
+      expect(eventMatchesCategory({ title: "Heldag med yoga & måleri", category: "ovrigt" }, "courses")).toBe(false);
+      expect(eventMatchesCategory({ title: "Heldag med yoga & måleri", category: "ovrigt" }, "events")).toBe(true);
       expect(eventMatchesCategory({ title: "Konstafton", category: "marknad" }, "courses")).toBe(false);
     });
 
@@ -99,6 +102,10 @@ describe("pastEventsUtils", () => {
       ];
 
       const grouped = groupPastEvents(pastEvents);
+      // A CMS full day has no moments; its length keeps it out of the series.
+      const cmsDay = { id: "cms-heldag", title: "Heldag", startAt: "2026-07-13T08:00:00Z", endAt: "2026-07-13T15:30:00Z", category: "yoga" };
+      expect(groupPastEvents([cmsDay, pastEvents[1], { ...pastEvents[1], id: "yoga-2", startAt: "2026-07-31T18:00:00+02:00" }])
+        .find((e) => e.id === "cms-heldag")).toBeDefined();
 
       // Both should remain individual entries since single pass is only 1 in its month/group and heldag is special
       expect(grouped).toHaveLength(2);

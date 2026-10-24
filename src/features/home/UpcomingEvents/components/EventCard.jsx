@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Clock, MapPin, Calendar, ArrowUpRight } from "lucide-react";
+import { Clock, MapPin, ArrowUpRight } from "lucide-react";
 import { canonicalPath } from "../../../../config/routes.js";
 
 const splitDateString = (dateStr) => {
@@ -68,12 +68,6 @@ function EventCard({ event }) {
             {spots && (
               <div className="upcoming-meta-item upcoming-meta-spots">
                 <span>{spots}</span>
-              </div>
-            )}
-            {event.seriesText && (
-              <div className="upcoming-meta-item upcoming-meta-series">
-                <Calendar size={16} />
-                <span>{siteCopy("courses.all-passes-prefix") || "Alla pass:"} {event.seriesText}</span>
               </div>
             )}
           </div>

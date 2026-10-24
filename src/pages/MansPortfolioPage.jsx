@@ -14,7 +14,7 @@ function MansPortfolioPage() {
   const copy = usePageCopy("portfolio-mans");
   const siteCopy = useSiteCopy();
   const profile = profiles.mans;
-  const allLabel = siteCopy("cart.category-all") || "Alla";
+  const allLabel = siteCopy("cart.category-all", "Alla");
   const [filter, setFilter] = useState("all");
 
   const allTags = profile.portfolio.flatMap((p) => p.tags || []);

@@ -9,7 +9,7 @@ function SwipeIndicator() {
   const siteCopy = useSiteCopy();
   return (
     <div className="swipe-indicator">
-      <span>{siteCopy("ui.swipe") || "Swipe"}</span>
+      <span>{siteCopy("ui.swipe", "Swipe")}</span>
       <svg
         width="20"
         height="20"

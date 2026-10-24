@@ -3,9 +3,10 @@
 // 404.html SPA redirect (404 status blocks Google indexing entirely).
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { seoMeta, canonicalUrl, activeJsonLd } from "../src/config/seoMeta.js";
+import { escapeAttr, escapeHtml, escapeXml, jsonForScript, socialImageUrl } from "../src/config/prerenderEscape.js";
+import CMS_CONTENT from "../src/data/cmsContent.generated.js";
 
 const html = readFileSync("dist/index.html", "utf8");
-const cmsUrl = (process.env.VITE_CMS_URL || "https://cms.storegardensju.se").replace(/\/$/, "");
 const PAGE_SLUG_BY_PATH = {
   "/": "home",
   "/event": "event",
@@ -20,41 +21,11 @@ const PAGE_SLUG_BY_PATH = {
   "/kontakt": "contact",
 };
 
-const absoluteMediaUrl = (media) => {
-  const value = media?.sizes?.hero?.url || media?.url || media?.externalUrl;
-  if (!value) return null;
-  if (value.startsWith("http")) return value;
-  if (value.startsWith("/images/")) return `https://storegardensju.se${value}`;
-  return `${cmsUrl}${value.startsWith("/") ? "" : "/"}${value}`;
-};
-
-const fetchSocialImages = async () => {
-  try {
-    const query = new URLSearchParams({ limit: "100", depth: "1" });
-    const response = await fetch(`${cmsUrl}/api/pages?${query}`, { headers: { Accept: "application/json" } });
-    if (!response.ok) throw new Error(`status ${response.status}`);
-    const data = await response.json();
-    return new Map((data.docs || []).map((page) => [page.slug, absoluteMediaUrl(page.socialImage)]));
-  } catch (error) {
-    console.warn(`CMS-delningbilder kunde inte hämtas; använder kodens fallback (${error.message}).`);
-    return new Map();
-  }
-};
-
-const socialImages = await fetchSocialImages();
+// Share images come from the same CMS export as the page text (none in a local build).
 const withCmsImage = (meta) => ({
   ...meta,
-  image: socialImages.get(PAGE_SLUG_BY_PATH[meta.path]) || meta.image,
+  image: socialImageUrl(CMS_CONTENT?.pages?.[PAGE_SLUG_BY_PATH[meta.path]]) || meta.image,
 });
-
-const escapeAttr = (value) =>
-  String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
-
-const escapeHtml = (value) =>
-  String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
 
 // Crawlable link graph. Googlebot discovers routes from these anchors; a
 // sitemap alone leaves pages stuck in "Discovered - currently not indexed"
@@ -67,7 +38,7 @@ const NAV_ROUTES = [
   // Anchor text is a ranking signal, so each hub is linked by what it targets.
   { path: "/kurser", label: "Kurser i Lidköping" },
   { path: "/kurser/yoga", label: "Yoga på loftet" },
-  { path: "/kurser/konst", label: "Målarkurs & keramikkurs" },
+  { path: "/kurser/konst", label: "Målarkurs" },
   { path: "/galleri", label: "Bildgalleri" },
   { path: "/butik", label: "Butik" },
   { path: "/om-oss", label: "Om oss" },
@@ -158,14 +129,15 @@ const injectShell = (source, meta) => {
 
   return source.replace(
     ROOT_PLACEHOLDER,
-    `<div id="root">${buildShell(meta)}</div>`
+    () => `<div id="root">${buildShell(meta)}</div>`
   );
 };
 
+// Function replacers: a "$1" or "$&" inside CMS copy must stay literal text.
 const replaceMeta = (source, selector, content) =>
   source.replace(
     new RegExp(`(<meta\\s+${selector}\\s+content=")[^"]*(")`),
-    `$1${escapeAttr(content)}$2`
+    (_, open, close) => `${open}${escapeAttr(content)}${close}`
   );
 
 for (const sourceMeta of Object.values(seoMeta)) {
@@ -173,18 +145,18 @@ for (const sourceMeta of Object.values(seoMeta)) {
   if (meta.path === "/") continue;
 
   let routeHtml = html
-    .replace(/<title>[\s\S]*?<\/title>/, `<title>${meta.title}</title>`)
+    .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${escapeHtml(meta.title)}</title>`)
     .replace(
       /(<meta\s+name="description"\s+content=")[^"]*(")/,
-      `$1${escapeAttr(meta.description)}$2`
+      (_, open, close) => `${open}${escapeAttr(meta.description)}${close}`
     )
     .replace(
       /(<link rel="canonical" href=")[^"]*(")/,
-      `$1${canonicalUrl(meta.path)}$2`
+      (_, open, close) => `${open}${canonicalUrl(meta.path)}${close}`
     )
     .replace(
       /(<meta property="og:url" content=")[^"]*(")/,
-      `$1${canonicalUrl(meta.path)}$2`
+      (_, open, close) => `${open}${canonicalUrl(meta.path)}${close}`
     );
 
   routeHtml = replaceMeta(
@@ -217,7 +189,7 @@ for (const sourceMeta of Object.values(seoMeta)) {
   if (jsonLd.length > 0) {
     routeHtml = routeHtml.replace(
       "</head>",
-      `    <script type="application/ld+json" data-seo-jsonld="route">${JSON.stringify(jsonLd)}</script>\n  </head>`
+      () => `    <script type="application/ld+json" data-seo-jsonld="route">${jsonForScript(jsonLd)}</script>\n  </head>`
     );
   }
 
@@ -293,3 +265,25 @@ if (homeMeta.image) {
 }
 writeFileSync("dist/index.html", injectShell(homeHtml, homeMeta));
 console.log("injected crawlable shell into dist/index.html");
+
+// Generated from the same metadata as the pages, so the sitemap cannot list a
+// route or image the build did not produce. No lastmod: a hand-set date that
+// does not follow content changes is worse than none.
+const sitemapEntries = Object.values(seoMeta).map((sourceMeta) => {
+  const meta = withCmsImage(sourceMeta);
+  const image = meta.image
+    ? `\n    <image:image><image:loc>${escapeXml(meta.image)}</image:loc></image:image>`
+    : "";
+  return `  <url>\n    <loc>${escapeXml(canonicalUrl(meta.path))}</loc>${image}\n  </url>`;
+});
+writeFileSync(
+  "dist/sitemap.xml",
+  [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">',
+    ...sitemapEntries,
+    "</urlset>",
+    "",
+  ].join("\n")
+);
+console.log(`generated dist/sitemap.xml (${sitemapEntries.length} routes)`);

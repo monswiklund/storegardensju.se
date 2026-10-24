@@ -67,7 +67,7 @@ function ContactList({ contact = null }) {
     {
       key: "webpage",
       icon: Globe,
-      getContent: () => siteCopy("team.website") || "Hemsida",
+      getContent: () => siteCopy("team.website", "Hemsida"),
       getHref: (value) => buildExternalLink(value),
       external: true,
     },

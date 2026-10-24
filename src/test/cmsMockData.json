@@ -701,7 +701,7 @@
         "id": "418260F59F126D7F2C570EB2B7D34D49",
         "key": "explore.items.3.title",
         "label": "Snabblänk 4 – rubrik",
-        "value": "Måleri & keramik"
+        "value": "Måleri"
       },
       {
         "id": "7E73B697B1B2A6DA2D9F40EAEFD61FD2",
@@ -1346,7 +1346,7 @@
   },
   {
     "id": 8,
-    "name": "Måleri och keramik",
+    "name": "Måleri",
     "slug": "art",
     "contentLists": [
       {
@@ -1357,14 +1357,14 @@
           {
             "id": "6a833f22f2b6d11d4586ce26",
             "value": null,
-            "title": "Prova måleri eller keramik",
-            "body": "I ateljén håller Ann kurser i måleri och keramik. Du får hjälp under hela passet och behöver inte ha provat tidigare."
+            "title": "Prova måleri",
+            "body": "I ateljén håller Ann kurser i måleri. Du får hjälp under hela passet och behöver inte ha provat tidigare."
           },
           {
             "id": "6a833f22f2b6d11d4586ce27",
             "value": null,
             "title": "Kurser och workshops",
-            "body": "Du kan boka en plats på en kurs i måleri, keramik eller drejning. Vi tar också emot privata grupper, till exempel kompisgäng, kollegor, möhippor och svensexor."
+            "body": "Du kan boka en plats på en kurs i måleri. Vi tar också emot privata grupper, till exempel kompisgäng, kollegor, möhippor och svensexor."
           },
           {
             "id": "6a833f22f2b6d11d4586ce28",
@@ -1386,12 +1386,6 @@
             "body": "Prova akvarell eller akryl. Ann visar tekniker och övningar och hjälper dig vidare under passet."
           },
           {
-            "id": "6a833f22f2b6d11d4586ce2b",
-            "value": null,
-            "title": "Keramik och lera",
-            "body": "Arbeta med handbygge, ringling eller drejning i keramikverkstaden. Verktyg och material finns på plats."
-          },
-          {
             "id": "6a833f22f2b6d11d4586ce2c",
             "value": null,
             "title": "Privata workshops",
@@ -1401,38 +1395,38 @@
             "id": "6a833f22f2b6d11d4586ce2d",
             "value": null,
             "title": "Teambuilding och kalas",
-            "body": "Måleri och keramik går att boka för företag, möhippor, svensexor och kalas. Det går också att lägga till fika."
+            "body": "Måleri går att boka för företag, möhippor, svensexor och kalas. Det går också att lägga till fika."
           }
         ]
       },
       {
         "id": "6a833f22f2b6d11d4586ce34",
         "key": "faq",
-        "label": "Vanliga frågor om måleri och keramik",
+        "label": "Vanliga frågor om måleri",
         "items": [
           {
             "id": "6a833f22f2b6d11d4586ce2f",
             "value": null,
-            "title": "Vilka kurser i måleri och keramik har ni?",
-            "body": "I ateljén håller Ann Wiklund kurser i måleri med akvarell och akryl samt i keramik med handbygge, ringling och drejning."
+            "title": "Vilka kurser i måleri har ni?",
+            "body": "I ateljén håller Ann Wiklund kurser i måleri med akvarell och akryl."
           },
           {
             "id": "6a833f22f2b6d11d4586ce30",
             "value": null,
-            "title": "Behöver jag ha målat eller drejat tidigare?",
+            "title": "Behöver jag ha målat tidigare?",
             "body": "Nej. Ann visar momenten och hjälper dig under kursen. Du kan vara med oavsett om det är första gången eller om du har provat tidigare."
           },
           {
             "id": "6a833f22f2b6d11d4586ce31",
             "value": null,
             "title": "Kan vi boka en egen kurs för vår grupp?",
-            "body": "Ja. Måleri och keramik går att boka för möhippa, svensexa, födelsedag eller teambuilding. Gruppen får ateljén för sig själv och det går att lägga till fika eller lunch."
+            "body": "Ja. Måleri går att boka för möhippa, svensexa, födelsedag eller teambuilding. Gruppen får ateljén för sig själv och det går att lägga till fika eller lunch."
           },
           {
             "id": "6a833f22f2b6d11d4586ce32",
             "value": null,
             "title": "Behöver jag ta med eget material?",
-            "body": "Nej, material och verktyg finns i ateljén. Ta med kläder som får bli lite färg eller lera på."
+            "body": "Nej, material och verktyg finns i ateljén. Ta med kläder som får bli lite färg på."
           },
           {
             "id": "6a833f22f2b6d11d4586ce33",
@@ -1448,7 +1442,7 @@
         "id": "6a7f1ea7042e70280a042811",
         "key": "hero.eyebrow",
         "label": "Konst – överrubrik",
-        "value": "MÅLERI & KERAMIK PÅ STOREGÅRDEN 7"
+        "value": "MÅLERI PÅ STOREGÅRDEN 7"
       },
       {
         "id": "6a7f1ea7042e70280a042812",
@@ -1460,7 +1454,7 @@
         "id": "6a7f1ea7042e70280a042813",
         "key": "hero.lead",
         "label": "Konst – ingress",
-        "value": "Kurser i akvarell, akryl och keramik med Ann Wiklund i gårdens ateljé"
+        "value": "Kurser i akvarell och akryl med Ann Wiklund i gårdens ateljé"
       },
       {
         "id": "6a7f1ea7042e70280a042814",
@@ -1514,7 +1508,7 @@
         "id": "6a7f1ea7042e70280a04281c",
         "key": "instructor.bio",
         "label": "Kursledare – presentation",
-        "value": "Ann har arbetat med konst och keramik i många år och undervisar i akvarell, akryl, drejning och skulptur med stort engagemang och personlig handledning."
+        "value": "Ann har arbetat med konst och keramik i många år och undervisar i akvarell, akryl och skulptur med stort engagemang och personlig handledning."
       },
       {
         "id": "6a7f1ea7042e70280a04281d",
@@ -1550,7 +1544,7 @@
         "id": "6a833f22f2b6d11d4586ce38",
         "key": "contact.body",
         "label": "Förfrågan – text",
-        "value": "Vi tar emot möhippor, födelsedagar, företag och andra grupper. Berätta hur många ni är och om ni vill måla, arbeta med lera eller kombinera kursen med fika."
+        "value": "Vi tar emot möhippor, födelsedagar, företag och andra grupper. Berätta hur många ni är och om ni vill måla eller kombinera kursen med fika."
       },
       {
         "id": "6a833f22f2b6d11d4586ce39",
@@ -1702,13 +1696,13 @@
       {
         "id": "6a802cda394e14a66a51f2bf",
         "key": "workshops.0",
-        "label": "Workshop – Måleri eller keramik",
+        "label": "Workshop – Måleri",
         "image": {
           "id": 78,
           "legacyId": "static:/images/evenemang/maleri-kurs.webp",
           "externalUrl": null,
           "displayName": "maleri kurs",
-          "alt": "Workshop – Måleri eller keramik",
+          "alt": "Workshop – Måleri",
           "showInGallery": false,
           "category": "overvaning",
           "featured": false,
@@ -1945,7 +1939,7 @@
       "legacyId": "static:/images/evenemang/maleri-kurs.webp",
       "externalUrl": null,
       "displayName": "maleri kurs",
-      "alt": "Workshop – Måleri eller keramik",
+      "alt": "Workshop – Måleri",
       "showInGallery": false,
       "category": "overvaning",
       "featured": false,
@@ -2231,19 +2225,19 @@
         "id": "6BAD474CB2BC10679E56A74A91C3647C",
         "key": "other.title",
         "label": "Annan aktivitet – rubrik",
-        "value": "Måla eller dreja i ateljén"
+        "value": "Måla i ateljén"
       },
       {
         "id": "C499DA8D4585EE89B2EC1E3EA0C28B25",
         "key": "other.body",
         "label": "Annan aktivitet – text",
-        "value": "I gårdsateljén håller Ann Wiklund kurser i måleri och keramik, både på fasta datum och som privat kurs för grupper."
+        "value": "I gårdsateljén håller Ann Wiklund kurser i måleri, både på fasta datum och som privat kurs för grupper."
       },
       {
         "id": "E589689402E7DF98BDC8C071FB42AC09",
         "key": "other.cta",
         "label": "Annan aktivitet – knapp",
-        "value": "Se kurser i måleri och keramik"
+        "value": "Se kurser i måleri"
       }
     ],
     "imageSlots": [
@@ -2570,7 +2564,7 @@
           "legacyId": "static:/images/evenemang/maleri-kurs.webp",
           "externalUrl": null,
           "displayName": "maleri kurs",
-          "alt": "Workshop – Måleri eller keramik",
+          "alt": "Workshop – Måleri",
           "showInGallery": false,
           "category": "overvaning",
           "featured": false,
@@ -2749,7 +2743,7 @@
         "id": "6a7f1ea7042e70280a0427f6",
         "key": "hero.lead",
         "label": "Kurser – ingress",
-        "value": "Måleri, keramik och yoga i lugn miljö på landet strax utanför Lidköping"
+        "value": "Måleri och yoga i lugn miljö på landet strax utanför Lidköping"
       },
       {
         "id": "6a7f1ea7042e70280a0427f7",
@@ -2767,7 +2761,7 @@
         "id": "6a7f1ea7042e70280a0427f9",
         "key": "intro.body",
         "label": "Introduktion – text",
-        "value": "På Storegården 7 håller vi kurser i måleri och keramik i ateljén och yoga på loftet. Här får du skapa och landa i en lugn gårdsmiljö med utsikt över det västgötska landskapet."
+        "value": "På Storegården 7 håller vi kurser i måleri i ateljén och yoga på loftet. Här får du skapa och landa i en lugn gårdsmiljö med utsikt över det västgötska landskapet."
       },
       {
         "id": "6a7f1ea7042e70280a0427fa",
@@ -2797,7 +2791,7 @@
         "id": "A26EDB3587FA1C37794E36F9606A229E",
         "key": "groups.body",
         "label": "Gruppbokning – beskrivning",
-        "value": "Möhippa, svensexa, teambuilding eller ett gäng vänner som vill göra något tillsammans? Vi håller kurser i måleri, keramik och yoga som privat bokning, med lokalen och fikat på gården."
+        "value": "Möhippa, svensexa, teambuilding eller ett gäng vänner som vill göra något tillsammans? Vi håller kurser i måleri och yoga som privat bokning, med lokalen och fikat på gården."
       },
       {
         "id": "6a7f1ea7042e70280a0427fe",
@@ -2881,7 +2875,7 @@
         "id": "6a833f22f2b6d11d4586ce1a",
         "key": "explore.items.1.title",
         "label": "Fortsätt upptäcka 2 – rubrik",
-        "value": "Måleri & keramik"
+        "value": "Måleri"
       },
       {
         "id": "6a833f22f2b6d11d4586ce1b",
@@ -2992,13 +2986,13 @@
       {
         "id": "6a802cda394e14a66a51f2c8",
         "key": "hubs.art",
-        "label": "Kursval – Måleri och keramik",
+        "label": "Kursval – Måleri",
         "image": {
           "id": 78,
           "legacyId": "static:/images/evenemang/maleri-kurs.webp",
           "externalUrl": null,
           "displayName": "maleri kurs",
-          "alt": "Workshop – Måleri eller keramik",
+          "alt": "Workshop – Måleri",
           "showInGallery": false,
           "category": "overvaning",
           "featured": false,
@@ -5450,7 +5444,7 @@
         "id": "6a7f1ea7042e70280a042762",
         "key": "hero.paragraphs.1",
         "label": "Välkomstsektion – stycke 2",
-        "value": "I ladan och på loftet ordnas bröllop, kalas och andra fester. I ateljén håller vi kurser i måleri och keramik."
+        "value": "I ladan och på loftet ordnas bröllop, kalas och andra fester. I ateljén håller vi kurser i måleri."
       },
       {
         "id": "6a7f1ea7042e70280a042763",
@@ -5612,25 +5606,25 @@
         "id": "6a7f1ea7042e70280a04277d",
         "key": "services.kurser-konst.kicker",
         "label": "Kort Måleri – överrubrik",
-        "value": "Ateljé och lera"
+        "value": "Ateljén"
       },
       {
         "id": "6a7f1ea7042e70280a04277e",
         "key": "services.kurser-konst.title",
         "label": "Kort Måleri – rubrik",
-        "value": "Måleri & keramik"
+        "value": "Måleri"
       },
       {
         "id": "6a7f1ea7042e70280a04277f",
         "key": "services.kurser-konst.description",
         "label": "Kort Måleri – text",
-        "value": "Kurser i måleri, keramik och drejning för både nybörjare och vana. Det går också att boka ateljén för en egen grupp."
+        "value": "Kurser i måleri för både nybörjare och vana. Det går också att boka ateljén för en egen grupp."
       },
       {
         "id": "6a7f1ea7042e70280a042780",
         "key": "services.kurser-konst.meta",
         "label": "Kort Måleri – fakta",
-        "value": "Målning · Keramik · Privata workshops"
+        "value": "Målning · Privata workshops"
       },
       {
         "id": "6a7f1ea7042e70280a042781",
@@ -6107,7 +6101,7 @@
       {
         "id": "6a802cdb394e14a66a51f2db",
         "key": "services.kurser-konst",
-        "label": "Erbjudande – Måleri och keramik",
+        "label": "Erbjudande – Måleri",
         "image": {
           "id": 75,
           "legacyId": "static:/images/konst-keramik/slide16.webp",
@@ -6495,8 +6489,8 @@
       {
         "id": "E8446B3E59555E449555DDA04136D2F0",
         "key": "nav.art",
-        "label": "Meny – Måleri & keramik",
-        "value": "Måleri & keramik"
+        "label": "Meny – Måleri",
+        "value": "Måleri"
       },
       {
         "id": "0D577D03099391FEEA6A880A999A4A4D",

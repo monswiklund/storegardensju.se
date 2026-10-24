@@ -28,7 +28,9 @@ import {
   formatPassDate,
   formatPassTime,
   passAnchor,
+  passContactEmail,
   passHref,
+  passInstructor,
   passYear,
   trackById,
 } from "../../data/courseEvents.js";
@@ -99,8 +101,23 @@ function ContactCard({
   );
 }
 
+/** The booking state the CMS sets on a pass, as a label; null for an ordinary open pass. */
+function passStatusLabel(pass, siteCopy) {
+  if (pass.status === "cancelled") return siteCopy("ui.cancelled", "Inställt");
+  if (pass.status === "fully_booked") return siteCopy("ui.spot-sold-out", "Fullbokat");
+  if (pass.status === "few_left") return siteCopy("ui.spot-few-left", "Få platser kvar");
+  return null;
+}
+
+/** Spots as the editor wrote them (events: free text) or as a count (course passes). */
+function passSpotsText(pass, siteCopy) {
+  if (typeof pass.spots === "number") return `${pass.spots} ${siteCopy("ui.spots-label", "platser")}`;
+  return pass.spots || "";
+}
+
 /**
- * One upcoming pass as an anchored section.
+ * One upcoming pass as an anchored section. Status, instructor, spots and location are the
+ * pass's own; a cancelled pass keeps its section (shared links land on it) without a sign-up card.
  */
 export function PassSection({
   pass,
@@ -114,7 +131,10 @@ export function PassSection({
 }) {
   const siteCopy = useSiteCopy();
   const track = trackById(trackId);
-  const instructor = trackById(pass.primaryTrack).instructor;
+  const instructor = passInstructor(pass);
+  const status = passStatusLabel(pass, siteCopy);
+  const spots = passSpotsText(pass, siteCopy);
+  const cancelled = pass.status === "cancelled";
 
   return (
     <CourseBand
@@ -134,6 +154,7 @@ export function PassSection({
           <h2>
             {pass.title}
           </h2>
+          {status && <p className="kurser-details__status"><strong>{status}</strong></p>}
           <p className="kurser-details__description">{pass.summary}</p>
 
           <ul className="kurser-details__meta">
@@ -158,9 +179,20 @@ export function PassSection({
             <li>
               <MapPin size={20} aria-hidden="true" />
               <span>
-                {COURSE_LOCATION.name}, {COURSE_LOCATION.locality} ({COURSE_LOCATION.locality})
+                {pass.location || `${COURSE_LOCATION.name}, ${COURSE_LOCATION.locality}`}
               </span>
             </li>
+            {instructor && (
+              <li>
+                <User size={20} aria-hidden="true" />
+                <span>{instructor.name}</span>
+              </li>
+            )}
+            {spots && !cancelled && (
+              <li>
+                <span>{spots}</span>
+              </li>
+            )}
           </ul>
 
           <div className="kurser-details__extra">
@@ -169,9 +201,15 @@ export function PassSection({
                 <strong>{siteCopy("cart.price-label")}: {pass.price}:- /person</strong>
               </p>
             )}
-            {pass.dropIn && (
+            {/* dropIn null: the CMS does not say, so neither does the page. */}
+            {pass.dropIn === true && (
               <p style={{ marginTop: "4px" }}>
-                {siteCopy("courses.drop-in-note")}
+                {siteCopy("courses.dropin-note", "Ingen föranmälan behövs – betalning på plats")}
+              </p>
+            )}
+            {pass.dropIn === false && (
+              <p style={{ marginTop: "4px" }}>
+                {siteCopy("courses.sign-up-note", "Föranmälan krävs.")}
               </p>
             )}
             {pass.practicalNote && (
@@ -182,21 +220,23 @@ export function PassSection({
           </div>
         </div>
 
-        <div className="kurser-details__action">
-          <ContactCard
-            heading={siteCopy("courses.card-heading")}
-            body={
-              pass.dropIn
-                ? `${siteCopy("courses.drop-in-note")} ${siteCopy("courses.contact-instructor-prefix")} ${instructor.name.split(" ")[0]}.`
-                : siteCopy("courses.sign-up-note")
-            }
-            email={instructor.email}
-            subject={contactSubject}
-            linkLabel={siteCopy("courses.send-message")}
-            onContactClick={onContactClick}
-            showMailFallback={showMailFallback}
-          />
-        </div>
+        {!cancelled && (
+          <div className="kurser-details__action">
+            <ContactCard
+              heading={siteCopy("courses.card-heading")}
+              body={
+                pass.dropIn === true && instructor
+                  ? `${siteCopy("courses.dropin-note", "Ingen föranmälan behövs – betalning på plats")} ${siteCopy("courses.contact-instructor-prefix", "Hör av dig till")} ${instructor.name.split(" ")[0]}.`
+                  : siteCopy("courses.sign-up-note", "Föranmälan krävs.")
+              }
+              email={passContactEmail(pass)}
+              subject={contactSubject}
+              linkLabel={siteCopy("courses.send-message")}
+              onContactClick={onContactClick}
+              showMailFallback={showMailFallback}
+            />
+          </div>
+        )}
       </div>
     </CourseBand>
   );
@@ -505,7 +545,8 @@ export function PastPassesSection({
           <ol className={`kurser-past__list kurser-past__list--${variant}`}>
             {passes.map((pass) => {
               const ownedHere = pass.primaryTrack === trackId;
-              const eventSource = FEATURED_PAST_EVENTS_BY_ID[pass.id];
+              // Only migrated records carry a legacy key linking them to a hand-written recap.
+              const eventSource = pass.legacyKey ? FEATURED_PAST_EVENTS_BY_ID[pass.legacyKey] : null;
               const eventDetail = eventSource ? toUiEvent(eventSource) : null;
               const titleHref =
                 !eventDetail && !ownedHere ? passHref(pass, trackId) : "";
@@ -678,13 +719,13 @@ export function YogaScheduleSection({
   background = "alt",
 }) {
   const siteCopy = useSiteCopy();
-  const instructor = trackById(trackId).instructor;
 
   return (
     <CourseBand id="kommande" background={background} className="kurser-schedule-section">
       <div className="kurser-schedule__header">
-        <span className="kurser-label">Månadsschema & klasser</span>
-        <h2>Klasser på loftet i augusti</h2>
+        <span className="kurser-label">Schema & klasser</span>
+        {/* No month in the heading: the schedule is whatever the CMS has, not a fixed August. */}
+        <h2>Kommande klasser på loftet</h2>
         <p className="kurser-schedule__subtitle">
           Anpassat för både nybörjare och övade utövare. Mattor finns att låna på plats på loftet på Storegården 7.
         </p>
@@ -692,10 +733,13 @@ export function YogaScheduleSection({
 
       <div className="kurser-schedule__grid">
         {passes.map((pass) => {
-          const isDropIn = pass.dropIn;
-          const duration = pass.durationMinutes || (pass.endAt ? Math.round((new Date(pass.endAt) - new Date(pass.startAt)) / 60000) : 60);
+          const isDropIn = pass.dropIn === true;
+          const status = passStatusLabel(pass, siteCopy);
+          // Cancelled or full: nothing to sign up for, the status replaces the button.
+          const closed = pass.status === "cancelled" || pass.status === "fully_booked";
+          const duration = pass.durationMinutes;
           const mailSubject = `Föranmälan: ${pass.title} (${formatPassDate(pass)})`;
-          const mailHref = `mailto:${instructor.email}?subject=${encodeURIComponent(mailSubject)}`;
+          const mailHref = `mailto:${passContactEmail(pass)}?subject=${encodeURIComponent(mailSubject)}`;
 
           const dateParts = formatPassDate(pass).split(" ");
           const weekday = dateParts[0] || "";
@@ -712,18 +756,18 @@ export function YogaScheduleSection({
               <div className="kurser-schedule-card__mobile-top mobile-only">
                 <div className="kurser-schedule-badge">
                   <span className="kurser-schedule-badge__day">{dayNum}</span>
-                  <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : "AUG"}</span>
+                  <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : ""}</span>
                 </div>
                 <div className="kurser-schedule-card__mobile-header-info">
                   <div className="kurser-schedule-card__mobile-header-title">
                     <span className="kurser-schedule-card__weekday">{weekday}</span>
                     <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
-                      {isDropIn ? (siteCopy("courses.dropin-badge") || "DROP-IN") : (siteCopy("courses.signup-badge") || "FÖRANMÄLAN")}
+                      {status || (isDropIn ? siteCopy("courses.dropin-badge", "DROP-IN") : siteCopy("courses.signup-badge", "FÖRANMÄLAN"))}
                     </span>
                   </div>
                   <span className="kurser-schedule-card__time">
                     <Clock size={13} aria-hidden="true" />
-                    kl {formatPassTime(pass.startAt)} ({duration} min)
+                    kl {formatPassTime(pass.startAt)}{duration ? ` (${duration} min)` : ""}
                   </span>
                 </div>
               </div>
@@ -732,13 +776,13 @@ export function YogaScheduleSection({
               <div className="kurser-schedule-card__datetime-col desktop-only">
                 <div className="kurser-schedule-badge">
                   <span className="kurser-schedule-badge__day">{dayNum}</span>
-                  <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : "AUG"}</span>
+                  <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : ""}</span>
                 </div>
                 <div className="kurser-schedule-card__datetime-info">
                   <span className="kurser-schedule-card__weekday">{weekday}</span>
                   <span className="kurser-schedule-card__time">
                     <Clock size={14} aria-hidden="true" />
-                    kl {formatPassTime(pass.startAt)} ({duration} min)
+                    kl {formatPassTime(pass.startAt)}{duration ? ` (${duration} min)` : ""}
                   </span>
                 </div>
               </div>
@@ -748,7 +792,7 @@ export function YogaScheduleSection({
               {/* Tag Column */}
               <div className="kurser-schedule-card__tag-col desktop-only">
                 <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
-                  {isDropIn ? (siteCopy("courses.dropin-badge") || "DROP-IN") : (siteCopy("courses.signup-badge") || "FÖRANMÄLAN")}
+                  {status || (isDropIn ? siteCopy("courses.dropin-badge", "DROP-IN") : siteCopy("courses.signup-badge", "FÖRANMÄLAN"))}
                 </span>
               </div>
 
@@ -759,7 +803,9 @@ export function YogaScheduleSection({
 
               {/* Action Column */}
               <div className="kurser-schedule-card__action-col desktop-only">
-                {isDropIn ? (
+                {closed ? (
+                  <span className="kurser-schedule-card__note">{status}</span>
+                ) : isDropIn ? (
                   <span className="kurser-schedule-card__note">
                     {siteCopy("courses.dropin-note")}
                   </span>
@@ -781,7 +827,9 @@ export function YogaScheduleSection({
                   <span className="kurser-schedule-card__price-val">{pass.price ? `${pass.price}:-` : ""}</span>
                 </div>
                 <div className="kurser-schedule-card__mobile-action">
-                  {isDropIn ? (
+                  {closed ? (
+                    <span className="kurser-schedule-card__note">{status}</span>
+                  ) : isDropIn ? (
                     <span className="kurser-schedule-card__note">
                       {siteCopy("courses.pay-on-site")}
                     </span>
@@ -804,7 +852,7 @@ export function YogaScheduleSection({
 
       {showMailFallback && (
         <MailtoFallback
-          email={instructor.email}
+          email={trackById(trackId).instructor.email}
           subject={contactSubject}
           onClose={() => {}}
         />

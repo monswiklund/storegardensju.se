@@ -114,7 +114,7 @@
       "explore.items.2.title": "Yoga på loftet",
       "explore.items.2.body": "Pass i lugnt tempo med Lina.",
       "explore.items.3.eyebrow": "Skapa",
-      "explore.items.3.title": "Måleri & keramik",
+      "explore.items.3.title": "Måleri",
       "explore.items.3.body": "Kurser och privata grupper i gårdsateljén."
     },
     "lists": {},
@@ -174,9 +174,9 @@
   },
   "art": {
     "copy": {
-      "hero.eyebrow": "MÅLERI & KERAMIK PÅ STOREGÅRDEN 7",
+      "hero.eyebrow": "MÅLERI PÅ STOREGÅRDEN 7",
       "hero.title": "Konstkurser och ateljé",
-      "hero.lead": "Kurser i akvarell, akryl och keramik med Ann Wiklund i gårdens ateljé",
+      "hero.lead": "Kurser i akvarell och akryl med Ann Wiklund i gårdens ateljé",
       "hero.primary-cta": "Se kurserna",
       "hero.secondary-cta": "Läs om ateljén",
       "intro.eyebrow": "I ateljén",
@@ -185,13 +185,13 @@
       "instructor.eyebrow": "Konstnär & keramiker",
       "instructor.title": "Ann Wiklund",
       "instructor.role": "Konstnär och keramiker",
-      "instructor.bio": "Ann har arbetat med konst och keramik i många år och undervisar i akvarell, akryl, drejning och skulptur med stort engagemang och personlig handledning.",
+      "instructor.bio": "Ann har arbetat med konst och keramik i många år och undervisar i akvarell, akryl och skulptur med stort engagemang och personlig handledning.",
       "faq.eyebrow": "Bra att veta",
       "faq.title": "Vanliga frågor om kurserna",
       "offerings.title": "Det här kan du göra i ateljén",
       "offerings.lead": "Kom på en kurs med fast datum eller boka en egen tid för din grupp.",
       "contact.title": "Planerar du ett event eller vill du gå en kurs?",
-      "contact.body": "Vi tar emot möhippor, födelsedagar, företag och andra grupper. Berätta hur många ni är och om ni vill måla, arbeta med lera eller kombinera kursen med fika.",
+      "contact.body": "Vi tar emot möhippor, födelsedagar, företag och andra grupper. Berätta hur många ni är och om ni vill måla eller kombinera kursen med fika.",
       "contact.cta": "Skicka en förfrågan",
       "past.eyebrow": "Återblick",
       "past.title": "Tidigare kurser och skapardagar",
@@ -209,14 +209,14 @@
         {
           "id": "6a833f22f2b6d11d4586ce26",
           "value": null,
-          "title": "Prova måleri eller keramik",
-          "body": "I ateljén håller Ann kurser i måleri och keramik. Du får hjälp under hela passet och behöver inte ha provat tidigare."
+          "title": "Prova måleri",
+          "body": "I ateljén håller Ann kurser i måleri. Du får hjälp under hela passet och behöver inte ha provat tidigare."
         },
         {
           "id": "6a833f22f2b6d11d4586ce27",
           "value": null,
           "title": "Kurser och workshops",
-          "body": "Du kan boka en plats på en kurs i måleri, keramik eller drejning. Vi tar också emot privata grupper, till exempel kompisgäng, kollegor, möhippor och svensexor."
+          "body": "Du kan boka en plats på en kurs i måleri. Vi tar också emot privata grupper, till exempel kompisgäng, kollegor, möhippor och svensexor."
         },
         {
           "id": "6a833f22f2b6d11d4586ce28",
@@ -233,12 +233,6 @@
           "body": "Prova akvarell eller akryl. Ann visar tekniker och övningar och hjälper dig vidare under passet."
         },
         {
-          "id": "6a833f22f2b6d11d4586ce2b",
-          "value": null,
-          "title": "Keramik och lera",
-          "body": "Arbeta med handbygge, ringling eller drejning i keramikverkstaden. Verktyg och material finns på plats."
-        },
-        {
           "id": "6a833f22f2b6d11d4586ce2c",
           "value": null,
           "title": "Privata workshops",
@@ -248,33 +242,33 @@
           "id": "6a833f22f2b6d11d4586ce2d",
           "value": null,
           "title": "Teambuilding och kalas",
-          "body": "Måleri och keramik går att boka för företag, möhippor, svensexor och kalas. Det går också att lägga till fika."
+          "body": "Måleri går att boka för företag, möhippor, svensexor och kalas. Det går också att lägga till fika."
         }
       ],
       "faq": [
         {
           "id": "6a833f22f2b6d11d4586ce2f",
           "value": null,
-          "title": "Vilka kurser i måleri och keramik har ni?",
-          "body": "I ateljén håller Ann Wiklund kurser i måleri med akvarell och akryl samt i keramik med handbygge, ringling och drejning."
+          "title": "Vilka kurser i måleri har ni?",
+          "body": "I ateljén håller Ann Wiklund kurser i måleri med akvarell och akryl."
         },
         {
           "id": "6a833f22f2b6d11d4586ce30",
           "value": null,
-          "title": "Behöver jag ha målat eller drejat tidigare?",
+          "title": "Behöver jag ha målat tidigare?",
           "body": "Nej. Ann visar momenten och hjälper dig under kursen. Du kan vara med oavsett om det är första gången eller om du har provat tidigare."
         },
         {
           "id": "6a833f22f2b6d11d4586ce31",
           "value": null,
           "title": "Kan vi boka en egen kurs för vår grupp?",
-          "body": "Ja. Måleri och keramik går att boka för möhippa, svensexa, födelsedag eller teambuilding. Gruppen får ateljén för sig själv och det går att lägga till fika eller lunch."
+          "body": "Ja. Måleri går att boka för möhippa, svensexa, födelsedag eller teambuilding. Gruppen får ateljén för sig själv och det går att lägga till fika eller lunch."
         },
         {
           "id": "6a833f22f2b6d11d4586ce32",
           "value": null,
           "title": "Behöver jag ta med eget material?",
-          "body": "Nej, material och verktyg finns i ateljén. Ta med kläder som får bli lite färg eller lera på."
+          "body": "Nej, material och verktyg finns i ateljén. Ta med kläder som får bli lite färg på."
         },
         {
           "id": "6a833f22f2b6d11d4586ce33",
@@ -295,7 +289,7 @@
       "workshops.0": {
         "id": 78,
         "url": "/api/media/file/media-1c5d6d5b6d8552aaf25009caa4c027e2f476e2c9ccc55862fb2c785cdf6b1068.webp",
-        "alt": "Workshop – Måleri eller keramik",
+        "alt": "Workshop – Måleri",
         "width": 1080,
         "height": 1080
       },
@@ -338,9 +332,9 @@
       "past.title": "Tidigare pass",
       "directions.body": "Yogan hålls på loftet på Storegården 7 i Rackeby, 15 minuter från Lidköping. Kör mot Rackeby och följ skyltningen till gården — det finns gott om parkering på grusplanen intill ladan.",
       "other.eyebrow": "Mer hos oss",
-      "other.title": "Måla eller dreja i ateljén",
-      "other.body": "I gårdsateljén håller Ann Wiklund kurser i måleri och keramik, både på fasta datum och som privat kurs för grupper.",
-      "other.cta": "Se kurser i måleri och keramik",
+      "other.title": "Måla i ateljén",
+      "other.body": "I gårdsateljén håller Ann Wiklund kurser i måleri, både på fasta datum och som privat kurs för grupper.",
+      "other.cta": "Se kurser i måleri",
       "faq.eyebrow": "Bra att veta",
       "faq.title": "Vanliga frågor om yogan",
       "empty.title": "Inga planerade pass just nu",
@@ -419,7 +413,7 @@
       "other.art": {
         "id": 78,
         "url": "/api/media/file/media-1c5d6d5b6d8552aaf25009caa4c027e2f476e2c9ccc55862fb2c785cdf6b1068.webp",
-        "alt": "Workshop – Måleri eller keramik",
+        "alt": "Workshop – Måleri",
         "width": 1080,
         "height": 1080
       }
@@ -429,14 +423,14 @@
     "copy": {
       "hero.eyebrow": "KURSER PÅ STOREGÅRDEN 7",
       "hero.title": "Kurser och workshops",
-      "hero.lead": "Måleri, keramik och yoga i lugn miljö på landet strax utanför Lidköping",
+      "hero.lead": "Måleri och yoga i lugn miljö på landet strax utanför Lidköping",
       "intro.eyebrow": "Skapa och landa",
       "intro.title": "Kurser på landet",
-      "intro.body": "På Storegården 7 håller vi kurser i måleri och keramik i ateljén och yoga på loftet. Här får du skapa och landa i en lugn gårdsmiljö med utsikt över det västgötska landskapet.",
+      "intro.body": "På Storegården 7 håller vi kurser i måleri i ateljén och yoga på loftet. Här får du skapa och landa i en lugn gårdsmiljö med utsikt över det västgötska landskapet.",
       "groups.eyebrow": "Egen grupp",
       "groups.title": "Boka för en egen grupp",
       "groups.lead": "Vill ni samla kollegor, vänner eller familj? Vi ordnar skräddarsydda kurser och workshops för privata sällskap och företag.",
-      "groups.body": "Möhippa, svensexa, teambuilding eller ett gäng vänner som vill göra något tillsammans? Vi håller kurser i måleri, keramik och yoga som privat bokning, med lokalen och fikat på gården.",
+      "groups.body": "Möhippa, svensexa, teambuilding eller ett gäng vänner som vill göra något tillsammans? Vi håller kurser i måleri och yoga som privat bokning, med lokalen och fikat på gården.",
       "groups.card-title": "Gruppdagar",
       "groups.card-body": "Baspaket från 500 kr per person, lokalen är er 10:00-22:00.",
       "groups.cta": "Planera en gruppdag",
@@ -451,7 +445,7 @@
       "explore.items.0.title": "Yoga på loftet",
       "explore.items.0.body": "Se kommande pass och läs mer om yogan.",
       "explore.items.1.eyebrow": "Skapa",
-      "explore.items.1.title": "Måleri & keramik",
+      "explore.items.1.title": "Måleri",
       "explore.items.1.body": "Upptäck kurserna i gårdsateljén.",
       "explore.items.2.eyebrow": "Samlas",
       "explore.items.2.title": "Gruppdagar",
@@ -469,7 +463,7 @@
       "hubs.art": {
         "id": 78,
         "url": "/api/media/file/media-1c5d6d5b6d8552aaf25009caa4c027e2f476e2c9ccc55862fb2c785cdf6b1068.webp",
-        "alt": "Workshop – Måleri eller keramik",
+        "alt": "Workshop – Måleri",
         "width": 1080,
         "height": 1080
       }
@@ -947,7 +941,7 @@
       "hero.title": "Välkommen till Storegården 7",
       "hero.subtitle": "En gård för fest, kurser och konst",
       "hero.paragraphs.0": "Här i Rackeby, 15 minuter från Lidköping, driver vi Storegården 7 tillsammans.",
-      "hero.paragraphs.1": "I ladan och på loftet ordnas bröllop, kalas och andra fester. I ateljén håller vi kurser i måleri och keramik.",
+      "hero.paragraphs.1": "I ladan och på loftet ordnas bröllop, kalas och andra fester. I ateljén håller vi kurser i måleri.",
       "hero.paragraphs.2": "På gården finns också en liten butik med konst och keramik. Ibland har vi loppis, yoga och andra aktiviteter.",
       "hero.primary-cta": "Kontakta oss",
       "hero.secondary-ctas.0": "Se galleriet",
@@ -974,10 +968,10 @@
       "services.fest.description": "Fira födelsedag, jubileum, afterwork eller företagsfest i två flexibla våningar med plats för både middag och mingel.",
       "services.fest.meta": "Bar · Kök · Ljud · Dansgolv",
       "services.fest.cta": "Se festmöjligheterna",
-      "services.kurser-konst.kicker": "Ateljé och lera",
-      "services.kurser-konst.title": "Måleri & keramik",
-      "services.kurser-konst.description": "Kurser i måleri, keramik och drejning för både nybörjare och vana. Det går också att boka ateljén för en egen grupp.",
-      "services.kurser-konst.meta": "Målning · Keramik · Privata workshops",
+      "services.kurser-konst.kicker": "Ateljén",
+      "services.kurser-konst.title": "Måleri",
+      "services.kurser-konst.description": "Kurser i måleri för både nybörjare och vana. Det går också att boka ateljén för en egen grupp.",
+      "services.kurser-konst.meta": "Målning · Privata workshops",
       "services.kurser-konst.cta": "Se kurserna",
       "services.yoga.kicker": "På loftet",
       "services.yoga.title": "Yoga",
@@ -1093,7 +1087,7 @@
       "nav.group-days": "Gruppdagar",
       "nav.courses": "Kurser",
       "nav.yoga": "Yoga",
-      "nav.art": "Måleri & keramik",
+      "nav.art": "Måleri",
       "nav.gallery": "Galleri",
       "nav.shop": "Butik",
       "nav.about": "Om oss",

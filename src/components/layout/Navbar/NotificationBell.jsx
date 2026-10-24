@@ -5,12 +5,12 @@ import {
   allUpcomingPasses,
   formatPassDate,
   formatPassTime,
-  INSTRUCTORS,
   passAnchor,
   passHubPath,
+  passInstructor,
 } from "../../../data/courseEvents.js";
 import { canonicalPath } from "../../../config/routes.js";
-import { fetchPublicNotifications } from "../../../services/notificationsService.js";
+import { fetchPublicNotifications, isNotificationLive } from "../../../services/notificationsService.js";
 import { useSiteCopy } from "../../../hooks/usePageCopy.js";
 import "./NotificationBell.css";
 
@@ -24,21 +24,29 @@ function readStoredIds() {
   }
 }
 
-function instructorFor(pass) {
-  return pass.primaryTrack === "yoga" ? INSTRUCTORS.lina : INSTRUCTORS.ann;
+/** Stand-in when the CMS could not be read: the passes in this build's export that are still ahead. */
+function passNotifications(now) {
+  return allUpcomingPasses(now)
+    .filter((pass) => pass.status !== "cancelled")
+    .map((pass) => {
+      // A guest instructor is not named; the pass title stands alone.
+      const instructor = passInstructor(pass);
+      return {
+        id: pass.id,
+        title: instructor ? `${instructor.name.split(" ")[0]} håller ${pass.title.toLowerCase()}` : pass.title,
+        detail: `${formatPassDate(pass)} kl. ${formatPassTime(pass.startAt)}`,
+        href: `${passHubPath(pass)}/#${passAnchor(pass)}`,
+      };
+    });
 }
 
-function buildNotifications() {
-  return allUpcomingPasses().map((pass) => {
-    const instructor = instructorFor(pass);
-
-    return {
-      id: pass.id,
-      title: `${instructor.name.split(" ")[0]} håller ${pass.title.toLowerCase()}`,
-      detail: `${formatPassDate(pass)} kl. ${formatPassTime(pass.startAt)}`,
-      href: `${passHubPath(pass)}/#${passAnchor(pass)}`,
-    };
-  });
+function cmsNotifications(items, now) {
+  return items.filter((item) => isNotificationLive(item, now)).map((item) => ({
+    id: item.updatedAt ? `${item.id}:${item.updatedAt}` : item.id,
+    title: item.title,
+    detail: item.message,
+    href: item.href || "/event/",
+  }));
 }
 
 export default function NotificationBell() {
@@ -46,8 +54,12 @@ export default function NotificationBell() {
   const wrapperRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [readIds, setReadIds] = useState(readStoredIds);
-  const [notifications, setNotifications] = useState([]);
+  // null until answered; "fallback" when the CMS could not be read.
+  const [cmsItems, setCmsItems] = useState(null);
   const siteCopy = useSiteCopy();
+  // Evaluated on every render, so a pass or a notice window that ends while the tab is open drops out.
+  const now = new Date();
+  const notifications = cmsItems === "fallback" ? passNotifications(now) : cmsNotifications(cmsItems || [], now);
   const unreadCount = notifications.filter(
     (notification) => !readIds.includes(notification.id),
   ).length;
@@ -57,17 +69,10 @@ export default function NotificationBell() {
 
     fetchPublicNotifications()
       .then((items) => {
-        if (cancelled) return;
-        setNotifications(items.map((item) => ({
-          id: item.updatedAt ? `${item.id}:${item.updatedAt}` : item.id,
-          title: item.title,
-          detail: item.message,
-          href: item.link || item.href || "/event/",
-        })));
+        if (!cancelled) setCmsItems(items);
       })
       .catch(() => {
-        if (cancelled) return;
-        setNotifications(buildNotifications());
+        if (!cancelled) setCmsItems("fallback");
       });
 
     return () => {

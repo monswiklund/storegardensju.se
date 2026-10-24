@@ -37,3 +37,22 @@ export function normalizeMediaList(value, size) {
     .map((media) => normalizeMedia(media, size))
     .filter(Boolean);
 }
+
+const mediaByIdRequests = new Map();
+
+/** Public media document by id; used when live preview sends an upload field as a bare id. */
+export function fetchMediaById(id) {
+  if (!mediaByIdRequests.has(id)) {
+    mediaByIdRequests.set(
+      id,
+      fetch(`${getCmsUrl()}/api/media/${encodeURIComponent(id)}?depth=0`, { headers: { Accept: "application/json" } })
+        .then((res) => (res.ok ? res.json() : null))
+        .catch(() => null)
+        .then((doc) => {
+          if (!doc) mediaByIdRequests.delete(id);
+          return doc;
+        }),
+    );
+  }
+  return mediaByIdRequests.get(id);
+}

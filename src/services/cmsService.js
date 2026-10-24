@@ -1,3 +1,7 @@
+import initialCmsData from "../data/initialCmsData.json";
+import CMS_CONTENT from "../data/cmsContent.generated.js";
+import { normalizePageAppearance, projectPage } from "../data/cmsProjection.js";
+
 export function getCmsUrl() {
   const configured = import.meta.env.VITE_CMS_URL?.trim();
   if (configured) {
@@ -12,76 +16,44 @@ export function getCmsUrl() {
 const pageRequests = new Map();
 let shopProductsRequest = null;
 
-const appearanceOptions = Object.freeze({
-  pageTheme: new Set(["original", "linen", "clay", "forest"]),
-  heroLayout: new Set(["original", "centered", "editorial"]),
-  heroOverlay: new Set(["original", "soft", "strong"]),
-  sectionSpacing: new Set(["original", "compact", "airy"]),
+export { normalizePageAppearance };
+
+const missingPage = (source) => Object.freeze({
+  found: false, source, copy: {}, lists: {}, images: {}, socialImage: null, appearance: normalizePageAppearance(),
 });
 
-export function normalizePageAppearance(doc) {
-  return Object.freeze(Object.fromEntries(
-    Object.entries(appearanceOptions).map(([key, allowed]) => [
-      key,
-      allowed.has(doc?.[key]) ? doc[key] : "original",
-    ]),
-  ));
-}
+const frozenPage = (page, source) => Object.freeze({
+  found: true,
+  source,
+  copy: Object.freeze({ ...(page.copy || {}) }),
+  lists: Object.freeze(Object.fromEntries(Object.entries(page.lists || {}).map(([key, items]) => [key, Object.freeze(items)]))),
+  images: Object.freeze({ ...(page.images || {}) }),
+  socialImage: page.socialImage || null,
+  appearance: page.appearance || normalizePageAppearance(),
+});
 
-/** Convert Payload's editor rows into an immutable lookup used by page components. */
-export function normalizePageContent(payload) {
+/** One published page from a Payload list answer, in the projected shape (cmsProjection.projectPage). */
+export function normalizePageContent(payload, cmsUrl = getCmsUrl()) {
   const doc = payload?.docs?.[0];
-  if (!doc) return { found: false, copy: {}, lists: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
-  const rows = Array.isArray(doc.copy) ? doc.copy : [];
-  const contentLists = Array.isArray(doc.contentLists) ? doc.contentLists : [];
-  const imageSlots = Array.isArray(doc.imageSlots) ? doc.imageSlots : [];
-  return Object.freeze({
-    found: true,
-    copy: Object.freeze(Object.fromEntries(
-      rows
-        .filter(
-          (row) =>
-            typeof row?.key === "string" &&
-            typeof row?.value === "string",
-        )
-        .map((row) => [row.key, row.value]),
-    )),
-    lists: Object.freeze(Object.fromEntries(
-      contentLists
-        .filter((list) => typeof list?.key === "string")
-        .map((list) => [list.key, Object.freeze(Array.isArray(list.items) ? list.items : [])]),
-    )),
-    images: Object.freeze(Object.fromEntries(
-      imageSlots.filter((slot) => typeof slot?.key === "string").map((slot) => [slot.key, slot.image || null]),
-    )),
-    socialImage: doc.socialImage || null,
-    appearance: normalizePageAppearance(doc),
-  });
+  return doc ? frozenPage(projectPage(doc, cmsUrl), "cms") : missingPage("cms");
 }
 
 export function normalizePageCopy(payload) {
   return normalizePageContent(payload).copy;
 }
 
-import initialCmsData from "../data/initialCmsData.json";
-
 const pageContentCache = new Map();
 const compiledPageContent = new Map();
 
+// What a page shows before (or without) a live answer: the CMS export baked into this build, or
+// the checked-in fixture where nothing was exported (local development and tests).
 function initPageContentCache() {
-  if (initialCmsData && typeof initialCmsData === "object") {
-    for (const [slug, data] of Object.entries(initialCmsData)) {
-      const content = Object.freeze({
-        found: true,
-        copy: Object.freeze(data.copy || {}),
-        lists: Object.freeze(data.lists || {}),
-        images: Object.freeze(data.images || {}),
-        socialImage: null,
-        appearance: normalizePageAppearance(),
-      });
-      compiledPageContent.set(slug, content);
-      pageContentCache.set(slug, content);
-    }
+  const pages = CMS_CONTENT?.pages || initialCmsData || {};
+  const source = CMS_CONTENT?.pages ? "snapshot" : "fixture";
+  for (const [slug, page] of Object.entries(pages)) {
+    const content = frozenPage(page, source);
+    compiledPageContent.set(slug, content);
+    pageContentCache.set(slug, content);
   }
 }
 
@@ -94,12 +66,17 @@ export function getPageContentSync(slug) {
 export function getPageCopySync(slug) {
   const cached = pageContentCache.get(slug);
   if (cached?.copy) {
-    return (key) => cached.copy[key] || "";
+    return (key, fallback = "") =>
+      Object.prototype.hasOwnProperty.call(cached.copy, key) ? cached.copy[key] : fallback;
   }
-  return () => "";
+  return (_key, fallback = "") => fallback;
 }
 
-/** Fetch one published page document */
+/**
+ * One published page. A live document replaces the build's version whole, so a row the editor
+ * removed is not filled in from the snapshot. A failed request, or a page the CMS does not
+ * publish (every rendered page is required by the export), keeps what the build shipped.
+ */
 export function fetchPageContent(slug) {
   if (!pageRequests.has(slug)) {
     const cmsUrl = getCmsUrl();
@@ -119,22 +96,14 @@ export function fetchPageContent(slug) {
         return response.json();
       })
       .then((json) => {
-        const normalized = normalizePageContent(json);
-        if (normalized.found) {
-          const fallback = pageContentCache.get(slug);
-          pageContentCache.set(slug, Object.freeze({
-            ...normalized,
-            copy: Object.freeze({
-              ...(fallback?.copy || {}),
-              ...normalized.copy,
-            }),
-          }));
-        }
-        return pageContentCache.get(slug) || normalized;
+        if (!Array.isArray(json?.docs)) throw new Error("CMS answer without docs");
+        const live = normalizePageContent(json, cmsUrl);
+        if (live.found) pageContentCache.set(slug, live);
+        return pageContentCache.get(slug) || live;
       })
       .catch(() => {
         pageRequests.delete(slug);
-        return pageContentCache.get(slug) || { found: false, copy: {}, lists: {}, images: {}, socialImage: null, appearance: normalizePageAppearance() };
+        return pageContentCache.get(slug) || missingPage("none");
       });
 
     pageRequests.set(slug, request);

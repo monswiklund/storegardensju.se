@@ -1,24 +1,27 @@
-// Single source of truth for the courses that run on the farm.
+// The course hubs' model: tracks, instructors, FAQ and the passes on them.
 //
-// Consumed by four places that must never disagree:
+// Consumed by places that must never disagree:
 //   - src/pages/KurserPage.jsx  (the yoga hub, /kurser/yoga)
-//   - src/pages/ArtPage.jsx     (the maleri/keramik hub, /kurser/konst)
+//   - src/pages/ArtPage.jsx     (the maleri hub, /kurser/konst)
 //   - src/config/seoMeta.js     (Event/Course/FAQPage JSON-LD + prerender copy)
 //   - scripts/generate-route-pages.js (indirectly, via seoMeta)
 //
 // Two hubs, one per subject, under a /kurser index: /kurser/yoga targets
-// "yoga i Lidköping" and /kurser/konst targets "målarkurs/keramikkurs i
-// Lidköping". Those are different searches, so they get different URLs - but
-// the same machinery. A pass is a section with an
-// anchor on its hub rather than its own URL: one pass a month would otherwise
-// produce a pile of thin pages that go stale the day after, splitting link
-// equity instead of accumulating it.
+// "yoga i Lidköping" and /kurser/konst targets "målarkurs i Lidköping". Those
+// are different searches, so they get different URLs - but the same machinery.
+// A pass is a section with an anchor on its hub rather than its own URL: one
+// pass a month would otherwise produce a pile of thin pages that go stale the
+// day after, splitting link equity instead of accumulating it.
 //
-// To add a pass: append to COURSE_PASSES with tracks/primaryTrack set. Nothing
-// else needs touching - the upcoming/past split, the JSON-LD and the
-// prerendered copy all derive from startAt/endAt.
+// Passes come only from the CMS (events, and the older course-passes). The
+// build exports them into cmsContent.generated.js (COURSE_PASSES below, used by
+// the prerender and as the browser's fallback); the hubs replace that with a
+// complete live answer (schedulePasses on fetchCmsSchedule's result). Every
+// selector takes the list it works on, so both run through the same rules.
 
 import { cdnAsset } from "../config/cdnAssets.js";
+import CMS_CONTENT from "./cmsContent.generated.js";
+import { isUpcoming, knownEndTimeOf, startTimeOf } from "./schedulePlacement.js";
 
 export const COURSE_LOCATION = {
   name: "Storegården 7",
@@ -47,7 +50,7 @@ export const INSTRUCTORS = {
     name: "Ann Wiklund",
     email: CONTACT_EMAIL,
     role: "Konstnär och keramiker",
-    bio: "Ann Wiklund är konstnär och keramiker och håller kurserna i ateljén på Storegården 7. Hon undervisar i akvarell och akryl samt i handbygge, ringling och drejning. Du behöver inte ha målat eller arbetat med lera tidigare.",
+    bio: "Ann Wiklund är konstnär och keramiker och håller kurserna i ateljén på Storegården 7. Hon undervisar i akvarell och akryl. Du behöver inte ha målat tidigare.",
   },
 };
 
@@ -78,13 +81,32 @@ const MONTHS = [
   "december",
 ];
 
-// The ISO strings carry their own +02:00 offset, so the calendar date is read
-// straight out of the string. Going via Date getters would shift the date for
-// anyone in another timezone - a pass on the 30th must read "30 juli" in Sydney
-// too.
+// Payload stores UTC ("…T16:00:00.000Z") while the static schedule carries
+// +02:00, so every date and time is read on the farm's clock (Europe/Stockholm)
+// rather than from the string or the reader's timezone - a pass at 18:00 reads
+// "18:00" in Sydney too, whichever source it came from.
+const stockholmFormat = new Intl.DateTimeFormat("sv-SE", {
+  timeZone: "Europe/Stockholm",
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+});
+
 function passDateParts(isoString) {
-  const [, year, month, day] = /^(\d{4})-(\d{2})-(\d{2})/.exec(isoString);
-  return { year: Number(year), month: Number(month), day: Number(day) };
+  const parts = Object.fromEntries(
+    stockholmFormat
+      .formatToParts(new Date(isoString))
+      .map(({ type, value }) => [type, value])
+  );
+  return {
+    year: Number(parts.year),
+    month: Number(parts.month),
+    day: Number(parts.day),
+    time: `${parts.hour}:${parts.minute}`,
+  };
 }
 
 /** "Torsdag 30 juli" - used in headings, badges and prerendered copy. */
@@ -94,13 +116,13 @@ export function formatPassDate(pass) {
   return `${weekday} ${day} ${MONTHS[month - 1]}`;
 }
 
-/** "18:00" in the event's own offset, not the reader's timezone. */
+/** "18:00" on the farm's clock. */
 export function formatPassTime(isoString) {
-  const match = /T(\d{2}):(\d{2})/.exec(isoString);
-  return match ? `${match[1]}:${match[2]}` : "";
+  if (!isoString || !Number.isFinite(new Date(isoString).getTime())) return "";
+  return passDateParts(isoString).time;
 }
 
-/** Calendar year of the pass, read from the ISO string for the same reason. */
+/** Calendar year of the pass on the farm's clock. */
 export function passYear(pass) {
   return passDateParts(pass.startAt).year;
 }
@@ -122,8 +144,8 @@ const yogaFaq = [
   },
   {
     question: "När är nästa pass?",
-    answer: (now) => {
-      const pass = nextPass(YOGA_TRACK_ID, now);
+    answer: (now, passes) => {
+      const pass = nextPass(YOGA_TRACK_ID, now, passes);
       if (!pass) {
         return "Just nu har vi inget pass inbokat. Håll utkik här eller hör av dig till Lina för att få veta när nästa tillfälle släpps.";
       }
@@ -132,8 +154,8 @@ const yogaFaq = [
   },
   {
     question: "Vad kostar klasserna?",
-    answer: (now) => {
-      const pass = nextPass(YOGA_TRACK_ID, now);
+    answer: (now, passes) => {
+      const pass = nextPass(YOGA_TRACK_ID, now, passes);
       if (!pass?.price) {
         return "Priset varierar mellan passen. Hör av dig till Lina för aktuellt pris.";
       }
@@ -147,8 +169,8 @@ const yogaFaq = [
   },
   {
     question: "När bör man komma innan passet?",
-    answer: (now) => {
-      const pass = nextPass(YOGA_TRACK_ID, now);
+    answer: (now, passes) => {
+      const pass = nextPass(YOGA_TRACK_ID, now, passes);
       const doorsTime = pass?.doorsOpenAt
         ? ` (från kl ${formatPassTime(pass.doorsOpenAt)})`
         : "";
@@ -169,14 +191,14 @@ const yogaFaq = [
 
 const maleriFaq = [
   {
-    question: "Vilka kurser i måleri och keramik har ni?",
+    question: "Vilka kurser i måleri har ni?",
     answer: () =>
-      "I ateljén på Storegården 7 håller Ann Wiklund kurser i måleri med akvarell och akryl samt i keramik med handbygge, ringling och drejning. Kurserna är prestationsfria och passar även dig som är nybörjare.",
+      "I ateljén på Storegården 7 håller Ann Wiklund kurser i måleri med akvarell och akryl. Kurserna är prestationsfria och passar även dig som är nybörjare.",
   },
   {
     question: "När är nästa målarkurs?",
-    answer: (now) => {
-      const pass = nextPass(MALERI_TRACK_ID, now);
+    answer: (now, passes) => {
+      const pass = nextPass(MALERI_TRACK_ID, now, passes);
       if (!pass) {
         return "Just nu har vi ingen kurs med fast datum i kalendern. Nya tillfällen läggs upp här, och du kan alltid höra av dig för att boka en egen kurs för din grupp.";
       }
@@ -184,14 +206,14 @@ const maleriFaq = [
     },
   },
   {
-    question: "Behöver jag ha målat eller drejat tidigare?",
+    question: "Behöver jag ha målat tidigare?",
     answer: () =>
       "Nej. Ann visar momenten och hjälper dig under kursen. Du kan vara med oavsett om det är första gången eller om du har provat tidigare.",
   },
   {
     question: "Vad kostar en kurs i ateljén?",
-    answer: (now) => {
-      const pass = nextPass(MALERI_TRACK_ID, now);
+    answer: (now, passes) => {
+      const pass = nextPass(MALERI_TRACK_ID, now, passes);
       if (pass?.price) {
         return `Nästa kurs kostar ${pass.price} kr per person. För en egen kurs för din grupp beror priset på längd och gruppstorlek - gruppdagar på gården börjar på 500 kr per person.`;
       }
@@ -201,12 +223,12 @@ const maleriFaq = [
   {
     question: "Kan vi boka en egen kurs för vår grupp?",
     answer: () =>
-      "Ja. Måleri och keramik går att boka för möhippa, svensexa, födelsedag eller teambuilding. Gruppen får ateljén för sig själv och det går att lägga till fika eller lunch.",
+      "Ja. Måleri går att boka för möhippa, svensexa, födelsedag eller teambuilding. Gruppen får ateljén för sig själv och det går att lägga till fika eller lunch.",
   },
   {
     question: "Behöver jag ta med eget material?",
     answer: () =>
-      "Nej, material och verktyg finns i ateljén. Ta med kläder som får bli lite färg eller lera på.",
+      "Nej, material och verktyg finns i ateljén. Ta med kläder som får bli lite färg på.",
   },
   {
     question: "Var ligger ateljén?",
@@ -224,16 +246,20 @@ export const TRACKS = {
     anchorPrefix: "yoga",
     hubPath: "/kurser/yoga",
     hubLabel: "yogan",
+    pageSlug: "yoga",
     instructor: INSTRUCTORS.lina,
+    practicalNote: "Anpassat för nybörjare och övade. Yogamattor finns på plats.",
     faq: yogaFaq,
   },
   [MALERI_TRACK_ID]: {
     id: MALERI_TRACK_ID,
-    label: "Måleri & keramik",
+    label: "Måleri",
     anchorPrefix: "maleri",
     hubPath: "/kurser/konst",
     hubLabel: "kurserna i ateljén",
+    pageSlug: "art",
     instructor: INSTRUCTORS.ann,
+    practicalNote: "Material och verktyg finns i ateljén.",
     faq: maleriFaq,
   },
 };
@@ -251,190 +277,6 @@ export function trackById(trackId) {
 // `tracks` lists every hub the pass is shown on; `primaryTrack` owns it. Only
 // the primary hub emits Event markup and hosts the anchor - the same event on
 // two URLs would make those URLs compete for one result.
-
-export const COURSE_PASSES = [
-  {
-    id: "yoga-pa-loftet-2026-07-30",
-    title: "Yoga på loftet",
-    tracks: [YOGA_TRACK_ID],
-    primaryTrack: YOGA_TRACK_ID,
-    startAt: "2026-07-30T18:00:00+02:00",
-    endAt: "2026-07-30T19:30:00+02:00",
-    doorsOpenAt: "2026-07-30T17:30:00+02:00",
-    price: 150,
-    priceCurrency: "SEK",
-    dropIn: true,
-    summary:
-      "Ett 90 minuter långt yogapass på loftet med guidning, lugna rörelser och vila.",
-    practicalNote:
-      "Yogamattor finns på plats. Du får gärna ta med en egen om du har.",
-    description:
-      "Yogapass i lugnt tempo med Lina på loftet på Storegården 7 utanför Lidköping.",
-    images: [
-      {
-        url: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
-        alt: "Yoga på loftet med Lina på Storegården 7",
-      },
-    ],
-  },
-  {
-    id: "yoga-2026-08-11",
-    title: "Yoga på loftet (90 min)",
-    tracks: [YOGA_TRACK_ID],
-    primaryTrack: YOGA_TRACK_ID,
-    startAt: "2026-08-11T18:00:00+02:00",
-    endAt: "2026-08-11T19:30:00+02:00",
-    doorsOpenAt: "2026-08-11T17:30:00+02:00",
-    durationMinutes: 90,
-    price: 150,
-    priceCurrency: "SEK",
-    dropIn: false,
-    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
-    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
-    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
-    images: [
-      {
-        url: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
-        alt: "Yoga på loftet på Storegården 7",
-      },
-    ],
-  },
-  {
-    id: "yoga-2026-08-12",
-    title: "Yoga på loftet (60 min)",
-    tracks: [YOGA_TRACK_ID],
-    primaryTrack: YOGA_TRACK_ID,
-    startAt: "2026-08-12T18:00:00+02:00",
-    endAt: "2026-08-12T19:00:00+02:00",
-    doorsOpenAt: "2026-08-12T17:30:00+02:00",
-    durationMinutes: 60,
-    price: 100,
-    priceCurrency: "SEK",
-    dropIn: true,
-    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
-    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
-    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
-    images: [
-      {
-        url: cdnAsset("/images/evenemang/lina-yoga.jpg"),
-        alt: "Yoga på loftet",
-      },
-    ],
-  },
-  {
-    id: "yoga-2026-08-13",
-    title: "Yoga på loftet (60 min)",
-    tracks: [YOGA_TRACK_ID],
-    primaryTrack: YOGA_TRACK_ID,
-    startAt: "2026-08-13T18:00:00+02:00",
-    endAt: "2026-08-13T19:00:00+02:00",
-    doorsOpenAt: "2026-08-13T17:30:00+02:00",
-    durationMinutes: 60,
-    price: 100,
-    priceCurrency: "SEK",
-    dropIn: true,
-    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
-    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
-    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
-    images: [
-      {
-        url: cdnAsset("/images/evenemang/lina-yoga-yta2.jpg"),
-        alt: "Yoga på loftet",
-      },
-    ],
-  },
-  {
-    id: "yoga-2026-08-18",
-    title: "Yoga på loftet (90 min)",
-    tracks: [YOGA_TRACK_ID],
-    primaryTrack: YOGA_TRACK_ID,
-    startAt: "2026-08-18T18:00:00+02:00",
-    endAt: "2026-08-18T19:30:00+02:00",
-    doorsOpenAt: "2026-08-18T17:30:00+02:00",
-    durationMinutes: 90,
-    price: 150,
-    priceCurrency: "SEK",
-    dropIn: false,
-    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
-    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
-    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
-    images: [
-      {
-        url: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
-        alt: "Yoga på loftet på Storegården 7",
-      },
-    ],
-  },
-  {
-    id: "yoga-2026-08-19",
-    title: "Yoga på loftet (60 min)",
-    tracks: [YOGA_TRACK_ID],
-    primaryTrack: YOGA_TRACK_ID,
-    startAt: "2026-08-19T18:00:00+02:00",
-    endAt: "2026-08-19T19:00:00+02:00",
-    doorsOpenAt: "2026-08-19T17:30:00+02:00",
-    durationMinutes: 60,
-    price: 100,
-    priceCurrency: "SEK",
-    dropIn: true,
-    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
-    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
-    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
-    images: [
-      {
-        url: cdnAsset("/images/evenemang/lina-yoga.jpg"),
-        alt: "Yoga på loftet",
-      },
-    ],
-  },
-  {
-    id: "yoga-2026-08-20",
-    title: "Yoga på loftet (60 min)",
-    tracks: [YOGA_TRACK_ID],
-    primaryTrack: YOGA_TRACK_ID,
-    startAt: "2026-08-20T18:00:00+02:00",
-    endAt: "2026-08-20T19:00:00+02:00",
-    doorsOpenAt: "2026-08-20T17:30:00+02:00",
-    durationMinutes: 60,
-    price: 100,
-    priceCurrency: "SEK",
-    dropIn: true,
-    summary: "Yogapass i lugnt tempo anpassat för både nybörjare och övade.",
-    practicalNote: "Anpassat för både nybörjare och övade. Yogamattor finns på plats.",
-    description: "Yogapass i lugnt tempo med Lina på loftet på Storegården 7.",
-    images: [
-      {
-        url: cdnAsset("/images/evenemang/lina-yoga-yta2.jpg"),
-        alt: "Yoga på loftet",
-      },
-    ],
-  },
-  {
-    id: "heldag-yoga-maleri-2026-07-13",
-    title: "Heldag med yoga & måleri",
-    recapLabel: "Se bilder och dagsprogram",
-    // Shown on both hubs, owned by the yoga hub where its anchor already lives.
-    tracks: [YOGA_TRACK_ID, MALERI_TRACK_ID],
-    primaryTrack: YOGA_TRACK_ID,
-    startAt: "2026-07-13T10:00:00+02:00",
-    endAt: "2026-07-13T17:30:00+02:00",
-    price: null,
-    dropIn: false,
-    summary: "Heldag med yoga, måleri, gemensam lunch och fika på gården.",
-    description:
-      "Den 13 juli hade vi yoga med Lina och måleri med Ann på Storegården 7. Under dagen åt vi också lunch och fikade tillsammans.",
-    images: [
-      {
-        url: cdnAsset("/images/evenemang/yoga-loft.webp"),
-        alt: "Yoga på loftet på Storegården 7",
-      },
-      {
-        url: cdnAsset("/images/evenemang/heldag-paket.webp"),
-        alt: "Heldag med yoga och måleri på Storegården 7",
-      },
-    ],
-  },
-];
 
 /**
  * Stable anchor for a pass, e.g. "yoga-30-juli".
@@ -463,256 +305,195 @@ export function passHref(pass, fromTrackId) {
 }
 
 const onTrack = (trackId) => (pass) => pass.tracks.includes(trackId);
-const byStartAsc = (a, b) => new Date(a.startAt) - new Date(b.startAt);
-const byStartDesc = (a, b) => new Date(b.startAt) - new Date(a.startAt);
+const byStartAsc = (a, b) => startTimeOf(a) - startTimeOf(b);
+const byStartDesc = (a, b) => startTimeOf(b) - startTimeOf(a);
 
-/** Passes on a track that have not finished yet, soonest first. */
-export function upcomingPasses(trackId, now = new Date()) {
-  const cutoff = new Date(now).getTime();
-  return COURSE_PASSES.filter(onTrack(trackId))
-    .filter((pass) => new Date(pass.endAt).getTime() > cutoff)
-    .sort(byStartAsc);
+/** Passes on a track that have not finished yet, soonest first (placement: schedulePlacement.js). */
+export function upcomingPasses(trackId, now = new Date(), passes = COURSE_PASSES) {
+  return passes.filter(onTrack(trackId)).filter((pass) => isUpcoming(pass, now)).sort(byStartAsc);
 }
 
 /** Finished passes on a track, most recent first - kept as recap on the page. */
-export function pastPasses(trackId, now = new Date()) {
-  const cutoff = new Date(now).getTime();
-  return COURSE_PASSES.filter(onTrack(trackId))
-    .filter((pass) => new Date(pass.endAt).getTime() <= cutoff)
-    .sort(byStartDesc);
+export function pastPasses(trackId, now = new Date(), passes = COURSE_PASSES) {
+  return passes.filter(onTrack(trackId)).filter((pass) => !isUpcoming(pass, now)).sort(byStartDesc);
 }
 
-/** Every unfinished pass across all tracks, soonest first - for the home page. */
-export function allUpcomingPasses(now = new Date()) {
-  const cutoff = new Date(now).getTime();
-  return COURSE_PASSES.filter(
-    (pass) => new Date(pass.endAt).getTime() > cutoff
-  ).sort(byStartAsc);
+/** Every unfinished pass across all tracks, soonest first - for the notification bell. */
+export function allUpcomingPasses(now = new Date(), passes = COURSE_PASSES) {
+  return passes.filter((pass) => isUpcoming(pass, now)).sort(byStartAsc);
 }
 
-export function nextPass(trackId, now = new Date()) {
-  return upcomingPasses(trackId, now)[0] || null;
+/** The next pass that will take place: a cancelled one is not "the next pass". */
+export function nextPass(trackId, now = new Date(), passes = COURSE_PASSES) {
+  return upcomingPasses(trackId, now, passes).find((pass) => pass.status !== "cancelled") || null;
 }
 
 /** Passes a track owns - the ones whose Event markup belongs to its hub. */
-export function ownedUpcomingPasses(trackId, now = new Date()) {
-  return upcomingPasses(trackId, now).filter(
-    (pass) => pass.primaryTrack === trackId
-  );
+export function ownedUpcomingPasses(trackId, now = new Date(), passes = COURSE_PASSES) {
+  return upcomingPasses(trackId, now, passes).filter((pass) => pass.primaryTrack === trackId);
+}
+
+/** Whether a visitor can still sign up: it has not started, is not cancelled and not full. */
+export function isBookablePass(pass, now = new Date()) {
+  const start = startTimeOf(pass);
+  return start !== null && start > new Date(now).getTime() && isUpcoming(pass, now) &&
+    pass.status !== "cancelled" && pass.status !== "fully_booked";
 }
 
 /** A track's FAQ with the date-dependent answers resolved to strings. */
-export function resolvedFaq(trackId, now = new Date()) {
+export function resolvedFaq(trackId, now = new Date(), passes = COURSE_PASSES) {
   return trackById(trackId).faq.map(({ question, answer }) => ({
     question,
-    answer: typeof answer === "function" ? answer(now) : answer,
+    answer: typeof answer === "function" ? answer(now, passes) : answer,
   }));
 }
 
 /**
- * Converts a raw event object from backend API (/api/events) into the course pass structure.
+ * The FAQ a hub shows and declares in FAQPage markup: the editors' list when the page has one
+ * (also an emptied one), else the track's own answers resolved against the schedule.
  */
-export function apiEventToCoursePass(apiEvent, defaultTrackId = YOGA_TRACK_ID) {
-  const isYoga =
-    apiEvent.category === YOGA_TRACK_ID ||
-    (apiEvent.title && apiEvent.title.toLowerCase().includes("yoga"));
-
-  const isMaleri =
-    apiEvent.category === MALERI_TRACK_ID ||
-    apiEvent.category === "konst" ||
-    apiEvent.category === "keramik" ||
-    (apiEvent.title &&
-      (apiEvent.title.toLowerCase().includes("måleri") ||
-        apiEvent.title.toLowerCase().includes("keramik") ||
-        apiEvent.title.toLowerCase().includes("konst")));
-
-  let primaryTrack = defaultTrackId;
-  if (isYoga) {
-    primaryTrack = YOGA_TRACK_ID;
-  } else if (isMaleri) {
-    primaryTrack = MALERI_TRACK_ID;
+export function hubFaq(trackId, now = new Date(), passes = COURSE_PASSES, cmsFaq = null) {
+  if (Array.isArray(cmsFaq)) {
+    return cmsFaq.filter((item) => item?.title && item?.body).map(({ title, body }) => ({ question: title, answer: body }));
   }
+  return resolvedFaq(trackId, now, passes);
+}
 
-  const tracks = isYoga && isMaleri ? [YOGA_TRACK_ID, MALERI_TRACK_ID] : [primaryTrack];
+/** The instructor named on a pass, or null for a guest (no name is invented for them). */
+export function passInstructor(pass) {
+  return INSTRUCTORS[pass.instructorId] || null;
+}
 
-  let price = apiEvent.price ?? null;
-  if (price === null && typeof apiEvent.spots === "string") {
-    const match = apiEvent.spots.match(/(\d+)\s*kr/i);
-    if (match) {
-      price = parseInt(match[1], 10);
-    }
-  }
+/** Where a visitor writes about a pass: its own booking address, else its instructor's, else the farm's. */
+export function passContactEmail(pass) {
+  return pass.bookingEmail || passInstructor(pass)?.email || CONTACT_EMAIL;
+}
 
-  const fallbackImage = cdnAsset(
-    primaryTrack === YOGA_TRACK_ID
-      ? "/images/evenemang/lina-yoga-header.jpg"
-      : "/images/evenemang/maleri-kurs.webp",
-  );
+// Combined days filed under a single category before the CMS could put one event on two hubs.
+// Transitional and limited to these records: remove an entry once its pass is no longer shown in
+// the recap, or once events get an explicit "also on hub" field. Titles never decide a hub.
+const LEGACY_SHARED_EVENTS = Object.freeze({
+  "course:heldag-yoga-maleri-2026-07-13": [YOGA_TRACK_ID, MALERI_TRACK_ID],
+});
 
-  const images =
-    Array.isArray(apiEvent.images) && apiEvent.images.length > 0
-      ? apiEvent.images.map((img) =>
-          typeof img === "string" ? { url: img, alt: apiEvent.title } : img
-        )
-      : apiEvent.mediaMigrated
-        ? []
-        : [
-          {
-            url: fallbackImage,
-            alt: apiEvent.title || "Kurs på Storegården 7",
-          },
-        ];
+/** Hubs a CMS event belongs to, decided by its category (keramik courses are not on the hubs). */
+export function eventTracks(event) {
+  const legacy = LEGACY_SHARED_EVENTS[event?.legacyId];
+  if (legacy) return legacy;
+  if (event?.category === "yoga") return [YOGA_TRACK_ID];
+  if (event?.category === "konst") return [MALERI_TRACK_ID];
+  return [];
+}
 
-  let durationMinutes = apiEvent.durationMinutes || null;
-  if (!durationMinutes && apiEvent.startAt && apiEvent.endAt) {
-    const diffMs = new Date(apiEvent.endAt) - new Date(apiEvent.startAt);
-    if (diffMs > 0) {
-      durationMinutes = Math.round(diffMs / (1000 * 60));
-    }
-  }
+/** Hubs a course pass belongs to, decided by its track. */
+export function coursePassTracks(coursePass) {
+  if (coursePass?.track === "yoga") return [YOGA_TRACK_ID];
+  if (coursePass?.track === "konst") return [MALERI_TRACK_ID];
+  return [];
+}
 
-  let isDropIn = true;
-  if (typeof apiEvent.dropIn === "boolean") {
-    isDropIn = apiEvent.dropIn;
-  } else if (apiEvent.dropIn !== undefined && apiEvent.dropIn !== null) {
-    isDropIn = Boolean(apiEvent.dropIn);
-  } else if (typeof apiEvent.spots === "string") {
-    const spotsLower = apiEvent.spots.toLowerCase();
-    if (spotsLower.includes("föranmälan")) {
-      isDropIn = false;
-    } else if (spotsLower.includes("drop-in") || spotsLower.includes("dropin")) {
-      isDropIn = true;
-    }
-  } else if (typeof apiEvent.title === "string" && apiEvent.title.toLowerCase().includes("föranmälan")) {
-    isDropIn = false;
-  }
+const INSTRUCTOR_BY_TRACK = { [YOGA_TRACK_ID]: "lina", [MALERI_TRACK_ID]: "ann" };
+
+const trackImage = (trackId, title) => ({
+  url: cdnAsset(trackId === YOGA_TRACK_ID ? "/images/evenemang/lina-yoga-header.jpg" : "/images/evenemang/maleri-kurs.webp"),
+  alt: title || "Kurs på Storegården 7",
+});
+
+const durationOf = (item) => {
+  if (item.durationMinutes > 0) return item.durationMinutes;
+  const start = startTimeOf(item);
+  const end = knownEndTimeOf(item);
+  return start !== null && end !== null && end > start ? Math.round((end - start) / 60_000) : null;
+};
+
+/**
+ * A projected CMS event (cmsProjection.projectEvent) as a pass. Every value comes from the event
+ * or from its track; nothing is merged in from another source, so a value the editor emptied
+ * stays empty.
+ */
+export function eventToPass(event) {
+  const tracks = eventTracks(event);
+  const primaryTrack = tracks[0] || null;
+  const media = (event.media || []).map((item) => ({
+    url: item.sizes?.card?.url || item.url,
+    alt: item.alt || event.title,
+  })).filter((image) => image.url);
+  const legacyImages = (event.images || []).map((image) => ({ url: image.url, alt: image.alt || event.title }));
+  const images = media.length > 0 ? media : legacyImages.length > 0 ? legacyImages
+    : event.mediaMigrated || !primaryTrack ? [] : [trackImage(primaryTrack, event.title)];
 
   return {
-    id: apiEvent.id || `api-${Date.now()}`,
-    title: apiEvent.title || "Kurs på Storegården 7",
+    // Shared links (?pastEvent=…) already use the legacy id, so it stays the id where it exists.
+    id: event.legacyId || `events:${event.id}`,
+    // Explicit link from a migrated record to the hand-written recap it replaced (featuredPastEvents.js).
+    legacyKey: event.legacyId ? event.legacyId.replace(/^course:/, "") : null,
+    source: "events",
+    title: event.title,
     tracks,
     primaryTrack,
-    startAt: apiEvent.startAt,
-    endAt: apiEvent.endAt || apiEvent.startAt,
-    doorsOpenAt: apiEvent.doorsOpenAt || apiEvent.arrivalTime || null,
-    durationMinutes,
-    price,
-    priceCurrency: apiEvent.priceCurrency || "SEK",
-    dropIn: isDropIn,
-    summary: apiEvent.description || apiEvent.summary || "",
-    practicalNote:
-      apiEvent.practicalNote ||
-      apiEvent.matInfo ||
-      (primaryTrack === YOGA_TRACK_ID
-        ? "Anpassat för nybörjare och övade. Yogamattor finns på plats."
-        : "Material och verktyg finns i ateljén."),
-    description: apiEvent.description || "",
-    bucketOverride: apiEvent.bucketOverride || null,
-    mediaAuthoritative: Boolean(apiEvent.mediaMigrated),
+    startAt: event.startAt,
+    endAt: event.endAt,
+    doorsOpenAt: null,
+    durationMinutes: durationOf(event),
+    price: event.price,
+    priceCurrency: "SEK",
+    dropIn: event.dropIn,
+    status: "scheduled",
+    spots: event.spots,
+    instructorId: primaryTrack ? INSTRUCTOR_BY_TRACK[primaryTrack] : null,
+    bookingEmail: null,
+    location: event.location,
+    links: event.links || [],
+    summary: event.description,
+    description: event.description,
+    practicalNote: primaryTrack ? TRACKS[primaryTrack].practicalNote : "",
+    bucketOverride: event.bucketOverride,
     images,
+    updatedAt: event.updatedAt,
   };
 }
 
-// A pass can exist in both the static schedule and the admin API. IDs are the
-// normal way to match those records, but an accidentally recreated API event
-// can have a different ID while keeping the same start time. Prefer the
-// record with a complete schedule in that case so a malformed duplicate does
-// not become a second visible card.
-function passSlotKey(pass, trackId) {
-    const startTime = new Date(pass.startAt).getTime();
-    if (!Number.isFinite(startTime)) return null;
-    return `${trackId}:${startTime}`;
+/** A projected course pass (cmsProjection.projectCoursePass) as a pass; keeps status, instructor and booking address. */
+export function coursePassToPass(coursePass) {
+  const tracks = coursePassTracks(coursePass);
+  const primaryTrack = tracks[0] || null;
+  return {
+    id: `course-pass-${coursePass.id}`,
+    legacyKey: null,
+    source: "course-passes",
+    title: coursePass.title,
+    tracks,
+    primaryTrack,
+    startAt: coursePass.startAt,
+    endAt: coursePass.endAt,
+    doorsOpenAt: null,
+    durationMinutes: durationOf(coursePass),
+    price: coursePass.price,
+    priceCurrency: "SEK",
+    dropIn: null,
+    status: coursePass.status,
+    spots: coursePass.spots,
+    instructorId: coursePass.instructor === "guest" ? null : coursePass.instructor,
+    bookingEmail: coursePass.bookingEmail,
+    location: null,
+    links: [],
+    summary: coursePass.description,
+    description: coursePass.description,
+    practicalNote: primaryTrack ? TRACKS[primaryTrack].practicalNote : "",
+    bucketOverride: null,
+    images: primaryTrack ? [trackImage(primaryTrack, coursePass.title)] : [],
+    updatedAt: coursePass.updatedAt,
+  };
 }
 
-function passQuality(pass) {
-    const startTime = new Date(pass.startAt).getTime();
-    const endTime = new Date(pass.endAt || pass.startAt).getTime();
-    let score = 0;
-
-    if (Number.isFinite(startTime)) score += 1;
-    if (Number.isFinite(endTime) && endTime > startTime) score += 4;
-    if (Number.isFinite(pass.durationMinutes) && pass.durationMinutes > 0) {
-        score += 2;
-    }
-    if (pass.price !== null && pass.price !== undefined) score += 1;
-    if (typeof pass.dropIn === "boolean") score += 1;
-    if (pass.summary || pass.description) score += 1;
-    if (pass.practicalNote) score += 1;
-    if (Array.isArray(pass.images) && pass.images.length > 0) score += 1;
-
-    return score;
+/** Passes on the hubs from one schedule ({ events, coursePasses }) - never a union of sources. */
+export function schedulePasses(schedule) {
+  return [
+    ...(schedule?.events || []).map(eventToPass),
+    ...(schedule?.coursePasses || []).map(coursePassToPass),
+  ].filter((pass) => pass.tracks.length > 0 && startTimeOf(pass) !== null);
 }
 
-function preferCompletePass(candidate, current) {
-    return passQuality(candidate) > passQuality(current) ? candidate : current;
-}
-
-/**
- * Merges API events with static course passes for a given track, returning upcoming passes sorted chronologically.
- */
-export function mergeCoursePasses(
-  staticPasses,
-  apiEvents = [],
-  trackId = YOGA_TRACK_ID,
-  now = new Date()
-) {
-  const cutoff = new Date(now).getTime();
-
-  const formattedApiPasses = (Array.isArray(apiEvents) ? apiEvents : [])
-    .filter((event) => {
-      if (!event.startAt) return false;
-      const isYoga =
-        event.category === YOGA_TRACK_ID ||
-        (event.title && event.title.toLowerCase().includes("yoga"));
-      const isMaleri =
-        event.category === MALERI_TRACK_ID ||
-        event.category === "konst" ||
-        event.category === "keramik" ||
-        (event.title &&
-          (event.title.toLowerCase().includes("måleri") ||
-            event.title.toLowerCase().includes("keramik") ||
-            event.title.toLowerCase().includes("konst")));
-
-      if (trackId === YOGA_TRACK_ID) return isYoga;
-      return isMaleri || (!isYoga && event.category === undefined);
-    })
-    .map((event) => apiEventToCoursePass(event, trackId));
-
-  const map = new Map();
-  for (const pass of staticPasses) {
-    map.set(pass.id, pass);
-  }
-  for (const pass of formattedApiPasses) {
-      const existing = map.get(pass.id);
-      const preferred = existing ? preferCompletePass(pass, existing) : pass;
-      map.set(
-        pass.id,
-        pass.mediaAuthoritative ? { ...preferred, images: pass.images } : preferred
-      );
-  }
-
-    const passesBySlot = new Map();
-    for (const pass of map.values()) {
-        const slotKey = passSlotKey(pass, trackId);
-        if (!slotKey) {
-            passesBySlot.set(`id:${pass.id}`, pass);
-            continue;
-        }
-
-        const existing = passesBySlot.get(slotKey);
-        const preferred = existing ? preferCompletePass(pass, existing) : pass;
-        passesBySlot.set(
-            slotKey,
-            pass.mediaAuthoritative ? { ...preferred, images: pass.images } : preferred
-        );
-  }
-
-    return Array.from(passesBySlot.values())
-    .filter(
-      (pass) =>
-        pass.bucketOverride === "upcoming" ||
-        new Date(pass.endAt || pass.startAt).getTime() > cutoff ||
-        (pass.startAt && pass.startAt.startsWith("2026-08"))
-    )
-    .sort((a, b) => new Date(a.startAt) - new Date(b.startAt));
-}
+// What the build exported (empty without an export). The prerender and JSON-LD read it, and the
+// hubs show it until a complete live answer replaces it.
+export const COURSE_PASSES = schedulePasses(CMS_CONTENT);

@@ -111,7 +111,7 @@ function MohippaPage() {
       ? selectedObjects.map((a) => `- ${a.title} (${a.price})`).join("\n")
       : copy("calc.email-no-options");
 
-    const subject = encodeURIComponent(copy("calc.email-subject") || "Förfrågan gruppdag på Storegården 7");
+    const subject = encodeURIComponent(copy("calc.email-subject", "Förfrågan gruppdag på Storegården 7"));
     const body = encodeURIComponent(
       `${copy("calc.email-greeting")}\n\n` +
       `${copy("calc.email-intro")}\n\n` +
@@ -122,8 +122,8 @@ function MohippaPage() {
       `${copy("calc.requested-date")}: [Fyll i datum här]\n\n` +
       `${copy("calc.email-closing")}\n\n` +
       `${copy("calc.email-regards")}\n` +
-      `[${copy("calc.email-name-placeholder") || "Ditt namn"}]\n` +
-      `[${copy("calc.email-phone-placeholder") || "Ditt telefonnummer"}]`
+      `[${copy("calc.email-name-placeholder", "Ditt namn")}]\n` +
+      `[${copy("calc.email-phone-placeholder", "Ditt telefonnummer")}]`
     );
 
     return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;

@@ -5,6 +5,7 @@ const formatDate = (value) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
   const formatted = date.toLocaleDateString("sv-SE", {
+    timeZone: "Europe/Stockholm",
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -19,6 +20,7 @@ const formatTime = (value) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
   return date.toLocaleTimeString("sv-SE", {
+    timeZone: "Europe/Stockholm",
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -43,38 +45,17 @@ export const toUiEvent = (item) => {
 
   let links = Array.isArray(item?.links) ? [...item.links] : [];
 
-  const titleLower = (item?.title || "").toLowerCase();
-  const categoryLower = (item?.category || "").toLowerCase();
-
-  const isYoga = categoryLower === "yoga" || titleLower.includes("yoga");
-  const isMaleri =
-    categoryLower === "maleri" ||
-    categoryLower === "konst" ||
-    categoryLower === "keramik" ||
-    titleLower.includes("måleri") ||
-    titleLower.includes("keramik") ||
-    titleLower.includes("konst");
-
-  if (isYoga && (links.length === 0 || links[0]?.href?.startsWith("mailto:"))) {
-    links = [
-      {
-        href: "/kurser/yoga",
-        label: readMoreLabel,
-      },
-    ];
-  } else if (isMaleri && (links.length === 0 || links[0]?.href?.startsWith("mailto:"))) {
-    links = [
-      {
-        href: "/kurser/konst",
-        label: readMoreLabel,
-      },
-    ];
+  // The category decides which hub an event links to; its title never does.
+  const category = item?.category || "ovrigt";
+  const hubPath = { yoga: "/kurser/yoga", konst: "/kurser/konst" }[category];
+  if (hubPath && (links.length === 0 || links[0]?.href?.startsWith("mailto:"))) {
+    links = [{ href: hubPath, label: readMoreLabel }];
   }
 
   return {
     id: item?.id || "",
     title: item?.title || "",
-    category: item?.category || (isYoga ? "yoga" : isMaleri ? "konst" : "ovrigt"),
+    category,
     startAt,
     endAt,
     dropIn: Boolean(item?.dropIn),
@@ -87,7 +68,6 @@ export const toUiEvent = (item) => {
     moments: Array.isArray(item?.moments) ? item.moments : [],
     artists: item?.artists || "",
     location: item?.location || "",
-    seriesText: isYoga ? "11/8, 12/8, 13/8, 18/8, 19/8, 20/8" : null,
     links,
     image: mappedImages.length > 0 ? mappedImages[0] : null,
     images: mappedImages,

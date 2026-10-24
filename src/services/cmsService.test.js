@@ -1,8 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   clearCmsPageCache,
+  fetchPageContent,
   fetchPageCopy,
+  getPageContentSync,
   fetchTeamMembers,
+  getPageCopySync,
   normalizePageAppearance,
   normalizePageContent,
   normalizePageCopy,
@@ -76,7 +79,7 @@ describe("fetchPageCopy", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it("keeps compiled values for keys missing from an older CMS document", async () => {
+  it("replaces the shipped copy whole with a live page: a removed row is not filled back in", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
@@ -90,7 +93,33 @@ describe("fetchPageCopy", () => {
     const copy = await fetchPageCopy("home");
 
     expect(copy["instagram.title"]).toBe("Ny rubrik");
-    expect(copy["events.upcoming.title"]).toBe("Kommande tillfällen");
+    expect(copy).not.toHaveProperty("events.upcoming.title");
+    expect(getPageContentSync("home").source).toBe("cms");
+  });
+
+  it("keeps the shipped page when the CMS does not publish it", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ docs: [] }) }));
+
+    const content = await fetchPageContent("home");
+
+    expect(content.source).toBe("fixture");
+    expect(content.copy["events.upcoming.title"]).toBe("Kommande tillfällen");
+  });
+
+  it("treats an emptied CMS text as hidden and uses the code fallback only for a missing key", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ docs: [{ copy: [{ key: "events.upcoming.title", value: "" }] }] }),
+      }),
+    );
+
+    await fetchPageCopy("home");
+    const copy = getPageCopySync("home");
+
+    expect(copy("events.upcoming.title", "Kod-text")).toBe("");
+    expect(copy("finns.inte", "Kod-text")).toBe("Kod-text");
   });
 });
 

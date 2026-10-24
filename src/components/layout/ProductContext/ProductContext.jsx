@@ -1,9 +1,9 @@
 import {
   createContext,
   useState,
-  useEffect,
   useCallback,
   useMemo,
+  useRef,
 } from "react";
 import {
   getStripeProducts,
@@ -17,18 +17,19 @@ export const ProductContext = createContext();
 /**
  * ProductProvider - Global provider för produktdata
  *
- * Laddar produkter från CMS och Stripe vid app-start så de är redo
- * när användaren navigerar till butiken.
+ * Laddar produkter från CMS och Stripe första gången butiken eller en
+ * produktsida behöver dem (load), inte på varje sidvisning.
  */
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const requested = useRef(false);
 
-  // Hämta produkter vid mount (app start)
   const fetchProducts = useCallback(async () => {
-    // Skippa om vi redan har produkter
-    if (products.length > 0) return;
+    // One request per visit; refetch() is the explicit reload.
+    if (requested.current) return;
+    requested.current = true;
 
     try {
       setLoading(true);
@@ -62,12 +63,7 @@ export function ProductProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }, [products.length]);
-
-  // Starta prefetch vid mount
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  }, []);
 
   // Retry-funktion för manuell omladdning
   const refetch = useCallback(async () => {
@@ -114,9 +110,10 @@ export function ProductProvider({ children }) {
       loading,
       error,
       categories,
+      load: fetchProducts,
       refetch,
     }),
-    [products, loading, error, categories, refetch]
+    [products, loading, error, categories, fetchProducts, refetch]
   );
 
   return (

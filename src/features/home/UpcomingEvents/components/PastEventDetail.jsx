@@ -208,7 +208,7 @@ function PastEventDetail({
 
         {event.artists && (
           <p className="past-event-modal-artists">
-            <strong>{siteCopy("ui.artists-label") || "Konstnärer"}:</strong> {event.artists}
+            <strong>{siteCopy("ui.artists-label", "Konstnärer")}:</strong> {event.artists}
           </p>
         )}
 

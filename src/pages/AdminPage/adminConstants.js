@@ -93,11 +93,8 @@ export const ADMIN_VIEW_GROUPS = [
   {
     title: "Innehåll",
     options: [
+      // Courses, events, notices and the gallery are edited in Payload CMS.
       { value: "products", label: "Produkter" },
-      { value: "yoga", label: "Yoga & Kurser" },
-      { value: "events", label: "Evenemang" },
-      { value: "notifications", label: "Notiser" },
-      { value: "gallery", label: "Galleri" },
     ]
   },
   {

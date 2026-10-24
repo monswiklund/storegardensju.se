@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   WEDDING_FAQ,
   WEDDING_PATH,
@@ -7,16 +7,26 @@ import {
   seoMeta,
 } from "./seoMeta.js";
 import {
+  COURSE_PASSES,
   MALERI_TRACK_ID,
   YOGA_TRACK_ID,
+  coursePassToPass,
   formatPassDate,
   formatPassTime,
+  hubFaq,
   nextPass,
   ownedUpcomingPasses,
   passAnchor,
-  resolvedFaq,
+  trackById,
   upcomingPasses,
 } from "../data/courseEvents.js";
+import { projectCoursePass } from "../data/cmsProjection.js";
+import { SNAPSHOT } from "../test/cmsScheduleFixture.js";
+
+// The build's export, synthetic: the prerender defaults (passes, FAQ lists) read it.
+vi.mock("../data/cmsContent.generated.js", async () => ({
+  default: (await import("../test/cmsScheduleFixture.js")).SNAPSHOT,
+}));
 
 const BEFORE_JULY_30 = new Date("2026-07-25T12:00:00+02:00");
 const AFTER_ALL_PASSES = new Date("2027-01-01T00:00:00+01:00");
@@ -82,13 +92,14 @@ describe.each(HUBS)("$key hub JSON-LD", ({ key, trackId, path }) => {
   });
 
   it("keeps FAQPage markup identical to the answers rendered on the page", () => {
-    // Both hubs render resolvedFaq(track); mismatched FAQ markup violates
-    // Google's structured data policy, so this parity is a hard requirement.
+    // Both hubs render hubFaq (the page's CMS list, else the track's answers);
+    // mismatched FAQ markup violates Google's structured data policy.
     const [faqPage] = byType(
       activeJsonLd(seoMeta[key], BEFORE_JULY_30),
       "FAQPage"
     );
-    const rendered = resolvedFaq(trackId, BEFORE_JULY_30);
+    const cmsList = SNAPSHOT.pages[trackById(trackId).pageSlug]?.lists?.faq ?? null;
+    const rendered = hubFaq(trackId, BEFORE_JULY_30, COURSE_PASSES, cmsList);
 
     expect(faqPage.mainEntity).toHaveLength(rendered.length);
     expect(
@@ -134,7 +145,7 @@ describe("hub identity", () => {
   it("targets the maleri searches on /kurser/konst, not on the yoga hub", () => {
     expect(seoMeta.kurserKonst.path).toBe("/kurser/konst");
     expect(seoMeta.kurserKonst.title).toContain("Målarkurs");
-    expect(seoMeta.kurserKonst.title).toContain("keramikkurs");
+    expect(seoMeta.kurserKonst.title).not.toContain("keramikkurs");
     // The two hubs must not compete for the same query.
     expect(seoMeta.kurserYoga.title.toLowerCase()).not.toContain("målarkurs");
     expect(seoMeta.kurserKonst.title.toLowerCase()).not.toContain("yoga");
@@ -169,7 +180,7 @@ describe("kurser index", () => {
     const copy = seoMeta.kurser.staticContent.paragraphs.join(" ");
 
     expect(copy).toContain("yoga");
-    expect(copy).toContain("keramik");
+    expect(copy).not.toContain("keramik");
     expect(copy).toContain("måleri");
   });
 
@@ -254,5 +265,42 @@ describe("route meta", () => {
     expect(canonicalUrl("/kurser/yoga")).toBe(
       "https://storegardensju.se/kurser/yoga/"
     );
+  });
+});
+
+describe("hub JSON-LD follows the schedule the page shows", () => {
+  const pass = (doc) =>
+    coursePassToPass(projectCoursePass({ id: 1, title: "Akvarell", track: "konst", instructor: "ann", price: 600, startAt: "2026-09-05T08:00:00.000Z", ...doc }));
+  const eventFor = (passes) => byType(activeJsonLd(seoMeta.kurserKonst, BEFORE_JULY_30, { passes, faq: [] }), "Event");
+
+  it("marks a cancelled pass as cancelled and sells nothing for it", () => {
+    const [event] = eventFor([pass({ status: "cancelled" })]);
+
+    expect(event.eventStatus).toBe("https://schema.org/EventCancelled");
+    expect(event.offers).toBeUndefined();
+  });
+
+  it("states availability for full and nearly full passes", () => {
+    expect(eventFor([pass({ status: "fully_booked" })])[0].offers.availability).toBe("https://schema.org/SoldOut");
+    expect(eventFor([pass({ status: "few_left" })])[0].offers.availability).toBe("https://schema.org/LimitedAvailability");
+  });
+
+  it("names the pass's own instructor and no one for a guest", () => {
+    expect(eventFor([pass({ instructor: "ann" })])[0].performer.name).toBe("Ann Wiklund");
+    expect(eventFor([pass({ instructor: "guest" })])[0].performer).toBeUndefined();
+  });
+
+  it("declares no Event when the live schedule is empty, and no FAQPage for an emptied list", () => {
+    const jsonLd = activeJsonLd(seoMeta.kurserYoga, BEFORE_JULY_30, { passes: [], faq: [] });
+
+    expect(byType(jsonLd, "Event")).toEqual([]);
+    expect(byType(jsonLd, "FAQPage")).toEqual([]);
+    expect(byType(jsonLd, "Course")).toHaveLength(1);
+  });
+
+  it("uses the editors' FAQ list from the export in the prerendered markup", () => {
+    const [faqPage] = byType(activeJsonLd(seoMeta.kurserKonst, BEFORE_JULY_30), "FAQPage");
+
+    expect(faqPage.mainEntity.map((entry) => entry.name)).toEqual(["Finns det material?"]);
   });
 });

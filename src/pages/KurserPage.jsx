@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowDown } from "lucide-react";
 import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
@@ -17,20 +17,21 @@ import {
 } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
-import { fetchPublicEvents } from "../services/eventsService.js";
+import useCmsSchedule from "../hooks/useCmsSchedule.js";
 import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import usePageLists from "../hooks/usePageLists.js";
 import usePageMedia from "../hooks/usePageMedia.js";
 import { cdnAsset } from "../config/cdnAssets.js";
 import {
-  COURSE_PASSES,
   TRACKS,
   YOGA_TRACK_ID,
   formatPassDate,
-  mergeCoursePasses,
+  hubFaq,
+  nextPass,
   passAnchor,
   pastPasses,
-  resolvedFaq,
+  schedulePasses,
+  upcomingPasses,
 } from "../data/courseEvents.js";
 import "./KurserPages.css";
 import "../features/gallery/ImageGallery/Gallery.css";
@@ -40,13 +41,6 @@ const linaYogaImg = cdnAsset("/images/evenemang/lina-yoga.jpg");
 const linaYogaYta2Img = cdnAsset("/images/evenemang/lina-yoga-yta2.jpg");
 const yogaLoftImg = cdnAsset("/images/evenemang/yoga-loft.webp");
 const maleriKursImg = cdnAsset("/images/evenemang/maleri-kurs.webp");
-
-// Module-level so the reference is stable across renders (useSeo dep) and so
-// the same date gating runs client-side as in the prerendered HTML.
-const KURSER_JSONLD = activeJsonLd(seoMeta.kurserYoga);
-
-const PAST_PASSES = pastPasses(YOGA_TRACK_ID);
-const FAQ = resolvedFaq(YOGA_TRACK_ID);
 
 const YOGA_TRACK = TRACKS[YOGA_TRACK_ID];
 const INSTRUCTOR = YOGA_TRACK.instructor;
@@ -67,12 +61,11 @@ function KurserPage() {
   const copy = usePageCopy("yoga");
   const list = usePageLists("yoga");
   const media = usePageMedia("yoga");
-  const faq = list(
-    "faq",
-    FAQ.map(({ question, answer }) => ({ title: question, body: answer })),
-  )
-    .filter((item) => item.title && item.body)
-    .map(({ title, body }) => ({ question: title, answer: body }));
+  const schedule = useCmsSchedule();
+  const passes = useMemo(() => schedulePasses(schedule), [schedule]);
+  const now = new Date();
+  const faqList = list("faq", null);
+  const faq = hubFaq(YOGA_TRACK_ID, now, passes, faqList);
   const instructor = {
     ...INSTRUCTOR,
     name: copy("instructor.title"),
@@ -84,41 +77,20 @@ function KurserPage() {
     return { ...item, original: next, thumbnail: next };
   }).filter((item) => item.original);
   const [showMailFallback, setShowMailFallback] = useState(false);
-  const [apiEvents, setApiEvents] = useState([]);
   const onContactClick = () => setShowMailFallback(true);
 
-  useEffect(() => {
-    let active = true;
-    fetchPublicEvents()
-      .then((data) => {
-        if (!active) return;
-        if (Array.isArray(data?.upcoming)) {
-          setApiEvents(data.upcoming);
-        }
-      })
-      .catch(() => {
-        // Fall back to static passes on network error
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const upcomingPassesList = mergeCoursePasses(
-    COURSE_PASSES.filter((p) => p.tracks.includes(YOGA_TRACK_ID)),
-    apiEvents,
-    YOGA_TRACK_ID
+  const upcomingPassesList = upcomingPasses(YOGA_TRACK_ID, now, passes);
+  const recapPasses = pastPasses(YOGA_TRACK_ID, now, passes);
+  const nextPassItem = nextPass(YOGA_TRACK_ID, now, passes);
+  // Same passes and answers as rendered; recomputed when either source changes.
+  const jsonLd = useMemo(
+    () => activeJsonLd(seoMeta.kurserYoga, new Date(), { passes, faq: hubFaq(YOGA_TRACK_ID, new Date(), passes, faqList) }),
+    [passes, faqList],
   );
-
-  const nextPassItem =
-    upcomingPassesList.find((p) => new Date(p.endAt || p.startAt).getTime() >= Date.now()) ||
-    upcomingPassesList[0] ||
-    null;
 
   const siteCopy = useSiteCopy();
   const contactSubject = nextPassItem
-    ? `${siteCopy("courses.inquiry-prefix") || "Fråga om"} ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
+    ? `${siteCopy("courses.inquiry-prefix", "Fråga om")} ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
     : copy("hero.contact-cta");
 
   const spySections = [
@@ -136,7 +108,7 @@ function KurserPage() {
 
   useSeo({
     ...seoMeta.kurserYoga,
-    jsonLd: KURSER_JSONLD.length > 0 ? KURSER_JSONLD : undefined,
+    jsonLd: jsonLd.length > 0 ? jsonLd : undefined,
   });
 
   const {
@@ -169,7 +141,7 @@ function KurserPage() {
             {nextPassItem && (
               <div className="kurser-hero__badge">
                 <span className="kurser-hero__badge-pulse" />
-                <span>{copy("hero.next-pass-badge") || "Nästa tillfälle:"} {formatPassDate(nextPassItem)}</span>
+                <span>{copy("hero.next-pass-badge", "Nästa tillfälle:")} {formatPassDate(nextPassItem)}</span>
               </div>
             )}
             <h1>{copy("hero.title")}</h1>
@@ -272,7 +244,7 @@ function KurserPage() {
         <SectionDivider above="white" below="alt" variant="wave" />
 
         <PastPassesSection
-          passes={PAST_PASSES}
+          passes={recapPasses}
           trackId={YOGA_TRACK_ID}
           heading={copy("past.title")}
           background="alt"

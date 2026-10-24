@@ -4,18 +4,21 @@
 // for SPA deep links otherwise, which blocks indexing).
 import {
   COURSE_LOCATION,
+  COURSE_PASSES,
   MALERI_TRACK_ID,
   YOGA_TRACK_ID,
   formatPassDate,
   formatPassTime,
+  hubFaq,
   nextPass,
   ownedUpcomingPasses,
   passAnchor,
-  resolvedFaq,
+  passInstructor,
   trackById,
   upcomingPasses,
 } from "../data/courseEvents.js";
 import { cdnAsset } from "./cdnAssets.js";
+import CMS_CONTENT from "../data/cmsContent.generated.js";
 
 const SITE_URL = "https://storegardensju.se";
 export const WEDDING_PATH = "/event/brollop";
@@ -42,6 +45,17 @@ export const WEDDING_FAQ = [
       "Ja. Vid behov kan vi hjälpa till att ordna serveringspersonal, bar eller DJ till bröllopsdagen.",
   },
 ];
+
+/** An editors' FAQ list from the build's CMS export, or null when the page has none. */
+const snapshotFaq = (slug) => {
+  const list = CMS_CONTENT?.pages?.[slug]?.lists?.faq;
+  return Array.isArray(list) ? list : null;
+};
+
+// The wedding page renders the editors' list when there is one, so its FAQPage declares the same.
+const weddingFaq = snapshotFaq("wedding")
+  ?.filter((item) => item.title && item.body)
+  .map(({ title, body }) => ({ question: title, answer: body })) ?? WEDDING_FAQ;
 
 // GitHub Pages serves routes as directories and 301-redirects
 // /kurser -> /kurser/, so canonical URLs must use the trailing slash.
@@ -85,18 +99,8 @@ const weddingJsonLd = [
       name: "Lidköping",
     },
   },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: WEDDING_FAQ.map(({ question, answer }) => ({
-      "@type": "Question",
-      name: question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: answer,
-      },
-    })),
-  },
+  // An emptied FAQ list renders no questions, and an empty FAQPage is invalid structured data.
+  ...(weddingFaq.length > 0 ? [faqSchema(weddingFaq)] : []),
 ];
 
 const contactJsonLd = [
@@ -126,7 +130,7 @@ const contactJsonLd = [
 // One entry per course track. The prose lives here rather than in courseEvents
 // because it is SEO copy; the dates, prices and FAQ it reads come from the data
 // module. Each hub targets its own search: /kurser/yoga "yoga i Lidköping",
-// /kurser/konst "målarkurs / keramikkurs i Lidköping". /kurser above them is an
+// /kurser/konst "målarkurs i Lidköping". /kurser above them is an
 // index that carries the generic "kurser i Lidköping" query and links onward.
 
 const HUB_COPY = {
@@ -164,30 +168,30 @@ const HUB_COPY = {
     },
   },
   [MALERI_TRACK_ID]: {
-    title: "Målarkurs & keramikkurs i Lidköping | Storegården 7",
-    h1: "Skapande — måleri & keramik i Lidköping",
-    ogFallbackTitle: "Måleri & keramik på Storegården 7",
+    title: "Målarkurs i Lidköping | Storegården 7",
+    h1: "Skapande — måleri i Lidköping",
+    ogFallbackTitle: "Måleri på Storegården 7",
     image: absoluteUrl("/images/evenemang/maleri-kurs.webp"),
     courseImage: absoluteUrl("/images/evenemang/maleri-kurs.webp"),
-    courseName: "Målarkurs & keramikkurs i Lidköping",
+    courseName: "Målarkurs i Lidköping",
     courseDescription:
-      "Kurser i måleri med akvarell och akryl samt keramik med handbygge, ringling och drejning i gårdsateljén utanför Lidköping. För både nybörjare och vana.",
+      "Kurser i måleri med akvarell och akryl i gårdsateljén utanför Lidköping. För både nybörjare och vana.",
     description(pass) {
       const instructor = trackById(MALERI_TRACK_ID).instructor.name;
       if (!pass) {
-        return `Målarkurser och keramikkurser med konstnären ${instructor} i gårdsateljén på Storegården 7 utanför Lidköping. För nybörjare, vana och privata grupper.`;
+        return `Målarkurser med konstnären ${instructor} i gårdsateljén på Storegården 7 utanför Lidköping. För nybörjare, vana och privata grupper.`;
       }
       const price = pass.price ? ` ${pass.price} kr per person.` : "";
-      return `${pass.title} med ${instructor} i ateljén på Storegården 7 utanför Lidköping. ${formatPassDate(pass)} kl ${formatPassTime(pass.startAt)}.${price} Målarkurser och keramikkurser för nybörjare och vana.`;
+      return `${pass.title} med ${instructor} i ateljén på Storegården 7 utanför Lidköping. ${formatPassDate(pass)} kl ${formatPassTime(pass.startAt)}.${price} Målarkurser för nybörjare och vana.`;
     },
     paragraphs(pass) {
       const instructor = trackById(MALERI_TRACK_ID).instructor.name;
       const intro = pass
-        ? `I gårdsateljén på Storegården 7 håller konstnären ${instructor} kurser i måleri och keramik. Nästa kurs är ${formatPassDate(pass).toLowerCase()} kl ${formatPassTime(pass.startAt)} i ateljén i Rackeby, ${COURSE_LOCATION.travelNote}.`
-        : `I gårdsateljén på Storegården 7 håller konstnären ${instructor} kurser i måleri och keramik - akvarell, akryl, handbygge, ringling och drejning. Ateljén ligger i Rackeby, ${COURSE_LOCATION.travelNote}.`;
+        ? `I gårdsateljén på Storegården 7 håller konstnären ${instructor} kurser i måleri. Nästa kurs är ${formatPassDate(pass).toLowerCase()} kl ${formatPassTime(pass.startAt)} i ateljén i Rackeby, ${COURSE_LOCATION.travelNote}.`
+        : `I gårdsateljén på Storegården 7 håller konstnären ${instructor} kurser i måleri - akvarell och akryl. Ateljén ligger i Rackeby, ${COURSE_LOCATION.travelNote}.`;
 
       const practical = pass
-        ? `${pass.summary}${pass.price ? ` Pris ${pass.price} kr per person.` : ""} Material och verktyg finns i ateljén - ta med kläder som får bli lite färg eller lera på.`
+        ? `${pass.summary}${pass.price ? ` Pris ${pass.price} kr per person.` : ""} Material och verktyg finns i ateljén - ta med kläder som får bli lite färg på.`
         : "Material och verktyg finns i ateljén, så du behöver inte ta med något eget. Vi håller både kurser med fast datum och privata kurser för möhippor, svensexor, födelsedagar och företag.";
 
       return [intro, practical];
@@ -203,11 +207,25 @@ const HUB_COPY = {
  * pages that die the day after the event. A pass shown on two hubs is only
  * marked up on its primary one, so the two URLs never compete for one result.
  */
+const EVENT_STATUS = {
+  cancelled: "https://schema.org/EventCancelled",
+};
+
+const AVAILABILITY = {
+  fully_booked: "https://schema.org/SoldOut",
+  few_left: "https://schema.org/LimitedAvailability",
+};
+
+const personSchema = (instructor) =>
+  instructor ? { "@type": "Person", name: instructor.name, jobTitle: instructor.role } : null;
+
 function passEventSchema(pass, trackId) {
   const track = trackById(trackId);
   const copy = HUB_COPY[trackId];
   const passUrl = `${canonicalUrl(track.hubPath)}#${passAnchor(pass)}`;
   const images = pass.images.map((image) => absoluteUrl(image.url));
+  // A guest instructor is not named on the site, so the markup does not name them either.
+  const performer = personSchema(passInstructor(pass));
 
   const event = {
     "@context": "https://schema.org",
@@ -215,9 +233,9 @@ function passEventSchema(pass, trackId) {
     name: `${pass.title} på ${COURSE_LOCATION.name}`,
     description: pass.description,
     startDate: pass.startAt,
-    endDate: pass.endAt,
+    ...(pass.endAt ? { endDate: pass.endAt } : {}),
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    eventStatus: "https://schema.org/EventScheduled",
+    eventStatus: EVENT_STATUS[pass.status] || "https://schema.org/EventScheduled",
     image: images.length > 0 ? images : [copy.image],
     inLanguage: "sv-SE",
     // Anchor, so a result for a specific pass lands on that section.
@@ -228,23 +246,19 @@ function passEventSchema(pass, trackId) {
       name: COURSE_LOCATION.name,
       url: SITE_URL,
     },
-    performer: {
-      "@type": "Person",
-      name: track.instructor.name,
-      jobTitle: track.instructor.role,
-    },
+    ...(performer ? { performer } : {}),
   };
 
   // Google ignores an Offer without price + priceCurrency, so only emit a
-  // complete one.
-  if (pass.price) {
+  // complete one. A cancelled pass has nothing to sell.
+  if (pass.price && pass.status !== "cancelled") {
     event.isAccessibleForFree = false;
     event.offers = {
       "@type": "Offer",
       name: pass.dropIn ? `${pass.title} - drop-in` : pass.title,
       price: String(pass.price),
       priceCurrency: pass.priceCurrency,
-      availability: "https://schema.org/InStock",
+      availability: AVAILABILITY[pass.status] || "https://schema.org/InStock",
       url: passUrl,
     };
   }
@@ -252,35 +266,36 @@ function passEventSchema(pass, trackId) {
   return event;
 }
 
-function courseSchema(trackId, now) {
+function courseSchema(trackId, now, passes) {
   const track = trackById(trackId);
   const copy = HUB_COPY[trackId];
   const hubUrl = canonicalUrl(track.hubPath);
 
-  const instances = upcomingPasses(trackId, now).map((pass) => ({
-    "@type": "CourseInstance",
-    name: pass.title,
-    startDate: pass.startAt,
-    endDate: pass.endAt,
-    courseMode: "onsite",
-    location: schemaPlace,
-    instructor: {
-      "@type": "Person",
-      name: trackById(pass.primaryTrack).instructor.name,
-      jobTitle: trackById(pass.primaryTrack).instructor.role,
-    },
-    ...(pass.price
-      ? {
-          offers: {
-            "@type": "Offer",
-            price: String(pass.price),
-            priceCurrency: pass.priceCurrency,
-            availability: "https://schema.org/InStock",
-            url: `${canonicalUrl(trackById(pass.primaryTrack).hubPath)}#${passAnchor(pass)}`,
-          },
-        }
-      : {}),
-  }));
+  const instances = upcomingPasses(trackId, now, passes)
+    .filter((pass) => pass.status !== "cancelled")
+    .map((pass) => {
+      const instructor = personSchema(passInstructor(pass));
+      return {
+        "@type": "CourseInstance",
+        name: pass.title,
+        startDate: pass.startAt,
+        ...(pass.endAt ? { endDate: pass.endAt } : {}),
+        courseMode: "onsite",
+        location: schemaPlace,
+        ...(instructor ? { instructor } : {}),
+        ...(pass.price
+          ? {
+              offers: {
+                "@type": "Offer",
+                price: String(pass.price),
+                priceCurrency: pass.priceCurrency,
+                availability: AVAILABILITY[pass.status] || "https://schema.org/InStock",
+                url: `${canonicalUrl(trackById(pass.primaryTrack).hubPath)}#${passAnchor(pass)}`,
+              },
+            }
+          : {}),
+      };
+    });
 
   const course = {
     "@context": "https://schema.org",
@@ -309,11 +324,11 @@ function courseSchema(trackId, now) {
   return course;
 }
 
-function faqSchema(trackId, now) {
+function faqSchema(faq) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: resolvedFaq(trackId, now).map(({ question, answer }) => ({
+    mainEntity: faq.map(({ question, answer }) => ({
       "@type": "Question",
       name: question,
       acceptedAnswer: {
@@ -324,13 +339,20 @@ function faqSchema(trackId, now) {
   };
 }
 
-const hubJsonLd = (trackId) => (now = new Date()) => [
-  ...ownedUpcomingPasses(trackId, now).map((pass) =>
-    passEventSchema(pass, trackId)
-  ),
-  courseSchema(trackId, now),
-  faqSchema(trackId, now),
-];
+/** The FAQ a hub renders: the page's list in the build's export, else the track's answers. */
+const defaultHubFaq = (trackId, now, passes) =>
+  hubFaq(trackId, now, passes, snapshotFaq(trackById(trackId).pageSlug));
+
+// `passes` and `faq` are what the page renders, so the markup never declares a pass or an answer
+// the visitor cannot see. Without them: the build's export, as in the prerendered HTML.
+const hubJsonLd = (trackId) => (now = new Date(), { passes = COURSE_PASSES, faq } = {}) => {
+  const items = [
+    ...ownedUpcomingPasses(trackId, now, passes).map((pass) => passEventSchema(pass, trackId)),
+    courseSchema(trackId, now, passes),
+  ];
+  const answers = faq ?? defaultHubFaq(trackId, now, passes);
+  return answers.length > 0 ? [...items, faqSchema(answers)] : items;
+};
 
 /**
  * JSON-LD for a route, evaluated against `now`.
@@ -340,9 +362,9 @@ const hubJsonLd = (trackId) => (now = new Date()) => [
  * can never linger in structured data - previously a hardcoded cutoff date did
  * this job and silently expired, taking all structured data with it.
  */
-export function activeJsonLd(meta, now = new Date()) {
+export function activeJsonLd(meta, now = new Date(), context) {
   if (typeof meta?.buildJsonLd === "function") {
-    return meta.buildJsonLd(now);
+    return meta.buildJsonLd(now, context);
   }
 
   return Array.isArray(meta?.jsonLd) ? meta.jsonLd : [];
@@ -361,7 +383,7 @@ function hubStaticContent(trackId, now = new Date()) {
     h1: copy.h1,
     paragraphs: copy.paragraphs(nextPass(trackId, now)),
     // Same answers the page renders and the FAQPage JSON-LD declares.
-    faq: resolvedFaq(trackId, now),
+    faq: defaultHubFaq(trackId, now, COURSE_PASSES),
   };
 }
 
@@ -383,7 +405,7 @@ function kurserIndexContent(now = new Date()) {
     h1: "Kurser på Storegården 7",
     paragraphs: [
       `På Storegården 7 i Rackeby, ${COURSE_LOCATION.travelNote}, håller vi två sorters kurser. På loftet leder ${yogaTrack.instructor.name} yoga med fokus på andning, närvaro och återhämtning.${nextLine(yoga)}`,
-      `I gårdsateljén håller konstnären ${maleriTrack.instructor.name} kurser i måleri med akvarell och akryl samt keramik med handbygge, ringling och drejning.${nextLine(maleri)} Material och verktyg finns på plats.`,
+      `I gårdsateljén håller konstnären ${maleriTrack.instructor.name} kurser i måleri med akvarell och akryl.${nextLine(maleri)} Material och verktyg finns på plats.`,
       "Båda kurserna går även att boka privat för en grupp - möhippa, svensexa, teambuilding eller ett gäng vänner - med lokal och fika på gården. Datum, priser och praktiska detaljer står på respektive kurssida.",
     ],
   };
@@ -398,15 +420,15 @@ function hubOgTitle(trackId, now = new Date()) {
 
 export const seoMeta = {
   home: {
-    title: "Storegården 7 - Eventlokal, Keramik & Målarkurser i Lidköping",
+    title: "Storegården 7 - Eventlokal & Målarkurser i Lidköping",
     description:
-      "Storegården 7 är en eventlokal i Rackeby för bröllop, fester och företagsevent. Här finns också kurser i keramik, måleri och yoga, 15 minuter från Lidköpings centrum.",
+      "Storegården 7 är en eventlokal i Rackeby för bröllop, fester och företagsevent. Här finns också kurser i måleri och yoga, 15 minuter från Lidköpings centrum.",
     path: "/",
     staticContent: {
       h1: "Välkommen till Storegården 7",
       paragraphs: [
         "Storegården 7 är en familjedriven eventlokal, ateljé och gårdsbutik i Rackeby, 15 minuter från Lidköpings centrum.",
-        "I ladan och på loftet ordnas kalas, bröllop och andra fester. I ateljén finns kurser i måleri och keramik. På gården har vi också yoga, heldagar och loppis vid vissa tillfällen.",
+        "I ladan och på loftet ordnas kalas, bröllop och andra fester. I ateljén finns kurser i måleri. På gården har vi också yoga, heldagar och loppis vid vissa tillfällen.",
       ],
     },
   },
@@ -435,7 +457,7 @@ export const seoMeta = {
         "Hyr ladan och loftet för bröllop strax utanför Lidköping. Här kan ni ha välkomstskål, middag och fest på samma gård.",
         "Loftet har plats för 150+ sittande gäster och ladan för 50+ sittande. Köket har bra arbetsytor, handdisk samt varmt och kallt vatten, och Muurikka-hällar kan hyras. Bar, lounge, dansgolv, ljud och festbelysning finns på plats. Ni får ta med egen mat och dryck.",
       ],
-      faq: WEDDING_FAQ,
+      faq: weddingFaq,
     },
     jsonLd: weddingJsonLd,
   },
@@ -443,9 +465,9 @@ export const seoMeta = {
   // those belong to the hub that owns the subject, and duplicating them here
   // would make the three pages compete for the same result.
   kurser: {
-    title: "Kurser i Lidköping - yoga, måleri & keramik | Storegården 7",
+    title: "Kurser i Lidköping - yoga, måleri | Storegården 7",
     description:
-      "Kurser på Storegården 7 utanför Lidköping: yoga på loftet med utbildade yogainstruktören Lina Wiklund och kurser i måleri och keramik i gårdsateljén med konstnären Ann Wiklund. Se nästa tillfälle för respektive kurs.",
+      "Kurser på Storegården 7 utanför Lidköping: yoga på loftet med utbildade yogainstruktören Lina Wiklund och kurser i måleri i gårdsateljén med konstnären Ann Wiklund. Se nästa tillfälle för respektive kurs.",
     path: "/kurser",
     get staticContent() {
       return kurserIndexContent();
@@ -478,7 +500,7 @@ export const seoMeta = {
       h1: "Er gruppdag på Storegården 7",
       paragraphs: [
         "Boka en gruppdag på gården för svensexa, teambuilding, afterwork eller workshop. Lokal och praktisk hjälp ingår i baspaketet.",
-        "Pris från 500 kr per person. Lokalen är er 10:00-22:00. Upplägget är ett baspaket med tillval per aktivitet, så ni kan lägga till måleri, keramik eller yoga efter vad gruppen vill göra.",
+        "Pris från 500 kr per person. Lokalen är er 10:00-22:00. Upplägget är ett baspaket med tillval per aktivitet, så ni kan lägga till måleri, målning av keramikskålar eller yoga efter vad gruppen vill göra.",
       ],
     },
   },
@@ -508,7 +530,7 @@ export const seoMeta = {
     staticContent: {
       h1: "Bildgalleri från Storegården 7",
       paragraphs: [
-        "Kika in i vårt galleri för att se bilder från gården, ateljén, festdukningar och tidigare evenemang. Här finns foton från bröllop och fester i ladan och på loftet, från målar- och keramikkurser i ateljén, från yoga på loftet och från utställningar och loppisar på gården.",
+        "Kika in i vårt galleri för att se bilder från gården, ateljén, festdukningar och tidigare evenemang. Här finns foton från bröllop och fester i ladan och på loftet, från målarkurser i ateljén, från yoga på loftet och från utställningar och loppisar på gården.",
         "Storegården 7 ligger i Rackeby, 15 minuter utanför Lidköpings centrum. Bilderna visar både lokalerna som de ser ut inför ett event och gårdsmiljön runt omkring.",
       ],
     },
@@ -536,7 +558,7 @@ export const seoMeta = {
       h1: "Kontakta Storegården 7",
       paragraphs: [
         "Storegården 7 ligger på Storegården 7, 531 96 Rackeby, cirka 15 minuter med bil från Lidköpings centrum.",
-        "Hör av dig om du vill boka bröllop, fest, gruppdag, yoga, måleri eller keramik, eller om du vill planera ett besök på gården.",
+        "Hör av dig om du vill boka bröllop, fest, gruppdag, yoga eller måleri, eller om du vill planera ett besök på gården.",
       ],
     },
     jsonLd: contactJsonLd,

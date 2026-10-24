@@ -9,7 +9,7 @@ describe("admin shell", () => {
     render(
       <MemoryRouter>
         <AdminSidebar
-          adminView="gallery"
+          adminView="coupons"
           onViewChange={vi.fn()}
           isOpen
           onClose={vi.fn()}
@@ -20,7 +20,7 @@ describe("admin shell", () => {
     );
 
     expect(screen.getAllByRole("button", { current: "page" })).toHaveLength(1);
-    expect(screen.getByRole("button", { name: "Galleri" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Rabatter" })).toHaveAttribute(
       "aria-current",
       "page"
     );

@@ -1,30 +1,42 @@
-import {describe, expect, it} from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   allUpcomingPasses,
-  apiEventToCoursePass,
+  coursePassToPass,
+  eventToPass,
+  eventTracks,
   COURSE_PASSES,
   formatPassDate,
   formatPassTime,
   MALERI_TRACK_ID,
-  mergeCoursePasses,
+  hubFaq,
+  isBookablePass,
   nextPass,
   ownedUpcomingPasses,
   passAnchor,
   passHref,
+  passContactEmail,
+  passInstructor,
   pastPasses,
   resolvedFaq,
+  schedulePasses,
   trackById,
   TRACKS,
   upcomingPasses,
   YOGA_TRACK_ID,
 } from "./courseEvents.js";
+import { projectCoursePass, projectEvent } from "./cmsProjection.js";
+
+// The build's export, synthetic: COURSE_PASSES and every default below read it.
+vi.mock("./cmsContent.generated.js", async () => ({
+  default: (await import("../test/cmsScheduleFixture.js")).SNAPSHOT,
+}));
 
 // Fixed clock: these assertions must not start failing as real time passes.
 const BEFORE_JULY_30 = new Date("2026-07-25T12:00:00+02:00");
 const AFTER_ALL_PASSES = new Date("2027-01-01T00:00:00+01:00");
 const DURING_JULY_30_PASS = new Date("2026-07-30T18:45:00+02:00");
 
-const SHARED_PASS_ID = "heldag-yoga-maleri-2026-07-13";
+const SHARED_PASS_ID = "course:heldag-yoga-maleri-2026-07-13";
 
 const onTrack = (trackId) =>
   COURSE_PASSES.filter((pass) => pass.tracks.includes(trackId));
@@ -34,13 +46,13 @@ describe("pass date split", () => {
     const upcoming = upcomingPasses(YOGA_TRACK_ID, BEFORE_JULY_30);
 
     expect(upcoming.map((pass) => pass.id)).toEqual([
-      "yoga-pa-loftet-2026-07-30",
-      "yoga-2026-08-11",
-      "yoga-2026-08-12",
-      "yoga-2026-08-13",
-      "yoga-2026-08-18",
-      "yoga-2026-08-19",
-      "yoga-2026-08-20",
+      "course:yoga-pa-loftet-2026-07-30",
+      "events:7",
+      "course:yoga-2026-08-12",
+      "course:yoga-2026-08-13",
+      "course:yoga-2026-08-18",
+      "course:yoga-2026-08-19",
+      "course:yoga-2026-08-20",
     ]);
   });
 
@@ -51,7 +63,7 @@ describe("pass date split", () => {
     const upcoming = upcomingPasses(YOGA_TRACK_ID, DURING_JULY_30_PASS);
 
     expect(upcoming.map((pass) => pass.id)).toContain(
-      "yoga-pa-loftet-2026-07-30"
+      "course:yoga-pa-loftet-2026-07-30"
     );
   });
 
@@ -86,7 +98,7 @@ describe("pass date split", () => {
     const ids = allUpcomingPasses(BEFORE_JULY_30).map((pass) => pass.id);
 
     expect(new Set(ids).size).toBe(ids.length);
-    expect(ids).toContain("yoga-pa-loftet-2026-07-30");
+    expect(ids).toContain("course:yoga-pa-loftet-2026-07-30");
   });
 });
 
@@ -156,6 +168,16 @@ describe("pass formatting", () => {
     expect(formatPassTime("2026-07-30T17:30:00+02:00")).toBe("17:30");
   });
 
+  it("reads CMS UTC timestamps on the farm's clock, summer and winter", () => {
+    expect(formatPassTime("2026-08-20T16:00:00.000Z")).toBe("18:00");
+    expect(formatPassTime("2026-11-20T17:00:00.000Z")).toBe("18:00");
+    expect(formatPassTime(null)).toBe("");
+  });
+
+  it("dates a late-evening UTC timestamp by its Stockholm calendar day", () => {
+    expect(formatPassDate({ startAt: "2026-07-31T22:30:00.000Z" })).toBe("Lördag 1 augusti");
+  });
+
   it("gives every pass a unique anchor", () => {
     const anchors = COURSE_PASSES.map(passAnchor);
 
@@ -184,16 +206,12 @@ describe("FAQ answers", () => {
     expect(answer).toContain("inget pass");
   });
 
-  it("does not claim a booked maleri course when none exists", () => {
-    // The maleri hub has no dated course yet; the FAQ must say so rather than
-    // invent one, since this text is also emitted as FAQPage markup.
-    const faq = resolvedFaq(MALERI_TRACK_ID, BEFORE_JULY_30);
-    const answer = faq.find((item) =>
-      item.question.startsWith("När är nästa målarkurs")
-    ).answer;
+  it("names the next maleri course from the course passes, and none once it is over", () => {
+    const question = (now) =>
+      resolvedFaq(MALERI_TRACK_ID, now).find((item) => item.question.startsWith("När är nästa målarkurs")).answer;
 
-    expect(nextPass(MALERI_TRACK_ID, BEFORE_JULY_30)).toBeNull();
-    expect(answer).toContain("ingen kurs med fast datum");
+    expect(question(BEFORE_JULY_30)).toContain("Akvarell för nybörjare");
+    expect(question(AFTER_ALL_PASSES)).toContain("ingen kurs med fast datum");
   });
 
   it("resolves every answer on every track to a non-empty string", () => {
@@ -216,149 +234,88 @@ describe("FAQ answers", () => {
   });
 });
 
-describe("apiEventToCoursePass and mergeCoursePasses", () => {
-  it("converts raw API event to course pass format", () => {
-    const rawApiEvent = {
-      id: "test-yoga-123",
-      title: "Kvällsyoga på loftet",
-      description: "Ett lugnt yogapass för alla.",
-      category: "yoga",
-      startAt: "2026-08-20T18:00:00+02:00",
-      endAt: "2026-08-20T19:30:00+02:00",
-      spots: "150 kr / person – Drop-in",
-      images: [{ url: "/images/test.jpg", alt: "Test" }],
-    };
 
-    const pass = apiEventToCoursePass(rawApiEvent);
+const event = (doc) => eventToPass(projectEvent({ id: 50, title: "Pass", startAt: "2026-09-01T16:00:00.000Z", ...doc }, "https://cms.example.test"));
+const coursePass = (doc) => coursePassToPass(projectCoursePass({ id: 50, title: "Kurs", startAt: "2026-09-01T08:00:00.000Z", ...doc }));
 
-    expect(pass.id).toBe("test-yoga-123");
-    expect(pass.title).toBe("Kvällsyoga på loftet");
-    expect(pass.primaryTrack).toBe(YOGA_TRACK_ID);
-    expect(pass.price).toBe(150);
-    expect(pass.images[0].url).toBe("/images/test.jpg");
+describe("passes from CMS records", () => {
+  it("files events by category, not by words in the title", () => {
+    expect(event({ category: "konst", title: "Yoga och akvarell" }).tracks).toEqual([MALERI_TRACK_ID]);
+    expect(event({ category: "ovrigt", title: "Yoga-loppis" }).tracks).toEqual([]);
+    expect(eventTracks({ category: "keramik", title: "Måleri på keramik" })).toEqual([]);
+    // The one documented transitional record keeps both hubs.
+    expect(eventTracks({ legacyId: "course:heldag-yoga-maleri-2026-07-13", category: "yoga" }))
+      .toEqual([YOGA_TRACK_ID, MALERI_TRACK_ID]);
   });
 
-  it("merges API events with static passes chronologically", () => {
-    const staticPasses = [
-      {
-        id: "static-yoga-1",
-        title: "Static Yoga",
-        tracks: [YOGA_TRACK_ID],
-        primaryTrack: YOGA_TRACK_ID,
-        startAt: "2026-07-30T18:00:00+02:00",
-        endAt: "2026-07-30T19:30:00+02:00",
-      },
-    ];
+  it("keeps fields the editor emptied empty instead of filling them in", () => {
+    const pass = event({ category: "yoga", price: null, description: "", spots: "", location: "", mediaMigrated: true });
 
-    const apiEvents = [
-      {
-        id: "api-yoga-new",
-        title: "Nytt Yoga Event från Admin",
-        category: "yoga",
-        startAt: "2026-08-15T18:00:00+02:00",
-        endAt: "2026-08-15T19:30:00+02:00",
-      },
-    ];
-
-    const merged = mergeCoursePasses(
-      staticPasses,
-      apiEvents,
-      YOGA_TRACK_ID,
-      BEFORE_JULY_30
-    );
-
-    expect(merged).toHaveLength(2);
-    expect(merged[0].id).toBe("static-yoga-1");
-    expect(merged[1].id).toBe("api-yoga-new");
+    expect(pass.price).toBeNull();
+    expect(pass.summary).toBe("");
+    expect(pass.spots).toBeNull();
+    expect(pass.location).toBeNull();
+    // Media migrated and then removed: no track image is put back.
+    expect(pass.images).toEqual([]);
   });
 
-  it("does not restore a static image after the CMS event image is cleared", () => {
-    const startAt = "2026-08-15T18:00:00+02:00";
-    const merged = mergeCoursePasses(
-      [{
-        id: "same-event",
-        title: "Yoga",
-        tracks: [YOGA_TRACK_ID],
-        primaryTrack: YOGA_TRACK_ID,
-        startAt,
-        endAt: "2026-08-15T19:30:00+02:00",
-        images: [{ url: "/images/legacy.jpg" }],
-      }],
-      [{
-        id: "same-event",
-        title: "Yoga",
-        category: "yoga",
-        startAt,
-        endAt: "2026-08-15T19:30:00+02:00",
-        mediaMigrated: true,
-        images: [],
-      }],
-      YOGA_TRACK_ID,
-      BEFORE_JULY_30,
-    );
-
-    expect(merged[0].images).toEqual([]);
-  });
-
-    it("keeps one complete pass when an API duplicate has the same start time", () => {
-        const staticPass = {
-            id: "static-yoga-duplicate-slot",
-            title: "Yoga på loftet (90 min)",
-            tracks: [YOGA_TRACK_ID],
-            primaryTrack: YOGA_TRACK_ID,
-            startAt: "2026-08-11T18:00:00+02:00",
-            endAt: "2026-08-11T19:30:00+02:00",
-            durationMinutes: 90,
-            price: 150,
-            dropIn: false,
-            summary: "Ett komplett yogapass.",
-            practicalNote: "Mattor finns på plats.",
-            images: [{url: "/images/yoga.jpg"}],
-        };
-
-        const apiEvents = [
-            {
-                id: "event-duplicate-slot",
-                title: "90 minuter Yogapss",
-                category: "yoga",
-                startAt: "2026-08-11T18:00:00+02:00",
-                endAt: "2026-08-11T18:00:00+02:00",
-            },
-        ];
-
-        const merged = mergeCoursePasses(
-            [staticPass],
-            apiEvents,
-            YOGA_TRACK_ID,
-            BEFORE_JULY_30
-        );
-
-        expect(merged).toHaveLength(1);
-        expect(merged[0].id).toBe(staticPass.id);
-        expect(merged[0].durationMinutes).toBe(90);
-        expect(merged[0].price).toBe(150);
+  it("namespaces ids so an event and a course pass with the same number stay apart", () => {
+    const passes = schedulePasses({
+      events: [projectEvent({ id: 7, category: "yoga", title: "A", startAt: "2026-09-01T16:00:00.000Z" })],
+      coursePasses: [projectCoursePass({ id: 7, track: "yoga", title: "B", startAt: "2026-09-02T16:00:00.000Z" })],
     });
 
-  it("converts and merges maleri / konst events correctly", () => {
-    const rawMaleriEvent = {
-      id: "api-maleri-1",
-      title: "Helgkurs Akvarell",
-      category: "maleri",
-      startAt: "2026-09-10T10:00:00+02:00",
-      endAt: "2026-09-10T16:00:00+02:00",
-    };
+    expect(passes.map((pass) => pass.id)).toEqual(["events:7", "course-pass-7"]);
+  });
 
-    const pass = apiEventToCoursePass(rawMaleriEvent, MALERI_TRACK_ID);
-    expect(pass.primaryTrack).toBe(MALERI_TRACK_ID);
-    expect(pass.title).toBe("Helgkurs Akvarell");
+  it("keeps a course pass's status, instructor, spots and booking address", () => {
+    const pass = coursePass({ track: "konst", instructor: "ann", status: "fully_booked", spots: 0, bookingEmail: "kurs@example.test" });
 
-    const merged = mergeCoursePasses(
-      [],
-      [rawMaleriEvent],
-      MALERI_TRACK_ID,
-      BEFORE_JULY_30
-    );
-    expect(merged).toHaveLength(1);
-    expect(merged[0].id).toBe("api-maleri-1");
+    expect(pass.status).toBe("fully_booked");
+    expect(passInstructor(pass).name).toBe("Ann Wiklund");
+    expect(pass.spots).toBe(0);
+    expect(passContactEmail(pass)).toBe("kurs@example.test");
+    expect(isBookablePass(pass, new Date("2026-08-01T00:00:00Z"))).toBe(false);
+  });
+
+  it("names no one for a guest instructor and falls back to the farm's address", () => {
+    const pass = coursePass({ track: "yoga", instructor: "guest" });
+
+    expect(passInstructor(pass)).toBeNull();
+    expect(passContactEmail(pass)).toMatch(/@/);
+  });
+
+  it("does not offer a cancelled pass as the next one", () => {
+    const passes = schedulePasses({
+      events: [],
+      coursePasses: [
+        projectCoursePass({ id: 1, track: "yoga", status: "cancelled", title: "Inställt", startAt: "2026-09-01T16:00:00.000Z" }),
+        projectCoursePass({ id: 2, track: "yoga", title: "Nästa", startAt: "2026-09-08T16:00:00.000Z" }),
+      ],
+    });
+
+    expect(nextPass(YOGA_TRACK_ID, new Date("2026-08-01T00:00:00Z"), passes).title).toBe("Nästa");
+    expect(upcomingPasses(YOGA_TRACK_ID, new Date("2026-08-01T00:00:00Z"), passes)).toHaveLength(2);
+  });
+
+  it("shows nothing from an empty schedule: no static passes are mixed in", () => {
+    expect(schedulePasses({ events: [], coursePasses: [] })).toEqual([]);
+    expect(upcomingPasses(YOGA_TRACK_ID, BEFORE_JULY_30, [])).toEqual([]);
+  });
+});
+
+describe("hubFaq", () => {
+  it("uses the editors' list when the page has one, without half-filled rows", () => {
+    const faq = hubFaq(MALERI_TRACK_ID, BEFORE_JULY_30, COURSE_PASSES, [
+      { title: "Fråga", body: "Svar" },
+      { title: "Utan svar", body: "" },
+    ]);
+
+    expect(faq).toEqual([{ question: "Fråga", answer: "Svar" }]);
+  });
+
+  it("keeps an emptied list empty and falls back to the track only without a list", () => {
+    expect(hubFaq(YOGA_TRACK_ID, BEFORE_JULY_30, COURSE_PASSES, [])).toEqual([]);
+    expect(hubFaq(YOGA_TRACK_ID, BEFORE_JULY_30, COURSE_PASSES, null)).toEqual(resolvedFaq(YOGA_TRACK_ID, BEFORE_JULY_30));
   });
 });

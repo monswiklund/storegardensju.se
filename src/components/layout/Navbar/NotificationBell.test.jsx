@@ -3,7 +3,8 @@ import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import NotificationBell from "./NotificationBell.jsx";
 
-vi.mock("../../../services/notificationsService.js", () => ({
+vi.mock("../../../services/notificationsService.js", async (importOriginal) => ({
+  ...(await importOriginal()),
   fetchPublicNotifications: vi.fn().mockResolvedValue([
     {
       id: "yoga-pa-loftet-2026-07-30",

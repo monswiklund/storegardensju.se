@@ -386,8 +386,8 @@ function PastEventsAccordion({ events }) {
               >
                 <span>
                   {isExpanded
-                    ? (copy("events.past.show-less") || "Visa färre")
-                    : `${copy("events.past.show-more") || "Visa fler"} (${extraEvents.length})`}
+                    ? (copy("events.past.show-less", "Visa färre"))
+                    : `${copy("events.past.show-more", "Visa fler")} (${extraEvents.length})`}
                 </span>
                 <ChevronDown
                   className={`past-events-expand-icon ${

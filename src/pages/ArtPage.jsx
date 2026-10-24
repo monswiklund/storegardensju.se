@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ArrowRight,
   Mail,
@@ -22,27 +22,24 @@ import {
 } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
-import { fetchPublicEvents } from "../services/eventsService.js";
+import useCmsSchedule from "../hooks/useCmsSchedule.js";
 import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
 import usePageLists from "../hooks/usePageLists.js";
 import {
   COURSE_LOCATION,
-  COURSE_PASSES,
   MALERI_TRACK_ID,
   TRACKS,
   formatPassDate,
-  mergeCoursePasses,
+  hubFaq,
+  nextPass,
   pastPasses,
+  schedulePasses,
+  upcomingPasses,
 } from "../data/courseEvents.js";
 import "./ArtPage.css";
 
 
-// Module-level: stable reference for useSeo, and the same date gating runs
-// client-side as in the prerendered HTML.
-const KONST_JSONLD = activeJsonLd(seoMeta.kurserKonst);
-
-const PAST_PASSES = pastPasses(MALERI_TRACK_ID);
 const MALERI_TRACK = TRACKS[MALERI_TRACK_ID];
 const INSTRUCTOR = MALERI_TRACK.instructor;
 const CONTACT_EMAIL = INSTRUCTOR.email;
@@ -58,9 +55,11 @@ function ArtPage() {
   const offerings = list("offerings", []);
   const offeringIcons = [Palette, Flame, Users, Sparkles];
   const offeringClasses = ["offering-terracotta", "offering-green", "offering-slate", "offering-gold"];
-  const faq = list("faq", [])
-    .filter((item) => item.title && item.body)
-    .map((item) => ({ question: item.title, answer: item.body }));
+  const schedule = useCmsSchedule();
+  const passes = useMemo(() => schedulePasses(schedule), [schedule]);
+  const now = new Date();
+  const faqList = list("faq", null);
+  const faq = hubFaq(MALERI_TRACK_ID, now, passes, faqList);
   const instructor = {
     ...INSTRUCTOR,
     name: copy("instructor.title"),
@@ -68,37 +67,19 @@ function ArtPage() {
     bio: copy("instructor.bio"),
   };
   const [showMailFallback, setShowMailFallback] = useState(false);
-  const [apiEvents, setApiEvents] = useState([]);
   const onContactClick = () => setShowMailFallback(true);
 
-  useEffect(() => {
-    let active = true;
-    fetchPublicEvents()
-      .then((data) => {
-        if (!active) return;
-        if (Array.isArray(data?.upcoming)) {
-          setApiEvents(data.upcoming);
-        }
-      })
-      .catch(() => {
-        // Fall back to static passes on network error
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const upcomingPassesList = mergeCoursePasses(
-    COURSE_PASSES.filter((p) => p.tracks.includes(MALERI_TRACK_ID)),
-    apiEvents,
-    MALERI_TRACK_ID
+  const upcomingPassesList = upcomingPasses(MALERI_TRACK_ID, now, passes);
+  const recapPasses = pastPasses(MALERI_TRACK_ID, now, passes);
+  const nextPassItem = nextPass(MALERI_TRACK_ID, now, passes);
+  // Same passes and answers as rendered; recomputed when either source changes.
+  const jsonLd = useMemo(
+    () => activeJsonLd(seoMeta.kurserKonst, new Date(), { passes, faq: hubFaq(MALERI_TRACK_ID, new Date(), passes, faqList) }),
+    [passes, faqList],
   );
 
-  const nextPassItem = upcomingPassesList[0] || null;
-
   const contactSubject = nextPassItem
-    ? `${siteCopy("courses.inquiry-prefix") || "Fråga om"} ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
+    ? `${siteCopy("courses.inquiry-prefix", "Fråga om")} ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
     : copy("hero.contact-cta");
 
   const spySections = [
@@ -116,7 +97,7 @@ function ArtPage() {
 
   useSeo({
     ...seoMeta.kurserKonst,
-    jsonLd: KONST_JSONLD.length > 0 ? KONST_JSONLD : undefined,
+    jsonLd: jsonLd.length > 0 ? jsonLd : undefined,
   });
 
   const scrollToSection = (id) => {
@@ -308,7 +289,7 @@ function ArtPage() {
 
         {/* Tidigare kurser / Inspiration */}
         <PastPassesSection
-          passes={PAST_PASSES}
+          passes={recapPasses}
           trackId={MALERI_TRACK_ID}
           heading={copy("past.title")}
           background="alt"

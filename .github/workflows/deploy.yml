@@ -5,7 +5,12 @@ on:
     branches: [main, master]
     paths-ignore:
       - "**/*.md"
+  # Started by the CMS when something is published (scripts/export-cms-content.js reads it).
   workflow_dispatch:
+  # Daily rebuild so finished passes leave the prerendered pages and JSON-LD even
+  # when nothing was published, and a missed CMS dispatch is caught up within a day.
+  schedule:
+    - cron: "15 2 * * *"
 
 permissions:
   contents: write
@@ -30,6 +35,13 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      # Fails when the CMS cannot be read, so Pages keeps the previous site instead of one without events.
       - name: Build
         run: npm run build
         env:

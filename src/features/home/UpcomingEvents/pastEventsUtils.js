@@ -13,46 +13,11 @@ export const PAST_EVENT_CATEGORIES = [
 export function eventMatchesCategory(event, categoryId) {
   if (!categoryId || categoryId === "all") return true;
 
+  // The editor's category decides; words in the title or description do not.
   const cat = (event?.category || "").toLowerCase();
-  const title = (event?.title || "").toLowerCase();
-  const desc = (event?.description || "").toLowerCase();
-
-  const isYoga = Boolean(
-    cat === "yoga" ||
-      title.includes("yoga") ||
-      desc.includes("yoga") ||
-      event?.isGroupedSeries
-  );
-
-  const isCourse = Boolean(
-    cat === "konst" ||
-      cat === "keramik" ||
-      cat === "maleri" ||
-      cat === "workshop" ||
-      title.includes("måleri") ||
-      title.includes("keramik") ||
-      title.includes("kurs") ||
-      title.includes("workshop") ||
-      desc.includes("måleri") ||
-      desc.includes("keramik") ||
-      desc.includes("ateljé")
-  );
-
-  const isEvent = Boolean(
-    cat === "marknad" ||
-      cat === "cafe" ||
-      cat === "oppet_hus" ||
-      cat === "kultur" ||
-      cat === "ovrigt" ||
-      title.includes("konstafton") ||
-      title.includes("kulturrunda") ||
-      title.includes("marknad") ||
-      title.includes("öppet hus") ||
-      title.includes("öppen gård") ||
-      title.includes("sommarkväll") ||
-      title.includes("konsert") ||
-      (!isYoga && !isCourse)
-  );
+  const isYoga = cat === "yoga" || Boolean(event?.isGroupedSeries);
+  const isCourse = ["konst", "keramik", "maleri", "workshop"].includes(cat);
+  const isEvent = !isYoga && !isCourse;
 
   if (categoryId === "yoga") return isYoga;
   if (categoryId === "courses") return isCourse;
@@ -60,6 +25,13 @@ export function eventMatchesCategory(event, categoryId) {
 
   return true;
 }
+
+const durationMinutes = (event) => {
+  if (event.durationMinutes > 0) return event.durationMinutes;
+  const start = new Date(event.startAt || "").getTime();
+  const end = new Date(event.endAt || "").getTime();
+  return Number.isFinite(start) && Number.isFinite(end) && end > start ? (end - start) / 60_000 : 0;
+};
 
 /**
  * Consolidates recurring passes (e.g. daily/weekly yoga sessions) into clean representative series cards.
@@ -71,24 +43,19 @@ export function groupPastEvents(events) {
   const otherEvents = [];
 
   for (const event of events) {
-    const titleLower = (event.title || "").toLowerCase();
-    const categoryLower = (event.category || "").toLowerCase();
-
-    // Check if this is a recurring yoga class vs a standout combination event (e.g. "Heldag med yoga & måleri")
-    const isYoga = categoryLower === "yoga" || titleLower.includes("yoga");
+    // A series is the yoga classes of one month. A day with a programme, or one that runs four
+    // hours or more, is not a class and keeps its own card.
+    const isYoga = (event.category || "").toLowerCase() === "yoga";
     const isSpecialEvent =
-      titleLower.includes("måleri") ||
-      titleLower.includes("konst") ||
-      titleLower.includes("keramik") ||
-      titleLower.includes("heldag") ||
-      (Array.isArray(event.moments) && event.moments.length > 0);
+      (Array.isArray(event.moments) && event.moments.length > 0) || durationMinutes(event) >= 240;
 
     if (isYoga && !isSpecialEvent) {
       let yearMonth = "";
       if (event.startAt) {
         const d = new Date(event.startAt);
         if (!Number.isNaN(d.getTime())) {
-          yearMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+          // sv-SE gives "2026-08-01"; the month is taken on the farm's clock.
+          yearMonth = d.toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm" }).slice(0, 7);
         }
       }
       if (!yearMonth) {

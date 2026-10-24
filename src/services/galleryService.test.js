@@ -82,4 +82,50 @@ describe("galleryService", () => {
     expect(allImages.map((image) => image.id)).toEqual(["first", "second", "third"]);
     expect(result.featured).toEqual(["first", "second"]);
   });
+
+  describe("pagination", () => {
+    const docsFor = (from, to) =>
+      Array.from({ length: to - from }, (_, i) => ({
+        id: from + i + 1,
+        category: "overvaning",
+        order: from + i,
+        allOrder: from + i,
+        externalUrl: `/bild-${from + i + 1}.webp`,
+      }));
+    const pagedFetch = (total, { lieAboutEnd = false, failPage = null } = {}) =>
+      vi.fn(async (url) => {
+        const params = new URL(url).searchParams;
+        const page = Number(params.get("page"));
+        const limit = Number(params.get("limit"));
+        if (page === failPage) return { ok: false, status: 503, json: async () => ({}) };
+        const docs = docsFor((page - 1) * limit, Math.min(page * limit, total));
+        const hasNextPage = lieAboutEnd ? false : page * limit < total;
+        return { ok: true, json: async () => ({ docs, totalDocs: total, hasNextPage, page, limit }) };
+      });
+
+    it("collects every page of a library larger than one response", async () => {
+      const fetchMock = pagedFetch(250);
+      vi.stubGlobal("fetch", fetchMock);
+
+      const result = await fetchGalleryCategories();
+      const all = result.categories.find((category) => category.id === "alla").images;
+
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+      const params = new URL(fetchMock.mock.calls[0][0]).searchParams;
+      expect(params.get("depth")).toBe("0");
+      expect(params.get("where[showInGallery][equals]")).toBe("true");
+      expect(all).toHaveLength(250);
+      expect(all.at(-1).id).toBe("250");
+    });
+
+    it("refuses a gallery that ends before totalDocs instead of showing it cut off", async () => {
+      vi.stubGlobal("fetch", pagedFetch(250, { lieAboutEnd: true }));
+      expect(await fetchGalleryCategories()).toBeNull();
+    });
+
+    it("refuses a gallery when a later page fails", async () => {
+      vi.stubGlobal("fetch", pagedFetch(250, { failPage: 2 }));
+      expect(await fetchGalleryCategories()).toBeNull();
+    });
+  });
 });

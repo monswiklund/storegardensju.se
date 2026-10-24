@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ShoppingCart,
@@ -22,9 +22,12 @@ function ButikPage() {
   useSeo(seoMeta.butik);
   const copy = usePageCopy("shop");
   const siteCopy = useSiteCopy();
-  // Hämta produkter från global ProductContext (prefetchade vid app start)
-  const { products, loading, error, categories, refetch } =
+  // Produkterna hämtas första gången butiken visas och delas sedan via ProductContext.
+  const { products, loading, error, categories, refetch, load } =
     useContext(ProductContext);
+  useEffect(() => {
+    load?.();
+  }, [load]);
 
   // State för aktiv kategori-filter
   const [activeCategory, setActiveCategory] = useState("alla");

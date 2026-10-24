@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchPageCopy, getPageContentSync, getPageCopySync } from "../services/cmsService";
+import { fetchPageContent, getPageContentSync, getPageCopySync } from "../services/cmsService";
 import { extractPreviewData } from "../services/livePreviewBridge.js";
 
 /** Resolve editor-owned text without making a CMS outage visible to visitors. */
@@ -9,10 +9,9 @@ export default function usePageCopy(slug) {
   useEffect(() => {
     let active = true;
 
-    fetchPageCopy(slug).then((nextValues) => {
-      if (active && nextValues && Object.keys(nextValues).length > 0) {
-        setValues(nextValues);
-      }
+    // A live page replaces the build's copy whole; a failed request keeps the build's copy.
+    fetchPageContent(slug).then((content) => {
+      if (active && content.found) setValues(content.copy);
     });
 
     // Payload remains the source of truth; only trusted preview-frame messages
@@ -43,8 +42,10 @@ export default function usePageCopy(slug) {
     };
   }, [slug]);
 
+  // `fallback` covers a key the CMS does not have yet; an empty CMS value is the
+  // editor's choice to hide that text and is returned as "".
   return useCallback(
-    (key) => {
+    (key, fallback = "") => {
       if (
         typeof process !== "undefined" &&
         process.env &&
@@ -56,7 +57,7 @@ export default function usePageCopy(slug) {
         // Warn in development when a required CMS key is not configured
         console.warn(`[CMS Warning] Missing CMS copy key: "${slug}.${key}"`);
       }
-      return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : "";
+      return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : fallback;
     },
     [values, slug],
   );

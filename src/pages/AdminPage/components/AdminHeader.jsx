@@ -23,18 +23,6 @@ const ADMIN_VIEW_COPY = {
     title: "Produkter",
     subtitle: "Skapa, redigera och publicera produkter.",
   },
-  gallery: {
-    title: "Galleri",
-    subtitle: "Ladda upp och organisera galleri-bilder.",
-  },
-  events: {
-    title: "Evenemang",
-    subtitle: "Hantera kommande och tidigare händelser.",
-  },
-  notifications: {
-    title: "Notiser",
-    subtitle: "Publicera tidsstyrda nyheter i webbplatsens klocka.",
-  },
   coupons: {
     title: "Rabatter",
     subtitle: "Skapa och arkivera rabattkoder.",

@@ -10,7 +10,7 @@
     "dev:backend:up": "../storegardensju-backend/scripts/dev_docker.sh up",
     "dev:backend:logs": "../storegardensju-backend/scripts/dev_docker.sh logs",
     "dev:backend:down": "../storegardensju-backend/scripts/dev_docker.sh down",
-    "build": "npm run build:version && vite build && node scripts/generate-route-pages.js",
+    "build": "node scripts/export-cms-content.js && npm run build:version && vite build && node scripts/generate-route-pages.js",
     "build:version": "node scripts/generate-build-info.js",
     "lint": "eslint .",
     "test": "vitest run",

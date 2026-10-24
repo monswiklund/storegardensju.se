@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -17,6 +17,7 @@ import { CourseBand } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
+import useCmsSchedule from "../hooks/useCmsSchedule.js";
 import { seoMeta } from "../config/seoMeta.js";
 import { cdnAsset } from "../config/cdnAssets.js";
 import {
@@ -27,6 +28,7 @@ import {
   formatPassDate,
   formatPassTime,
   nextPass,
+  schedulePasses,
 } from "../data/courseEvents.js";
 import "./KurserPages.css";
 
@@ -71,6 +73,8 @@ function KurserIndexPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const copy = usePageCopy("courses");
+  const schedule = useCmsSchedule();
+  const passes = useMemo(() => schedulePasses(schedule), [schedule]);
   const siteCopy = useSiteCopy();
   const media = usePageMedia("courses");
 
@@ -135,7 +139,7 @@ function KurserIndexPage() {
           <div className="kurser-index__grid">
             {HUBS.map(({ trackId, image }, index) => {
               const track = TRACKS[trackId];
-              const pass = nextPass(trackId);
+              const pass = nextPass(trackId, new Date(), passes);
               const hubImage = media(index === 0 ? "hubs.yoga" : "hubs.art", image, "card");
 
               return (
@@ -156,7 +160,7 @@ function KurserIndexPage() {
                         <Calendar size={17} aria-hidden="true" />
                         <span>
                           {pass
-                            ? `${copy("hubs.next-pass-prefix") || "Nästa tillfälle:"} ${formatPassDate(pass)} kl ${formatPassTime(pass.startAt)}`
+                            ? `${copy("hubs.next-pass-prefix", "Nästa tillfälle:")} ${formatPassDate(pass)} kl ${formatPassTime(pass.startAt)}`
                             : copy("hubs.no-pass-text")}
                         </span>
                       </li>

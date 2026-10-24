@@ -32,10 +32,9 @@ function HomePage() {
       try {
         const data = await fetchPublicEvents();
         if (!active) return;
-        setEventsData({
-          upcoming: Array.isArray(data?.upcoming) ? data.upcoming : [],
-          past: Array.isArray(data?.past) ? data.past : [],
-        });
+        setEventsData({ upcoming: data.upcoming, past: data.past });
+        // Neither the CMS nor this build's export had a calendar: say so instead of "nothing planned".
+        if (data.source === "none") setError(siteCopy("ui.events-fetch-error"));
       } catch {
         if (!active) return;
         setEventsData({ upcoming: [], past: [] });
