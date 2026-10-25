@@ -204,19 +204,30 @@ for (const sourceMeta of Object.values(seoMeta)) {
   console.log(`generated dist${meta.path}/index.html`);
 }
 
-// The operational admin is a real React route too, but it has no public SEO
-// metadata. Give GitHub Pages a static entry point without adding it to the
-// crawlable site graph or injecting the public prerender shell.
-const adminHtml = html
-  .replace(/<title>[\s\S]*?<\/title>/, "<title>Administration – Storegården 7</title>")
-  .replace(
-    "</head>",
-    '    <meta name="robots" content="noindex, nofollow" />\n  </head>'
-  );
+// The admin and the shop flow are real React routes too, but have no public SEO
+// metadata. Give GitHub Pages a static entry point without adding them to the
+// crawlable site graph or injecting the public prerender shell. Stripe sends the
+// buyer back to /success and /cancel with a full page load, so these must exist.
+const APP_ONLY_ROUTES = [
+  { path: "/admin", title: "Administration – Storegården 7" },
+  { path: "/varukorg", title: "Varukorg – Storegården 7" },
+  { path: "/checkout", title: "Kassa – Storegården 7" },
+  { path: "/success", title: "Tack för din beställning – Storegården 7" },
+  { path: "/cancel", title: "Betalningen avbröts – Storegården 7" },
+];
 
-mkdirSync("dist/admin", { recursive: true });
-writeFileSync("dist/admin/index.html", adminHtml);
-console.log("generated dist/admin/index.html");
+for (const { path, title } of APP_ONLY_ROUTES) {
+  const appHtml = html
+    .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${escapeHtml(title)}</title>`)
+    .replace(
+      "</head>",
+      '    <meta name="robots" content="noindex, nofollow" />\n  </head>'
+    );
+
+  mkdirSync(`dist${path}`, { recursive: true });
+  writeFileSync(`dist${path}/index.html`, appHtml);
+  console.log(`generated dist${path}/index.html`);
+}
 
 // Legacy URLs that moved. GitHub Pages serves static files only - it cannot
 // 301 - so the old path keeps returning 200 with a redirect page: canonical and

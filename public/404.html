@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
     <title>Sidan hittades inte | Storegården 7</title>
+    <script>
+        // Product pages come live from Stripe, so the build cannot write them. Hand
+        // /butik/<id> to the app; index.html restores the path before React starts.
+        if (/^\/butik\/[^/]+\/?$/.test(location.pathname)) {
+            sessionStorage.setItem("redirectPath", location.pathname + location.search + location.hash);
+            location.replace("/");
+        }
+    </script>
     <style>
         :root {
             color-scheme: light;
