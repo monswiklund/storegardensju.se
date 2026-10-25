@@ -705,7 +705,7 @@
   font-size: 0.95rem;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 900px) {
   .mohippa-hero {
     background: #ffffff;
   }
@@ -758,7 +758,7 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .mohippa-hero {
     padding: 78px 16px 46px;
   }
@@ -788,7 +788,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 480px) {
   .mohippa-hero__media,
   .mohippa-hero__media img {
     min-height: 300px;

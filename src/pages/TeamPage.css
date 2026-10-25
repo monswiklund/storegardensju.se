@@ -43,7 +43,7 @@
   outline-offset: 3px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .team-page-intro {
     margin-top: -18px;
   }

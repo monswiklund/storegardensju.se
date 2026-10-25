@@ -204,64 +204,6 @@ export const AdminService = {
     return handleJSONResponse(res, "Refund failed");
   },
 
-  getProducts: async (key, params = {}) => {
-    const query = toQueryString(params);
-    const res = await fetch(`${API_URL}/admin/products${query ? `?${query}` : ""}`, {
-      headers: getHeaders(key),
-      credentials: "include",
-    });
-    return handleJSONResponse(res, "Failed to fetch products");
-  },
-
-  createProduct: async (key, data) => {
-    const isFormData = data instanceof FormData;
-    const headers = getHeaders(key, {
-      includeJsonContentType: !isFormData,
-      idempotencyKey: createIdempotencyKey(),
-    });
-
-    if (isFormData) {
-      delete headers["Content-Type"];
-    }
-
-    const res = await fetch(`${API_URL}/admin/products`, {
-      method: "POST",
-      headers,
-      body: isFormData ? data : jsonRequestBody(key, data),
-      credentials: "include",
-    });
-    return handleJSONResponse(res, "Failed to create product");
-  },
-
-  updateProduct: async (key, id, data) => {
-    const isFormData = data instanceof FormData;
-    const headers = getHeaders(key, {
-      includeJsonContentType: !isFormData,
-      idempotencyKey: createIdempotencyKey(),
-    });
-
-    if (isFormData) {
-      delete headers["Content-Type"];
-    }
-
-    const res = await fetch(`${API_URL}/admin/products/${id}`, {
-      method: "PUT",
-      headers,
-      body: isFormData ? data : JSON.stringify(data),
-      credentials: "include",
-    });
-    return handleJSONResponse(res, "Failed to update product");
-  },
-
-  archiveProduct: async (key, id) => {
-    const res = await fetch(`${API_URL}/admin/products/${id}`, {
-      method: "DELETE",
-      headers: getHeaders(key),
-      credentials: "include",
-    });
-    return handleJSONResponse(res, "Failed to archive product");
-  },
-
   getCoupons: async (key, params = {}) => {
     const query = toQueryString(params);
     const res = await fetch(`${API_URL}/admin/coupons${query ? `?${query}` : ""}`, {

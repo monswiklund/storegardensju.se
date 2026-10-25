@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ArrowDown,
   Calendar,
@@ -11,7 +11,8 @@ import {
   Utensils,
   Palette,
 } from "lucide-react";
-import { PageSection, SectionDivider } from "../components";
+import { PageSection, ScrollSpyNav, SectionDivider } from "../components";
+import MailtoFallback from "../features/contact/MailtoFallback.jsx";
 import { smoothScrollTo } from "../utils/scrollUtils.js";
 import { HomeServicesSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
@@ -69,6 +70,7 @@ const ACTIVITY_DEFINITIONS = [
 ];
 
 const formatActivityNumber = (index) => String(index + 1).padStart(2, "0");
+const formatKronor = (value) => value.toLocaleString("sv-SE");
 
 function MohippaPage() {
   useSeo(seoMeta.gruppdagar);
@@ -80,21 +82,30 @@ function MohippaPage() {
     ...feature,
     icon: BASE_FEATURE_DEFINITIONS[index % BASE_FEATURE_DEFINITIONS.length]?.icon || <Sparkles size={20} />,
   }));
-  const activities = ACTIVITY_DEFINITIONS.map((def) => ({
-    ...def,
-    image: media(`activities.${def.id}`, def.defaultImage, "card"),
-    title: copy(`activities.items.${def.id}.title`),
-    description: copy(`activities.items.${def.id}.body`),
-    duration: copy(`activities.items.${def.id}.duration`, def.duration),
-    // Shown from the same number the total is calculated from, so the two cannot disagree.
-    price: `${def.priceVal} kr/person`,
-  }));
+  // Prices are whole kronor in the CMS ("-kr" keys); the code's numbers cover a missing or broken one.
+  const kronor = (key, fallback) => {
+    const value = Number.parseInt(copy(key), 10);
+    return Number.isInteger(value) && value >= 0 ? value : fallback;
+  };
+  const activities = ACTIVITY_DEFINITIONS.map((def) => {
+    const priceVal = kronor(`activities.items.${def.id}.price-kr`, def.priceVal);
+    return {
+      ...def,
+      priceVal,
+      image: media(`activities.${def.id}`, def.defaultImage, "card"),
+      title: copy(`activities.items.${def.id}.title`),
+      description: copy(`activities.items.${def.id}.body`),
+      duration: copy(`activities.items.${def.id}.duration`, def.duration),
+      // Shown from the same number the total is calculated from, so the two cannot disagree.
+      price: `${formatKronor(priceVal)} kr/person`,
+    };
+  });
   const details = list("package-details", []);
-  const [activeSection, setActiveSection] = useState("top");
   const [mainTab, setMainTab] = useState("baspaket"); // "baspaket" or "aktiviteter"
   const [activeTab, setActiveTab] = useState("alla");
   const [guestCount, setGuestCount] = useState(10);
   const [selectedActivities, setSelectedActivities] = useState([]);
+  const [showMailFallback, setShowMailFallback] = useState(false);
 
   const toggleActivity = (id) => {
     setSelectedActivities((prev) =>
@@ -102,112 +113,40 @@ function MohippaPage() {
     );
   };
 
-  const basePricePerPerson = 500;
+  const basePricePerPerson = kronor("calc.base-price-kr", 500);
   const selectedObjects = activities.filter((a) => selectedActivities.includes(a.id));
   const activitiesPricePerPerson = selectedObjects.reduce((sum, a) => sum + a.priceVal, 0);
   const totalPerPerson = basePricePerPerson + activitiesPricePerPerson;
   const grandTotal = totalPerPerson * guestCount;
 
-  const getMailtoLink = () => {
-    const activitiesText = selectedObjects.length > 0
-      ? selectedObjects.map((a) => `- ${a.title} (${a.price})`).join("\n")
-      : copy("calc.email-no-options");
+  const activitiesText = selectedObjects.length > 0
+    ? selectedObjects.map((a) => `- ${a.title} (${a.price})`).join("\n")
+    : copy("calc.email-no-options");
+  const inquirySubject = copy("calc.email-subject", "Förfrågan gruppdag på Storegården 7");
+  const inquiryBody =
+    `${copy("calc.email-greeting")}\n\n` +
+    `${copy("calc.email-intro")}\n\n` +
+    `- ${copy("calc.guests-label")}: ${guestCount} st\n` +
+    `- ${copy("calc.package-label")}: ${copy("calc.base-package-name")} (${formatKronor(basePricePerPerson)} kr/person)\n` +
+    `- ${copy("calc.chosen-activities")}:\n${activitiesText}\n\n` +
+    `${copy("calc.estimated-total")} ${formatKronor(grandTotal)} kr (${formatKronor(totalPerPerson)} kr/person)\n\n` +
+    `${copy("calc.requested-date")}: [Fyll i datum här]\n\n` +
+    `${copy("calc.email-closing")}\n\n` +
+    `${copy("calc.email-regards")}\n` +
+    `[${copy("calc.email-name-placeholder", "Ditt namn")}]\n` +
+    `[${copy("calc.email-phone-placeholder", "Ditt telefonnummer")}]`;
+  const mailtoLink = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(inquirySubject)}&body=${encodeURIComponent(inquiryBody)}`;
 
-    const subject = encodeURIComponent(copy("calc.email-subject", "Förfrågan gruppdag på Storegården 7"));
-    const body = encodeURIComponent(
-      `${copy("calc.email-greeting")}\n\n` +
-      `${copy("calc.email-intro")}\n\n` +
-      `- ${copy("calc.guests-label")}: ${guestCount} st\n` +
-      `- ${copy("calc.package-label")}: ${copy("calc.base-package-name")} (500 kr/person)\n` +
-      `- ${copy("calc.chosen-activities")}:\n${activitiesText}\n\n` +
-      `${copy("calc.estimated-total")} ${grandTotal.toLocaleString("sv-SE")} kr (${totalPerPerson} kr/person)\n\n` +
-      `${copy("calc.requested-date")}: [Fyll i datum här]\n\n` +
-      `${copy("calc.email-closing")}\n\n` +
-      `${copy("calc.email-regards")}\n` +
-      `[${copy("calc.email-name-placeholder", "Ditt namn")}]\n` +
-      `[${copy("calc.email-phone-placeholder", "Ditt telefonnummer")}]`
-    );
-
-    return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-  };
-
-  // Scroll spy listener to update floating navigation dots based on scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 3;
-
-      const heroSection = document.getElementById("mohippa-hero-section");
-      const planeringSection = document.getElementById("mohippa-planering");
-      const ctaSection = document.getElementById("mohippa-cta-section");
-      const contactSection = document.querySelector(".contact-container");
-
-      const getAbsTop = (el) => el ? el.getBoundingClientRect().top + window.pageYOffset : 0;
-
-      if (contactSection && scrollPosition >= getAbsTop(contactSection)) {
-        setActiveSection("contact");
-      } else if (ctaSection && scrollPosition >= getAbsTop(ctaSection)) {
-        setActiveSection("cta");
-      } else if (planeringSection && scrollPosition >= getAbsTop(planeringSection)) {
-        setActiveSection("planering");
-      } else {
-        setActiveSection("top");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Trigger once on mount
-    
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToSection = (id) => {
-    const target = id === "mohippa-contact" ? ".contact-container" : id;
-    smoothScrollTo(target, 70);
-  };
+  const spySections = [
+    { id: "mohippa-hero-section", label: copy("nav.start") },
+    { id: "mohippa-planering", label: copy("nav.planning") },
+    { id: "mohippa-services-recommendation", label: copy("nav.services") },
+    { id: "site-contact", label: copy("nav.contact") },
+  ];
 
   return (
     <div className="mohippa-page-container">
-      {/* Floating Scroll Indicator Dot Navigation (Scroll Spy) */}
-      <nav className="scroll-indicator-nav">
-        <ul>
-          <li>
-            <button
-              onClick={() => scrollToSection("mohippa-hero-section")}
-              className={`scroll-dot ${activeSection === "top" ? "active" : ""}`}
-              title={copy("nav.start")}
-            >
-              <span className="dot-label">{copy("nav.start")}</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("mohippa-planering")}
-              className={`scroll-dot ${activeSection === "planering" ? "active" : ""}`}
-              title={copy("nav.planning")}
-            >
-              <span className="dot-label">{copy("nav.planning")}</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("mohippa-cta-section")}
-              className={`scroll-dot ${activeSection === "cta" ? "active" : ""}`}
-              title={copy("nav.request")}
-            >
-              <span className="dot-label">{copy("nav.request")}</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("mohippa-contact")}
-              className={`scroll-dot ${activeSection === "contact" ? "active" : ""}`}
-              title={copy("nav.contact")}
-            >
-              <span className="dot-label">{copy("nav.contact")}</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
+      <ScrollSpyNav sections={spySections} offset={70} />
 
       <div className="mohippa-page">
         <main>
@@ -245,7 +184,7 @@ function MohippaPage() {
                     className="mohippa-button mohippa-button--primary"
                     onClick={() => {
                       setMainTab("baspaket");
-                      scrollToSection("mohippa-planering");
+                      smoothScrollTo("mohippa-planering", 70);
                     }}
                     style={{ cursor: "pointer" }}
                   >
@@ -256,7 +195,7 @@ function MohippaPage() {
                     className="mohippa-button mohippa-button--secondary"
                     onClick={() => {
                       setMainTab("aktiviteter");
-                      scrollToSection("mohippa-planering");
+                      smoothScrollTo("mohippa-planering", 70);
                     }}
                     style={{ background: "none", border: "1px solid rgba(0,0,0,0.15)", cursor: "pointer" }}
                   >
@@ -284,7 +223,7 @@ function MohippaPage() {
                   <div className="mohippa-package-card__summary">
                     <div className="mohippa-summary__header">
                       <span>{copy("calc.base-package-title")}</span>
-                      <strong>{copy("calc.base-package-price")}</strong>
+                      <strong>{formatKronor(basePricePerPerson)} kr/person</strong>
                     </div>
                     <p className="mohippa-summary__desc">
                       {copy("calc.summary-desc")}
@@ -322,12 +261,12 @@ function MohippaPage() {
                       <div className="mohippa-calculator__breakdown">
                         <div className="mohippa-breakdown-row">
                           <span>{copy("calc.base-package-title")} ({guestCount} st):</span>
-                          <span>{(guestCount * basePricePerPerson).toLocaleString("sv-SE")} kr</span>
+                          <span>{formatKronor(guestCount * basePricePerPerson)} kr</span>
                         </div>
                         {selectedObjects.length > 0 && (
                           <div className="mohippa-breakdown-row mohippa-breakdown-row--details">
                             <span>{copy("calc.addon-title")} ({selectedObjects.length} st):</span>
-                            <span>{(guestCount * activitiesPricePerPerson).toLocaleString("sv-SE")} kr</span>
+                            <span>{formatKronor(guestCount * activitiesPricePerPerson)} kr</span>
                           </div>
                         )}
                         {selectedObjects.length > 0 && (
@@ -349,20 +288,27 @@ function MohippaPage() {
                         )}
                         <div className="mohippa-breakdown-row mohippa-breakdown-row--total">
                           <span>{copy("calc.total-price-label")}</span>
-                          <strong>{grandTotal.toLocaleString("sv-SE")} kr</strong>
+                          <strong>{formatKronor(grandTotal)} kr</strong>
                         </div>
                         <div className="mohippa-price-per-person">
-                          ({totalPerPerson} kr/person)
+                          ({formatKronor(totalPerPerson)} kr/person)
                         </div>
                       </div>
 
                       <a
                         className="mohippa-button mohippa-button--primary mohippa-calculator__button"
-                        href={getMailtoLink()}
+                        href={mailtoLink}
+                        onClick={() => setShowMailFallback(true)}
                       >
                         <Mail size={18} />
                         {copy("calc.send-inquiry")}
                       </a>
+                      {showMailFallback && (
+                        <MailtoFallback
+                          email={CONTACT_EMAIL}
+                          copyText={`${inquirySubject}\n\n${inquiryBody}`}
+                        />
+                      )}
                     </div>
                   </div>
 

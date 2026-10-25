@@ -120,7 +120,7 @@ export default function CartPage() {
             <span>{formatPrice(getTotal())}</span>
           </div>
           
-          <Link to="/checkout" className="btn btn-primary checkout-btn">
+          <Link to="/checkout/" className="btn btn-primary checkout-btn">
             {siteCopy("cart.checkout")}
           </Link>
           

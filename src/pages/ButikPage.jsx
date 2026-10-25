@@ -190,7 +190,9 @@ function ButikPage() {
                     {/* Quantity selector med stock till vänster */}
                     {stock > 1 && !isSoldOut && !alreadyInCart && (
                       <div className="quantity-row">
-                        <span className="stock-text">{stock} {siteCopy("cart.in-stock")}</span>
+                        {product.metadata?.status !== "made_to_order" && (
+                          <span className="stock-text">{stock} {siteCopy("cart.in-stock")}</span>
+                        )}
                         <div className="quantity-selector">
                           <button
                             type="button"
@@ -253,7 +255,7 @@ function ButikPage() {
                       </button>
                     </div>
                     {alreadyInCart && !justAdded && (
-                      <Link to="/varukorg" className="btn-go-to-cart">
+                      <Link to="/varukorg/" className="btn-go-to-cart">
                         {siteCopy("cart.drawer-title")} <ArrowRight size={16} />
                       </Link>
                     )}

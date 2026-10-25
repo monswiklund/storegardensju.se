@@ -90,13 +90,7 @@ export const ADMIN_VIEW_GROUPS = [
       { value: "customers", label: "Kunder" },
     ]
   },
-  {
-    title: "Innehåll",
-    options: [
-      // Courses, events, notices and the gallery are edited in Payload CMS.
-      { value: "products", label: "Produkter" },
-    ]
-  },
+  // Products, courses, events, notices and the gallery are edited in Payload CMS.
   {
     title: "Försäljning",
     options: [

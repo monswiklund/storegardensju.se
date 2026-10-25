@@ -10,7 +10,7 @@ const NOW = () => new Date("2026-07-20T00:00:00.000Z");
 
 describe("exportCmsContent", () => {
   it("exports every published page, event and course pass with a content revision", async () => {
-    const fetchImpl = fakePayloadFetch({ pages: allPages(), events: RAW_EVENTS, "course-passes": RAW_COURSE_PASSES });
+    const fetchImpl = fakePayloadFetch({ pages: allPages(), events: RAW_EVENTS, "course-passes": RAW_COURSE_PASSES, "shop-products": [] });
 
     const snapshot = await exportCmsContent(CMS_URL, { fetchImpl, now: NOW });
 
@@ -21,20 +21,32 @@ describe("exportCmsContent", () => {
     expect(snapshot.exportedAt).toBe("2026-07-20T00:00:00.000Z");
   });
 
+  it("exports each published product for its own page, and refuses one without a web address", async () => {
+    const product = { id: 1, slug: "kopp-havsbla", title: "Kopp", price: 280, status: "in_stock", images: [], updatedAt: "2026-07-03T10:00:00.000Z" };
+    const collections = { pages: allPages(), events: [], "course-passes": [], "shop-products": [product] };
+
+    const snapshot = await exportCmsContent(CMS_URL, { fetchImpl: fakePayloadFetch(collections) });
+    expect(snapshot.shopProducts).toEqual([expect.objectContaining({ slug: "kopp-havsbla", title: "Kopp", price: 280 })]);
+    expect(snapshot.revision).toBe("2026-07-03T10:00:00.000Z");
+
+    collections["shop-products"] = [{ ...product, slug: "" }];
+    await expect(exportCmsContent(CMS_URL, { fetchImpl: fakePayloadFetch(collections) })).rejects.toThrow(/webbadress/);
+  });
+
   it("refuses a build when a page the site renders is not published", async () => {
-    const fetchImpl = fakePayloadFetch({ pages: allPages().filter((doc) => doc.slug !== "site"), events: [], "course-passes": [] });
+    const fetchImpl = fakePayloadFetch({ pages: allPages().filter((doc) => doc.slug !== "site"), events: [], "course-passes": [], "shop-products": [] });
 
     await expect(exportCmsContent(CMS_URL, { fetchImpl })).rejects.toThrow(/site/);
   });
 
   it("refuses two published pages with one slug", async () => {
-    const fetchImpl = fakePayloadFetch({ pages: [...allPages(), { ...page("home"), id: "dup" }], events: [], "course-passes": [] });
+    const fetchImpl = fakePayloadFetch({ pages: [...allPages(), { ...page("home"), id: "dup" }], events: [], "course-passes": [], "shop-products": [] });
 
     await expect(exportCmsContent(CMS_URL, { fetchImpl })).rejects.toThrow(/home/);
   });
 
   it("7: reads again when content changes during the export, and gives up after three changes", async () => {
-    const collections = { pages: allPages(), events: [...RAW_EVENTS], "course-passes": [] };
+    const collections = { pages: allPages(), events: [...RAW_EVENTS], "course-passes": [], "shop-products": [] };
     const serve = fakePayloadFetch(collections);
     let consistencyChecks = 0;
     // An editor publishes a new event right after every full read.
@@ -51,7 +63,7 @@ describe("exportCmsContent", () => {
   });
 
   it("succeeds on a retry when the change stops", async () => {
-    const collections = { pages: allPages(), events: [...RAW_EVENTS], "course-passes": [] };
+    const collections = { pages: allPages(), events: [...RAW_EVENTS], "course-passes": [], "shop-products": [] };
     const serve = fakePayloadFetch(collections);
     let changed = false;
     const fetchImpl = async (url) => {
@@ -83,7 +95,7 @@ describe("exportCmsContent", () => {
     );
     const events = [{ ...RAW_EVENTS[0], description: "", internalNote: "hemlig", createdBy: { email: "x@example.test" } }];
     const snapshot = await exportCmsContent(CMS_URL, {
-      fetchImpl: fakePayloadFetch({ pages, events, "course-passes": [] }),
+      fetchImpl: fakePayloadFetch({ pages, events, "course-passes": [], "shop-products": [] }),
     });
     const home = snapshot.pages.home;
 

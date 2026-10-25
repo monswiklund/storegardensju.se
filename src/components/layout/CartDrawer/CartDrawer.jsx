@@ -40,7 +40,7 @@ function CartDrawer() {
 
   const handleCheckout = () => {
     closeCart();
-    navigate("/varukorg");
+    navigate("/varukorg/");
   };
 
   return (

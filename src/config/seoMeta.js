@@ -362,6 +362,21 @@ const hubJsonLd = (trackId) => (now = new Date(), { passes = COURSE_PASSES, faq 
  * can never linger in structured data - previously a hardcoded cutoff date did
  * this job and silently expired, taking all structured data with it.
  */
+/**
+ * A shop product's page. The build writes /butik/<slug>/ from the CMS export with it, and the
+ * product page sets the same title once the product has loaded.
+ */
+export function productSeoMeta({ slug, title, description, image = null }) {
+  const summary = description?.trim() || `${title} från gårdsbutiken på Storegården 7 utanför Lidköping.`;
+  return {
+    path: `/butik/${slug}`,
+    title: `${title} – Butik | Storegården 7`,
+    description: summary.length > 160 ? `${summary.slice(0, 157).trimEnd()}…` : summary,
+    image,
+    staticContent: { h1: title, paragraphs: [summary] },
+  };
+}
+
 export function activeJsonLd(meta, now = new Date(), context) {
   if (typeof meta?.buildJsonLd === "function") {
     return meta.buildJsonLd(now, context);

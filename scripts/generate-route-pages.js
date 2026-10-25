@@ -2,7 +2,7 @@
 // HTTP 200 with correct title/description/canonical instead of the
 // 404.html SPA redirect (404 status blocks Google indexing entirely).
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { seoMeta, canonicalUrl, activeJsonLd } from "../src/config/seoMeta.js";
+import { seoMeta, canonicalUrl, activeJsonLd, productSeoMeta } from "../src/config/seoMeta.js";
 import { escapeAttr, escapeHtml, escapeXml, jsonForScript, socialImageUrl } from "../src/config/prerenderEscape.js";
 import CMS_CONTENT from "../src/data/cmsContent.generated.js";
 
@@ -140,8 +140,20 @@ const replaceMeta = (source, selector, content) =>
     (_, open, close) => `${open}${escapeAttr(content)}${close}`
   );
 
-for (const sourceMeta of Object.values(seoMeta)) {
-  const meta = withCmsImage(sourceMeta);
+// Every published shop product gets its own 200 page, title and sitemap entry; one published
+// after this build still opens through the 404.html redirect until the next build.
+const productPages = (CMS_CONTENT?.shopProducts || []).map((product) =>
+  productSeoMeta({
+    slug: product.slug,
+    title: product.title,
+    description: product.description,
+    image: product.image?.sizes?.card?.url || product.image?.url || null,
+  })
+);
+
+const publicPages = [...Object.values(seoMeta).map(withCmsImage), ...productPages];
+
+for (const meta of publicPages) {
   if (meta.path === "/") continue;
 
   let routeHtml = html
@@ -280,8 +292,7 @@ console.log("injected crawlable shell into dist/index.html");
 // Generated from the same metadata as the pages, so the sitemap cannot list a
 // route or image the build did not produce. No lastmod: a hand-set date that
 // does not follow content changes is worse than none.
-const sitemapEntries = Object.values(seoMeta).map((sourceMeta) => {
-  const meta = withCmsImage(sourceMeta);
+const sitemapEntries = publicPages.map((meta) => {
   const image = meta.image
     ? `\n    <image:image><image:loc>${escapeXml(meta.image)}</image:loc></image:image>`
     : "";

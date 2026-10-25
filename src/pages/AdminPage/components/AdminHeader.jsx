@@ -19,10 +19,6 @@ const ADMIN_VIEW_COPY = {
     title: "Kunder",
     subtitle: "Se köphistorik och återkommande kunder.",
   },
-  products: {
-    title: "Produkter",
-    subtitle: "Skapa, redigera och publicera produkter.",
-  },
   coupons: {
     title: "Rabatter",
     subtitle: "Skapa och arkivera rabattkoder.",

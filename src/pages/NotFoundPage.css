@@ -91,7 +91,7 @@
   outline-offset: 3px;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 480px) {
   .not-found-page {
     padding-top: 100px;
   }

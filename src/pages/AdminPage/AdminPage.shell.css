@@ -243,10 +243,6 @@
   --admin-section-accent: var(--admin-primary);
 }
 
-.admin-products-workspace {
-  --admin-section-accent: var(--admin-primary);
-}
-
 .admin-gallery {
   --admin-section-accent: #2f6f73;
 }

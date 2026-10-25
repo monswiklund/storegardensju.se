@@ -21,7 +21,7 @@ export default function CancelPage() {
           </p>
 
           <div className="cancel-actions">
-            <Link to="/varukorg" className="btn-primary">
+            <Link to="/varukorg/" className="btn-primary">
               <ShoppingCart size={20} />
               {siteCopy("ui.back")}
             </Link>

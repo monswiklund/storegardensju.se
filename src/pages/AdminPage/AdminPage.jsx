@@ -39,10 +39,6 @@ function AdminPage() {
 
   const [statsRange, setStatsRange] = useState(DEFAULT_STATS_RANGE);
 
-  // Product Management
-  const [productViewMode, setProductViewMode] = useState("list"); // list, create, edit
-  const [editingProduct, setEditingProduct] = useState(null);
-
   const demoStats = useMemo(() => buildDemoStats(statsRange), [statsRange]);
 
   const {
@@ -246,7 +242,6 @@ function AdminPage() {
   const showStatsSection = adminView === "overview" || adminView === "stats";
   const showOrdersSection = adminView === "overview" || adminView === "orders";
   const showCustomersSection = adminView === "customers";
-  const showProductsSection = adminView === "products";
 
   const showCouponsSection = adminView === "coupons";
 
@@ -332,17 +327,12 @@ function AdminPage() {
 
             <AdminFeatureSections
               showCustomersSection={showCustomersSection}
-              showProductsSection={showProductsSection}
               showCouponsSection={showCouponsSection}
               orders={orders}
               listLoading={listLoading}
               isPreview={isPreview}
               adminKey={adminKey}
               onLogin={handleLogout}
-              productViewMode={productViewMode}
-              setProductViewMode={setProductViewMode}
-              editingProduct={editingProduct}
-              setEditingProduct={setEditingProduct}
             />
 
             <AdminOrdersSection

@@ -95,7 +95,7 @@ export default function CheckoutPage() {
         <div className="checkout-container">
           <div className="checkout-header">
             <button
-              onClick={() => navigate("/varukorg")}
+              onClick={() => navigate("/varukorg/")}
               className="back-button"
               aria-label={siteCopy("ui.back")}
             >

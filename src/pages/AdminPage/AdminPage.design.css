@@ -800,7 +800,6 @@ body:has(.admin-app) .scroll-to-top {
 }
 
 .admin-customers-view,
-.admin-products-workspace,
 .admin-coupons,
 .admin-gallery {
   display: grid;
@@ -808,14 +807,12 @@ body:has(.admin-app) .scroll-to-top {
 }
 
 .admin-customer-table-card,
-.admin-product-list,
 .coupon-list-section {
   padding: 0;
   overflow: hidden;
 }
 
 .admin-customer-table-card .admin-table-container,
-.admin-product-list .apl-table,
 .coupon-list-section .coupon-table {
   margin: 0;
 }
@@ -936,15 +933,13 @@ body:has(.admin-app) .scroll-to-top {
 
 /* Tables and status */
 .admin-table,
-.admin-orders-table,
-.apl-table {
+.admin-orders-table {
   border-collapse: separate;
   border-spacing: 0;
 }
 
 .admin-table thead th,
-.admin-orders-table thead th,
-.apl-table thead th {
+.admin-orders-table thead th {
   color: var(--admin-muted);
   background: var(--admin-surface-subtle);
   font-size: 0.68rem;
@@ -954,14 +949,12 @@ body:has(.admin-app) .scroll-to-top {
 }
 
 .admin-table tbody tr,
-.admin-orders-table tbody tr,
-.apl-table tbody tr {
+.admin-orders-table tbody tr {
   transition: background-color 140ms ease;
 }
 
 .admin-table tbody tr:hover,
-.admin-orders-table tbody tr:hover,
-.apl-table tbody tr:hover {
+.admin-orders-table tbody tr:hover {
   background: #f3f7f3;
 }
 
@@ -978,8 +971,7 @@ body:has(.admin-app) .scroll-to-top {
 }
 
 .admin-chip,
-.admin-status-chip,
-.apl-status-badge {
+.admin-status-chip {
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 800;

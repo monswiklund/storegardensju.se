@@ -459,14 +459,14 @@
   line-height: 1.5;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .kurser-details__container {
     grid-template-columns: 1fr;
     gap: 36px;
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .kurser-hero {
 
     min-height: 660px;
@@ -513,7 +513,7 @@
   }
 }
 
-@media (max-width: 440px) {
+@media (max-width: 480px) {
   .kurser-hero {
     min-height: 590px;
   }
@@ -821,7 +821,7 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   /* Stagger, overlap and multi-column layouts all collapse - on a phone they
      would only produce cramped columns and clipped portraits. */
   .kurser-faq__list--columns,
@@ -1075,7 +1075,7 @@
   line-height: 1.65;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .kurser-crosslink__inner {
     grid-template-columns: 1fr;
   }

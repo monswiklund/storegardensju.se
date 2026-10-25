@@ -88,7 +88,7 @@
   padding-block: clamp(72px, 9vw, 112px);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   [data-cms-hero-layout="editorial"] [data-cms-hero-content] {
     width: 100%;
     margin-inline: 0;

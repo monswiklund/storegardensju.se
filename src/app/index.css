@@ -35,6 +35,12 @@
   --transition-smooth: all 0.3s ease;
 }
 
+/* Breakpoints (media queries cannot read custom properties, so the scale lives here):
+   480 · 600 · 768 · 900 · 1024 · 1200. "Below" uses max-width at the value, "from" uses
+   min-width at the value (767/768 and 1023/1024 where both sides are styled). The only
+   exception is 350px for the iPhone mockup on the smallest phones. The old admin
+   (pages/AdminPage) keeps its own scale. */
+
 /* ==========================================================================
    Base Styles & Typography
    ========================================================================== */

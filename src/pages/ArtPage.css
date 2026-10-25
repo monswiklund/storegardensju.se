@@ -96,7 +96,7 @@
   color: #ffffff; /* Matches the white band that follows. */
 }
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
   .art-hero__wave {
     height: 32px;
   }
@@ -364,11 +364,11 @@
 }
 
 .offering-terracotta .offering-icon-wrapper {
-  background-color: rgba(185, 148, 112, 0.1);
+  background-color: color-mix(in srgb, var(--accent-color) 10%, transparent);
   color: var(--accent-color);
 }
 .offering-terracotta:hover {
-  border-color: rgba(185, 148, 112, 0.3);
+  border-color: color-mix(in srgb, var(--accent-color) 30%, transparent);
 }
 
 .offering-green .offering-icon-wrapper {
@@ -422,7 +422,7 @@
   background:
     radial-gradient(
       circle at 12% 18%,
-      rgba(185, 148, 112, 0.22) 0%,
+      color-mix(in srgb, var(--accent-color) 22%, transparent) 0%,
       transparent 42%
     ),
     radial-gradient(
@@ -435,7 +435,7 @@
       rgba(212, 175, 55, 0.14) 0%,
       transparent 38%
     ),
-    radial-gradient(circle at center, rgba(185, 148, 112, 0.1) 0%, transparent 70%);
+    radial-gradient(circle at center, color-mix(in srgb, var(--accent-color) 10%, transparent) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -468,7 +468,7 @@
 
 .art-button--premium:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(185, 148, 112, 0.3);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--accent-color) 30%, transparent);
 }
 
 /* --- Quiet ending -------------------------------------------------------- */
@@ -548,7 +548,7 @@
   border-bottom: 1px solid rgba(95, 111, 82, 0.12);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .art-location {
     grid-template-columns: 1fr;
   }
@@ -564,7 +564,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 480px) {
   .art-next-course {
     align-items: flex-start;
     flex-direction: column;

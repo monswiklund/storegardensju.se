@@ -212,7 +212,7 @@ function AppContent() {
         </PageTransition>
       </Suspense>
       {!isAdminRoute && !isTeamPage && !isContactPage && !isArtPage && (
-        <div id={isHomePage ? "home-contact" : undefined}>
+        <div id={isHomePage ? "home-contact" : "site-contact"}>
           <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
             <ContactSection />
           </FadeInSection>

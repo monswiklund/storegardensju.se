@@ -6,8 +6,9 @@
     <meta name="robots" content="noindex">
     <title>Sidan hittades inte | Storegården 7</title>
     <script>
-        // Product pages come live from Stripe, so the build cannot write them. Hand
-        // /butik/<id> to the app; index.html restores the path before React starts.
+        // The build writes a page per published product; one published since the last
+        // build has none yet. Hand /butik/<id> to the app; index.html restores the path
+        // before React starts.
         if (/^\/butik\/[^/]+\/?$/.test(location.pathname)) {
             sessionStorage.setItem("redirectPath", location.pathname + location.search + location.hash);
             location.replace("/");

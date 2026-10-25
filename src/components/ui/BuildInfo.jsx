@@ -36,7 +36,7 @@ function BuildInfo() {
 
         if (clickCountRef.current >= 3) {
             clickCountRef.current = 0;
-            navigate('/admin');
+            navigate('/admin/');
         } else {
             resetTimerRef.current = setTimeout(() => {
                 clickCountRef.current = 0;

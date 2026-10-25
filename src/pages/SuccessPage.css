@@ -107,12 +107,12 @@
 }
 
 .btn-primary {
-  background: hsl(160, 32%, 50%) !important;
+  background: var(--primary-color) !important;
   color: white !important;
 }
 
 .btn-primary:hover {
-  background: hsl(160, 35%, 42%) !important;
+  background: var(--primary-hover) !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(74, 163, 139, 0.3);
 }

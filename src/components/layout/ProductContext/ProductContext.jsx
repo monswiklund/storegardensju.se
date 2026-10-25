@@ -5,20 +5,45 @@ import {
   useMemo,
   useRef,
 } from "react";
-import {
-  getStripeProducts,
-  getCategories,
-} from "../../../services/stripeService";
+import { getCategories } from "../../../services/stripeService";
 import { fetchShopProducts } from "../../../services/cmsService";
 import { normalizeMediaList } from "../../../services/mediaService.js";
 
 export const ProductContext = createContext();
 
 /**
+ * A product as the shop pages use it. The CMS is the only source: publishing a
+ * product there creates its Stripe price, which checkout charges. Price is in
+ * kronor, like formatPrice expects.
+ */
+export function toShopProduct(doc) {
+  return {
+    id: doc.slug || `cms-${doc.id}`,
+    name: doc.title,
+    description: doc.description || "",
+    price: doc.price || 0,
+    priceId: doc.stripePriceId || "",
+    category: doc.category || "keramik",
+    images: normalizeMediaList(doc.images, "card").map((image) => image.src),
+    // Without a Stripe price there is nothing checkout could charge.
+    active: doc.status !== "sold_out" && Boolean(doc.stripePriceId),
+    // One unique piece, unless every buyer gets their own.
+    stock: doc.status === "made_to_order" ? 10 : 1,
+    metadata: {
+      status: doc.status,
+      dimensions: doc.dimensions,
+    },
+  };
+}
+
+const loadShopProducts = async () =>
+  (await fetchShopProducts().catch(() => [])).map(toShopProduct);
+
+/**
  * ProductProvider - Global provider för produktdata
  *
- * Laddar produkter från CMS och Stripe första gången butiken eller en
- * produktsida behöver dem (load), inte på varje sidvisning.
+ * Laddar produkterna från CMS:et första gången butiken eller en produktsida
+ * behöver dem (load), inte på varje sidvisning.
  */
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState([]);
@@ -35,28 +60,7 @@ export function ProductProvider({ children }) {
       setLoading(true);
       setError(null);
 
-      const [stripeProducts, cmsProducts] = await Promise.all([
-        getStripeProducts().catch(() => []),
-        fetchShopProducts().catch(() => []),
-      ]);
-
-      const formattedCmsProducts = (cmsProducts || []).map((doc) => ({
-        id: `cms-${doc.id}`,
-        name: doc.title,
-        description: doc.description || "",
-        price: (doc.price || 0) * 100,
-        category: doc.category || "keramik",
-        images: normalizeMediaList(doc.images, "card").map((image) => image.src),
-        active: doc.status !== "sold_out",
-        stock: doc.status === "in_stock" ? 10 : 1,
-        metadata: {
-          status: doc.status,
-          dimensions: doc.dimensions,
-        },
-      }));
-
-      const allProducts = [...stripeProducts, ...formattedCmsProducts];
-      setProducts(allProducts);
+      setProducts(await loadShopProducts());
     } catch (err) {
       console.error("Failed to prefetch products:", err);
       setError("Kunde inte ladda produkter. Försök igen senare.");
@@ -71,28 +75,7 @@ export function ProductProvider({ children }) {
     try {
       setLoading(true);
       setError(null);
-      const [stripeProducts, cmsProducts] = await Promise.all([
-        getStripeProducts().catch(() => []),
-        fetchShopProducts().catch(() => []),
-      ]);
-
-      const formattedCmsProducts = (cmsProducts || []).map((doc) => ({
-        id: `cms-${doc.id}`,
-        name: doc.title,
-        description: doc.description || "",
-        price: (doc.price || 0) * 100,
-        category: doc.category || "keramik",
-        images: normalizeMediaList(doc.images, "card").map((image) => image.src),
-        active: doc.status !== "sold_out",
-        stock: doc.status === "in_stock" ? 10 : 1,
-        metadata: {
-          status: doc.status,
-          dimensions: doc.dimensions,
-        },
-      }));
-
-      const allProducts = [...stripeProducts, ...formattedCmsProducts];
-      setProducts(allProducts);
+      setProducts(await loadShopProducts());
     } catch (err) {
       console.error("Failed to fetch products:", err);
       setError("Kunde inte ladda produkter. Försök igen senare.");

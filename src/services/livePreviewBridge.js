@@ -2,6 +2,8 @@ export const PREVIEW_MESSAGE = Object.freeze({
   activeField: "storegardensju-preview-active-field",
   fieldSelected: "storegardensju-preview-field-selected",
   formData: "storegardensju-preview-form-data",
+  // Answer to activeField: whether the page shows that field right now.
+  fieldVisibility: "storegardensju-preview-field-visibility",
 });
 
 const CMS_ORIGIN = "https://cms.storegardensju.se";

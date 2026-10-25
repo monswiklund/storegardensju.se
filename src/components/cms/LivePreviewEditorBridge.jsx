@@ -31,9 +31,18 @@ function highlightField(field, scroll = false) {
   const targets = Array.from(document.querySelectorAll("[data-cms-fields]"))
     .filter((element) => element.dataset.cmsFields?.split(" ").includes(field));
   const target = visibleElement(targets);
-  if (!target) return;
+  if (!target) return false;
   target.classList.add("sg-live-preview-highlight");
   if (scroll) target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+  return true;
+}
+
+// Tells the editor whether the field it is on shows on this page now; a hidden, empty or
+// other-view field otherwise looks like a broken preview.
+function reportVisibility(field, visible, lastReport) {
+  if (lastReport.current === `${field}:${visible}`) return;
+  lastReport.current = `${field}:${visible}`;
+  postToCms({ type: PREVIEW_MESSAGE.fieldVisibility, field, visible });
 }
 
 export function collectPreviewFields(slug, data) {
@@ -135,6 +144,7 @@ export default function LivePreviewEditorBridge({ pathname }) {
   const [data, setData] = useState(() => getPageContentSync(routeSlug));
   const slug = data?.slug || routeSlug;
   const activeFieldRef = useRef("");
+  const lastReportRef = useRef("");
 
   useEffect(() => {
     if (!isLivePreviewFrame()) return undefined;
@@ -147,7 +157,14 @@ export default function LivePreviewEditorBridge({ pathname }) {
         const field = String(event.data.field || "");
         if (!field || field === activeFieldRef.current) return;
         activeFieldRef.current = field;
-        highlightField(field, true);
+        if (highlightField(field, true)) {
+          reportVisibility(field, true, lastReportRef);
+        } else {
+          // Scrolling and fade-ins can show the part a moment later; only then is it missing.
+          window.setTimeout(() => {
+            if (activeFieldRef.current === field) reportVisibility(field, highlightField(field, true), lastReportRef);
+          }, 600);
+        }
         return;
       }
       const next = extractPreviewData(event);
@@ -179,7 +196,8 @@ export default function LivePreviewEditorBridge({ pathname }) {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         decorateTextFields(slug, data);
-        if (activeFieldRef.current) highlightField(activeFieldRef.current);
+        const field = activeFieldRef.current;
+        if (field) reportVisibility(field, highlightField(field), lastReportRef);
       });
     };
     decorate();

@@ -137,6 +137,20 @@ export function projectEvent(doc, cmsUrl) {
   };
 }
 
+/** A published shop product: what its static page and the sitemap need. */
+export function projectShopProduct(doc, cmsUrl) {
+  return {
+    id: doc.id,
+    slug: text(doc.slug),
+    title: text(doc.title),
+    description: text(doc.description),
+    price: optionalNumber(doc.price),
+    status: ["in_stock", "made_to_order", "sold_out"].includes(doc.status) ? doc.status : "in_stock",
+    image: projectMedia(Array.isArray(doc.images) ? doc.images[0] : null, cmsUrl),
+    updatedAt: optionalText(doc.updatedAt),
+  };
+}
+
 /** A published course pass (the older bookable-session collection, kept compatible). */
 export function projectCoursePass(doc) {
   return {

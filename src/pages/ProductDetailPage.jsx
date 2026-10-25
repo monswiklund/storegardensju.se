@@ -5,8 +5,10 @@ import { PageSection } from "../components";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
 import { ProductRecommendations } from "../features/shop";
-import { getStripeProductById, formatPrice } from "../services/stripeService";
+import { formatPrice } from "../services/stripeService";
 import { useSiteCopy } from "../hooks/usePageCopy";
+import { useSeo } from "../hooks/useSeo.js";
+import { productSeoMeta } from "../config/seoMeta.js";
 import "./ProductDetailPage.css";
 
 function ProductDetailPage() {
@@ -25,15 +27,15 @@ function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeImage, setActiveImage] = useState(0);
+  useSeo(product ? productSeoMeta({ slug: product.id, title: product.name, description: product.description }) : {});
 
-  // Hämta produkt från Stripe vid mount eller när productId ändras
+  // Produkten kommer från CMS-listan som ProductContext laddar.
   useEffect(() => {
     async function fetchProduct() {
       try {
         setLoading(true);
-        const contextProduct = products.find((item) => String(item.id) === String(productId));
-        if (productId?.startsWith("cms-") && productsLoading && !contextProduct) return;
-        const resolvedProduct = contextProduct || await getStripeProductById(productId);
+        const resolvedProduct = products.find((item) => String(item.id) === String(productId));
+        if (productsLoading && !resolvedProduct) return;
 
         if (!resolvedProduct) {
           setError(siteCopy("cart.product-not-found", "error"));
