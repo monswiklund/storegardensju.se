@@ -15,12 +15,39 @@
         }
     </script>
     <style>
+        /* Same fonts, tokens and wording as the app's NotFoundPage, so a dead link from
+           Instagram or Google still looks like Storegården 7. */
+        @font-face {
+            font-family: "Lato";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url("/fonts/lato-normal-400.woff2") format("woff2");
+        }
+        @font-face {
+            font-family: "Lato";
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url("/fonts/lato-normal-700.woff2") format("woff2");
+        }
+        @font-face {
+            font-family: "Playfair Display";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url("/fonts/playfair-display-normal-400.woff2") format("woff2");
+        }
         :root {
             color-scheme: light;
-            --ink: #243328;
-            --muted: #5f6f62;
-            --green: #5f8a70;
-            --paper: #f7f5ef;
+            --text-strong: #1a2519;
+            --text-body: #333333;
+            --text-muted: #59655f;
+            --text-accent: #367862;
+            --button-bg: #367862;
+            --button-bg-hover: #2b6451;
+            --decor: hsl(160, 32%, 50%);
+            --paper: #fdfcf9;
         }
         * { box-sizing: border-box; }
         body {
@@ -28,51 +55,122 @@
             min-height: 100vh;
             display: grid;
             place-items: center;
-            padding: 32px 20px;
+            padding: 40px 16px;
             background: var(--paper);
-            color: var(--ink);
-            font-family: Lato, Helvetica, Arial, sans-serif;
+            color: var(--text-body);
+            font-family: "Lato", Helvetica, Arial, sans-serif;
         }
-        main { max-width: 620px; text-align: center; }
-        p { color: var(--muted); line-height: 1.7; }
+        main { width: min(100%, 640px); text-align: center; }
+        .logo { display: inline-block; margin-bottom: 28px; }
+        .logo img { display: block; width: 180px; height: auto; }
+        .code {
+            margin: 0;
+            color: var(--text-accent);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+        }
+        .ornament {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 18px 0;
+        }
+        .ornament span { display: block; width: 64px; height: 1px; background: var(--decor); opacity: 0.55; }
+        .ornament i { display: block; width: 7px; height: 7px; border: 1px solid var(--decor); transform: rotate(45deg); }
         h1 {
-            margin: 0 0 16px;
-            font-family: Georgia, serif;
-            font-size: clamp(2.25rem, 7vw, 4rem);
-            font-weight: 600;
+            margin: 0 0 18px;
+            color: var(--text-strong);
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: clamp(2.4rem, 6vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.05;
         }
-        nav {
+        p { max-width: 520px; margin: 0 auto; font-size: 1.08rem; line-height: 1.7; }
+        .actions {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 12px;
-            margin-top: 28px;
+            margin-top: 32px;
         }
-        a {
+        .btn {
             display: inline-flex;
             align-items: center;
-            min-height: 46px;
-            padding: 10px 18px;
-            border: 1px solid var(--green);
+            justify-content: center;
+            min-height: 48px;
+            padding: 0 24px;
+            border: 1.5px solid var(--button-bg);
             border-radius: 999px;
-            color: var(--green);
+            color: var(--button-bg);
             font-weight: 700;
             text-decoration: none;
         }
-        a:first-child { background: var(--green); color: white; }
-        a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+        .btn--primary { background: var(--button-bg); color: #fff; }
+        .btn--primary:hover { background: var(--button-bg-hover); border-color: var(--button-bg-hover); }
+        .btn--secondary:hover { border-color: var(--button-bg-hover); color: var(--button-bg-hover); }
+        .routes { margin-top: 40px; padding-top: 28px; border-top: 1px solid rgb(26 37 25 / 0.12); }
+        .routes h2 {
+            margin: 0 0 12px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+        .routes ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px 20px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .routes a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            color: var(--text-accent);
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 4px;
+        }
+        .routes a:hover { text-decoration-thickness: 2px; }
+        .email { margin-top: 20px; font-size: 0.95rem; color: var(--text-muted); }
+        .email a { color: var(--text-accent); font-weight: 700; }
+        a:focus-visible { outline: 3px solid var(--text-strong); outline-offset: 3px; }
+        @media (max-width: 480px) {
+            .actions { flex-direction: column; align-items: stretch; max-width: 320px; margin-inline: auto; }
+        }
     </style>
 </head>
 <body>
     <main>
-        <p aria-hidden="true">404</p>
+        <a class="logo" href="/">
+            <img src="https://media.storegardensju.se/media-c0a7592815264a8e7e550bd2a176c8c05dfcefd1ecaac1d9fe33f3096aac918d.webp" alt="Storegården 7, till startsidan" width="180" height="60">
+        </a>
+        <p class="code" aria-hidden="true">404</p>
+        <div class="ornament" aria-hidden="true"><span></span><i></i><span></span></div>
         <h1>Sidan hittades inte</h1>
-        <p>Det verkar som att sidan har flyttat eller att länken inte längre finns.</p>
-        <nav aria-label="Hitta vidare på Storegården 7">
-            <a href="/">Till startsidan</a>
-            <a href="/event/">Se våra event</a>
-            <a href="/kontakt/">Kontakta oss</a>
+        <p>Sidan du söker finns inte längre eller har flyttats.</p>
+        <div class="actions">
+            <a class="btn btn--primary" href="/">Hem</a>
+            <a class="btn btn--secondary" href="/kontakt/">Kontakt</a>
+        </div>
+        <nav class="routes" aria-labelledby="routes-title">
+            <h2 id="routes-title">Hitta vidare på Storegården 7</h2>
+            <ul>
+                <li><a href="/event/brollop/">Bröllop</a></li>
+                <li><a href="/event/">Event</a></li>
+                <li><a href="/gruppdagar/">Gruppdagar</a></li>
+                <li><a href="/kurser/">Kurser</a></li>
+                <li><a href="/galleri/">Galleri</a></li>
+            </ul>
         </nav>
+        <p class="email">Eller mejla oss på <a href="mailto:storegardensju@gmail.com">storegardensju@gmail.com</a></p>
     </main>
 </body>
 </html>
