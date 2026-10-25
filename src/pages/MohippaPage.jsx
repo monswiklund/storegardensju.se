@@ -38,6 +38,7 @@ const ACTIVITY_DEFINITIONS = [
   {
     id: "yoga",
     priceVal: 200,
+    duration: "1 h",
     category: "lugn",
     defaultImage: "/images/evenemang/slide12.webp",
   },
@@ -84,8 +85,9 @@ function MohippaPage() {
     image: media(`activities.${def.id}`, def.defaultImage, "card"),
     title: copy(`activities.items.${def.id}.title`),
     description: copy(`activities.items.${def.id}.body`),
-    duration: copy(`activities.items.${def.id}.duration`),
-    price: copy(`activities.items.${def.id}.price`),
+    duration: copy(`activities.items.${def.id}.duration`, def.duration),
+    // Shown from the same number the total is calculated from, so the two cannot disagree.
+    price: `${def.priceVal} kr/person`,
   }));
   const details = list("package-details", []);
   const [activeSection, setActiveSection] = useState("top");
@@ -118,7 +120,7 @@ function MohippaPage() {
       `- ${copy("calc.guests-label")}: ${guestCount} st\n` +
       `- ${copy("calc.package-label")}: ${copy("calc.base-package-name")} (500 kr/person)\n` +
       `- ${copy("calc.chosen-activities")}:\n${activitiesText}\n\n` +
-      `${copy("calc.estimated-total")}: ${grandTotal.toLocaleString("sv-SE")} kr (${totalPerPerson} kr/person)\n\n` +
+      `${copy("calc.estimated-total")} ${grandTotal.toLocaleString("sv-SE")} kr (${totalPerPerson} kr/person)\n\n` +
       `${copy("calc.requested-date")}: [Fyll i datum här]\n\n` +
       `${copy("calc.email-closing")}\n\n` +
       `${copy("calc.email-regards")}\n` +
