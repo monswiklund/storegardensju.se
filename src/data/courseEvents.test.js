@@ -9,12 +9,12 @@ import {
   formatPassTime,
   MALERI_TRACK_ID,
   hubFaq,
+  INSTRUCTORS,
   isBookablePass,
   nextPass,
   ownedUpcomingPasses,
   passAnchor,
   passHref,
-  passContactEmail,
   passInstructor,
   pastPasses,
   resolvedFaq,
@@ -24,6 +24,7 @@ import {
   upcomingPasses,
   YOGA_TRACK_ID,
 } from "./courseEvents.js";
+import { contactEmail } from "../features/contact/contact.js";
 import { projectCoursePass, projectEvent } from "./cmsProjection.js";
 
 // The build's export, synthetic: COURSE_PASSES and every default below read it.
@@ -208,7 +209,7 @@ describe("FAQ answers", () => {
 
   it("names the next maleri course from the course passes, and none once it is over", () => {
     const question = (now) =>
-      resolvedFaq(MALERI_TRACK_ID, now).find((item) => item.question.startsWith("När är nästa målarkurs")).answer;
+      resolvedFaq(MALERI_TRACK_ID, now).find((item) => item.question.startsWith("När är nästa kurs i måleri")).answer;
 
     expect(question(BEFORE_JULY_30)).toContain("Akvarell för nybörjare");
     expect(question(AFTER_ALL_PASSES)).toContain("ingen kurs med fast datum");
@@ -268,21 +269,23 @@ describe("passes from CMS records", () => {
     expect(passes.map((pass) => pass.id)).toEqual(["events:7", "course-pass-7"]);
   });
 
-  it("keeps a course pass's status, instructor, spots and booking address", () => {
+  it("keeps a course pass's status, instructor and spots", () => {
     const pass = coursePass({ track: "konst", instructor: "ann", status: "fully_booked", spots: 0, bookingEmail: "kurs@example.test" });
 
     expect(pass.status).toBe("fully_booked");
     expect(passInstructor(pass).name).toBe("Ann Wiklund");
     expect(pass.spots).toBe(0);
-    expect(passContactEmail(pass)).toBe("kurs@example.test");
     expect(isBookablePass(pass, new Date("2026-08-01T00:00:00Z"))).toBe(false);
   });
 
-  it("names no one for a guest instructor and falls back to the farm's address", () => {
+  it("names no one for a guest instructor", () => {
     const pass = coursePass({ track: "yoga", instructor: "guest" });
 
     expect(passInstructor(pass)).toBeNull();
-    expect(passContactEmail(pass)).toMatch(/@/);
+  });
+
+  it("reaches both instructors through the farm's one inbox", () => {
+    expect(Object.values(INSTRUCTORS).map((instructor) => instructor.email)).toEqual([contactEmail, contactEmail]);
   });
 
   it("does not offer a cancelled pass as the next one", () => {

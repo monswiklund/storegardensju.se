@@ -205,6 +205,13 @@ for (const meta of publicPages) {
     );
   }
 
+  if (meta.robots) {
+    routeHtml = routeHtml.replace(
+      "</head>",
+      () => `    <meta name="robots" content="${escapeAttr(meta.robots)}" />\n  </head>`
+    );
+  }
+
   if (routeHtml === html) {
     throw new Error(`No meta replaced for ${meta.path} - check regexes`);
   }
@@ -292,7 +299,8 @@ console.log("injected crawlable shell into dist/index.html");
 // Generated from the same metadata as the pages, so the sitemap cannot list a
 // route or image the build did not produce. No lastmod: a hand-set date that
 // does not follow content changes is worse than none.
-const sitemapEntries = publicPages.map((meta) => {
+// A noindex page in the sitemap sends crawlers mixed signals.
+const sitemapEntries = publicPages.filter((meta) => !/noindex/.test(meta.robots ?? "")).map((meta) => {
   const image = meta.image
     ? `\n    <image:image><image:loc>${escapeXml(meta.image)}</image:loc></image:image>`
     : "";

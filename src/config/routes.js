@@ -28,15 +28,15 @@ export function canonicalPath(path) {
     : `${pathname}/${suffix}`;
 }
 
+// Bröllop and Kontakt are top level: they are the two main reasons people visit, and
+// desktop hides the navbar dropdowns, so a child route was only reachable via the subnav.
 export const appRoutes = [
   { path: "/", label: "Hem" },
+  { path: "/event/brollop", label: "Bröllop" },
   {
     path: "/event",
     label: "Event",
-    children: [
-      { path: "/event/brollop", label: "Bröllop" },
-      { path: "/gruppdagar", label: "Gruppdagar" },
-    ],
+    children: [{ path: "/gruppdagar", label: "Gruppdagar" }],
   },
   {
     path: "/kurser",
@@ -47,12 +47,10 @@ export const appRoutes = [
     ],
   },
   { path: "/galleri", label: "Galleri" },
-  { path: "/butik", label: "Butik" },
-  {
-    path: "/om-oss",
-    label: "Om Oss",
-    children: [{ path: "/kontakt", label: "Kontakt" }],
-  },
+  // shopOnly: hidden in the menus while the shop has no published products.
+  { path: "/butik", label: "Butik", shopOnly: true },
+  { path: "/om-oss", label: "Om Oss" },
+  { path: "/kontakt", label: "Kontakt", cta: true },
 ];
 
 const navKeyMap = {

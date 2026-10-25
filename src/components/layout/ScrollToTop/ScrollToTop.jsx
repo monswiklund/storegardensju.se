@@ -17,6 +17,11 @@ function readPositions() {
   }
 }
 
+// Where back/forward (or a reload) will put this history entry; 0 when it starts at the top.
+export function savedScrollPosition(key) {
+  return readPositions()[key] ?? 0;
+}
+
 function savePosition(key) {
   try {
     const positions = readPositions();
@@ -103,7 +108,7 @@ function ScrollToTop() {
     }
 
     // POP = back/forward: restore saved position. PUSH/REPLACE: start at top.
-    const targetY = navigationType === "POP" ? readPositions()[key] ?? 0 : 0;
+    const targetY = navigationType === "POP" ? savedScrollPosition(key) : 0;
 
     const applyScroll = () => {
       window.storegardenLenis?.scrollTo?.(targetY, {

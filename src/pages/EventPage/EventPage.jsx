@@ -1,17 +1,18 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   ArrowDown,
   ArrowUpRight,
   Building2,
+  ClipboardList,
   Heart,
+  Images,
   Maximize2,
   PartyPopper,
   Sparkles,
   UsersRound,
   Wine,
 } from "lucide-react";
-import { PageSection, ScrollSpyNav, SectionDivider } from "../../components";
-import { HomeServicesSection } from "../../features/home";
+import { ExploreMore, PageSection, ScrollSpyNav, SectionDivider } from "../../components";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import { useSeo } from "../../hooks/useSeo.js";
 import usePageCopy, { useSiteCopy } from "../../hooks/usePageCopy.js";
@@ -44,10 +45,21 @@ const EVENT_TYPES_CONFIG = [
 ];
 
 const SPY_OFFSET = 130;
+const PLANNING_STEPS = [0, 1, 2];
+
+/** Sends the visitor to the site's enquiry form, which App renders right after this page. */
+function goToContactForm(event, subject) {
+  event?.preventDefault?.();
+  window.dispatchEvent(
+    new CustomEvent("expand-contact-form", { detail: subject ? { subject } : {} })
+  );
+  smoothScrollTo(".contact-container", SPY_OFFSET);
+  // A keyboard activation (click detail 0) continues in the form; a tap does not open the keyboard.
+  if (event?.detail === 0) document.getElementById("contact-name")?.focus({ preventScroll: true });
+}
 
 function EventPage() {
   useSeo(seoMeta.event);
-  const navigate = useNavigate();
   const copy = usePageCopy("event");
   const siteCopy = useSiteCopy();
   const media = usePageMedia("event");
@@ -68,12 +80,13 @@ function EventPage() {
     { id: "event-details-section", label: copy("intro.title") },
     { id: "event-loft-section", label: copy("capacity.title") },
     { id: "event-amenities-section", label: copy("amenities.title") },
+    { id: "event-planning-section", label: copy("planning.title") },
     { id: "event-services-recommendation", label: copy("services.title") },
   ];
-
-  const handleGalleryClick = () => {
-    navigate(canonicalPath("/galleri"));
-  };
+  const planningSteps = PLANNING_STEPS.map((index) => ({
+    title: copy(`planning.items.${index}.title`),
+    body: copy(`planning.items.${index}.body`),
+  })).filter((step) => step.title);
 
   const handleScrollToSection = (e, targetIdOrSelector) => {
     if (e && typeof e.preventDefault === "function") {
@@ -106,13 +119,13 @@ function EventPage() {
             <h1 id="event-heading">{copy("hero.title")}</h1>
             <p>{copy("hero.lead")}</p>
             <div className="event-hero__actions" data-cms-hero-actions>
-              <Link to="/kontakt/" className="event-button event-button--primary">
+              <a href="#site-contact" className="btn btn--light" onClick={(e) => goToContactForm(e)}>
                 {copy("hero.primary-cta")}
-                <ArrowUpRight size={18} aria-hidden="true" />
-              </Link>
+                <ArrowDown size={18} aria-hidden="true" />
+              </a>
               <a
                 href="#event-details-section"
-                className="event-button event-button--secondary"
+                className="btn btn--ghost"
                 onClick={(e) => handleScrollToSection(e, "event-details-section")}
               >
                 {copy("hero.secondary-cta")}
@@ -160,7 +173,6 @@ function EventPage() {
                     description,
                     href,
                     image,
-                    imageAlt,
                     linkLabel,
                     title,
                     to,
@@ -168,11 +180,12 @@ function EventPage() {
                   }, index) => {
                     const content = (
                       <>
+                        {/* The card's heading names the link, so the photo is decoration. */}
                         {image && (
                           <img
                             className="event-type-card__image"
                             src={image}
-                            alt={imageAlt}
+                            alt=""
                             loading="lazy"
                           />
                         )}
@@ -232,13 +245,13 @@ function EventPage() {
               </div>
 
               <div className="event-action-bar">
-                <button
-                  className="event-gallery-button event-gallery-button--solid"
-                  type="button"
-                  onClick={handleGalleryClick}
+                <Link
+                  className="btn btn--secondary event-gallery-button"
+                  to={canonicalPath("/galleri")}
                 >
+                  <Images size={18} aria-hidden="true" />
                   {copy("intro.gallery-cta")}
-                </button>
+                </Link>
               </div>
             </FadeInSection>
           </PageSection>
@@ -308,20 +321,60 @@ function EventPage() {
 
         <SectionDivider above="green" below="white" variant="hill" />
 
-        <div id="event-services-recommendation">
-          <PageSection background="white" spacing="none">
+        {/* How a booking goes, ending in the page's own next step: the enquiry form below. */}
+        <div id="event-planning-section">
+          <PageSection background="white" spacing="default">
             <FadeInSection>
-              <HomeServicesSection
-                cmsPage="event"
-                excludeId="event"
-                title={copy("services-section.title")}
-                eyebrow={copy("services-section.eyebrow")}
-              />
+              <div className="event-planning">
+                <div className="event-section-intro event-section-intro--compact">
+                  <span className="event-section-eyebrow">{copy("planning.eyebrow")}</span>
+                  <div className="section-ornament" aria-hidden="true">
+                    <span className="section-ornament-line"></span>
+                    <ClipboardList size={19} />
+                    <span className="section-ornament-line"></span>
+                  </div>
+                  <h2>{copy("planning.title")}</h2>
+                  <p className="event-section-lead">{copy("planning.lead")}</p>
+                </div>
+
+                {planningSteps.length > 0 && (
+                  <ol className="event-timeline">
+                    {planningSteps.map((step, index) => (
+                      <li key={step.title} className="event-timeline__item">
+                        <span className="event-timeline__number" aria-hidden="true">
+                          {index + 1}
+                        </span>
+                        <div className="event-timeline__content">
+                          <h3>{step.title}</h3>
+                          <p>{step.body}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+
+                <div className="event-action-bar event-planning__action">
+                  <a
+                    href="#site-contact"
+                    className="btn btn--primary"
+                    onClick={(e) => goToContactForm(e)}
+                  >
+                    {copy("hero.primary-cta")}
+                    <ArrowDown size={18} aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
             </FadeInSection>
           </PageSection>
         </div>
 
-        <SectionDivider above="white" below="alt" variant="valley" />
+        <SectionDivider above="white" below="green" variant="wave" />
+
+        <div id="event-services-recommendation">
+          <ExploreMore exclude={["event", "fest"]} background="green" />
+        </div>
+
+        <SectionDivider above="green" below="alt" variant="valley" />
       </main>
     </div>
   );

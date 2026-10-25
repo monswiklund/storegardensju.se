@@ -2,7 +2,9 @@ import { useEffect, useContext, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { CheckCircle, ShoppingBag, Home } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
-import { PageSection } from "../components";
+import { ExploreMore, PageSection } from "../components";
+import { contactEmail } from "../features/contact/contact.js";
+import { SHOP_EXPLORE_IDS } from "../features/shop";
 import { verifySession } from "../services/stripeService";
 import { useSiteCopy } from "../hooks/usePageCopy";
 import "./SuccessPage.css";
@@ -55,13 +57,22 @@ export default function SuccessPage() {
               {siteCopy("success.no-order-lead")}
             </p>
             <div className="success-actions">
-              <Link to="/butik/" className="btn-primary">
-                <ShoppingBag size={18} />
+              <Link to="/butik/" className="btn btn--primary">
+                <ShoppingBag size={18} aria-hidden="true" />
                 {siteCopy("cart.continue-shopping")}
               </Link>
+              <Link to="/" className="btn btn--secondary">
+                <Home size={18} aria-hidden="true" />
+                {siteCopy("nav.home")}
+              </Link>
             </div>
+            <p className="contact-info">
+              {siteCopy("success.contact-hint")}{" "}
+              <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+            </p>
           </div>
         </PageSection>
+        <ExploreMore ids={SHOP_EXPLORE_IDS} />
       </main>
     );
   }
@@ -70,7 +81,7 @@ export default function SuccessPage() {
     <main role="main" id="main-content">
       <PageSection background="alt" spacing="default">
         <div className="success-container">
-          <CheckCircle size={80} className="success-icon" />
+          <CheckCircle size={80} className="success-icon" aria-hidden="true" />
           <h1>{siteCopy("success.title")}</h1>
           <p className="success-message">
             {siteCopy("success.lead")}
@@ -91,23 +102,22 @@ export default function SuccessPage() {
 
           <p className="contact-info">
             {siteCopy("success.contact-hint")}{" "}
-            <a href="mailto:storegardensju@gmail.com">
-              storegardensju@gmail.com
-            </a>
+            <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
           </p>
 
           <div className="success-actions">
-            <Link to="/butik/" className="btn-primary">
-              <ShoppingBag size={18} />
+            <Link to="/butik/" className="btn btn--primary">
+              <ShoppingBag size={18} aria-hidden="true" />
               {siteCopy("cart.continue-shopping")}
             </Link>
-            <Link to="/" className="btn-secondary">
-              <Home size={18} />
+            <Link to="/" className="btn btn--secondary">
+              <Home size={18} aria-hidden="true" />
               {siteCopy("nav.home")}
             </Link>
           </div>
         </div>
       </PageSection>
+      <ExploreMore ids={SHOP_EXPLORE_IDS} />
     </main>
   );
 }

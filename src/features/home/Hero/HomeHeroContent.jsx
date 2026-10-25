@@ -41,6 +41,7 @@ const getIcon = (label) => {
 };
 
 function HomeHeroContent({
+  logo = "",
   title = "",
   subtitle = "",
   paragraphs = [],
@@ -57,18 +58,10 @@ function HomeHeroContent({
 
   return (
     <div className="hero-content" data-cms-hero-content ref={ref}>
+      {logo ? <img className="hero-logo-mark" src={logo} alt="" /> : null}
       {title ? <h1>{title}</h1> : null}
-      {subtitle ? <h2>{subtitle}</h2> : null}
-
-      {Array.isArray(paragraphs)
-        ? paragraphs.map((text, index) => {
-            const paragraphText =
-              typeof text === "string" ? text : String(text);
-            return <p key={`paragraph-${index}`}>{paragraphText}</p>;
-          })
-        : null}
-
-      <HomeHeroCarousel />
+      {subtitle ? <p className="hero-subtitle">{subtitle}</p> : null}
+      {paragraphs[0] ? <p>{String(paragraphs[0])}</p> : null}
 
       {(primaryCta || (secondaryCtas && secondaryCtas.length > 0)) && (
         <div className="hero-cta-container" data-cms-hero-actions>
@@ -77,9 +70,8 @@ function HomeHeroContent({
             <div className="hero-cta-primary-row">
               <button
                 type="button"
-                className="hero-cta hero-cta-primary"
+                className="btn btn--primary hero-cta"
                 onClick={onPrimaryClick}
-                aria-label={primaryCta.ariaLabel || primaryCta.label}
               >
                 {getIcon(primaryCta.label)}
                 <span>{primaryCta.label}</span>
@@ -91,14 +83,13 @@ function HomeHeroContent({
           {secondaryCtas && secondaryCtas.length > 0 && (
             <div className="hero-cta-secondary-row">
               {secondaryCtas.map(
-                ({ label, ariaLabel, type, href, to }, index) => {
+                ({ label, type, href, to }, index) => {
                   if (type === "external") {
                     return (
                       <a
                         key={`secondary-cta-${index}`}
-                        className="hero-cta hero-cta-secondary"
+                        className="btn btn--secondary hero-cta"
                         href={href}
-                        aria-label={ariaLabel || label}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -112,9 +103,8 @@ function HomeHeroContent({
                     <button
                       key={`secondary-cta-${index}`}
                       type="button"
-                      className="hero-cta hero-cta-secondary"
+                      className="btn btn--secondary hero-cta"
                       onClick={() => handleRouteCta(to)}
-                      aria-label={ariaLabel || label}
                       disabled={!to || typeof onRouteClick !== "function"}
                     >
                       {getIcon(label)}
@@ -127,11 +117,22 @@ function HomeHeroContent({
           )}
         </div>
       )}
+
+      <HomeHeroCarousel />
+
+      {paragraphs.length > 1 && (
+        <div className="hero-more-text">
+          {paragraphs.slice(1).map((text, index) => (
+            <p key={`paragraph-${index + 1}`}>{String(text)}</p>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 HomeHeroContent.propTypes = {
+  logo: PropTypes.string,
   title: PropTypes.string,
   subtitle: PropTypes.string,
   paragraphs: PropTypes.arrayOf(PropTypes.string),

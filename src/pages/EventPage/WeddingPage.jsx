@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useId, useState } from "react";
+import { Link } from "react-router-dom";
 import {
-  ArrowUpRight,
+  ArrowDown,
   CalendarHeart,
   ChevronDown,
   GlassWater,
   Heart,
+  Images,
   Music,
   Sparkles,
   UtensilsCrossed,
 } from "lucide-react";
-import { PageSection, ScrollSpyNav, SectionDivider } from "../../components";
+import { ExploreMore, PageSection, ScrollSpyNav, SectionDivider } from "../../components";
 import { smoothScrollTo } from "../../utils/scrollUtils.js";
-import { HomeServicesSection } from "../../features/home";
+import { canonicalPath } from "../../config/routes.js";
 import FadeInSection from "../../components/ui/FadeInSection.jsx";
 import usePageCopy, { useSiteCopy } from "../../hooks/usePageCopy.js";
 import usePageMedia from "../../hooks/usePageMedia.js";
@@ -27,33 +29,46 @@ const SPACE_ICONS = [UtensilsCrossed, GlassWater, Music];
 // Matches the fixed navbar and Event section subnav used throughout the hub.
 const SPY_OFFSET = 130;
 
+/** Sends the couple to the site's enquiry form (rendered after the page) with "Bröllop" chosen. */
+function goToWeddingForm(event) {
+  event?.preventDefault?.();
+  window.dispatchEvent(
+    new CustomEvent("expand-contact-form", { detail: { subject: "wedding" } })
+  );
+  smoothScrollTo(".contact-container", SPY_OFFSET);
+  // A keyboard activation (click detail 0) continues in the form; a tap does not open the keyboard.
+  if (event?.detail === 0) document.getElementById("contact-name")?.focus({ preventScroll: true });
+}
+
+// The heading wraps the button (not the reverse), so the question stays a heading for
+// screen readers. A closed answer is hidden from them too, not only clipped to zero height.
 function WeddingFaqItem({ question, answer }) {
   const [isOpen, setIsOpen] = useState(false);
-  const slug = question.toLowerCase().replace(/[^a-z0-9åäö]/g, "-").replace(/-+/g, "-");
-  const contentId = `wedding-faq-answer-${slug}`;
+  const contentId = `${useId()}-answer`;
 
   return (
-    <article className={`wedding-faq-card ${isOpen ? "is-open" : ""}`}>
-      <button
-        type="button"
-        className="wedding-faq-card__trigger"
-        aria-expanded={isOpen}
-        aria-controls={contentId}
-        onClick={() => setIsOpen((prev) => !prev)}
-      >
-        <h3>{question}</h3>
-        <ChevronDown
-          className={`wedding-faq-card__chevron ${isOpen ? "is-open" : ""}`}
-          size={20}
-        />
-      </button>
+    <div className={`wedding-faq-card${isOpen ? " is-open" : ""}`}>
+      <h3 className="wedding-faq-card__heading">
+        <button
+          type="button"
+          className="wedding-faq-card__trigger"
+          aria-expanded={isOpen}
+          aria-controls={contentId}
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          <span>{question}</span>
+          <ChevronDown className="wedding-faq-card__chevron" size={20} aria-hidden="true" />
+        </button>
+      </h3>
       <div
         id={contentId}
-        className={`wedding-faq-card__body ${isOpen ? "is-open" : ""}`}
+        className={`wedding-faq-card__answer-wrapper${isOpen ? " is-open" : ""}`}
       >
-        <p>{answer}</p>
+        <div className="wedding-faq-card__answer-inner">
+          <p>{answer}</p>
+        </div>
       </div>
-    </article>
+    </div>
   );
 }
 
@@ -86,11 +101,6 @@ function WeddingPage() {
     { id: "wedding-faq", label: siteCopy("courses.faq-label") },
   ];
 
-  const handleContactClick = () => {
-    window.dispatchEvent(new Event("expand-contact-form"));
-    smoothScrollTo(".contact-container", SPY_OFFSET);
-  };
-
   return (
     <div className="event-page-container wedding-page">
       <ScrollSpyNav sections={spySections} offset={SPY_OFFSET} />
@@ -115,6 +125,16 @@ function WeddingPage() {
             </div>
             <h1 id="wedding-heading">{copy("hero.title")}</h1>
             <p>{copy("hero.lead")}</p>
+            <div className="event-hero__actions" data-cms-hero-actions>
+              <a href="#site-contact" className="btn btn--light" onClick={goToWeddingForm}>
+                {copy("contact.cta")}
+                <ArrowDown size={18} aria-hidden="true" />
+              </a>
+              <Link to={canonicalPath("/galleri")} className="btn btn--ghost">
+                <Images size={18} aria-hidden="true" />
+                {copy("hero.gallery-cta")}
+              </Link>
+            </div>
           </div>
 
           {/* The photo remains full-height while the wave visually opens the
@@ -282,14 +302,14 @@ function WeddingPage() {
                 <span className="event-section-eyebrow">{copy("contact.eyebrow")}</span>
                 <h2>{copy("contact.title")}</h2>
                 <p>{copy("contact.body")}</p>
-                <button
-                  type="button"
-                  className="event-gallery-button event-gallery-button--solid"
-                  onClick={handleContactClick}
+                <a
+                  href="#site-contact"
+                  className="btn btn--primary event-gallery-button"
+                  onClick={goToWeddingForm}
                 >
                   {copy("contact.cta")}
-                  <ArrowUpRight size={17} aria-hidden="true" />
-                </button>
+                  <ArrowDown size={17} aria-hidden="true" />
+                </a>
               </div>
             </FadeInSection>
           </PageSection>
@@ -317,16 +337,7 @@ function WeddingPage() {
         <SectionDivider above="green" below="white" variant="hill" />
 
         <div id="wedding-services-recommendation">
-          <PageSection background="white" spacing="none">
-            <FadeInSection>
-              <HomeServicesSection
-                cmsPage="wedding"
-                excludeId="brollop"
-                title={copy("services-section.title")}
-                eyebrow={copy("services-section.eyebrow")}
-              />
-            </FadeInSection>
-          </PageSection>
+          <ExploreMore exclude={["brollop"]} />
         </div>
 
         <SectionDivider above="white" below="alt" variant="wave" />

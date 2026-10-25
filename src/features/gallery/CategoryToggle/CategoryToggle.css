@@ -27,7 +27,7 @@
   cursor: pointer;
   border-radius: 100px;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #726f6a; /* Muted warm charcoal text */
+  color: var(--text-muted);
   font-size: clamp(0.85rem, 0.8rem + 0.4vw, 0.95rem);
   font-weight: 500;
   white-space: nowrap;
@@ -36,23 +36,29 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  outline: none;
   -webkit-tap-highlight-color: transparent;
 }
 
 .category-button:hover {
-  color: var(--text-main, #333330);
+  color: var(--text-strong);
 }
 
+/* Inset, because the pill container clips anything drawn outside its buttons. */
 .category-button:focus-visible {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
 }
 
 .category-button.active {
-  background: var(--primary-color, #548b74); /* Brand green */
-  color: white !important;
+  background: var(--text-accent);
+  color: var(--text-on-dark) !important;
   font-weight: 500;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(84, 139, 116, 0.15);
+  box-shadow: 0 2px 6px rgb(var(--shadow-color) / 0.1);
+}
+
+.category-button.active:focus-visible {
+  outline-color: var(--text-on-dark);
+  outline-offset: -4px;
 }
 
 .category-name {
@@ -62,12 +68,7 @@
 
 .category-count {
   font-size: clamp(0.75rem, 0.7rem + 0.3vw, 0.85rem);
-  opacity: 0.75;
   font-weight: 400;
-}
-
-.category-button.active .category-count {
-  opacity: 0.85;
 }
 
 /* Custom Mobile Dropdown Control */
@@ -85,10 +86,9 @@
   padding: 12px 42px 12px 20px;
   border-radius: 100px;
   font-size: 0.95rem;
-  color: #333330;
+  color: var(--text-strong);
   font-weight: 500;
   cursor: pointer;
-  outline: none;
   transition: all 0.2s ease, border-radius 0.15s ease;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.01);
   display: flex;
@@ -104,8 +104,8 @@
 }
 
 .category-select-trigger:focus-visible {
-  box-shadow: 0 0 0 2px rgba(84, 139, 116, 0.25);
-  border-color: var(--primary-color);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .category-select-trigger.is-open {
@@ -114,7 +114,7 @@
 
 .select-trigger-count {
   font-size: 0.85rem;
-  opacity: 0.7;
+  color: var(--text-muted);
   font-weight: 400;
   margin-left: 2px;
 }
@@ -124,7 +124,7 @@
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--primary-color);
+  color: var(--text-accent);
   font-size: 0.65rem;
   pointer-events: none;
   transition: transform 0.2s ease;
@@ -161,7 +161,7 @@
   padding: 10px 16px;
   border-radius: 10px;
   cursor: pointer;
-  color: #4a4944;
+  color: var(--text-body);
   font-size: 0.9rem;
   font-weight: 500;
   transition: background-color 0.15s ease, color 0.15s ease;
@@ -170,22 +170,22 @@
 
 .category-dropdown-option:hover {
   background: #f7f5f0;
-  color: #333330;
+  color: var(--text-strong);
 }
 
 .category-dropdown-option.active {
-  background: var(--primary-color, #548b74);
-  color: white !important;
+  background: var(--text-accent);
+  color: var(--text-on-dark) !important;
 }
 
 .option-count {
   font-size: 0.8rem;
-  opacity: 0.75;
+  color: var(--text-muted);
   font-weight: 400;
 }
 
 .category-dropdown-option.active .option-count {
-  opacity: 0.9;
+  color: inherit;
 }
 
 /* Entry animation for list */
@@ -200,20 +200,9 @@
   }
 }
 
-/* Responsive utilities */
-.mobile-only {
-  display: none !important;
-}
-
-@media (max-width: 768px) {
-  .desktop-only {
-    display: none !important;
-  }
-
-  .mobile-only {
-    display: block !important;
-  }
-
+/* Which variant shows (pills or dropdown) is decided by the global .desktop-only /
+   .mobile-only in index.css, at the site's one breakpoint (768). */
+@media (max-width: 767px) {
   .category-toggle {
     margin-bottom: 2rem;
     padding: 0 1.5rem;

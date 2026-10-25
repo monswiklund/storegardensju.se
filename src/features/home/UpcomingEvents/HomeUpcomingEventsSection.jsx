@@ -328,7 +328,7 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
                 
                 <div className="upcoming-desktop-actions desktop-only">
                   {primaryLink && (
-                    <SmartLink href={primaryLink.href} className="btn-primary-event">
+                    <SmartLink href={primaryLink.href} className="btn btn--primary">
                       <span>{primaryLink.label}</span>
                       <ArrowUpRight size={16} />
                     </SmartLink>

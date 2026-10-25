@@ -40,13 +40,13 @@
   place-items: center;
   border-radius: 50%;
   background: var(--background-green);
-  color: var(--primary-hover);
+  color: var(--text-accent);
 }
 
 .wedding-space-card__value {
   display: block;
   margin-bottom: 8px;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -105,10 +105,6 @@
   line-height: 1.7;
 }
 
-.wedding-cta .event-gallery-button {
-  gap: 9px;
-}
-
 .wedding-faq__intro {
   margin-bottom: 42px;
 }
@@ -130,6 +126,13 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.wedding-faq-card__heading {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
 .wedding-faq-card__trigger {
   width: 100%;
   display: flex;
@@ -141,41 +144,43 @@
   padding: 0;
   text-align: left;
   cursor: pointer;
-  font-family: inherit;
-  color: var(--text-main);
+  font: inherit;
+  color: var(--text-strong);
 }
 
 .wedding-faq-card__trigger:focus-visible {
-  outline: 2px solid var(--accent-color, #386652);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 4px;
   border-radius: 4px;
 }
 
-.wedding-faq-card h3 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.35;
-}
-
 .wedding-faq-card__chevron {
   flex-shrink: 0;
-  color: var(--text-main);
+  color: var(--text-strong);
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.wedding-faq-card__chevron.is-open {
+.wedding-faq-card.is-open .wedding-faq-card__chevron {
   transform: rotate(180deg);
 }
 
+/* Closed answers collapse to zero height and are also hidden from screen readers;
+   visibility flips only after the closing animation has finished. */
 .wedding-faq-card__answer-wrapper {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0.35s;
 }
 
 .wedding-faq-card__answer-wrapper.is-open {
   grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0s;
 }
 
 .wedding-faq-card__answer-inner {
@@ -224,6 +229,14 @@
   .wedding-cta {
     padding: 40px 24px;
     border-radius: 14px 34px 16px 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wedding-faq-card__chevron,
+  .wedding-faq-card__answer-wrapper,
+  .wedding-faq-card__answer-wrapper.is-open {
+    transition: none;
   }
 }
 

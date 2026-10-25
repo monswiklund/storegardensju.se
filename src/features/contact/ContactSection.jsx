@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Mail } from "lucide-react";
 import { contactMethods, contactEmail } from "./contact.js";
-import MailtoFallback from "./MailtoFallback.jsx";
 import "./Contact.css";
 import usePageCopy from "../../hooks/usePageCopy.js";
+import { getCmsUrl } from "../../services/cmsService.js";
 
 const chipIcons = {
   heart: <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />,
@@ -34,29 +34,27 @@ const chipIcons = {
       <path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z" />
     </>
   ),
-  tag: (
-    <>
-      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
-      <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
-    </>
-  ),
+  chat: <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />,
 };
 
+// type: the CMS inquiry category the chip files the request under.
+// event: the subject is a gathering, so date, guest count and phone are worth asking for.
 const subjectSuggestions = [
-  { id: "wedding", icon: "heart" },
-  { id: "party", icon: "sparkles" },
-  { id: "corporate", icon: "briefcase" },
-  { id: "group", icon: "users" },
-  { id: "course", icon: "brush" },
-  { id: "exhibition", icon: "tag" },
+  { id: "wedding", icon: "heart", type: "wedding", event: true },
+  { id: "party", icon: "sparkles", type: "event", event: true },
+  { id: "corporate", icon: "briefcase", type: "event", event: true },
+  { id: "group", icon: "users", type: "group_day", event: true },
+  { id: "course", icon: "brush", type: "course" },
+  { id: "other", icon: "chat", type: "general" },
 ];
+const isSubject = (id) => subjectSuggestions.some((item) => item.id === id);
 
 const iconMap = {
   mail: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
+      width="16"
+      height="16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -72,8 +70,8 @@ const iconMap = {
   instagram: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
+      width="16"
+      height="16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -107,150 +105,168 @@ const leafIcon = (
   </svg>
 );
 
-function ContactSection({
-  initialSubject = "",
-  startOpen = false,
-  cmsPage = "site",
-}) {
+// hideHeader: the page wraps the form in its own titled section, so this one stays unnamed
+// (a second region with the same name would be a duplicate landmark).
+function ContactSection({ initialSubject = "", cmsPage = "site", hideHeader = false }) {
   const copy = usePageCopy(cmsPage);
-  const [subjectValue, setSubjectValue] = useState(initialSubject);
-  const [isOpen, setIsOpen] = useState(startOpen);
-  const [fallbackText, setFallbackText] = useState(null);
+  const chipLabel = (id) => copy(`contact.chips.${id}`) || id;
+  // The chosen subject chip's id; it also decides whether the event fields show.
+  const [subjectId, setSubjectId] = useState(() => (isSubject(initialSubject) ? initialSubject : ""));
+  const chosen = subjectSuggestions.find((item) => item.id === subjectId);
+  // idle | sending | sent | error
+  const [status, setStatus] = useState("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [copyText, setCopyText] = useState("");
+  const [copied, setCopied] = useState(false);
+  const statusRef = useRef(null);
+  const messageRef = useRef(null);
 
   useEffect(() => {
-    if (initialSubject) {
-      setSubjectValue(initialSubject);
-      setIsOpen(true);
-    }
+    if (isSubject(initialSubject)) setSubjectId(initialSubject);
   }, [initialSubject]);
 
-  const handleSubmit = (e) => {
+  // CTAs elsewhere ("Kontakta oss", "Skicka en bröllopsförfrågan") can preselect a subject.
+  useEffect(() => {
+    const onExpand = (event) => {
+      const { subject, message } = event?.detail ?? {};
+      if (isSubject(subject)) setSubjectId(subject);
+      // e.g. the group-day calculator's summary; never overwrite what the visitor already wrote.
+      if (message && messageRef.current && !messageRef.current.value.trim()) {
+        messageRef.current.value = message;
+      }
+    };
+    window.addEventListener("expand-contact-form", onExpand);
+    return () => window.removeEventListener("expand-contact-form", onExpand);
+  }, []);
+
+  useEffect(() => {
+    if (status === "sent" || status === "error") statusRef.current?.focus();
+  }, [status]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.target;
-    const name = form.name.value.trim();
-    const email = form.email.value.trim();
-    const date = form.date.value;
-    const subject = subjectValue || form.subject.value.trim();
-    const message = form.message.value.trim();
+    const form = e.currentTarget;
+    const value = (name) => form.elements[name]?.value.trim() ?? "";
+    const subject = chosen ? chipLabel(chosen.id) : "";
+    const payload = {
+      name: value("name"),
+      email: value("email"),
+      phone: value("phone"),
+      preferredDate: value("date"),
+      guestCount: value("guests"),
+      subject,
+      message: value("message"),
+      type: chosen?.type ?? "general",
+      website: value("website"),
+    };
 
-    const bodyLines = [
-      `Namn: ${name}`,
-      `E-post: ${email}`,
-      date ? `Önskat datum: ${date}` : null,
-      `Ämne: ${subject}`,
-      "",
-      message,
-    ].filter((line) => line !== null);
+    setCopyText(
+      [
+        `Namn: ${payload.name}`,
+        `E-post: ${payload.email}`,
+        payload.phone && `Telefon: ${payload.phone}`,
+        payload.preferredDate && `Önskat datum: ${payload.preferredDate}`,
+        payload.guestCount && `Antal: ${payload.guestCount}`,
+        `Ämne: ${subject}`,
+        "",
+        payload.message,
+      ]
+        .filter((line) => line || line === "")
+        .join("\n"),
+    );
+    setCopied(false);
+    setStatus("sending");
+    try {
+      const response = await fetch(`${getCmsUrl()}/api/inquiries/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result?.ok) {
+        setErrorMessage(result?.message ?? "");
+        setStatus("error");
+        return;
+      }
+      form.reset();
+      setSubjectId("");
+      setStatus("sent");
+    } catch {
+      setErrorMessage("");
+      setStatus("error");
+    }
+  };
 
-    const body = bodyLines.join("\n");
-    const mailtoUrl = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-    window.location.href = mailtoUrl;
-
-    setTimeout(() => {
-      setFallbackText(body);
-    }, 1000);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(copyText);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
   };
 
   return (
-    <section className="contact-section" aria-labelledby="contact-heading">
+    <section
+      className="contact-section"
+      aria-labelledby={hideHeader ? undefined : "contact-heading"}
+    >
       <div className="contact-container">
-        <span className="section-eyebrow">
-          {copy("contact.eyebrow")}
-        </span>
-        <div className="section-ornament" aria-hidden="true">
-          <span className="section-ornament-line"></span>
-          <Mail size={20} />
-          <span className="section-ornament-line"></span>
-        </div>
-        <h2 id="contact-heading">
-          {copy("contact.title")}
-        </h2>
-        <p className="contact-subtitle">
-          {copy("contact.lead")}
-        </p>
+        {!hideHeader && (
+          <>
+            <span className="section-eyebrow">{copy("contact.eyebrow")}</span>
+            <div className="section-ornament" aria-hidden="true">
+              <span className="section-ornament-line"></span>
+              <Mail size={20} />
+              <span className="section-ornament-line"></span>
+            </div>
+            <h2 id="contact-heading">{copy("contact.title")}</h2>
+            <p className="contact-subtitle">{copy("contact.lead")}</p>
+          </>
+        )}
 
-        <div className="contact-trigger-wrapper">
-          <button
-            type="button"
-            className="contact-toggle-btn"
-            aria-expanded={isOpen}
-            aria-controls="contact-collapsible-content"
-            onClick={() => setIsOpen((prev) => !prev)}
-          >
-            {isOpen ? copy("contact.form.toggle-close") : copy("contact.form.toggle-open")}
-            <svg
-              className={`contact-toggle-chevron ${isOpen ? "contact-toggle-chevron--open" : ""}`}
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+        <div className="contact-body">
+          {status === "sent" ? (
+            <div
+              className="contact-panel contact-result"
+              role="status"
+              tabIndex={-1}
+              ref={statusRef}
             >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </button>
-        </div>
-
-        <div
-          id="contact-collapsible-content"
-          className={`contact-collapsible-content ${isOpen ? "contact-collapsible-content--open" : ""}`}
-          role="region"
-          aria-labelledby="contact-heading"
-        >
-          <div className="contact-grid">
+              <span className="contact-note-icon">{leafIcon}</span>
+              <h3>{copy("contact.form.success-title")}</h3>
+              <p>{copy("contact.form.success-message")}</p>
+              <p className="contact-result-meta">{copy("contact.response-time")}</p>
+              <button
+                type="button"
+                className="btn btn--secondary"
+                onClick={() => setStatus("idle")}
+              >
+                {copy("contact.form.send-another")}
+              </button>
+            </div>
+          ) : (
             <form className="contact-form contact-panel" onSubmit={handleSubmit}>
-              <div className="contact-field-row">
-                <div className="contact-field">
-                  <label htmlFor="contact-name">{copy("contact.form.name-label")}</label>
-                  <input
-                    id="contact-name"
-                    name="name"
-                    type="text"
-                    placeholder={copy("contact.form.name-placeholder")}
-                    required
-                  />
-                </div>
-                <div className="contact-field">
-                  <label htmlFor="contact-email">{copy("contact.form.email-label")}</label>
-                  <input
-                    id="contact-email"
-                    name="email"
-                    type="email"
-                    placeholder={copy("contact.form.email-placeholder")}
-                    autoComplete="email"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="contact-field">
-                <label htmlFor="contact-date">{copy("contact.form.date-label")}</label>
-                <input id="contact-date" name="date" type="date" />
-              </div>
-
-              <div className="contact-field">
-                <label htmlFor="contact-subject">{copy("contact.form.subject-label")}</label>
-                <div className="contact-chips" role="group">
+              {/* The subject comes first: it reads as a question and decides which fields follow. */}
+              <fieldset className="contact-field">
+                <legend className="contact-legend">{copy("contact.form.topic-label")}</legend>
+                <div className="contact-chips">
                   {subjectSuggestions.map((suggestion) => {
-                    const label = copy(`contact.chips.${suggestion.id}`) || suggestion.id;
+                    const active = subjectId === suggestion.id;
                     return (
-                      <button
+                      <label
                         key={suggestion.id}
-                        type="button"
-                        className={`contact-chip${
-                          subjectValue === label
-                            ? " contact-chip--active"
-                            : ""
-                        }`}
-                        aria-pressed={subjectValue === label}
-                        onClick={() => setSubjectValue(label)}
+                        className={`contact-chip${active ? " contact-chip--active" : ""}`}
                       >
+                        <input
+                          type="radio"
+                          name="subject"
+                          value={suggestion.id}
+                          className="contact-chip-input"
+                          checked={active}
+                          onChange={() => setSubjectId(suggestion.id)}
+                          required
+                        />
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
@@ -265,46 +281,110 @@ function ContactSection({
                         >
                           {chipIcons[suggestion.icon]}
                         </svg>
-                        {label}
-                      </button>
+                        {chipLabel(suggestion.id)}
+                      </label>
                     );
                   })}
                 </div>
-                <input
-                  id="contact-subject"
-                  name="subject"
-                  type="text"
-                  value={subjectValue}
-                  onChange={(e) => setSubjectValue(e.target.value)}
-                  placeholder={copy("contact.form.subject-placeholder")}
-                  required
-                />
+              </fieldset>
+
+              <div className="contact-field-row">
+                <div className="contact-field">
+                  <label htmlFor="contact-name">{copy("contact.form.name-label")}</label>
+                  <input
+                    id="contact-name"
+                    name="name"
+                    type="text"
+                    placeholder={copy("contact.form.name-placeholder")}
+                    autoComplete="name"
+                    maxLength={120}
+                    required
+                  />
+                </div>
+                <div className="contact-field">
+                  <label htmlFor="contact-email">{copy("contact.form.email-label")}</label>
+                  <input
+                    id="contact-email"
+                    name="email"
+                    type="email"
+                    placeholder={copy("contact.form.email-placeholder")}
+                    autoComplete="email"
+                    maxLength={200}
+                    required
+                  />
+                </div>
               </div>
+
+              {/* Only for gatherings; unmounted fields are left out of the request. */}
+              {chosen?.event && (
+                <div className="contact-field-row contact-field-row--three contact-event-fields">
+                  <div className="contact-field">
+                    <label htmlFor="contact-date">{copy("contact.form.date-label")}</label>
+                    <input id="contact-date" name="date" type="date" />
+                  </div>
+                  <div className="contact-field">
+                    <label htmlFor="contact-guests">{copy("contact.form.guests-label")}</label>
+                    <input
+                      id="contact-guests"
+                      name="guests"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder={copy("contact.form.guests-placeholder")}
+                      maxLength={40}
+                    />
+                  </div>
+                  <div className="contact-field">
+                    <label htmlFor="contact-phone">{copy("contact.form.phone-label")}</label>
+                    <input
+                      id="contact-phone"
+                      name="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      maxLength={40}
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="contact-field">
                 <label htmlFor="contact-message">{copy("contact.form.message-label")}</label>
                 <textarea
                   id="contact-message"
+                  ref={messageRef}
                   name="message"
                   rows={5}
                   placeholder={copy("contact.form.message-placeholder")}
+                  maxLength={4000}
                   required
                 />
               </div>
 
-              <div className="contact-note">
-                <span className="contact-note-icon">{leafIcon}</span>
-                <p>
-                  <strong>
-                    {copy("contact.response-time")}
-                  </strong>
-                  <br />
-                  {copy("contact.thanks")}
-                </p>
+              {/* Honeypot: hidden from people and screen readers, bots fill it in. */}
+              <div className="visually-hidden" aria-hidden="true">
+                <label htmlFor="contact-website">Webbplats</label>
+                <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
               </div>
 
+              {status === "error" && (
+                <div className="contact-fallback" role="alert" tabIndex={-1} ref={statusRef}>
+                  <p>
+                    <strong>{copy("contact.form.error-title")}</strong>
+                    <br />
+                    {errorMessage || copy("contact.form.error-lead")}{" "}
+                    <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+                  </p>
+                  <button type="button" className="contact-fallback-copy" onClick={handleCopy}>
+                    {copied ? copy("contact.fallback.copied") : copy("contact.fallback.copy-btn")}
+                  </button>
+                </div>
+              )}
+
               <div className="contact-submit-row">
-                <button type="submit" className="contact-submit">
+                <button
+                  type="submit"
+                  className="btn btn--primary"
+                  disabled={status === "sending"}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
@@ -320,64 +400,30 @@ function ContactSection({
                     <rect x="2" y="4" width="20" height="16" rx="2" />
                     <path d="m2 7 10 7 10-7" />
                   </svg>
-                  {copy("contact.form.submit-label")}
+                  {status === "sending"
+                    ? copy("contact.form.sending-label")
+                    : copy("contact.form.submit-label")}
                 </button>
+                <p className="contact-privacy">{copy("contact.response-time")}</p>
               </div>
-
-              {fallbackText && (
-                <MailtoFallback
-                  key={fallbackText}
-                  email={contactEmail}
-                  copyText={fallbackText}
-                />
-              )}
             </form>
+          )}
 
-            <div className="contact-aside">
-              <h3 className="contact-aside-heading">
-                {copy("contact.direct-title")}
-              </h3>
-              {contactMethods.map((method) => {
-                const icon = iconMap[method.icon] ?? null;
-                const externalProps = method.external
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {};
-
-                return (
-                  <a
-                    key={method.id}
-                    href={method.href}
-                    className="contact-card"
-                    {...externalProps}
-                  >
-                    <div className="contact-icon">{icon}</div>
-                    <div className="contact-card-body">
-                      <h4>{method.label}</h4>
-                      <p className="contact-info">{method.display}</p>
-                      <p className="contact-card-note">
-                        {copy(`contact.methods.${method.id}.note`)}
-                      </p>
-                    </div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                      className="contact-card-chevron"
-                    >
-                      <path d="m9 18 6-6-6-6" />
-                    </svg>
-                  </a>
-                );
-              })}
-            </div>
-          </div>
+          <p className="contact-direct">
+            <span>{copy("contact.direct-lead")}</span>
+            {contactMethods.map((method) => (
+              <a
+                key={method.id}
+                href={method.href}
+                className="contact-direct-link"
+                aria-label={method.ariaLabel}
+                {...(method.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                {iconMap[method.icon]}
+                {method.display}
+              </a>
+            ))}
+          </p>
         </div>
       </div>
     </section>

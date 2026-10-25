@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import {
+  ArrowRight,
   ArrowUpRight,
   Calendar,
   MapPin,
@@ -9,7 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import {
-  ExploreMoreSection,
+  ExploreMore,
   ScrollSpyNav,
   SectionDivider,
 } from "../components";
@@ -112,6 +113,18 @@ function KurserIndexPage() {
             <p className="kurser-index__lead">
               {copy("hero.lead")}
             </p>
+            {/* The page is a choice between two hubs, so both are one click away
+                before the cards. */}
+            <div className="kurser-index__choices">
+              <Link className="btn btn--secondary" to={`${TRACKS[YOGA_TRACK_ID].hubPath}/`}>
+                {siteCopy("nav.yoga")}
+                <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+              <Link className="btn btn--secondary" to={`${TRACKS[MALERI_TRACK_ID].hubPath}/`}>
+                {siteCopy("nav.art")}
+                <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+            </div>
             <ul className="kurser-index__facts">
               <li>
                 <MapPin size={17} aria-hidden="true" />
@@ -212,37 +225,15 @@ function KurserIndexPage() {
           </div>
         </CourseBand>
 
-        {/* Ends on green; the global contact section below is alt, so the colour
-            change gets its own curve like every other one on the page. */}
         <SectionDivider above="green" below="alt" variant="valley" />
 
-        <ExploreMoreSection
-          id="kurser-explore-more"
-          eyebrow={copy("explore.eyebrow")}
-          title={copy("explore.title")}
-          intro={copy("explore.body")}
+        {/* Where next: the rest of the farm, without the two hubs this page already
+            offers. The global contact form (alt) follows outside <main>. */}
+        <ExploreMore
+          exclude={["kurser-konst", "yoga"]}
+          lead={copy("explore.body")}
+          headingId="kurser-explore-title"
           background="alt"
-          items={[
-            {
-              to: "/kurser/yoga/",
-              eyebrow: copy("explore.items.0.eyebrow"),
-              title: copy("explore.items.0.title"),
-              text: copy("explore.items.0.body"),
-            },
-            {
-              to: "/kurser/konst/",
-              eyebrow: copy("explore.items.1.eyebrow"),
-              title: copy("explore.items.1.title"),
-              text: copy("explore.items.1.body"),
-            },
-            {
-              to: "/gruppdagar/",
-              eyebrow: copy("explore.items.2.eyebrow"),
-              title: copy("explore.items.2.title"),
-              text: copy("explore.items.2.body"),
-              featured: true,
-            },
-          ]}
         />
       </main>
     </div>

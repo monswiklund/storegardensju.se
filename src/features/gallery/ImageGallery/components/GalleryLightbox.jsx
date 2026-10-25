@@ -239,7 +239,7 @@ function GalleryLightbox({
                       e.stopPropagation();
                       onSelectImage(idx);
                     }}
-                    aria-label={`${idx + 1}`}
+                    aria-label={image.thumbnailAlt || image.originalAlt || `${idx + 1}`}
                     aria-current={isActive || undefined}
                   >
                     <img src={image.thumbnail} alt="" loading="lazy" />

@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ArrowDown } from "lucide-react";
 import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
 import { ScrollSpyNav, SectionDivider } from "../components";
 import { smoothScrollTo } from "../utils/scrollUtils.js";
 import {
+  COURSE_CONTACT_ID,
   ContactSection,
   CourseBand,
   DirectionsSection,
@@ -14,6 +15,7 @@ import {
   OtherHubLink,
   PastPassesSection,
   YogaScheduleSection,
+  goToCourseContact,
 } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
@@ -76,9 +78,6 @@ function KurserPage() {
     const next = media(`gallery.${index}`, item.original, "card");
     return { ...item, original: next, thumbnail: next };
   }).filter((item) => item.original);
-  const [showMailFallback, setShowMailFallback] = useState(false);
-  const onContactClick = () => setShowMailFallback(true);
-
   const upcomingPassesList = upcomingPasses(YOGA_TRACK_ID, now, passes);
   const recapPasses = pastPasses(YOGA_TRACK_ID, now, passes);
   const nextPassItem = nextPass(YOGA_TRACK_ID, now, passes);
@@ -89,9 +88,6 @@ function KurserPage() {
   );
 
   const siteCopy = useSiteCopy();
-  const contactSubject = nextPassItem
-    ? `${siteCopy("courses.inquiry-prefix", "Fråga om")} ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
-    : copy("hero.contact-cta");
 
   const spySections = [
     { id: "kurser-hero", label: siteCopy("nav.start") },
@@ -103,7 +99,7 @@ function KurserPage() {
     { id: "gardens-atmosfar", label: siteCopy("courses.photos-label") },
     { id: "hitta-hit", label: siteCopy("courses.directions-label") },
     { id: "tidigare-pass", label: siteCopy("courses.past-label") },
-    { id: "kontakt", label: siteCopy("nav.contact") },
+    { id: COURSE_CONTACT_ID, label: siteCopy("nav.contact") },
   ];
 
   useSeo({
@@ -145,15 +141,19 @@ function KurserPage() {
               </div>
             )}
             <h1>{copy("hero.title")}</h1>
+            {copy("hero.lead") && <p>{copy("hero.lead")}</p>}
+            {/* With a pass the link goes to it; without one, to the enquiry form at
+                #kontakt, which this page always renders. */}
             <a
               className="kurser-hero__link"
-              href={nextPassItem ? `#${passAnchor(nextPassItem)}` : "#kontakt"}
+              href={`#${nextPassItem ? passAnchor(nextPassItem) : COURSE_CONTACT_ID}`}
               onClick={(e) => {
+                if (!nextPassItem) {
+                  goToCourseContact(e);
+                  return;
+                }
                 e.preventDefault();
-                smoothScrollTo(
-                  nextPassItem ? passAnchor(nextPassItem) : "kontakt",
-                  SPY_OFFSET
-                );
+                smoothScrollTo(passAnchor(nextPassItem), SPY_OFFSET);
               }}
             >
               {nextPassItem
@@ -170,15 +170,12 @@ function KurserPage() {
             background="alt"
             heading={copy("empty.title")}
             body={copy("empty.body")}
+            ctaLabel={copy("empty.cta")}
           />
         ) : (
           <YogaScheduleSection
             passes={upcomingPassesList}
-            trackId={YOGA_TRACK_ID}
             background="alt"
-            contactSubject={contactSubject}
-            onContactClick={onContactClick}
-            showMailFallback={showMailFallback}
           />
         )}
 
@@ -219,9 +216,9 @@ function KurserPage() {
                 key={imgItem.original}
                 className={`kurser-recap__image ${idx === 0 ? "kurser-recap__image--large" : ""}`}
                 onClick={() => openLightbox(idx)}
-                style={{ cursor: "pointer" }}
                 tabIndex={0}
                 role="button"
+                aria-label={`${copy("gallery.open-image")} ${idx + 1} av ${recapImages.length}`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -256,11 +253,7 @@ function KurserPage() {
         <ContactSection
           heading={copy("contact.title")}
           body={copy("contact.body")}
-          email={instructor.email}
-          subject={contactSubject}
           background="green"
-          variant="split"
-          onContactClick={onContactClick}
         />
 
         <SectionDivider above="green" below="white" variant="valley" />
@@ -276,9 +269,6 @@ function KurserPage() {
           body={copy("other.body")}
           linkLabel={copy("other.cta")}
         />
-
-        {/* White -> alt for the global contact section below. */}
-        <SectionDivider above="white" below="alt" variant="wave" />
 
         {/* Lightbox / Bildvisare */}
         <GalleryLightbox

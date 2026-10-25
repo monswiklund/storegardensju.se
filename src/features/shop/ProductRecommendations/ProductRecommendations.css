@@ -17,9 +17,9 @@
 
 .product-recommendations__heading span,
 .product-recommendations__card-content > span {
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.74rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -37,7 +37,7 @@
 
 .product-recommendations__heading p {
   margin: 18px auto 0;
-  color: var(--text-secondary);
+  color: var(--text-body);
   font-size: 1.05rem;
   line-height: 1.7;
 }
@@ -82,7 +82,7 @@
 }
 
 .product-recommendations__card-content strong {
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.95rem;
 }
 
@@ -90,7 +90,7 @@
   position: absolute;
   right: 26px;
   bottom: 26px;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   transition: transform 0.25s ease;
 }
 
@@ -104,7 +104,7 @@
 }
 
 .product-recommendations__card:focus-visible {
-  outline: 3px solid var(--primary-hover);
+  outline: 3px solid var(--focus-ring);
   outline-offset: 4px;
 }
 

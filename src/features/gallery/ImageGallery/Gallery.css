@@ -278,31 +278,6 @@
   }
 }
 
-/* Show more button (fallback/legacy) */
-.show-more-button {
-  display: flex;
-  margin: 30px auto;
-  padding: 12px 28px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: clamp(0.95rem, 0.9rem + 0.5vw, 1.1rem);
-  font-weight: 400;
-  transition: var(--transition-smooth);
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
-  box-shadow: var(--shadow-md);
-}
-
-.show-more-button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
 .sentinel-top {
   top: 0;
 }
@@ -510,9 +485,9 @@
 }
 
 .lightbox-category-btn.is-active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  color: white;
+  background: var(--text-accent);
+  border-color: var(--text-accent);
+  color: var(--text-on-dark);
   font-weight: 500;
 }
 
@@ -701,20 +676,9 @@
   font-weight: 300;
 }
 
-.mobile-only {
-  display: none;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .mobile-only {
-    display: block;
-  }
-
-  .desktop-only {
-    display: none !important;
-  }
-
+/* Mobile lightbox. Which category row shows (header or footer) is decided by the global
+   .desktop-only / .mobile-only in index.css, so this switches at the same width (768). */
+@media (max-width: 767px) {
   .lightbox-controls {
     /* Reset header layout now that categories are gone from it */
     padding: 16px;
@@ -730,7 +694,7 @@
 
   /* Footer categories styling */
   .lightbox-footer .lightbox-categories {
-    display: flex !important; /* Override .mobile-only display: block */
+    display: flex;
     justify-content: center;
     width: 100%;
     overflow-x: auto;

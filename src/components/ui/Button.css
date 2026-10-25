@@ -1,0 +1,102 @@
+/* Shared button standard (DESIGN.md "Knappar").
+   Page classes may set placement and width on a .btn, never its look. */
+:root {
+  /* Darker than --primary-color so white text reaches WCAG AA (5.25:1 and 6.9:1). */
+  --button-bg: #367862;
+  --button-bg-hover: #2b6451;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 24px;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700; /* Lato ships 300/400/700 only */
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.btn svg {
+  flex-shrink: 0;
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--btn-focus, var(--text-main));
+  outline-offset: 3px;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Main action, at most one per section. */
+.btn--primary {
+  background-color: var(--button-bg);
+  color: #ffffff;
+}
+
+.btn--primary:hover:not(:disabled) {
+  background-color: var(--button-bg-hover);
+  color: #ffffff;
+}
+
+/* Alternative action on a light background. */
+.btn--secondary {
+  background-color: transparent;
+  border-color: var(--button-bg);
+  color: var(--button-bg);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--button-bg) 8%, transparent);
+  border-color: var(--button-bg-hover);
+  color: var(--button-bg-hover);
+}
+
+/* Main action on a photo or dark background. */
+.btn--light {
+  --btn-focus: #ffffff;
+  background-color: #ffffff;
+  color: var(--dark-color);
+}
+
+.btn--light:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.84);
+  color: var(--dark-color);
+}
+
+/* Alternative action on a photo or dark background. */
+.btn--ghost {
+  --btn-focus: #ffffff;
+  background-color: rgba(20, 31, 22, 0.32);
+  border-color: rgba(255, 255, 255, 0.72);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background-color: rgba(20, 31, 22, 0.5);
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+/* Cards, lists and other tight spots. */
+.btn--sm {
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 0.9rem;
+}

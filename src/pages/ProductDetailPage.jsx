@@ -23,48 +23,25 @@ function ProductDetailPage() {
     loadProducts?.();
   }, [loadProducts]);
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [activeImage, setActiveImage] = useState(0);
+  // The product comes straight from the list ProductContext loads. While that list is still
+  // loading, a missing product means "not yet", never "not found", so a direct visit no longer
+  // flashes "Produkten hittades inte" before the product appears.
+  const product =
+    products.find((item) => String(item.id) === String(productId)) ?? null;
+  const loading = !product && productsLoading;
+  // The chosen thumbnail belongs to one product; another product starts on its first image.
+  const [imageChoice, setImageChoice] = useState({ productId, index: 0 });
+  const activeImage = imageChoice.productId === productId ? imageChoice.index : 0;
+  const setActiveImage = (index) => setImageChoice({ productId, index });
   useSeo(product ? productSeoMeta({ slug: product.id, title: product.name, description: product.description }) : {});
-
-  // Produkten kommer från CMS-listan som ProductContext laddar.
-  useEffect(() => {
-    async function fetchProduct() {
-      try {
-        setLoading(true);
-        const resolvedProduct = products.find((item) => String(item.id) === String(productId));
-        if (productsLoading && !resolvedProduct) return;
-
-        if (!resolvedProduct) {
-          setError(siteCopy("cart.product-not-found", "error"));
-          setProduct(null);
-        } else {
-          setProduct(resolvedProduct);
-          setActiveImage(0);
-          setError(null);
-        }
-      } catch (err) {
-        console.error("Failed to fetch product:", err);
-        setError(siteCopy("ui.error"));
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (productId) {
-      fetchProduct();
-    }
-  }, [productId, products, productsLoading, siteCopy]);
 
   // Loading state
   if (loading) {
     return (
       <main role="main" id="main-content">
         <PageSection background="alt" spacing="default">
-          <div className="product-loading">
-            <Loader2 className="spinner" size={48} />
+          <div className="product-loading" role="status">
+            <Loader2 className="spinner" size={48} aria-hidden="true" />
             <p>{siteCopy("ui.loading-product")}</p>
           </div>
         </PageSection>
@@ -72,15 +49,17 @@ function ProductDetailPage() {
     );
   }
 
-  // Error/Not found state
-  if (error || !product) {
+  // Not found state
+  if (!product) {
     return (
       <main role="main" id="main-content">
         <PageSection background="alt" spacing="default">
           <div className="product-not-found">
             <h1>{siteCopy("cart.product-not-found")}</h1>
             <p>{siteCopy("cart.product-not-found-desc")}</p>
-            <Link to="/butik/">{siteCopy("cart.back-to-shop")}</Link>
+            <Link to="/butik/" className="btn btn--primary">
+              {siteCopy("cart.back-to-shop")}
+            </Link>
           </div>
         </PageSection>
       </main>
@@ -133,9 +112,11 @@ function ProductDetailPage() {
 
             <p className="price">{product && formatPrice(product.price)}</p>
 
-            <div className="description">
-              <p>{product?.longDescription}</p>
-            </div>
+            {(product.longDescription || product.description) && (
+              <div className="description">
+                <p>{product.longDescription || product.description}</p>
+              </div>
+            )}
 
             {/* Lagerstatus */}
             <div className="stock-status">
@@ -150,7 +131,7 @@ function ProductDetailPage() {
             <div className="purchase-section">
               <button
                 type="button"
-                className="add-to-cart-btn"
+                className="btn btn--primary add-to-cart-btn"
                 disabled={product && (!product.active || product.stock === 0)}
                 onClick={() => {
                   if (product && product.active) {
@@ -181,7 +162,8 @@ function ProductDetailPage() {
         {/* Tillbaka-knapp */}
         <div className="back-to-shop">
           <Link to="/butik/" className="back-link">
-            ← Tillbaka till butiken
+            <span aria-hidden="true">← </span>
+            {siteCopy("cart.back-to-shop")}
           </Link>
         </div>
       </PageSection>

@@ -47,7 +47,7 @@
   flex: 1;
 }
 
-.creation-row__text h3 {
+.creation-row__text h2 {
   font-family: var(--font-heading);
   font-size: clamp(1.6rem, 2.5vw, 2.2rem);
   font-weight: 400;
@@ -56,7 +56,7 @@
   position: relative;
 }
 
-.creation-row__text h3::after {
+.creation-row__text h2::after {
   content: "";
   display: block;
   width: 50px;
@@ -105,4 +105,14 @@
   bottom: 0;
   background: linear-gradient(135deg, rgba(95, 111, 82, 0.1) 0%, transparent 100%);
   pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .creation-row__image {
+    transition: none;
+  }
+
+  .creation-row:hover .creation-row__image {
+    transform: none;
+  }
 }

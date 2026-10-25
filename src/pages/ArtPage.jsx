@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
+  ArrowDown,
   ArrowRight,
-  Mail,
   MapPin,
   Palette,
   Sparkles,
@@ -13,12 +13,14 @@ import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { PageSection, ScrollSpyNav, SectionDivider } from "../components";
 import { smoothScrollTo } from "../utils/scrollUtils.js";
 import {
+  COURSE_CONTACT_ID,
   ContactSection,
   FaqSection,
   InstructorSection,
   NoUpcomingSection,
   PassSection,
   PastPassesSection,
+  goToCourseContact,
 } from "../features/courses/CourseSections.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
@@ -30,9 +32,7 @@ import {
   COURSE_LOCATION,
   MALERI_TRACK_ID,
   TRACKS,
-  formatPassDate,
   hubFaq,
-  nextPass,
   pastPasses,
   schedulePasses,
   upcomingPasses,
@@ -42,7 +42,6 @@ import "./ArtPage.css";
 
 const MALERI_TRACK = TRACKS[MALERI_TRACK_ID];
 const INSTRUCTOR = MALERI_TRACK.instructor;
-const CONTACT_EMAIL = INSTRUCTOR.email;
 
 // Navbar (60px) plus the section subnav (48px).
 const SPY_OFFSET = 130;
@@ -66,33 +65,24 @@ function ArtPage() {
     role: copy("instructor.role"),
     bio: copy("instructor.bio"),
   };
-  const [showMailFallback, setShowMailFallback] = useState(false);
-  const onContactClick = () => setShowMailFallback(true);
-
   const upcomingPassesList = upcomingPasses(MALERI_TRACK_ID, now, passes);
   const recapPasses = pastPasses(MALERI_TRACK_ID, now, passes);
-  const nextPassItem = nextPass(MALERI_TRACK_ID, now, passes);
   // Same passes and answers as rendered; recomputed when either source changes.
   const jsonLd = useMemo(
     () => activeJsonLd(seoMeta.kurserKonst, new Date(), { passes, faq: hubFaq(MALERI_TRACK_ID, new Date(), passes, faqList) }),
     [passes, faqList],
   );
 
-  const contactSubject = nextPassItem
-    ? `${siteCopy("courses.inquiry-prefix", "Fråga om")} ${nextPassItem.title} ${formatPassDate(nextPassItem)}`
-    : copy("hero.contact-cta");
-
   const spySections = [
     { id: "art-hero", label: siteCopy("nav.start") },
     { id: "art-courses-section", label: siteCopy("courses.courses-label") },
     { id: "art-content-section", label: copy("content.title") },
     { id: "art-offerings-section", label: copy("offerings.title") },
-    { id: "art-cta-section", label: copy("cta.button") },
     { id: "om-ann", label: instructor.name },
     { id: "fragor-och-svar", label: siteCopy("courses.faq-label") },
     { id: "tidigare-pass", label: siteCopy("courses.past-label") },
     { id: "hitta-hit", label: siteCopy("courses.directions-label") },
-    { id: "kontakt", label: siteCopy("nav.contact") },
+    { id: COURSE_CONTACT_ID, label: siteCopy("nav.contact") },
   ];
 
   useSeo({
@@ -129,18 +119,21 @@ function ArtPage() {
             <div className="art-hero__actions" data-cms-hero-actions>
               <button
                 type="button"
-                className="art-btn art-btn--primary"
+                className="btn btn--light"
                 onClick={() => scrollToSection("art-courses-section")}
               >
                 {copy("hero.primary-cta")}
               </button>
-              <button
-                type="button"
-                className="art-btn art-btn--secondary"
-                onClick={() => scrollToSection("art-cta-section")}
+              {/* The second way in is the enquiry form, which works whether or not
+                  a dated course is in the calendar. */}
+              <a
+                href={`#${COURSE_CONTACT_ID}`}
+                className="btn btn--ghost"
+                onClick={goToCourseContact}
               >
-                {copy("hero.secondary-cta")}
-              </button>
+                {copy("contact.cta")}
+                <ArrowDown size={18} aria-hidden="true" />
+              </a>
             </div>
           </div>
 
@@ -169,6 +162,7 @@ function ArtPage() {
               background="white"
               heading={copy("empty.title")}
               body={copy("empty.body")}
+              ctaLabel={copy("contact.cta")}
             />
           ) : (
             upcomingPassesList.map((pass) => (
@@ -178,9 +172,6 @@ function ArtPage() {
                 trackId={MALERI_TRACK_ID}
                 background="white"
                 variant="split-reverse"
-                contactSubject={contactSubject}
-                onContactClick={onContactClick}
-                showMailFallback={showMailFallback}
               />
             ))
           )}
@@ -227,7 +218,7 @@ function ArtPage() {
                       key={offering.id || offering.title || index}
                       className={`art-offering-card ${offeringClasses[index % offeringClasses.length]}`}
                     >
-                      <div className="offering-icon-wrapper"><Icon size={28} /></div>
+                      <div className="offering-icon-wrapper"><Icon size={28} aria-hidden="true" /></div>
                       <h3>{offering.title}</h3>
                       <p>{offering.body}</p>
                     </div>
@@ -249,11 +240,12 @@ function ArtPage() {
                   <h2>{copy("contact.title")}</h2>
                   <p>{copy("contact.body")}</p>
                   <a
-                    href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(contactSubject)}`}
-                    className="art-button art-button--premium"
+                    href={`#${COURSE_CONTACT_ID}`}
+                    className="btn btn--light"
+                    onClick={goToCourseContact}
                   >
-                    <Mail size={18} />
                     {copy("contact.cta")}
+                    <ArrowDown size={18} aria-hidden="true" />
                   </a>
                 </div>
               </div>
@@ -261,7 +253,7 @@ function ArtPage() {
           </PageSection>
         </div>
 
-        <SectionDivider above="alt" below="white" variant="wave" />
+        <SectionDivider above="green" below="white" variant="wave" />
 
         {/* Instruktör */}
         <InstructorSection
@@ -322,6 +314,13 @@ function ArtPage() {
           </div>
         </section>
 
+        <ContactSection
+          heading={copy("contact.section-title")}
+          body={copy("contact.section-body")}
+          background="alt"
+        />
+
+        {/* Where next, once the visitor knows how to sign up. */}
         <section className="art-next-course">
           <span>{copy("other.eyebrow")}</span>
           <a href={`${TRACKS.yoga.hubPath}/`}>
@@ -329,16 +328,6 @@ function ArtPage() {
             <ArrowRight size={16} aria-hidden="true" />
           </a>
         </section>
-
-        <ContactSection
-          heading={copy("contact.section-title")}
-          body={copy("contact.section-body")}
-          email={CONTACT_EMAIL}
-          subject={contactSubject}
-          background="alt"
-          variant="center"
-          onContactClick={onContactClick}
-        />
       </main>
     </div>
   );

@@ -1,12 +1,11 @@
 import { Suspense, lazy } from "react";
-import { ArrowUpRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowDown } from "lucide-react";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
-import { PageSection, SectionDivider } from "../components";
-import { HomeServicesSection } from "../features/home";
+import { ExploreMore, PageSection, SectionDivider } from "../components";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
+import { smoothScrollTo } from "../utils/scrollUtils.js";
 import "./GalleriPage.css";
 import usePageCopy from "../hooks/usePageCopy.js";
 
@@ -15,16 +14,39 @@ const GalleryShowcase = lazy(() =>
   import("../features/gallery/ImageGallery/GalleryShowcase.jsx")
 );
 
+const SCROLL_OFFSET = 96;
+
+// Moves both the view and keyboard focus, so a screen reader continues from the target.
+const scrollAndFocus = (selector) => {
+  smoothScrollTo(selector, SCROLL_OFFSET);
+  const target = document.querySelector(selector);
+  if (!target) return;
+  if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+  target.focus({ preventScroll: true });
+};
+
 function GalleriPage() {
   useSeo(seoMeta.galleri);
   const copy = usePageCopy("gallery");
+
+  const showImages = (event) => {
+    event.preventDefault();
+    scrollAndFocus("#gallery-heading");
+  };
+
+  // The enquiry form follows this page (App renders it after <main>).
+  const openEnquiry = () => {
+    window.dispatchEvent(new CustomEvent("expand-contact-form"));
+    scrollAndFocus("#contact-heading");
+  };
+
   return (
     <main role="main" id="main-content">
       {/* Full Gallery */}
       <PageSection
         background="alt"
         spacing="default"
-        ariaLabel="gallery-page-heading"
+        ariaLabelledBy="gallery-page-heading"
       >
         <div className="gallery-page-intro" data-cms-hero data-cms-hero-content>
           <span className="section-eyebrow">{copy("hero.eyebrow")}</span>
@@ -32,10 +54,14 @@ function GalleriPage() {
           <p>
             {copy("hero.lead")}
           </p>
-          <Link to="/event/" className="gallery-page-intro__cta">
+          <a
+            href="#gallery-heading"
+            className="btn btn--primary gallery-page-intro__cta"
+            onClick={showImages}
+          >
             {copy("hero.primary-cta")}
-            <ArrowUpRight size={18} aria-hidden="true" />
-          </Link>
+            <ArrowDown size={18} aria-hidden="true" />
+          </a>
         </div>
         <ErrorBoundary>
           <Suspense
@@ -43,25 +69,30 @@ function GalleriPage() {
               <LoadingSpinner size="large" />
             }
           >
-            <GalleryShowcase />
+            <GalleryShowcase
+              title={copy("showcase.title")}
+              lead={copy("showcase.lead")}
+            />
           </Suspense>
         </ErrorBoundary>
+
+        <section className="gallery-plan" aria-labelledby="gallery-plan-title">
+          <h2 id="gallery-plan-title" className="gallery-plan__title">
+            {copy("plan.title")}
+          </h2>
+          <p className="gallery-plan__text">{copy("plan.body")}</p>
+          <button type="button" className="btn btn--primary" onClick={openEnquiry}>
+            {copy("plan.cta")}
+            <ArrowDown size={18} aria-hidden="true" />
+          </button>
+        </section>
       </PageSection>
 
-      <SectionDivider above="alt" below="green" variant="wave" />
+      <SectionDivider above="alt" below="white" variant="wave" />
 
-      {/* Erbjudanden */}
-      <div id="gallery-services-recommendation">
-        <PageSection background="green" spacing="default">
-          <HomeServicesSection
-            cmsPage="gallery"
-            title={copy("services-section.title")}
-            eyebrow={copy("services-section.eyebrow")}
-          />
-        </PageSection>
-      </div>
+      <ExploreMore />
 
-      <SectionDivider above="green" below="alt" variant="hill" />
+      <SectionDivider above="white" below="alt" variant="hill" />
     </main>
   );
 }

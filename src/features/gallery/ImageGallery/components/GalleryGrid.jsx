@@ -136,7 +136,6 @@ function GalleryGrid({
               onClick={() => onImageSelect(index)}
               role="button"
               tabIndex={0}
-              aria-label={image.alt || `${index + 1}`}
               style={{
                 "--item-rotation-3-columns": `${threeColumnRotation}deg`,
                 "--item-rotation-2-columns": `${twoColumnRotation}deg`,

@@ -387,7 +387,7 @@
   .nav-list {
     display: flex;
     flex-direction: row;
-    gap: 30px;
+    gap: clamp(6px, 1.2vw, 22px);
     justify-content: center;
     align-items: center;
     max-width: 100%;
@@ -422,19 +422,37 @@
 
   .nav-link:hover {
     background: var(--background-alt);
-    color: var(--primary-color);
+    color: var(--text-accent);
   }
 
-  .nav-link:focus,
-  .nav-link:active {
-    outline: none;
-    border: none;
+  .nav-link:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
   }
 
+  /* Underline marks where you are; colour alone was 2.8:1 and easy to miss. */
   .nav-link.active,
   .nav-link.section-active {
-    color: var(--primary-color);
+    color: var(--text-accent);
     font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+
+  .nav-link.nav-link--cta {
+    color: #fff;
+    background: var(--text-accent);
+    border-radius: 999px;
+    padding: 10px 20px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .nav-link.nav-link--cta:hover,
+  .nav-link.nav-link--cta.active {
+    color: #fff;
+    background: var(--dark-color);
   }
 
   .nav-link.active:hover,
@@ -517,12 +535,12 @@
 
 .event-subnav-link:hover {
   background: var(--background-alt);
-  color: var(--primary-color);
+  color: var(--text-accent);
 }
 
 .event-subnav-link.active {
   background: transparent;
-  color: var(--primary-color);
+  color: var(--text-accent);
   font-weight: 500;
 }
 

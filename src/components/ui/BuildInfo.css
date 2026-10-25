@@ -20,7 +20,7 @@
 
 .build-version {
   font-weight: 500;
-  color: var(--primary-color);
+  color: var(--text-accent);
 }
 
 .build-details {
@@ -30,7 +30,6 @@
 
 .build-credit {
   font-size: clamp(0.75rem, 0.7rem + 0.3vw, 0.85rem);
-  opacity: 0.8;
 }
 
 @media (min-width: 768px) {

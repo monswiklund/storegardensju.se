@@ -42,7 +42,6 @@ describe("sectionForPath", () => {
   it("finds the section a child route belongs to, with or without the slash", () => {
     expect(sectionForPath("/kurser/konst").path).toBe("/kurser");
     expect(sectionForPath("/kurser/yoga/").path).toBe("/kurser");
-    expect(sectionForPath("/event/brollop/").path).toBe("/event");
     expect(sectionForPath("/gruppdagar/").path).toBe("/event");
   });
 
@@ -71,7 +70,7 @@ describe("appRoutes", () => {
     ]);
     expect(eventChildren).not.toContain("/kurser/konst");
     expect(eventChildren).not.toContain("/konst");
-    expect(eventChildren).toContain("/event/brollop");
+    expect(eventChildren).toContain("/gruppdagar");
   });
 
   it("gives every route a label and an absolute path", () => {
@@ -87,12 +86,10 @@ describe("appRoutes", () => {
     }
   });
 
-  it("groups Contact under Om Oss without changing its SEO URL", () => {
-    const about = appRoutes.find((route) => route.path === "/om-oss");
-    const contact = about.children.find((route) => route.path === "/kontakt");
-
-    expect(contact.label).toBe("Kontakt");
-    expect(contact.hidden).not.toBe(true);
-    expect(appRoutes.some((route) => route.path === "/kontakt")).toBe(false);
+  it("puts Bröllop and Kontakt in the top level of the menu", () => {
+    const top = appRoutes.map((route) => route.path);
+    expect(top).toContain("/event/brollop");
+    expect(top).toContain("/kontakt");
+    expect(sectionForPath("/event/brollop/")).toBeNull();
   });
 });

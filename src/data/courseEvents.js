@@ -20,6 +20,7 @@
 // selector takes the list it works on, so both run through the same rules.
 
 import { cdnAsset } from "../config/cdnAssets.js";
+import { contactEmail } from "../features/contact/contact.js";
 import CMS_CONTENT from "./cmsContent.generated.js";
 import { isUpcoming, knownEndTimeOf, startTimeOf } from "./schedulePlacement.js";
 
@@ -34,8 +35,9 @@ export const COURSE_LOCATION = {
   travelNote: "15 minuter från Lidköpings centrum",
 };
 
-// One shared inbox for the farm - both instructors are reached there.
-const CONTACT_EMAIL = "bylinawiklund@gmail.com";
+// One shared inbox for the farm - both instructors are reached there, and the
+// course pages send sign-ups through the farm's enquiry form to the same place.
+const CONTACT_EMAIL = contactEmail;
 
 export const INSTRUCTORS = {
   lina: {
@@ -196,7 +198,7 @@ const maleriFaq = [
       "I ateljén på Storegården 7 håller Ann Wiklund kurser i måleri med akvarell och akryl. Kurserna är prestationsfria och passar även dig som är nybörjare.",
   },
   {
-    question: "När är nästa målarkurs?",
+    question: "När är nästa kurs i måleri?",
     answer: (now, passes) => {
       const pass = nextPass(MALERI_TRACK_ID, now, passes);
       if (!pass) {
@@ -364,10 +366,6 @@ export function passInstructor(pass) {
   return INSTRUCTORS[pass.instructorId] || null;
 }
 
-/** Where a visitor writes about a pass: its own booking address, else its instructor's, else the farm's. */
-export function passContactEmail(pass) {
-  return pass.bookingEmail || passInstructor(pass)?.email || CONTACT_EMAIL;
-}
 
 // Combined days filed under a single category before the CMS could put one event on two hubs.
 // Transitional and limited to these records: remove an entry once its pass is no longer shown in

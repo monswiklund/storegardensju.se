@@ -124,14 +124,14 @@ const TeamProfileShowcase = ({ profile }) => {
         {profile.portfolioUrl ? (
           <Link
             to={canonicalPath(profile.portfolioUrl)}
-            className="team-card-portfolio-btn"
+            className="btn btn--secondary btn--sm team-card-portfolio-btn"
           >
             <ImageIcon size={16} />
             <span>{siteCopy("team.view-portfolio")}</span>
           </Link>
         ) : hasPortfolio && (
           <button
-            className="team-card-portfolio-btn"
+            className="btn btn--secondary btn--sm team-card-portfolio-btn"
             onClick={() => openModal(0)}
           >
             <ImageIcon size={16} />
@@ -178,7 +178,7 @@ const TeamProfileShowcase = ({ profile }) => {
                       href={profile.portfolio[activeImageIndex].link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="portfolio-project-link-btn"
+                      className="btn btn--primary btn--sm"
                     >
                       {siteCopy("team.visit-project")}
                     </a>

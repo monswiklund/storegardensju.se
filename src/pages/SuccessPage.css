@@ -6,7 +6,7 @@
 }
 
 .success-icon {
-  color: #4caf50;
+  color: var(--text-accent);
   margin-bottom: 1.5rem;
   animation: successPop 0.5s ease-out;
 }
@@ -26,14 +26,14 @@
 }
 
 .success-container h1 {
-  color: var(--text-primary, #333);
+  color: var(--text-strong);
   margin-bottom: 1rem;
   font-size: 2rem;
 }
 
 .success-message {
   font-size: 1.1rem;
-  color: var(--text-secondary, #666);
+  color: var(--text-body);
   margin-bottom: 2rem;
 }
 
@@ -46,7 +46,7 @@
 
 .session-id {
   font-size: 0.9rem;
-  color: var(--text-secondary, #666);
+  color: var(--text-body);
   margin-bottom: 0.5rem;
 }
 
@@ -63,24 +63,34 @@
 
 .info-text {
   font-size: 0.9rem;
-  color: var(--text-muted, #999);
-  font-style: italic;
+  color: var(--text-muted);
   margin-top: 0.5rem;
 }
 
 .contact-info {
   margin-bottom: 2rem;
-  color: #333 !important;
+  color: var(--text-body);
+}
+
+.success-actions + .contact-info {
+  margin: 2rem 0 0;
 }
 
 .contact-info a {
-  color: #333 !important;
+  color: var(--text-accent);
   text-decoration: underline;
-  font-weight: 500;
+  font-weight: 700;
 }
 
-.contact-info a:hover {
-  text-decoration: underline;
+.contact-info a:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .success-icon {
+    animation: none;
+  }
 }
 
 .success-actions {
@@ -88,44 +98,6 @@
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-align: center;
-  transition: all 0.2s;
-  border: none;
-}
-
-.btn-primary {
-  background: var(--primary-color) !important;
-  color: white !important;
-}
-
-.btn-primary:hover {
-  background: var(--primary-hover) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(74, 163, 139, 0.3);
-}
-
-.btn-secondary {
-  background: white;
-  color: var(--text-primary, #333);
-  border: 1px solid #ddd;
-}
-
-.btn-secondary:hover {
-  background: #f5f5f5;
-  border-color: #ccc;
 }
 
 @media (max-width: 480px) {
@@ -139,10 +111,5 @@
 
   .success-actions {
     flex-direction: column;
-  }
-
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
   }
 }

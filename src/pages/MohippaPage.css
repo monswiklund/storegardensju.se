@@ -4,8 +4,9 @@
   --mohippa-sand: #f3eadb;
   --mohippa-line: rgba(33, 29, 24, 0.14);
   --mohippa-muted: rgba(33, 29, 24, 0.66);
-  --mohippa-green: var(--primary-color);
-  --mohippa-green-dark: var(--primary-hover);
+  /* Text, filled chips and selected states use the AA text green; sage stays decoration. */
+  --mohippa-green: var(--text-accent);
+  --mohippa-green-dark: #2b6451;
   background: #ffffff;
   color: var(--mohippa-ink);
 }
@@ -61,12 +62,13 @@
 
 .mohippa-hero h1 {
   max-width: 780px;
-  font-size: clamp(2.8rem, 6.5vw, 5.8rem);
+  font-size: clamp(2.6rem, 5vw, 4rem);
   line-height: 1.1;
 }
 
 .mohippa-word-switch {
   display: inline-block;
+  max-width: 100%;
   height: 1.15em;
   overflow: hidden;
   vertical-align: bottom;
@@ -78,7 +80,7 @@
 .mohippa-word-switch__track {
   display: block;
   will-change: transform;
-  animation: mohippaWordSwitchVaried 9s cubic-bezier(0.68, -0.5, 0.32, 1.5) infinite;
+  animation: mohippaWordSwitchVaried 11s cubic-bezier(0.68, -0.5, 0.32, 1.5) infinite;
 }
 
 .mohippa-word-switch__track span {
@@ -87,35 +89,41 @@
   line-height: 1.15;
   white-space: nowrap;
   padding-bottom: 2px;
-  color: var(--primary-color);
-  background: linear-gradient(135deg, var(--primary-color) 0%, #2d4a3e 100%);
+  color: var(--text-accent);
+  background: linear-gradient(135deg, var(--text-accent) 0%, #2d4a3e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 @keyframes mohippaWordSwitchVaried {
-  /* 1. Svensexa */
-  0%, 20% {
+  /* 1. Möhippa */
+  0%, 16% {
     transform: translateY(0) scale(1);
   }
-  
-  /* 2. Teambuilding */
-  25%, 45% {
+
+  /* 2. Svensexa */
+  20%, 36% {
     transform: translateY(-1.15em) scale(1.02);
   }
-  
-  /* 3. Afterwork */
-  50%, 70% {
+
+  /* 3. Teambuilding */
+  40%, 56% {
     transform: translateY(-2.30em) scale(1);
   }
-  
-  /* 4. Workshop */
-  75%, 95% {
+
+  /* 4. Afterwork */
+  60%, 76% {
     transform: translateY(-3.45em) scale(1.03);
   }
-  
-  100% {
+
+  /* 5. Workshop */
+  80%, 96% {
     transform: translateY(-4.60em) scale(1);
+  }
+
+  /* The repeated first word, so the loop restarts without a jump. */
+  100% {
+    transform: translateY(-5.75em) scale(1);
   }
 }
 
@@ -175,52 +183,6 @@
   gap: 12px;
 }
 
-.mohippa-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  min-height: 48px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  padding: 0 22px;
-  font-family: var(--font-body);
-  font-size: 0.96rem;
-  font-weight: 800;
-  text-decoration: none;
-  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
-}
-
-.mohippa-button--primary {
-  background: var(--mohippa-green);
-  color: #ffffff;
-}
-
-.mohippa-button--secondary {
-  background: #ffffff;
-  border-color: var(--mohippa-line);
-  color: var(--mohippa-ink);
-}
-
-.mohippa-button:hover {
-  transform: translateY(-2px);
-}
-
-.mohippa-button--primary:hover {
-  background: var(--mohippa-green-dark);
-  color: #ffffff;
-}
-
-.mohippa-button--secondary:hover {
-  border-color: rgba(33, 29, 24, 0.3);
-  color: var(--mohippa-ink);
-}
-
-.mohippa-button:focus-visible {
-  outline: 2px solid var(--mohippa-green);
-  outline-offset: 4px;
-}
-
 .mohippa-hero__media {
   position: relative;
   min-height: 520px;
@@ -237,35 +199,6 @@
   min-height: 520px;
   object-fit: cover;
   filter: saturate(0.96) contrast(1.03);
-}
-
-.mohippa-hero__note {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  display: grid;
-  gap: 4px;
-  min-width: 220px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  background: rgba(255, 253, 248, 0.9);
-  color: var(--mohippa-ink);
-  padding: 16px;
-  backdrop-filter: blur(10px);
-}
-
-.mohippa-hero__note span {
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: var(--mohippa-green);
-  text-transform: uppercase;
-  letter-spacing: 0;
-}
-
-.mohippa-hero__note strong {
-  font-family: var(--font-heading);
-  font-size: 1.35rem;
-  line-height: 1;
 }
 
 .mohippa-section-heading {
@@ -376,12 +309,12 @@
   border-radius: 6px;
   overflow: hidden;
   background: #ffffff;
-  max-width: 140px;
+  max-width: 160px;
 }
 
 .mohippa-guest-picker button {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: none;
   background: transparent;
   font-size: 1.1rem;
@@ -400,7 +333,7 @@
 .mohippa-guest-picker input {
   flex: 1;
   width: 100%;
-  height: 36px;
+  height: 44px;
   border: none;
   border-left: 1px solid var(--mohippa-line);
   border-right: 1px solid var(--mohippa-line);
@@ -484,7 +417,7 @@
 }
 
 .mohippa-selected-list li button:hover {
-  color: #ff3333;
+  color: var(--mohippa-ink);
 }
 
 .mohippa-breakdown-row--total {
@@ -710,9 +643,11 @@
     background: #ffffff;
   }
 
+  /* minmax(0, 1fr) lets the heading shrink; a plain 1fr track grew to the
+     rotating word's nowrap width and clipped the hero on phones. */
   .mohippa-hero__inner,
   .mohippa-section-heading--split {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .mohippa-planner-workspace {
@@ -764,7 +699,7 @@
   }
 
   .mohippa-hero h1 {
-    font-size: clamp(3rem, 15vw, 4.4rem);
+    font-size: clamp(2.4rem, 11vw, 4.4rem);
   }
 
   .mohippa-hero__facts,
@@ -779,7 +714,7 @@
   }
 
   .mohippa-hero__actions,
-  .mohippa-button {
+  .mohippa-hero__actions .btn {
     width: 100%;
   }
 
@@ -792,13 +727,6 @@
   .mohippa-hero__media,
   .mohippa-hero__media img {
     min-height: 300px;
-  }
-
-  .mohippa-hero__note {
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    min-width: 0;
   }
 
   .mohippa-main-tabs {
@@ -943,6 +871,12 @@
 /* Tab panes fade-in animation */
 .mohippa-tab-content-pane {
   animation: mohippaFadeIn 280ms ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mohippa-tab-content-pane {
+    animation: none;
+  }
 }
 
 @keyframes mohippaFadeIn {

@@ -75,7 +75,7 @@ function EventCard({ event }) {
           {/* Stacked actions inside card for Mobile only */}
           <div className="upcoming-card-actions mobile-only">
             {primaryLink && (
-              <SmartLink href={primaryLink.href} className="btn-primary-event">
+              <SmartLink href={primaryLink.href} className="btn btn--primary">
                 <span>{primaryLink.label}</span>
                 <ArrowUpRight size={16} />
               </SmartLink>

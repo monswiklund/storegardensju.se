@@ -8,6 +8,7 @@ import useNavbarToggle from "./useNavbarToggle";
 import { appRoutes, normalizePath, routeLabel } from "../../../config/routes.js";
 import CartBadge from "./CartBadge.jsx";
 import NotificationBell from "./NotificationBell.jsx";
+import useShopHasProducts from "../../../hooks/useShopHasProducts.js";
 
 const ALL_NAV_ITEMS = appRoutes.filter((route) => !route.hidden);
 const NAV_ITEMS = ALL_NAV_ITEMS.filter((route) => !route.headerHidden);
@@ -34,6 +35,10 @@ function Navbar() {
   // Trailing slash: GitHub Pages serves /kurser/ but appRoutes holds /kurser.
   const currentPath = normalizePath(location.pathname);
   const currentTitle = getCurrentTitle(currentPath, siteCopy);
+  const shopHasProducts = useShopHasProducts();
+  const navItems = shopHasProducts
+    ? NAV_ITEMS
+    : NAV_ITEMS.filter((route) => !route.shopOnly);
 
   const scrollToHeroTitle = () => {
     if (typeof window === "undefined") return;
@@ -82,7 +87,7 @@ function Navbar() {
   }, [location.pathname]);
 
   return (
-    <nav className="navbar" role="navigation">
+    <nav className="navbar" aria-label={siteCopy("ui.menu")}>
       <div className="navbar-container">
         <span className="navbar-page-title">{currentTitle}</span>
 
@@ -106,7 +111,7 @@ function Navbar() {
             <span className="nav-menu-subtitle">{siteCopy("ui.menu-subtitle")}</span>
           </div>
           <NavLinks
-            items={NAV_ITEMS}
+            items={navItems}
             currentPath={currentPath}
             onNavigate={handleNavigate}
             copy={siteCopy}

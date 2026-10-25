@@ -14,34 +14,38 @@
 .gallery-page-intro p {
   max-width: 620px;
   margin: 0 auto;
-  color: var(--text-secondary);
+  color: var(--text-body);
   font-size: 1.08rem;
   line-height: 1.7;
 }
 
 .gallery-page-intro__cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 48px;
   margin-top: 24px;
-  padding: 12px 22px;
-  border-radius: 999px;
-  background: var(--primary-color);
-  color: var(--text-light);
-  font-weight: 700;
-  text-decoration: none;
-  transition: var(--transition-smooth);
 }
 
-.gallery-page-intro__cta:hover {
-  background: var(--primary-hover);
-  transform: translateY(-2px);
+/* The step after the pictures: from looking to asking. */
+.gallery-plan {
+  max-width: 640px;
+  margin: clamp(48px, 6vw, 72px) auto 0;
+  padding: clamp(28px, 4vw, 40px) clamp(20px, 4vw, 40px);
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid rgb(var(--shadow-color) / 0.08);
+  border-radius: 16px;
   box-shadow: var(--shadow-sm);
 }
 
-.gallery-page-intro__cta:focus-visible {
-  outline: 3px solid var(--text-main);
-  outline-offset: 3px;
+.gallery-plan__title {
+  margin: 0 0 12px;
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.1rem);
+  line-height: 1.2;
+  color: var(--text-strong);
+}
+
+.gallery-plan__text {
+  max-width: 520px;
+  margin: 0 auto 24px;
+  color: var(--text-body);
+  line-height: 1.6;
 }

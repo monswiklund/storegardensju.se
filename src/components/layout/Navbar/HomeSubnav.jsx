@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import usePageCopy from "../../../hooks/usePageCopy.js";
 
 const HOME_SECTIONS = [
+  { id: "home-services", key: "services-section.title" },
   { id: "home-events", key: "events.upcoming.title" },
   { id: "past-events", key: "events.past.title" },
-  { id: "home-services", key: "services-section.title" },
   { id: "home-contact", key: "hero.primary-cta" },
 ];
 
@@ -28,7 +28,10 @@ function scrollToSection(id) {
 
 function HomeSubnav() {
   const homeCopy = usePageCopy("home");
+  const siteCopy = usePageCopy("site");
   const [activeId, setActiveId] = useState(null);
+  // Sections render only with content (no upcoming events, no section), so link only to those on the page.
+  const [presentIds, setPresentIds] = useState("");
 
   useEffect(() => {
     const updateActiveSection = () => {
@@ -50,6 +53,11 @@ function HomeSubnav() {
       }
 
       setActiveId(nextActive);
+      setPresentIds(
+        HOME_SECTIONS.filter((section) => document.getElementById(section.id))
+          .map((section) => section.id)
+          .join(" "),
+      );
     };
 
     window.addEventListener("scroll", updateActiveSection, { passive: true });
@@ -62,9 +70,10 @@ function HomeSubnav() {
     <div
       className="event-subnav home-subnav active"
       role="navigation"
+      aria-label={siteCopy("ui.page-sections")}
     >
       <div className="event-subnav-inner">
-        {HOME_SECTIONS.map((section) => {
+        {HOME_SECTIONS.filter((section) => presentIds.split(" ").includes(section.id)).map((section) => {
           const label = homeCopy(section.key);
           if (!label) return null;
           return (

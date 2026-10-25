@@ -1,10 +1,11 @@
 import { useState, useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowLeft, Lock } from "lucide-react";
 import { CartContext } from "../../components/layout/CartContext/CartContext.jsx";
 import { PageSection } from "../../components";
 import { formatPrice } from "../../data/products";
 import { getApiBaseUrl } from "../../config/apiBaseUrl";
+import { contactEmail } from "../../features/contact/contact.js";
 import { useSiteCopy } from "../../hooks/usePageCopy";
 import "./CheckoutPage.css";
 
@@ -13,7 +14,6 @@ export default function CheckoutPage() {
   const { cart, getTotal } = useContext(CartContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
   const siteCopy = useSiteCopy();
 
   // Om varukorgen är tom, redirecta till butiken
@@ -23,8 +23,8 @@ export default function CheckoutPage() {
         <PageSection background="alt" spacing="default">
           <div className="checkout-empty">
             <h1>{siteCopy("cart.empty-message")}</h1>
-            <p>{siteCopy("checkout.empty-cart-warning")}</p>
-            <Link to="/butik/" className="btn-primary">
+            <p>{siteCopy("cart.empty-subtext")}</p>
+            <Link to="/butik/" className="btn btn--primary">
               {siteCopy("cart.continue-shopping")}
             </Link>
           </div>
@@ -82,6 +82,8 @@ export default function CheckoutPage() {
     }
   };
 
+  // Same rule as the Stripe session in the Go API (handlers.go): free from 500 kr, else 49 kr.
+  // Shown as its own row so Delsumma + Frakt adds up to Totalt on screen.
   const subtotal = getTotal();
   const FREE_SHIPPING_THRESHOLD = 500;
   const SHIPPING_COST = 49;
@@ -94,14 +96,10 @@ export default function CheckoutPage() {
       <PageSection background="alt" spacing="default">
         <div className="checkout-container">
           <div className="checkout-header">
-            <button
-              onClick={() => navigate("/varukorg/")}
-              className="back-button"
-              aria-label={siteCopy("ui.back")}
-            >
-              <ArrowLeft size={20} />
+            <Link to="/varukorg/" className="back-button">
+              <ArrowLeft size={20} aria-hidden="true" />
               {siteCopy("ui.back")}
-            </button>
+            </Link>
             <h1>{siteCopy("checkout.page-title")}</h1>
           </div>
 
@@ -113,11 +111,11 @@ export default function CheckoutPage() {
               <div className="order-items">
                 {cart.map((item) => (
                   <div key={item.id} className="order-item">
-                    <img
-                      src={item.images[0]}
-                      alt={item.name}
-                      className="order-item-image"
-                    />
+                    {item.images?.[0] ? (
+                      <img src={item.images[0]} alt="" className="order-item-image" />
+                    ) : (
+                      <span className="order-item-image" aria-hidden="true" />
+                    )}
                     <div className="order-item-details">
                       <h3>{item.name}</h3>
                       <p className="order-item-quantity">
@@ -136,29 +134,53 @@ export default function CheckoutPage() {
                   <span>{siteCopy("cart.subtotal")}</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>
+                <div className="order-total-row">
+                  <span>{siteCopy("checkout.shipping")}</span>
+                  <span>
+                    {shippingEstimate === 0
+                      ? siteCopy("checkout.free-shipping")
+                      : formatPrice(shippingEstimate)}
+                  </span>
+                </div>
                 <div className="order-total-row order-total-final">
                   <span>{siteCopy("cart.total")}</span>
                   <span>{formatPrice(total)}</span>
                 </div>
+                {shippingEstimate > 0 && (
+                  <p className="shipping-note">
+                    {siteCopy("checkout.free-shipping-from")}{" "}
+                    {formatPrice(FREE_SHIPPING_THRESHOLD)}
+                  </p>
+                )}
+                <p className="shipping-note">{siteCopy("checkout.pickup-note")}</p>
               </div>
             </div>
 
             {/* Payment Section */}
             <div className="payment-section">
               <div className="payment-info">
-                <Lock size={24} />
+                <Lock size={24} aria-hidden="true" />
                 <div>
                   <h3>{siteCopy("checkout.payment-method")}</h3>
                   <p>{siteCopy("checkout.stripe-notice")}</p>
                 </div>
               </div>
 
-              {error && <div className="error-message">{error}</div>}
+              {error && (
+                <div className="error-message" role="alert">
+                  <p>{error}</p>
+                  <p>
+                    {siteCopy("checkout.error-help")}{" "}
+                    <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+                  </p>
+                </div>
+              )}
 
               <button
+                type="button"
                 onClick={handleCheckout}
                 disabled={loading}
-                className="checkout-button"
+                className="btn btn--primary checkout-button"
               >
                 {loading ? siteCopy("checkout.processing") : siteCopy("checkout.pay-button")}
               </button>

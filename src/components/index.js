@@ -7,4 +7,5 @@ export { default as Footer } from "./layout/Footer/Footer.jsx";
 export { default as BuildInfo } from "./ui/BuildInfo.jsx";
 export { default as SectionDivider } from "./ui/SectionDivider/SectionDivider.jsx";
 export { default as ScrollSpyNav } from "./ui/ScrollSpyNav/ScrollSpyNav.jsx";
-export { default as ExploreMoreSection } from "./ui/ExploreMoreSection/ExploreMoreSection.jsx";
+export { default as ExploreMore } from "./ui/ExploreMore/ExploreMore.jsx";
+export { default as SectionHeader } from "./ui/SectionHeader/SectionHeader.jsx";

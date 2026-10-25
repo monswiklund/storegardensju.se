@@ -1,38 +1,39 @@
 import { useEffect, useRef } from "react";
 import {
+  ArrowDown,
+  Car,
   Clock3,
   ExternalLink,
-  Mail,
   MapPin,
   Navigation,
 } from "lucide-react";
 import { ContactSection } from "../features/contact";
-import { contactEmail } from "../features/contact/contact.js";
-import { ExploreMoreSection } from "../components";
+import { ExploreMore } from "../components";
 import { COURSE_LOCATION } from "../data/courseEvents.js";
 import { seoMeta } from "../config/seoMeta.js";
 import { useSeo } from "../hooks/useSeo.js";
 import usePageCopy from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
+import { smoothScrollTo } from "../utils/scrollUtils.js";
 import "./ContactPage.css";
 
-const QUICK_LINKS = [
-  { to: "/event/brollop/" },
-  { to: "/gruppdagar/" },
-  { to: "/kurser/yoga/" },
-  { to: "/kurser/konst/" },
-];
+const NAV_OFFSET = 80;
+
+// App leaves its site-wide form off /kontakt, so the page places the form itself, right
+// under the hero. The line under the form already carries the e-mail address and Instagram.
+function goToForm(event) {
+  event.preventDefault();
+  smoothScrollTo(".contact-container", NAV_OFFSET);
+  // A keyboard activation (click detail 0) continues at the form's first question, the subject.
+  if (event.detail === 0) {
+    document.querySelector('.contact-form input[name="subject"]')?.focus({ preventScroll: true });
+  }
+}
 
 function ContactPage() {
   useSeo(seoMeta.kontakt);
   const copy = usePageCopy("contact");
   const media = usePageMedia("contact");
-  const quickLinks = QUICK_LINKS.map((item, index) => ({
-    ...item,
-    eyebrow: copy(`explore.items.${index}.eyebrow`),
-    title: copy(`explore.items.${index}.title`),
-    text: copy(`explore.items.${index}.body`),
-  }));
   const routeRef = useRef(null);
 
   useEffect(() => {
@@ -118,12 +119,12 @@ function ContactPage() {
             {copy("hero.lead")}
           </p>
           <div className="contact-page__hero-actions" data-cms-hero-actions>
-            <a className="contact-page__button contact-page__button--light" href={`mailto:${contactEmail}`}>
-              <Mail size={18} aria-hidden="true" />
-              {copy("hero.email-cta")}
+            <a className="btn btn--light" href="#kontakt-formular" onClick={goToForm}>
+              {copy("hero.form-cta")}
+              <ArrowDown size={18} aria-hidden="true" />
             </a>
             <a
-              className="contact-page__button contact-page__button--ghost"
+              className="btn btn--ghost"
               href={COURSE_LOCATION.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -135,6 +136,10 @@ function ContactPage() {
         </div>
         <div className="contact-page__hero-curve" aria-hidden="true" />
       </section>
+
+      <div id="kontakt-formular" className="contact-page__form">
+        <ContactSection />
+      </div>
 
       <section className="contact-page__arrival" aria-labelledby="arrival-title">
         <div className="contact-page__arrival-grid">
@@ -166,7 +171,7 @@ function ContactPage() {
             </div>
           </div>
 
-          <aside className="contact-page__address-card">
+          <div className="contact-page__address-card">
             <div className="contact-page__address-heading">
               <MapPin size={23} aria-hidden="true" />
               <div>
@@ -175,6 +180,10 @@ function ContactPage() {
               </div>
             </div>
             <ul className="contact-page__facts">
+              <li>
+                <Car size={19} aria-hidden="true" />
+                <span>{copy("arrival.parking")}</span>
+              </li>
               <li>
                 <Clock3 size={19} aria-hidden="true" />
                 <span>{copy("arrival.visit-note")}</span>
@@ -189,19 +198,11 @@ function ContactPage() {
               {copy("arrival.maps-cta")}
               <ExternalLink size={16} aria-hidden="true" />
             </a>
-          </aside>
+          </div>
         </div>
       </section>
 
-      <ContactSection defaultOpen />
-
-      <ExploreMoreSection
-        id="contact-explore-more"
-        eyebrow={copy("explore.eyebrow")}
-        title={copy("explore.title")}
-        intro={copy("explore.body")}
-        items={quickLinks}
-      />
+      <ExploreMore />
     </main>
   );
 }

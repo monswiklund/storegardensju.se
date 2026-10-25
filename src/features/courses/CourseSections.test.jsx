@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { PassSection, PastPassesSection } from "./CourseSections.jsx";
+import { ContactSection, NoUpcomingSection, PassSection, PastPassesSection } from "./CourseSections.jsx";
 import {
   MALERI_TRACK_ID,
   YOGA_TRACK_ID,
@@ -55,7 +55,7 @@ describe("PastPassesSection history", () => {
 
 describe("PassSection", () => {
   const renderPass = (pass, trackId = YOGA_TRACK_ID) =>
-    render(<PassSection pass={pass} trackId={trackId} contactSubject="Fråga" onContactClick={() => {}} />);
+    render(<PassSection pass={pass} trackId={trackId} />);
   const coursePass = (doc) =>
     coursePassToPass(projectCoursePass({ id: 1, title: "Akvarell", track: "konst", startAt: "2026-09-05T08:00:00.000Z", ...doc }));
 
@@ -67,13 +67,14 @@ describe("PassSection", () => {
     expect(document.querySelector('a[href^="mailto:"]')).toBeNull();
   });
 
-  it("shows status, spots and writes to the pass's own booking address", () => {
+  it("shows status and spots, and sends sign-ups to the hub's enquiry form", () => {
     renderPass(coursePass({ status: "few_left", spots: 3, instructor: "ann", bookingEmail: "ateljen@example.test" }), MALERI_TRACK_ID);
 
     expect(screen.getByText("Fåtal platser kvar")).toBeInTheDocument();
     expect(screen.getByText(/3 /)).toBeInTheDocument();
     expect(screen.getByText("Ann Wiklund")).toBeInTheDocument();
-    expect(document.querySelector('a[href^="mailto:ateljen@example.test"]')).not.toBeNull();
+    expect(document.querySelector('a[href="#kontakt"]')).not.toBeNull();
+    expect(document.querySelector('a[href^="mailto:"]')).toBeNull();
   });
 
   it("names no instructor for a guest and shows the event's own location", () => {
@@ -83,5 +84,24 @@ describe("PassSection", () => {
     const located = eventToPass(projectEvent({ id: 2, title: "Yoga i parken", category: "yoga", startAt: "2026-09-01T16:00:00.000Z", location: "Stadsparken" }));
     renderPass(located);
     expect(screen.getByText("Stadsparken")).toBeInTheDocument();
+  });
+});
+
+describe("course enquiries", () => {
+  it("ends an empty calendar on a link to the enquiry form", () => {
+    render(<NoUpcomingSection trackId={YOGA_TRACK_ID} heading="Inga pass" body="Snart fler." ctaLabel="Hör av dig" />);
+
+    expect(screen.getByRole("link", { name: /Hör av dig/ })).toHaveAttribute("href", "#kontakt");
+  });
+
+  it("renders the hub's heading over the shared form, with a course chosen and no mailto", () => {
+    render(<ContactSection heading="Frågor om yogan?" body="Hör av dig." />);
+
+    const section = document.getElementById("kontakt");
+    expect(section).not.toBeNull();
+    expect(screen.getByRole("heading", { name: "Frågor om yogan?" })).toBeInTheDocument();
+    expect(section.querySelector("form")).not.toBeNull();
+    expect(section.querySelector('input[name="subject"]:checked')).toHaveAttribute("value", "course");
+    expect(section.innerHTML).not.toContain("bylinawiklund");
   });
 });

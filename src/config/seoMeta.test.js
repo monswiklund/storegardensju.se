@@ -260,6 +260,14 @@ describe("route meta", () => {
     }
   });
 
+  it("keeps only the portfolio route out of search results", () => {
+    const noindexed = Object.entries(seoMeta)
+      .filter(([, meta]) => meta.robots?.includes("noindex"))
+      .map(([key]) => key);
+    expect(noindexed).toEqual(["mansPortfolio"]);
+    expect(seoMeta.mansPortfolio.path).toBe("/om-oss/portfolj/mans");
+  });
+
   it("builds canonical URLs with the trailing slash GitHub Pages redirects to", () => {
     expect(canonicalUrl("/")).toBe("https://storegardensju.se/");
     expect(canonicalUrl("/kurser/yoga")).toBe(

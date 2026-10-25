@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./fonts.css";
 import "./index.css";
+import "../components/ui/Button.css";
 import ThemeProvider from "./providers/ThemeProvider.jsx";
 import ScrollProvider from "./providers/ScrollProvider.jsx";
 import { CartProvider } from "../components/layout/CartContext/CartContext.jsx";

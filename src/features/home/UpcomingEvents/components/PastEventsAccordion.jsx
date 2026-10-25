@@ -187,7 +187,7 @@ function PastEventsAccordion({ events }) {
     const thumbImage = event.images?.[0] || event.image;
 
     return (
-      <article
+      <div
         key={event.id || `${event.title}-${index}`}
         data-index={index}
         className={`past-event-item ${
@@ -257,7 +257,7 @@ function PastEventsAccordion({ events }) {
             <ArrowUpRight size={16} />
           </span>
         </div>
-      </article>
+      </div>
     );
   };
 
@@ -379,7 +379,7 @@ function PastEventsAccordion({ events }) {
             <div className="past-events-expand-wrapper">
               <button
                 type="button"
-                className="past-events-expand-btn"
+                className="btn btn--secondary past-events-expand-btn"
                 onClick={() => setIsExpanded((prev) => !prev)}
                 aria-expanded={isExpanded}
                 aria-controls="past-events-extra-content"

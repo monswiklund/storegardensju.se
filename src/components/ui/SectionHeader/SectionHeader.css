@@ -1,0 +1,29 @@
+.section-header {
+  max-width: 680px;
+  margin: 0 auto 40px;
+}
+
+.section-header--center {
+  text-align: center;
+}
+
+.section-header--left {
+  margin-left: 0;
+  text-align: left;
+}
+
+.section-header__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--text-strong);
+  margin: 0 0 14px;
+}
+
+.section-header__lead {
+  font-size: clamp(0.95rem, 0.92rem + 0.5vw, 1.1rem);
+  line-height: 1.6;
+  color: var(--text-body);
+  margin: 0;
+}

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useMemo, useState } from "react";
+import { Pause, Play } from "lucide-react";
 import "./Hero.css";
+import { useSiteCopy } from "../../../hooks/usePageCopy.js";
 import { fetchGalleryCategories } from "../../../services/galleryService";
 import {
   isAllGalleryCategory,
@@ -20,9 +22,20 @@ export const getHomeCarouselSlides = (galleryData) => {
     .slice(0, HOME_CAROUSEL_IMAGE_LIMIT);
 };
 
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
 const HomeHeroCarousel = () => {
+  const siteCopy = useSiteCopy();
   const scrollerRef = useRef(null);
   const [galleryData, setGalleryData] = useState(null);
+  // Stopped by the visitor's button or their reduced-motion setting.
+  const [isStopped, setIsStopped] = useState(prefersReducedMotion);
+  const isStoppedRef = useRef(isStopped);
+  // Hover, keyboard focus or off-screen: a temporary hold, not a choice.
+  const isHeldRef = useRef(false);
+  const isOffscreenRef = useRef(false);
   const isDraggingRef = useRef(false);
   const posRef = useRef(0); // fractional scroll accumulator (scrollLeft may round to int)
 
@@ -46,11 +59,25 @@ const HomeHeroCarousel = () => {
 
   const slides = useMemo(
     () => getHomeCarouselSlides(galleryData),
-    [galleryData]
+    [galleryData],
   );
 
   useEffect(() => {
     addAnimation();
+  }, [slides.length]);
+
+  useEffect(() => {
+    isStoppedRef.current = isStopped;
+  }, [isStopped]);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => {
+      isOffscreenRef.current = !entry.isIntersecting;
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [slides.length]);
 
   // Continuous auto-scroll (marquee band) driven in JS so the track stays
@@ -62,7 +89,12 @@ const HomeHeroCarousel = () => {
 
     let rafId;
     const tick = () => {
-      if (!isDraggingRef.current) {
+      const paused =
+        isDraggingRef.current ||
+        isStoppedRef.current ||
+        isHeldRef.current ||
+        isOffscreenRef.current;
+      if (!paused) {
         const half = el.scrollWidth / 2;
         if (half > 0) {
           posRef.current += SCROLL_SPEED;
@@ -163,31 +195,68 @@ const HomeHeroCarousel = () => {
     });
   }
 
+  if (slides.length === 0) return null;
+
+  const hold = () => {
+    isHeldRef.current = true;
+  };
+  const release = () => {
+    isHeldRef.current = false;
+    posRef.current = scrollerRef.current?.scrollLeft ?? posRef.current;
+  };
+
   return (
-    <div
-      className="hero-carousel"
-      ref={scrollerRef}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={endDrag}
-      onTouchCancel={endDrag}
-    >
-      <div className="hero-carousel-inner">
-        {slides.map((src, index) => (
-          <div className="hero-carousel-item" key={index}>
-            <img
-              src={src}
-              alt=""
-              loading={index < 3 ? "eager" : "lazy"}
-              decoding="async"
-            />
-          </div>
-        ))}
+    <div className="hero-carousel-wrap">
+      <div
+        className="hero-carousel"
+        ref={scrollerRef}
+        role="region"
+        aria-label={siteCopy("ui.carousel-label")}
+        tabIndex={0}
+        onMouseEnter={hold}
+        onMouseLeave={release}
+        onFocus={hold}
+        onBlur={release}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={endDrag}
+        onTouchCancel={endDrag}
+      >
+        <div className="hero-carousel-inner">
+          {slides.map((src, index) => (
+            <div className="hero-carousel-item" key={index}>
+              <img
+                src={src}
+                alt=""
+                loading={index < 3 ? "eager" : "lazy"}
+                decoding="async"
+              />
+            </div>
+          ))}
+        </div>
       </div>
+      <button
+        type="button"
+        className="hero-carousel-toggle"
+        aria-pressed={isStopped}
+        onClick={() => {
+          posRef.current = scrollerRef.current?.scrollLeft ?? posRef.current;
+          setIsStopped((stopped) => !stopped);
+        }}
+      >
+        {isStopped ? (
+          <Play size={14} aria-hidden="true" />
+        ) : (
+          <Pause size={14} aria-hidden="true" />
+        )}
+        {isStopped
+          ? siteCopy("ui.carousel-play")
+          : siteCopy("ui.carousel-pause")}
+      </button>
     </div>
   );
 };

@@ -1,11 +1,14 @@
 import PropTypes from "prop-types";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { ExploreMoreSection } from "../../../components";
+import { ExploreMore } from "../../../components";
 import { formatPrice } from "../../../services/stripeService";
 import "./ProductRecommendations.css";
 
 import usePageCopy from "../../../hooks/usePageCopy";
+
+// Someone looking at ceramics is closest to the painting and ceramics course, so it leads.
+export const SHOP_EXPLORE_IDS = ["kurser-konst", "brollop", "event", "gruppdagar"];
 
 function isAvailable(product) {
   return Boolean(product?.active) && (product.stock ?? 0) > 0;
@@ -34,24 +37,8 @@ function ProductRecommendations({ products, currentProduct }) {
   const relatedProducts = getRelatedProducts(products, currentProduct);
 
   if (relatedProducts.length === 0) {
-    return (
-      <ExploreMoreSection
-        id="product-explore-more"
-        eyebrow={copy("recommendations.empty-eyebrow")}
-        title={copy("recommendations.empty-title")}
-        intro={copy("recommendations.empty-intro")}
-        background="alt"
-        items={[
-          {
-            to: "/butik/",
-            eyebrow: copy("recommendations.item-eyebrow"),
-            title: copy("recommendations.item-title"),
-            text: copy("recommendations.item-text"),
-            featured: true,
-          },
-        ]}
-      />
-    );
+    // Nothing else to recommend: the page already links back to the shop, so offer the farm.
+    return <ExploreMore ids={SHOP_EXPLORE_IDS} background="alt" />;
   }
 
   return (
@@ -73,7 +60,9 @@ function ProductRecommendations({ products, currentProduct }) {
               to={`/butik/${product.id}/`}
               key={product.id}
             >
-              <img src={product.images?.[0]} alt="" loading="lazy" />
+              {product.images?.[0] && (
+                <img src={product.images[0]} alt="" loading="lazy" decoding="async" />
+              )}
               <div className="product-recommendations__card-content">
                 <span>{product.category}</span>
                 <h3>{product.name}</h3>

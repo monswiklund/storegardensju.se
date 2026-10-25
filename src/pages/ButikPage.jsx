@@ -8,15 +8,27 @@ import {
   Minus,
   Plus,
   ShoppingBag,
+  Instagram,
 } from "lucide-react";
 import { CartContext } from "../components/layout/CartContext/CartContext.jsx";
 import { ProductContext } from "../components/layout/ProductContext/ProductContext.jsx";
-import { ExploreMoreSection, PageSection } from "../components";
+import { ExploreMore, PageSection } from "../components";
+import { contactMethods } from "../features/contact/contact.js";
+import { SHOP_EXPLORE_IDS } from "../features/shop";
+import { smoothScrollTo } from "../utils/scrollUtils.js";
 import { formatPrice } from "../services/stripeService";
 import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import "./ButikPage.css";
+
+const instagramUrl = contactMethods.find((method) => method.id === "instagram")?.href;
+
+// The enquiry form (ContactSection) follows this page; send the visitor down to it.
+const askAboutPieces = () => {
+  window.dispatchEvent(new CustomEvent("expand-contact-form"));
+  smoothScrollTo(".contact-container", 80);
+};
 
 function ButikPage() {
   useSeo(seoMeta.butik);
@@ -61,6 +73,10 @@ function ButikPage() {
     setTimeout(() => setAddedToCart(null), 2000);
   };
 
+  const categoryLabel = (category = "") =>
+    siteCopy(`cart.category-${category}`) ||
+    category.charAt(0).toUpperCase() + category.slice(1);
+
   const handleQuantityChange = (productId, stock, delta) => {
     setQuantities((prev) => {
       const current = prev[productId] || 1;
@@ -91,49 +107,60 @@ function ButikPage() {
         {/* Kategorifilter - visa bara om det finns produkter */}
         {!loading && products.length > 0 && categories.length > 1 && (
           <div className="category-filters">
-            {categories.map((category) => {
-              const label =
-                siteCopy(`cart.category-${category}`) ||
-                category.charAt(0).toUpperCase() + category.slice(1);
-              return (
-                <button
-                  key={category}
-                  className={activeCategory === category ? "active" : ""}
-                  onClick={() => setActiveCategory(category)}
-                >
-                  {label}
-                </button>
-              );
-            })}
+            {categories.map((category) => (
+              <button
+                type="button"
+                key={category}
+                className={activeCategory === category ? "active" : ""}
+                aria-pressed={activeCategory === category}
+                onClick={() => setActiveCategory(category)}
+              >
+                {categoryLabel(category)}
+              </button>
+            ))}
           </div>
         )}
 
         {/* Loading state */}
         {loading && (
-          <div className="products-loading">
-            <Loader2 className="spinner" size={48} />
+          <div className="products-loading" role="status">
+            <Loader2 className="spinner" size={48} aria-hidden="true" />
             <p>{siteCopy("ui.loading-products")}</p>
           </div>
         )}
 
         {/* Error state */}
         {error && !loading && (
-          <div className="products-error">
+          <div className="products-error" role="alert">
             <p>{error}</p>
-            <button onClick={refetch}>{siteCopy("ui.retry")}</button>
+            <button type="button" className="btn btn--secondary" onClick={refetch}>
+              {siteCopy("ui.retry")}
+            </button>
           </div>
         )}
 
         {/* Empty state */}
         {!loading && !error && products.length === 0 && (
-          <div className="products-empty">
-            <p>
-              {copy("empty.title")}
-            </p>
-            <p>
-              {copy("empty.body")}
-            </p>
-          </div>
+          <section className="products-empty" aria-labelledby="shop-empty-title">
+            <h2 id="shop-empty-title">{copy("empty.title")}</h2>
+            <p>{copy("empty.body")}</p>
+            <div className="products-empty__actions">
+              <button type="button" className="btn btn--primary" onClick={askAboutPieces}>
+                {copy("empty.contact-cta")}
+              </button>
+              {instagramUrl && (
+                <a
+                  className="btn btn--secondary"
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Instagram size={18} aria-hidden="true" />
+                  {copy("empty.instagram-cta")}
+                </a>
+              )}
+            </div>
+          </section>
         )}
 
         {/* Produktlista med dynamisk grid */}
@@ -183,7 +210,7 @@ function ButikPage() {
 
                     {/* Kategori och Unikt exemplar som text under beskrivning */}
                     <p className="product-meta">
-                      {product.category}
+                      {categoryLabel(product.category)}
                       {stock === 1 && !isSoldOut && ` · ${siteCopy("cart.unique-item")}`}
                     </p>
 
@@ -203,7 +230,7 @@ function ButikPage() {
                             disabled={(quantities[product.id] || 1) <= 1}
                             aria-label={siteCopy("cart.decrease-qty")}
                           >
-                            <Minus size={16} />
+                            <Minus size={16} aria-hidden="true" />
                           </button>
                           <span className="qty-value">
                             {quantities[product.id] || 1}
@@ -217,7 +244,7 @@ function ButikPage() {
                             disabled={(quantities[product.id] || 1) >= stock}
                             aria-label={siteCopy("cart.increase-qty")}
                           >
-                            <Plus size={16} />
+                            <Plus size={16} aria-hidden="true" />
                           </button>
                         </div>
                       </div>
@@ -232,7 +259,7 @@ function ButikPage() {
                           !alreadyInCart &&
                           handleAddToCart(product, quantities[product.id] || 1)
                         }
-                        className={`add-btn ${
+                        className={`btn btn--primary btn--sm add-btn ${
                           justAdded ? "added" : alreadyInCart ? "in-cart" : ""
                         }`}
                         disabled={isSoldOut || (alreadyInCart && !justAdded)}
@@ -241,22 +268,22 @@ function ButikPage() {
                           <>{siteCopy("cart.sold-badge")}</>
                         ) : justAdded ? (
                           <>
-                            <Check size={14} /> {siteCopy("cart.added")}
+                            <Check size={14} aria-hidden="true" /> {siteCopy("cart.added")}
                           </>
                         ) : alreadyInCart ? (
                           <>
-                            <Check size={14} /> {siteCopy("cart.in-cart")}
+                            <Check size={14} aria-hidden="true" /> {siteCopy("cart.in-cart")}
                           </>
                         ) : (
                           <>
-                            <ShoppingCart size={14} /> {siteCopy("cart.buy-btn")}
+                            <ShoppingCart size={14} aria-hidden="true" /> {siteCopy("cart.buy-btn")}
                           </>
                         )}
                       </button>
                     </div>
                     {alreadyInCart && !justAdded && (
-                      <Link to="/varukorg/" className="btn-go-to-cart">
-                        {siteCopy("cart.drawer-title")} <ArrowRight size={16} />
+                      <Link to="/varukorg/" className="btn btn--secondary btn--sm btn-go-to-cart">
+                        {siteCopy("cart.drawer-title")} <ArrowRight size={16} aria-hidden="true" />
                       </Link>
                     )}
                   </div>
@@ -267,34 +294,7 @@ function ButikPage() {
         )}
       </PageSection>
 
-      <ExploreMoreSection
-        id="shop-explore-more"
-        eyebrow={copy("explore.eyebrow")}
-        title={copy("explore.title")}
-        intro={copy("explore.body")}
-        background="green"
-        items={[
-          {
-            to: "/event/",
-            eyebrow: copy("explore.items.0.eyebrow"),
-            title: copy("explore.items.0.title"),
-            text: copy("explore.items.0.body"),
-            featured: true,
-          },
-          {
-            to: "/galleri/",
-            eyebrow: copy("explore.items.1.eyebrow"),
-            title: copy("explore.items.1.title"),
-            text: copy("explore.items.1.body"),
-          },
-          {
-            to: "/om-oss/",
-            eyebrow: copy("explore.items.2.eyebrow"),
-            title: copy("explore.items.2.title"),
-            text: copy("explore.items.2.body"),
-          },
-        ]}
-      />
+      <ExploreMore ids={SHOP_EXPLORE_IDS} />
     </main>
   );
 }

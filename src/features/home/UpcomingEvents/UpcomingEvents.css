@@ -246,47 +246,6 @@
   gap: 12px;
 }
 
-.btn-primary-event,
-.btn-secondary-event {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 46px;
-  padding: 0 24px;
-  border-radius: 6px;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.btn-primary-event {
-  background: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  color: #ffffff;
-}
-
-.btn-primary-event:hover {
-  background: var(--primary-hover);
-  border-color: var(--primary-hover);
-  transform: translateY(-1px);
-}
-
-.btn-secondary-event {
-  background: #ffffff;
-  border: 1px solid rgba(45, 63, 47, 0.22);
-  color: var(--text-main);
-}
-
-.btn-secondary-event:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-hover);
-  transform: translateY(-1px);
-}
-
 /* Right Column: Carousel Card */
 .upcoming-events-carousel-col {
   width: 100%;
@@ -613,13 +572,6 @@
     gap: 10px;
     width: 100%;
     margin-top: 24px;
-  }
-  
-  .upcoming-card-actions .btn-primary-event,
-  .upcoming-card-actions .btn-secondary-event {
-    min-height: 44px;
-    font-size: 0.88rem;
-    padding: 0 16px;
   }
   
   /* Dark Green Date Badge Overlay on Mobile Image */

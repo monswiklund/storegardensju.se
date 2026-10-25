@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
-import { ExploreMoreSection, PageSection } from "../components";
+import { ExploreMore, PageSection } from "../components";
 import { profiles } from "../data/profileData.js";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
@@ -114,34 +114,7 @@ function MansPortfolioPage() {
         </ErrorBoundary>
       </PageSection>
 
-      <ExploreMoreSection
-        id="portfolio-explore-more"
-        eyebrow={copy("explore.eyebrow")}
-        title={copy("explore.title")}
-        intro={copy("explore.body")}
-        background="green"
-        items={[
-          {
-            to: "/om-oss/",
-            eyebrow: copy("explore.items.0.eyebrow"),
-            title: copy("explore.items.0.title"),
-            text: copy("explore.items.0.body"),
-            featured: true,
-          },
-          {
-            to: "/galleri/",
-            eyebrow: copy("explore.items.1.eyebrow"),
-            title: copy("explore.items.1.title"),
-            text: copy("explore.items.1.body"),
-          },
-          {
-            to: "/kontakt/",
-            eyebrow: copy("explore.items.2.eyebrow"),
-            title: copy("explore.items.2.title"),
-            text: copy("explore.items.2.body"),
-          },
-        ]}
-      />
+      <ExploreMore background="green" />
     </main>
   );
 }

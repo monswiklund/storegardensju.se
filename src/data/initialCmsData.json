@@ -74,7 +74,9 @@
       "explore.items.1.body": "Titta närmare på ladan, loftet och ateljén.",
       "explore.items.2.eyebrow": "Lär känna",
       "explore.items.2.title": "Om oss",
-      "explore.items.2.body": "Möt människorna och idéerna bakom Storegården 7."
+      "explore.items.2.body": "Möt människorna och idéerna bakom Storegården 7.",
+      "empty.contact-cta": "Fråga om keramik eller konst",
+      "empty.instagram-cta": "Följ oss på Instagram"
     },
     "lists": {},
     "images": {
@@ -115,7 +117,9 @@
       "explore.items.2.body": "Pass i lugnt tempo med Lina.",
       "explore.items.3.eyebrow": "Skapa",
       "explore.items.3.title": "Måleri",
-      "explore.items.3.body": "Kurser och privata grupper i gårdsateljén."
+      "explore.items.3.body": "Kurser och privata grupper i gårdsateljén.",
+      "hero.form-cta": "Skriv till oss",
+      "arrival.parking": "Parkering finns på gårdsplanen."
     },
     "lists": {},
     "images": {
@@ -139,7 +143,8 @@
       "story.title": "En gård som väckts till liv",
       "story.body": "Storegården 7 har en lång historia i Rackeby. Vi har varsamt renoverat ladan, loftet och ateljén för att skapa en levande mötesplats för fest, konst och gemenskap på landet.",
       "services-section.eyebrow": "MER ATT SE & GÖRA",
-      "services-section.title": "Utforska mer"
+      "services-section.title": "Utforska mer",
+      "team.title": "Familjen bakom Storegården 7"
     },
     "lists": {},
     "images": {
@@ -159,7 +164,10 @@
       "hero.lead": "Bilder från fest, bröllop, kurser och livet på gården",
       "hero.primary-cta": "Se alla bilder",
       "showcase.title": "Utvalda ögonblick",
-      "showcase.lead": "Se hur gården och lokalerna kan se ut vid olika årstider och tillfällen."
+      "showcase.lead": "Se hur gården och lokalerna kan se ut vid olika årstider och tillfällen.",
+      "plan.title": "Planera ditt event",
+      "plan.body": "Ser du festen eller bröllopet framför dig? Berätta vad du planerar, så återkommer vi så snart vi kan.",
+      "plan.cta": "Skicka en förfrågan"
     },
     "lists": {},
     "images": {
@@ -339,7 +347,8 @@
       "faq.title": "Vanliga frågor om yogan",
       "empty.title": "Inga planerade pass just nu",
       "empty.body": "Vi lägger löpande upp nya datum. Följ oss på Instagram eller hör av dig för att få veta när nästa tillfälle släpps.",
-      "empty.cta": "Hör av dig"
+      "empty.cta": "Hör av dig",
+      "gallery.open-image": "Förstora bild"
     },
     "lists": {
       "faq": [
@@ -652,7 +661,8 @@
       "faq.eyebrow": "Bra att veta",
       "faq.title": "Vanliga frågor",
       "services-section.eyebrow": "MER HOS OSS",
-      "services-section.title": "Utforska mer på gården"
+      "services-section.title": "Utforska mer på gården",
+      "hero.gallery-cta": "Se galleriet"
     },
     "lists": {
       "spaces": [
@@ -796,7 +806,13 @@
       "planning.title": "Vi planerar det praktiska tillsammans",
       "planning.lead": "Ni sätter tonen och vi hjälper er att få lokalerna och det praktiska på plats.",
       "services-section.eyebrow": "MER HOS OSS",
-      "services-section.title": "Utforska mer på gården"
+      "services-section.title": "Utforska mer på gården",
+      "planning.items.0.title": "Berätta vad ni planerar",
+      "planning.items.0.body": "Skicka datum, ungefärligt antal gäster och vad ni vill ordna.",
+      "planning.items.1.title": "Gå igenom det praktiska",
+      "planning.items.1.body": "Vi går igenom lokalerna, dukningen, maten, drycken och vilken hjälp ni behöver.",
+      "planning.items.2.title": "Kom till gården",
+      "planning.items.2.body": "När dagen kommer är ladan i ordning för det upplägg vi har kommit överens om."
     },
     "lists": {
       "facts": [
@@ -1068,7 +1084,7 @@
     "copy": {
       "contact.eyebrow": "KONTAKT",
       "contact.title": "Kontakta oss",
-      "contact.lead": "Har du frågor, vill boka en kurs eller funderar på ett datum för fest? Berätta vad du planerar, så återkommer vi så snart vi kan.",
+      "contact.lead": "Berätta vad du planerar, så återkommer vi så snart vi kan.",
       "contact.response-time": "Vi brukar svara inom 24 timmar.",
       "contact.thanks": "Tack för att du hör av dig.",
       "contact.direct-title": "Du kan också nå oss direkt",
@@ -1242,7 +1258,34 @@
       "gallery.cat.butik": "Gårdsbutik & Hantverk",
       "gallery.cat.ute": "Gården & Utemiljö",
       "gallery.cat.ovrigt": "Övriga bilder",
-      "footer.collaboration-cta": "Hör av dig till oss."
+      "footer.collaboration-cta": "Hör av dig till oss.",
+      "checkout.shipping": "Frakt:",
+      "checkout.free-shipping": "Fri frakt",
+      "checkout.free-shipping-from": "Fri frakt från",
+      "checkout.pickup-note": "Du kan också välja att hämta på gården enligt överenskommelse, utan frakt, i nästa steg.",
+      "checkout.error-help": "Försök igen om en stund, eller mejla oss så hjälper vi dig:",
+      "cancel.cart-cta": "Tillbaka till varukorgen",
+      "contact.form.phone-label": "Telefon (valfritt)",
+      "contact.form.guests-label": "Antal gäster (valfritt)",
+      "contact.form.guests-placeholder": "t.ex. 40",
+      "contact.form.error-title": "Det gick inte att skicka just nu",
+      "contact.form.error-lead": "Kopiera din text och mejla den till oss på",
+      "contact.form.send-another": "Skicka en ny förfrågan",
+      "footer.contact-title": "Hitta och kontakta oss",
+      "footer.directions": "Vägbeskrivning och kontakt",
+      "footer.nav-label": "Sidfot",
+      "footer.nav.celebrate": "Fira och samlas",
+      "footer.nav.courses": "Kurser",
+      "footer.nav.farm": "Gården",
+      "explore.eyebrow": "Fortsätt utforska",
+      "explore.title": "Mer att uppleva på gården",
+      "ui.carousel-label": "Bilder från gården",
+      "ui.carousel-pause": "Pausa bilderna",
+      "ui.carousel-play": "Spela bilderna",
+      "ui.page-sections": "Avsnitt på sidan",
+      "contact.form.topic-label": "Vad gäller det? *",
+      "contact.chips.other": "Övrigt",
+      "contact.direct-lead": "Hellre mejl eller Instagram?"
     },
     "lists": {},
     "images": {

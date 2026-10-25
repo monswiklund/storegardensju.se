@@ -138,6 +138,9 @@ export default function NotificationBell() {
     ? `${siteCopy("ui.notification-bell-label")}, ${unreadCount} ${siteCopy("ui.notification-unread-suffix")}`
     : siteCopy("ui.notification-bell-label");
 
+  // An empty bell looked like a feature that was broken; it only shows when there is news.
+  if (notifications.length === 0) return null;
+
   return (
     <div className="notification-bell-wrapper" ref={wrapperRef}>
       <button

@@ -4,6 +4,16 @@ import { Link } from "react-router-dom";
 import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy";
 import "./NotFoundPage.css";
 
+// The main things people come for, labelled like the menu. Butik is left out while the menus
+// hide it (the shop can be empty).
+const MAIN_ROUTES = [
+  { to: "/event/brollop/", label: "nav.wedding" },
+  { to: "/event/", label: "nav.event" },
+  { to: "/gruppdagar/", label: "nav.group-days" },
+  { to: "/kurser/", label: "nav.courses" },
+  { to: "/galleri/", label: "nav.gallery" },
+];
+
 function NotFoundPage() {
   const copy = usePageCopy("not-found");
   const siteCopy = useSiteCopy();
@@ -35,9 +45,9 @@ function NotFoundPage() {
   }, [copy]);
 
   return (
-    <main className="not-found-page" role="main" aria-labelledby="not-found-heading">
+    <main className="not-found-page" role="main" id="main-content" aria-labelledby="not-found-heading">
       <div className="not-found-page__inner">
-        <span className="not-found-page__code">404</span>
+        <span className="not-found-page__code" aria-hidden="true">404</span>
         <div className="not-found-page__ornament" aria-hidden="true">
           <span />
           <Compass size={20} />
@@ -47,17 +57,24 @@ function NotFoundPage() {
         <p>
           {copy("hero.lead")}
         </p>
-        <nav className="not-found-page__actions" aria-label={copy("hero.home-cta") || undefined}>
-          <Link to="/" className="not-found-page__action not-found-page__action--primary">
+        <div className="not-found-page__actions">
+          <Link to="/" className="btn btn--primary">
             {siteCopy("nav.home")}
             <ArrowUpRight size={18} aria-hidden="true" />
           </Link>
-          <Link to="/event/" className="not-found-page__action">
-            {siteCopy("nav.event")}
-          </Link>
-          <Link to="/kontakt/" className="not-found-page__action">
+          <Link to="/kontakt/" className="btn btn--secondary">
             {siteCopy("nav.contact")}
           </Link>
+        </div>
+        <nav className="not-found-page__routes" aria-labelledby="not-found-routes-title">
+          <h2 id="not-found-routes-title">{copy("hero.home-cta")}</h2>
+          <ul>
+            {MAIN_ROUTES.map((route) => (
+              <li key={route.to}>
+                <Link to={route.to}>{siteCopy(route.label)}</Link>
+              </li>
+            ))}
+          </ul>
         </nav>
       </div>
     </main>

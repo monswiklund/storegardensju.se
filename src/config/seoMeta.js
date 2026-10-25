@@ -553,12 +553,12 @@ export const seoMeta = {
   omOss: {
     title: "Om oss | Storegården 7",
     description:
-      "Möt familjen bakom Storegården 7 utanför Lidköping - Ann, Carl, Lina och Måns Wiklund.",
+      "Möt familjen bakom Storegården 7 utanför Lidköping - Ann, Carl och Lina Wiklund.",
     path: "/om-oss",
     staticContent: {
       h1: "Om oss på Storegården 7",
       paragraphs: [
-        "Möt familjen bakom Storegården 7. Ann Wiklund är konstnär och keramiker och håller kurserna i ateljén. Carl Wiklund är event- och restaurangkonsult. Lina Wiklund arbetar med planering, event och design och leder yogan på loftet som utbildad yogainstruktör. Måns Wiklund är junior fullstack- och DevOps-utvecklare och byggde den här sidan.",
+        "Möt familjen bakom Storegården 7. Ann Wiklund är konstnär och keramiker och håller kurserna i ateljén. Carl Wiklund är event- och restaurangkonsult. Lina Wiklund arbetar med planering, event och design och leder yogan på loftet som utbildad yogainstruktör.",
         "Storegården 7 ligger i Rackeby, 15 minuter från Lidköpings centrum. På gården finns en renoverad lada med loft, en ateljé och en gårdsbutik.",
       ],
     },
@@ -583,6 +583,8 @@ export const seoMeta = {
     description:
       "Måns Wiklund är junior fullstack- och DevOps-utvecklare. Se projekt som Storegården 7 webbplats, Padelcompanion, Vad Händer Sidan, Foderstallet och ViHop.",
     path: "/om-oss/portfolj/mans",
+    // A developer CV, not part of the farm's offer: reachable, but kept out of search results.
+    robots: "noindex, follow",
     staticContent: {
       h1: "Måns Wiklund - Portfolio",
       paragraphs: [

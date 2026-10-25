@@ -1,7 +1,28 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getPageCopySync } from '../../services/cmsService';
+import { canonicalPath } from '../../config/routes.js';
 import './ErrorBoundary.css';
+
+const RELOAD_KEY = 'storegarden-chunk-reload';
+
+// After a deploy, a tab opened earlier asks for page bundles that no longer exist.
+export function isChunkLoadError(error) {
+  const text = `${error?.name ?? ''} ${error?.message ?? ''}`;
+  return /ChunkLoadError|dynamically imported module|Importing a module script failed|error loading dynamically imported module/i.test(text);
+}
+
+// One automatic reload per tab session picks up the new build; a second failure shows the message.
+function reloadOnceForNewBuild() {
+  try {
+    if (sessionStorage.getItem(RELOAD_KEY)) return false;
+    sessionStorage.setItem(RELOAD_KEY, '1');
+  } catch {
+    return false;
+  }
+  window.location.reload();
+  return true;
+}
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -14,27 +35,31 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
+    if (isChunkLoadError(error) && reloadOnceForNewBuild()) return;
     console.error('Error Boundary caught an error:', error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      const siteCopy = getPageCopySync('site') || {};
-      const title = siteCopy['ui.error-boundary-title'];
-      const message = siteCopy['ui.error-boundary-message'];
-      const retry = siteCopy['ui.error-boundary-retry'];
+      const copy = getPageCopySync('site');
 
       return (
-        <div className="error-boundary">
+        <div className="error-boundary" role="alert">
           <div className="error-content">
-            {title && <h3>{title}</h3>}
-            {message && <p>{message}</p>}
-            <button 
-              onClick={() => window.location.reload()} 
-              className="error-reload-button"
-            >
-              {retry}
-            </button>
+            <h3>{copy('ui.error-boundary-title')}</h3>
+            <p>{copy('ui.error-boundary-message')}</p>
+            <div className="error-actions">
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="btn btn--primary"
+              >
+                {copy('ui.error-boundary-retry')}
+              </button>
+              <a href={canonicalPath('/')} className="btn btn--secondary">
+                {copy('ui.error-boundary-home')}
+              </a>
+            </div>
           </div>
         </div>
       );

@@ -53,6 +53,19 @@ describe("GalleryGrid", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("names each thumbnail by what is in the picture, not by its index", () => {
+    render(
+      <GalleryGrid
+        images={[{ filename: "loftet.webp", thumbnail: "/loftet.webp", thumbnailAlt: "Dukat långbord på loftet" }]}
+        onImageSelect={() => {}}
+      />
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Dukat långbord på loftet" })
+    ).toBeInTheDocument();
+  });
+
   it("uses the original gallery source and dimensions instead of a cropped thumbnail", () => {
     const { container } = render(
       <GalleryGrid

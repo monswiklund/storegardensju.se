@@ -49,19 +49,15 @@ describe("ProductRecommendations", () => {
     ]);
   });
 
-  it("falls back to the shop CTA when no related product exists", () => {
+  it("falls back to the site's explore block, led by the course, when nothing else is for sale", () => {
     render(
       <MemoryRouter>
         <ProductRecommendations products={[]} currentProduct={currentProduct} />
       </MemoryRouter>
     );
 
-    expect(
-      screen.getByRole("heading", { name: "Fortsätt upptäcka butiken" })
-    ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Se hela butiken/ })).toHaveAttribute(
-      "href",
-      "/butik/"
-    );
+    const links = screen.getAllByRole("link").map((link) => link.getAttribute("href"));
+    expect(links[0]).toBe("/kurser/konst/");
+    expect(links).not.toContain("/butik/");
   });
 });

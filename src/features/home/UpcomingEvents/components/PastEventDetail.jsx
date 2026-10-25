@@ -223,7 +223,7 @@ function PastEventDetail({
                   <Link
                     key={link.href || index}
                     to={canonicalPath(link.href)}
-                    className="past-event-modal-button"
+                    className={`btn btn--sm ${index === 0 ? "btn--primary" : "btn--secondary"}`}
                   >
                     <ArrowUpRight size={16} aria-hidden="true" />
                     {link.label || defaultLinkLabel}
@@ -237,7 +237,7 @@ function PastEventDetail({
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="past-event-modal-button"
+                  className={`btn btn--sm ${index === 0 ? "btn--primary" : "btn--secondary"}`}
                 >
                   {isMapLink ? (
                     <MapPin size={16} aria-hidden="true" />

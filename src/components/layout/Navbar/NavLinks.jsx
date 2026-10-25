@@ -57,7 +57,8 @@ function NavLinks({ items, currentPath, onNavigate, copy }) {
                 to={canonicalPath(item.path)}
                 className={`nav-link ${isActive ? "active" : ""} ${
                   isChildActive ? "section-active" : ""
-                }`}
+                } ${item.cta ? "nav-link--cta" : ""}`}
+                aria-current={isActive ? "page" : undefined}
                 onClick={handleParentClick}
               >
                 <span className="nav-link-label">{itemLabel}</span>
@@ -97,6 +98,7 @@ function NavLinks({ items, currentPath, onNavigate, copy }) {
                         className={`nav-sublink ${
                           currentPath === child.path ? "active" : ""
                         }`}
+                        aria-current={currentPath === child.path ? "page" : undefined}
                         onClick={() => onNavigate(child.path)}
                       >
                         <span className="nav-link-label">{routeLabel(child, copy)}</span>

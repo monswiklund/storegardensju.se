@@ -15,6 +15,7 @@ import {
   SectionDivider,
 } from "../components";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
+import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import SectionSubnav, {
   sectionForPath,
 } from "../components/layout/Navbar/SectionSubnav.jsx";
@@ -47,6 +48,29 @@ const SuccessPage = lazy(() => import("../pages/SuccessPage.jsx"));
 const CancelPage = lazy(() => import("../pages/CancelPage.jsx"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage.jsx"));
 import { ContactSection } from "../features/contact";
+import { normalizePath } from "../config/routes.js";
+
+// Pages that carry their own contact block, and the purchase flow, where a booking
+// form would pull people away from paying.
+const NO_SITE_CONTACT = [
+  "/om-oss",
+  "/kontakt",
+  "/kurser/konst",
+  "/kurser/yoga",
+  "/varukorg",
+  "/checkout",
+  "/success",
+  "/cancel",
+];
+// Instagram is inspiration, not a next step; it stays where people come to look.
+const INSTAGRAM_PATHS = ["/", "/galleri"];
+// Preselects the form's subject chip for the page the visitor is on.
+const CONTACT_SUBJECT_BY_PATH = {
+  "/event/brollop": "wedding",
+  "/event": "party",
+  "/gruppdagar": "group",
+  "/kurser": "course",
+};
 
 function App() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -146,9 +170,10 @@ function AppContent() {
   const appearance = usePageAppearance(pageSlugForPath(location.pathname));
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isHomePage = location.pathname === "/";
-  const isTeamPage = location.pathname.startsWith("/om-oss");
-  const isContactPage = location.pathname.startsWith("/kontakt");
-  const isArtPage = location.pathname.startsWith("/kurser/konst");
+  const path = normalizePath(location.pathname);
+  const showSiteContact =
+    !isAdminRoute && !NO_SITE_CONTACT.some((prefix) => path.startsWith(prefix));
+  const showInstagram = INSTAGRAM_PATHS.includes(path);
   // Any top-level route with children gets a subnav bar, not just /event.
   const isSubnavSection =
     isHomePage || sectionForPath(location.pathname) !== null;
@@ -173,6 +198,7 @@ function AppContent() {
       {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <SectionSubnav />}
       {!isAdminRoute && <CartDrawer />}
+      <ErrorBoundary key={path}>
       <Suspense fallback={null}>
         <PageTransition>
           <Routes>
@@ -211,23 +237,20 @@ function AppContent() {
           </Routes>
         </PageTransition>
       </Suspense>
-      {!isAdminRoute && !isTeamPage && !isContactPage && !isArtPage && (
+      </ErrorBoundary>
+      {showSiteContact && (
         <div id={isHomePage ? "home-contact" : "site-contact"}>
-          <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
-            <ContactSection />
-          </FadeInSection>
+          <ContactSection initialSubject={CONTACT_SUBJECT_BY_PATH[path] ?? ""} />
         </div>
       )}
-      {!isAdminRoute && !isTeamPage && (
-        <SectionDivider above="alt" below="green" variant="wave" />
-      )}
-      {!isAdminRoute && !isTeamPage && (
-        <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
-          <HomeInstagramSection />
-        </FadeInSection>
-      )}
-      {!isAdminRoute && !isTeamPage && (
-        <SectionDivider above="green" below="alt" variant="hill" />
+      {showInstagram && (
+        <>
+          <SectionDivider above="alt" below="green" variant="wave" />
+          <FadeInSection rootMargin="0px 0px 20% 0px" threshold={0.1}>
+            <HomeInstagramSection />
+          </FadeInSection>
+          <SectionDivider above="green" below="alt" variant="hill" />
+        </>
       )}
       {!isAdminRoute && <Footer />}
     </div>

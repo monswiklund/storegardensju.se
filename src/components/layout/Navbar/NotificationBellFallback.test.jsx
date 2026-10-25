@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import NotificationBell from "./NotificationBell.jsx";
@@ -35,14 +35,15 @@ describe("NotificationBell over time", () => {
     expect(screen.getByRole("link", { name: /Ann håller akvarell/ })).toBeInTheDocument();
   });
 
-  it("shows nothing from the fallback once the last pass is over", async () => {
+  it("hides the bell once the last fallback pass is over", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2027-01-01T00:00:00+01:00"));
     fetchPublicNotifications.mockRejectedValue(new Error("offline"));
 
-    await openBell();
+    render(<MemoryRouter><NotificationBell /></MemoryRouter>);
 
-    expect(await screen.findByText(/./, { selector: ".notification-empty" })).toBeInTheDocument();
+    await waitFor(() => expect(fetchPublicNotifications).toHaveBeenCalled());
+    expect(screen.queryByRole("button", { name: /Aviseringar/ })).not.toBeInTheDocument();
   });
 
   it("hides a notice outside its window and shows nothing extra for an empty answer", async () => {

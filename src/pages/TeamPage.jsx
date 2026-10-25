@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Users } from "lucide-react";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
-import { PageSection, SectionDivider } from "../components";
-import { HomeServicesSection } from "../features/home";
+import { ExploreMore, PageSection, SectionDivider } from "../components";
 import { ContactSection } from "../features/contact";
 import TeamProfileShowcase from "../features/team/ProfileShowcase/TeamProfileShowcase.jsx";
 import { profiles } from "../data/profileData.js";
@@ -13,6 +12,43 @@ import "./TeamPage.css";
 import usePageCopy from "../hooks/usePageCopy.js";
 import { fetchTeamMembers } from "../services/cmsService.js";
 import { resolveMediaUrl } from "../services/mediaService.js";
+
+// Måns built the site but is not one of the hosts; his portfolio route stays, off the team grid.
+const HIDDEN_FROM_TEAM = new Set(["mans"]);
+
+// CMS slug, or the first name without diacritics ("Måns" -> "mans") to match profileData's keys.
+const memberSlug = (member) =>
+  member.slug ||
+  member.name
+    ?.split(" ")[0]
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase() ||
+  "";
+
+const FALLBACK_TEAM = [profiles.ann, profiles.carl, profiles.lina];
+
+/** A CMS team member as a card profile, with profileData.js filling what the CMS leaves empty. */
+const toProfile = (member) => {
+  const slug = memberSlug(member);
+  const fallback = profiles[slug] || {};
+  return {
+    key: member.id || slug,
+    title: member.name || fallback.title,
+    about: member.role || fallback.about,
+    texts: member.bio?.trim() ? [member.bio] : fallback.texts || [],
+    listItems: Array.isArray(member.skills)
+      ? member.skills.map((skill) => skill.label)
+      : fallback.listItems,
+    imageSrc: resolveMediaUrl(member.image, "thumbnail"),
+    contact: {
+      email: member.email || fallback.contact?.email,
+      instagram: member.instagram || fallback.contact?.instagram,
+    },
+    portfolioUrl: member.portfolioUrl || fallback.portfolioUrl,
+    portfolio: fallback.portfolio || [],
+  };
+};
 
 function TeamPage() {
   useSeo(seoMeta.omOss);
@@ -33,10 +69,14 @@ function TeamPage() {
     };
   }, []);
 
+  const members = teamList
+    .filter((member) => !HIDDEN_FROM_TEAM.has(memberSlug(member)))
+    .map(toProfile);
+
   return (
     <main role="main" id="main-content">
       {/* Team */}
-      <PageSection background="white" spacing="default" ariaLabel="about-heading">
+      <PageSection background="white" spacing="default" ariaLabelledBy="about-heading">
         <ErrorBoundary>
           <div className="profile-showcase-container">
             <div className="team-page-hero" data-cms-hero data-cms-hero-content>
@@ -51,69 +91,33 @@ function TeamPage() {
               {copy("hero.lead")}
             </p>
             <div className="team-page-actions" data-cms-hero-actions>
-              <Link to="/kontakt/" className="team-page-action team-page-action--primary">
+              <Link to="/kontakt/" className="btn btn--primary">
                 {copy("hero.primary-cta")}
                 <ArrowUpRight size={18} aria-hidden="true" />
               </Link>
-              <Link to="/event/" className="team-page-action team-page-action--secondary">
+              <Link to="/event/" className="btn btn--secondary">
                 {copy("hero.secondary-cta")}
               </Link>
             </div>
             </div>
+            <h2 className="visually-hidden">{copy("team.title")}</h2>
             <div className="team-grid">
-              {teamList.length > 0 ? (
-                teamList.map((m) => {
-                  const slug = m.slug || m.name?.toLowerCase().split(" ")[0] || "ann";
-                  const fallback = profiles[slug] || {};
-                  const imageSrc = resolveMediaUrl(m.image, "thumbnail");
-
-                  const profileData = {
-                    title: m.name || fallback.title,
-                    about: m.role || fallback.about,
-                    texts: m.bio?.trim() ? [m.bio] : [],
-                    listItems: Array.isArray(m.skills) ? m.skills.map((s) => s.label) : fallback.listItems,
-                    imageSrc,
-                    contact: {
-                      email: m.email || fallback.contact?.email,
-                      instagram: m.instagram || fallback.contact?.instagram,
-                    },
-                    portfolioUrl: m.portfolioUrl || fallback.portfolioUrl,
-                    portfolio: fallback.portfolio || [],
-                  };
-
-                  return <TeamProfileShowcase key={m.id || slug} profile={profileData} />;
-                })
-              ) : (
-                <>
-                  <TeamProfileShowcase profile={profiles.ann} />
-                  <TeamProfileShowcase profile={profiles.carl} />
-                  <TeamProfileShowcase profile={profiles.lina} />
-                  <TeamProfileShowcase profile={profiles.mans} />
-                </>
-              )}
+              {(members.length > 0 ? members : FALLBACK_TEAM).map((profile) => (
+                <TeamProfileShowcase key={profile.key || profile.title} profile={profile} />
+              ))}
             </div>
           </div>
         </ErrorBoundary>
       </PageSection>
 
-      <SectionDivider above="white" below="alt" variant="hill" />
-
-      {/* Kontakta oss */}
-      <ContactSection />
-
-      <SectionDivider above="alt" below="white" variant="wave" />
-
-      <div id="team-services-recommendation">
-        <PageSection background="white" spacing="default">
-          <HomeServicesSection
-            cmsPage="about"
-            title={copy("services-section.title")}
-            eyebrow={copy("services-section.eyebrow")}
-          />
-        </PageSection>
-      </div>
-
       <SectionDivider above="white" below="green" variant="wave" />
+
+      <ExploreMore background="green" />
+
+      <SectionDivider above="green" below="alt" variant="hill" />
+
+      {/* Kontakta oss: App leaves its own form out on /om-oss, so this is the page's one form. */}
+      <ContactSection />
     </main>
   );
 }

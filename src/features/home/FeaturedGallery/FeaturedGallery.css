@@ -133,35 +133,6 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.view-all-gallery-btn {
-  display: block;
-  margin: 0 auto;
-  padding: 16px 40px;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--primary-hover)
-  );
-  color: white;
-  border: none;
-  border-radius: 50px;
-  font-size: clamp(1rem, 0.95rem + 0.6vw, 1.125rem);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(64, 123, 94, 0.3);
-}
-
-.view-all-gallery-btn:hover {
-  background: linear-gradient(
-    135deg,
-    var(--primary-hover),
-    var(--primary-color)
-  );
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(64, 123, 94, 0.4);
-}
-
 @media (max-width: 768px) {
   .featured-overlay {
     opacity: 0.9;

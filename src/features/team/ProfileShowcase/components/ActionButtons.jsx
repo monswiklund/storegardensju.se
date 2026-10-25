@@ -16,7 +16,7 @@ function ActionButtons({ actions = null }) {
             <Link
               key={action.label}
               to={canonicalPath(action.href)}
-              className={`profile-action-btn ${action.primary ? "primary" : "secondary"}`}
+              className={`btn btn--sm ${action.primary ? "btn--primary" : "btn--secondary"} profile-action-btn`}
             >
               {action.label}
             </Link>
@@ -27,7 +27,7 @@ function ActionButtons({ actions = null }) {
           <a
             key={action.label}
             href={action.href}
-            className={`profile-action-btn ${action.primary ? "primary" : "secondary"}`}
+            className={`btn btn--sm ${action.primary ? "btn--primary" : "btn--secondary"} profile-action-btn`}
             target={action.external ? "_blank" : undefined}
             rel={action.external ? "noopener noreferrer" : undefined}
           >

@@ -34,7 +34,9 @@ function CreativeWorkshopsSection() {
                 className={`creation-row ${isEven ? "row-normal" : "row-reverse"}`}
               >
                 <div className="creation-row__text">
-                  <h3>{section.title}</h3>
+                  {/* h2: these rows are sections of the page in their own right, not
+                      sub-points of the course listing above them. */}
+                  <h2>{section.title}</h2>
                   {paragraphs.map((paragraph, idx) => (
                     <p key={idx}>{paragraph}</p>
                   ))}

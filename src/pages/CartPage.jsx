@@ -8,7 +8,7 @@ import { useSiteCopy } from "../hooks/usePageCopy";
 import "./CartPage.css";
 
 export default function CartPage() {
-  const { cart, removeItem, updateQuantity, getTotal, clearCart, getItemCount } =
+  const { cart, removeItem, updateQuantity, getTotal, getItemCount } =
     useContext(CartContext);
   const siteCopy = useSiteCopy();
 
@@ -17,10 +17,10 @@ export default function CartPage() {
       <main role="main" id="main-content">
         <PageSection background="alt" spacing="default">
           <div className="cart-empty">
-            <ShoppingBag size={64} strokeWidth={1.5} />
+            <ShoppingBag size={56} strokeWidth={1.5} aria-hidden="true" />
             <h1>{siteCopy("cart.empty-message")}</h1>
             <p>{siteCopy("cart.empty-subtext")}</p>
-            <Link to="/butik/" className="btn-primary">
+            <Link to="/butik/" className="btn btn--primary">
               {siteCopy("cart.continue-shopping")}
             </Link>
           </div>
@@ -33,28 +33,23 @@ export default function CartPage() {
     <main role="main" id="main-content">
       <PageSection background="alt" spacing="default">
         <div className="cart-container">
+          {/* Items are removed one at a time with the bin on each row; there is no
+              empty-the-cart button, so one click can never drop every piece. */}
           <div className="cart-header">
             <h1>{siteCopy("cart.drawer-title")}</h1>
-            <button
-              onClick={clearCart}
-              className="btn-text"
-              aria-label={siteCopy("cart.remove-item")}
-            >
-              {siteCopy("cart.remove-item")}
-            </button>
           </div>
 
-          <div className="cart-items">
+          <ul className="cart-items">
             {cart.map((item) => (
-              <div key={item.id} className="cart-item">
-                <img
-                  src={item.images[0]}
-                  alt={item.name}
-                  className="cart-item-image"
-                />
+              <li key={item.id} className="cart-item">
+                {item.images?.[0] ? (
+                  <img src={item.images[0]} alt="" className="cart-item-image" />
+                ) : (
+                  <span className="cart-item-image" aria-hidden="true" />
+                )}
 
                 <div className="cart-item-details">
-                  <h3>{item.name}</h3>
+                  <h2>{item.name}</h2>
                   <p className="cart-item-price">{formatPrice(item.price)}</p>
                   {item.artist && (
                     <p className="cart-item-artist">{item.artist}</p>
@@ -71,10 +66,11 @@ export default function CartPage() {
                             Math.max(1, item.quantity - 1)
                           )
                         }
-                        aria-label={siteCopy("cart.decrease-qty")}
+                        type="button"
+                        aria-label={`${siteCopy("cart.decrease-qty")}: ${item.name}`}
                         disabled={item.quantity <= 1}
                       >
-                        <Minus size={16} />
+                        <Minus size={16} aria-hidden="true" />
                       </button>
                       <span>{item.quantity}</span>
                       <button
@@ -84,10 +80,11 @@ export default function CartPage() {
                             Math.min(item.stock || 1, item.quantity + 1)
                           )
                         }
-                        aria-label={siteCopy("cart.increase-qty")}
+                        type="button"
+                        aria-label={`${siteCopy("cart.increase-qty")}: ${item.name}`}
                         disabled={item.quantity >= (item.stock || 1)}
                       >
-                        <Plus size={16} />
+                        <Plus size={16} aria-hidden="true" />
                       </button>
                     </>
                   ) : (
@@ -100,15 +97,16 @@ export default function CartPage() {
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => removeItem(item.id)}
                   className="cart-item-remove"
-                  aria-label={siteCopy("cart.remove-item")}
+                  aria-label={`${siteCopy("cart.remove-item")}: ${item.name}`}
                 >
-                  <Trash2 size={20} />
+                  <Trash2 size={20} aria-hidden="true" />
                 </button>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
 
         <div className="cart-summary">
           <div className="cart-summary-row">
@@ -119,12 +117,13 @@ export default function CartPage() {
             <span>{siteCopy("cart.total")}</span>
             <span>{formatPrice(getTotal())}</span>
           </div>
+          <p className="cart-shipping-note">{siteCopy("cart.shipping-note")}</p>
           
-          <Link to="/checkout/" className="btn btn-primary checkout-btn">
+          <Link to="/checkout/" className="btn btn--primary checkout-btn">
             {siteCopy("cart.checkout")}
           </Link>
           
-          <Link to="/butik/" className="btn btn-secondary" style={{ marginTop: '1rem' }}>
+          <Link to="/butik/" className="btn btn--secondary cart-continue-btn">
             {siteCopy("cart.continue-shopping")}
           </Link>
         </div>

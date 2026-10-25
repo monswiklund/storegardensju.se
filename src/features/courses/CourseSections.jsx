@@ -14,21 +14,22 @@
 // the markup is the same, so a rename would only churn the stylesheet.
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  ArrowDown,
   ArrowUpRight,
   Calendar,
   ChevronDown,
   Clock,
-  Mail,
   MapPin,
   User,
 } from "lucide-react";
-import MailtoFallback from "../contact/MailtoFallback.jsx";
+import { ContactSection as EnquiryForm } from "../contact";
+import SectionHeader from "../../components/ui/SectionHeader/SectionHeader.jsx";
+import { smoothScrollTo } from "../../utils/scrollUtils.js";
 import {
   COURSE_LOCATION,
   formatPassDate,
   formatPassTime,
   passAnchor,
-  passContactEmail,
   passHref,
   passInstructor,
   passYear,
@@ -42,6 +43,33 @@ import "../../pages/KurserPages.css";
 
 const fullAddress = `${COURSE_LOCATION.streetAddress}, ${COURSE_LOCATION.postalCode} ${COURSE_LOCATION.locality}`;
 const pastPassHistoryStateKey = "__storegardenPastPass";
+
+/** Id of each hub's enquiry section; the subnav, the hero link and every sign-up CTA land here. */
+export const COURSE_CONTACT_ID = "kontakt";
+// Navbar (60px) plus the section subnav (48px), as the hubs' own anchors.
+const COURSE_CONTACT_OFFSET = 130;
+
+/**
+ * Sends a visitor to the hub's enquiry form with "Kurs & workshop" chosen, then puts the
+ * keyboard in its first field. Used as onClick on links whose href is #kontakt, so the
+ * link still works where this handler does not run.
+ */
+export function goToCourseContact(event) {
+  event?.preventDefault();
+  window.dispatchEvent(new CustomEvent("expand-contact-form", { detail: { subject: "course" } }));
+  smoothScrollTo(COURSE_CONTACT_ID, COURSE_CONTACT_OFFSET);
+  document.getElementById("contact-name")?.focus({ preventScroll: true });
+}
+
+/** A link to the hub's enquiry form, styled as a button. */
+function CourseContactLink({ children, className = "btn btn--primary btn--sm" }) {
+  return (
+    <a href={`#${COURSE_CONTACT_ID}`} className={className} onClick={goToCourseContact}>
+      <span>{children}</span>
+      <ArrowDown size={16} aria-hidden="true" />
+    </a>
+  );
+}
 
 /**
  * Full-bleed colour band with a width-constrained inner column.
@@ -69,34 +97,12 @@ export function CourseBand({
   );
 }
 
-function ContactCard({
-  heading,
-  body,
-  email,
-  subject,
-  linkLabel,
-  onContactClick,
-  showMailFallback,
-}) {
+function ContactCard({ heading, body, linkLabel }) {
   return (
     <div className="kurser-action-card">
       <h3>{heading}</h3>
       <p>{body}</p>
-      <a
-        className="kurser-interest__link"
-        href={`mailto:${email}?subject=${encodeURIComponent(subject)}`}
-        onClick={onContactClick}
-      >
-        <Mail size={17} aria-hidden="true" />
-        {linkLabel}
-        <ArrowUpRight size={15} aria-hidden="true" />
-      </a>
-      {showMailFallback && (
-        <MailtoFallback
-          email={email}
-          copyText={`Till: ${email}\nÄmne: ${subject}`}
-        />
-      )}
+      <CourseContactLink>{linkLabel}</CourseContactLink>
     </div>
   );
 }
@@ -118,13 +124,11 @@ function passSpotsText(pass, siteCopy) {
 /**
  * One upcoming pass as an anchored section. Status, instructor, spots and location are the
  * pass's own; a cancelled pass keeps its section (shared links land on it) without a sign-up card.
+ * Signing up goes through the hub's enquiry form, so every pass reaches the farm's one inbox.
  */
 export function PassSection({
   pass,
   trackId,
-  contactSubject,
-  onContactClick,
-  showMailFallback,
   background = "white",
   variant = "split",
   sticky = false,
@@ -229,11 +233,7 @@ export function PassSection({
                   ? `${siteCopy("courses.dropin-note", "Ingen föranmälan behövs – betalning på plats")} ${siteCopy("courses.contact-instructor-prefix", "Hör av dig till")} ${instructor.name.split(" ")[0]}.`
                   : siteCopy("courses.sign-up-note", "Föranmälan krävs.")
               }
-              email={passContactEmail(pass)}
-              subject={contactSubject}
               linkLabel={siteCopy("courses.send-message")}
-              onContactClick={onContactClick}
-              showMailFallback={showMailFallback}
             />
           </div>
         )}
@@ -242,11 +242,15 @@ export function PassSection({
   );
 }
 
-/** Shown instead of the pass sections when the calendar is empty. */
+/**
+ * Shown instead of the pass sections when the calendar is empty. With ctaLabel it ends on a
+ * link to the hub's enquiry form, so an empty calendar still has a next step.
+ */
 export function NoUpcomingSection({
   trackId,
   heading,
   body,
+  ctaLabel,
   background = "white",
 }) {
   const siteCopy = useSiteCopy();
@@ -265,6 +269,7 @@ export function NoUpcomingSection({
           {body ||
             `Vi har för tillfället inget datum i kalendern för ${track.hubLabel}. Håll utkik här, eller hör av dig till ${track.instructor.name} så berättar hon när nästa tillfälle släpps.`}
         </p>
+        {ctaLabel && <CourseContactLink className="btn btn--primary">{ctaLabel}</CourseContactLink>}
       </div>
     </CourseBand>
   );
@@ -610,37 +615,29 @@ export function PastPassesSection({
   );
 }
 
-export function ContactSection({
-  heading,
-  body,
-  email,
-  subject,
-  onContactClick,
-  background = "white",
-  variant = "split",
-}) {
+/**
+ * The hub's enquiry section: the hub's own heading and lead, then the site's one enquiry form
+ * with "Kurs & workshop" chosen. App.jsx leaves the global form off the hubs, so this is the
+ * only form on the page; it posts to the CMS like every other enquiry.
+ */
+export function ContactSection({ heading, body, background = "white" }) {
+  const siteCopy = useSiteCopy();
   return (
-    <CourseBand
-      id="kontakt"
-      background={background}
-      className={`kurser-interest kurser-interest--${variant}`}
+    <section
+      id={COURSE_CONTACT_ID}
+      className={`kurser-band kurser-band--${background} kurser-contact`}
+      aria-labelledby="kurser-contact-title"
     >
-      <div className="kurser-interest__inner">
-        <div className="kurser-interest__copy">
-          <h2>{heading}</h2>
-          <p>{body}</p>
-        </div>
-        <a
-          className="kurser-interest__link"
-          href={`mailto:${email}?subject=${encodeURIComponent(subject)}`}
-          onClick={onContactClick}
-        >
-          <Mail size={17} aria-hidden="true" />
-          {email}
-          <ArrowUpRight size={15} aria-hidden="true" />
-        </a>
+      <div className="kurser-band__inner kurser-contact__intro">
+        <SectionHeader
+          id="kurser-contact-title"
+          eyebrow={siteCopy("contact.eyebrow")}
+          title={heading}
+          lead={body}
+        />
       </div>
-    </CourseBand>
+      <EnquiryForm initialSubject="course" hideHeader />
+    </section>
   );
 }
 
@@ -712,10 +709,6 @@ export function OtherHubLink({
  */
 export function YogaScheduleSection({
   passes = [],
-  trackId = "yoga",
-  contactSubject,
-  onContactClick,
-  showMailFallback,
   background = "alt",
 }) {
   const siteCopy = useSiteCopy();
@@ -738,8 +731,6 @@ export function YogaScheduleSection({
           // Cancelled or full: nothing to sign up for, the status replaces the button.
           const closed = pass.status === "cancelled" || pass.status === "fully_booked";
           const duration = pass.durationMinutes;
-          const mailSubject = `Föranmälan: ${pass.title} (${formatPassDate(pass)})`;
-          const mailHref = `mailto:${passContactEmail(pass)}?subject=${encodeURIComponent(mailSubject)}`;
 
           const dateParts = formatPassDate(pass).split(" ");
           const weekday = dateParts[0] || "";
@@ -810,14 +801,7 @@ export function YogaScheduleSection({
                     {siteCopy("courses.dropin-note")}
                   </span>
                 ) : (
-                  <a
-                    href={mailHref}
-                    className="kurser-btn kurser-btn--primary"
-                    onClick={onContactClick}
-                  >
-                    <span>{siteCopy("courses.pre-register-cta")}</span>
-                    <Mail size={16} aria-hidden="true" />
-                  </a>
+                  <CourseContactLink>{siteCopy("courses.pre-register-cta")}</CourseContactLink>
                 )}
               </div>
 
@@ -834,14 +818,7 @@ export function YogaScheduleSection({
                       {siteCopy("courses.pay-on-site")}
                     </span>
                   ) : (
-                    <a
-                      href={mailHref}
-                      className="kurser-btn kurser-btn--primary"
-                      onClick={onContactClick}
-                    >
-                      <span>{siteCopy("courses.pre-register-cta")}</span>
-                      <Mail size={15} aria-hidden="true" />
-                    </a>
+                    <CourseContactLink>{siteCopy("courses.pre-register-cta")}</CourseContactLink>
                   )}
                 </div>
               </div>
@@ -849,14 +826,6 @@ export function YogaScheduleSection({
           );
         })}
       </div>
-
-      {showMailFallback && (
-        <MailtoFallback
-          email={trackById(trackId).instructor.email}
-          subject={contactSubject}
-          onClose={() => {}}
-        />
-      )}
     </CourseBand>
   );
 }

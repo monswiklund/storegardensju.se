@@ -4,10 +4,11 @@
   background: var(--background-alt);
 }
 
+/* Shorter than the other photo heroes: the form follows directly and should start near the fold. */
 .contact-page__hero {
   position: relative;
-  min-height: 650px;
-  height: 78vh;
+  min-height: 480px;
+  height: 62vh;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -52,7 +53,7 @@
 }
 
 .contact-page__eyebrow--dark {
-  color: var(--primary-hover);
+  color: var(--text-accent);
 }
 
 .contact-page__hero h1 {
@@ -80,33 +81,6 @@
   gap: 12px;
 }
 
-.contact-page__button {
-  min-height: 50px;
-  padding: 0 22px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border-radius: 999px;
-  font-weight: 700;
-}
-
-.contact-page__button--light {
-  background: white;
-  color: var(--contact-ink);
-}
-
-.contact-page__button--ghost {
-  background: rgba(20, 31, 22, 0.28);
-  color: white;
-  backdrop-filter: blur(8px);
-}
-
-.contact-page__button:hover {
-  transform: translateY(-2px);
-}
-
 .contact-page__hero-curve {
   position: absolute;
   z-index: 2;
@@ -118,9 +92,13 @@
   clip-path: ellipse(55% 54% at 50% 100%);
 }
 
-.contact-page__arrival,
-.contact-page__explore {
+.contact-page__arrival {
   padding: clamp(72px, 10vw, 120px) 24px;
+}
+
+/* Directly under the form, the address reads as part of the same "get in touch" step. */
+.contact-page__form + .contact-page__arrival {
+  padding-top: clamp(24px, 4vw, 48px);
 }
 
 .contact-page__arrival-grid {
@@ -132,8 +110,7 @@
   align-items: center;
 }
 
-.contact-page__arrival-copy h2,
-.contact-page__section-heading h2 {
+.contact-page__arrival-copy h2 {
   color: var(--contact-ink);
   font-size: clamp(2.3rem, 5vw, 4.15rem);
   font-weight: 500;
@@ -182,8 +159,8 @@
   height: 20px;
   border: 5px solid var(--background-alt);
   border-radius: 50%;
-  background: var(--primary-hover);
-  box-shadow: 0 0 0 2px var(--primary-hover);
+  background: var(--text-accent);
+  box-shadow: 0 0 0 2px var(--text-accent);
 }
 
 .contact-page__route-dot--destination {
@@ -230,7 +207,7 @@
   padding: 0 9px;
   transform: translateX(-50%);
   background: var(--background-alt);
-  color: var(--primary-hover);
+  color: var(--text-accent);
   opacity: var(--route-time-opacity);
   will-change: opacity;
 }
@@ -278,7 +255,7 @@
 
 .contact-page__address-heading span {
   margin-bottom: 5px;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -316,7 +293,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-weight: 800;
   border-bottom: 1px solid var(--primary-color);
   padding-bottom: 4px;
@@ -330,8 +307,8 @@
 
 @media (max-width: 600px) {
   .contact-page__hero {
-    min-height: 620px;
-    height: 82svh;
+    min-height: 460px;
+    height: auto;
   }
 
   .contact-page__hero-content {
@@ -354,27 +331,9 @@
   .contact-page__route-time {
     top: -11px;
   }
-
-  .contact-page__quick-links {
-    grid-template-columns: 1fr;
-  }
-
-  .contact-page__quick-link {
-    min-height: 205px;
-    border-right: 0;
-    border-bottom: 1px solid var(--contact-line);
-  }
-
-  .contact-page__quick-link:last-child {
-    border-bottom: 0;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .contact-page__button {
-    transition: none;
-  }
-
   .contact-page__route-line {
     clip-path: inset(0);
     transition: none;

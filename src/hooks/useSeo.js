@@ -9,7 +9,7 @@ import { canonicalUrl } from "../config/seoMeta.js";
  * jsonLd must be a module-level constant (stable reference), otherwise
  * the effect re-runs every render.
  */
-export function useSeo({ title, description, path, jsonLd }) {
+export function useSeo({ title, description, path, jsonLd, robots }) {
   useEffect(() => {
     const prevTitle = document.title;
     if (title) document.title = title;
@@ -32,6 +32,15 @@ export function useSeo({ title, description, path, jsonLd }) {
       ogUrl.setAttribute("content", canonicalUrl(path));
     }
 
+    // Only for pages that opt out of search (robots: "noindex, follow"); removed on leave.
+    let robotsMeta;
+    if (robots) {
+      robotsMeta = document.createElement("meta");
+      robotsMeta.name = "robots";
+      robotsMeta.content = robots;
+      document.head.appendChild(robotsMeta);
+    }
+
     let script;
     if (jsonLd) {
       script =
@@ -49,6 +58,7 @@ export function useSeo({ title, description, path, jsonLd }) {
       if (canonical && prevCanonical) canonical.setAttribute("href", prevCanonical);
       if (ogUrl && prevOgUrl) ogUrl.setAttribute("content", prevOgUrl);
       script?.remove();
+      robotsMeta?.remove();
     };
-  }, [title, description, path, jsonLd]);
+  }, [title, description, path, jsonLd, robots]);
 }

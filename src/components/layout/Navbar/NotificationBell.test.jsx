@@ -48,8 +48,9 @@ describe("NotificationBell", () => {
       </MemoryRouter>,
     );
 
+    // The bell appears once the notices have loaded.
     expect(
-      screen.getByRole("button", { name: /Aviseringar/ }),
+      await screen.findByRole("button", { name: /Aviseringar/ }),
     ).toBeInTheDocument();
   });
 

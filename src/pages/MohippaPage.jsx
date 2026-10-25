@@ -5,16 +5,13 @@ import {
   CheckCircle2,
   Clock,
   Heart,
-  Mail,
   Music,
   Sparkles,
   Utensils,
   Palette,
 } from "lucide-react";
-import { PageSection, ScrollSpyNav, SectionDivider } from "../components";
-import MailtoFallback from "../features/contact/MailtoFallback.jsx";
+import { ExploreMore, PageSection, ScrollSpyNav, SectionDivider } from "../components";
 import { smoothScrollTo } from "../utils/scrollUtils.js";
-import { HomeServicesSection } from "../features/home";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
@@ -23,9 +20,12 @@ import usePageMedia from "../hooks/usePageMedia.js";
 import usePageLists from "../hooks/usePageLists.js";
 import "./MohippaPage.css";
 
-const CONTACT_EMAIL = "bylinawiklund@gmail.com";
+const DEFAULT_OCCASIONS = ["Möhippa", "Svensexa", "Teambuilding", "Afterwork", "Workshop"];
+// The rotating word is hidden from screen readers, so the heading reads every occasion instead.
+const OCCASIONS_SPOKEN = new Intl.ListFormat("sv", { type: "disjunction" }).format(DEFAULT_OCCASIONS);
 
-const DEFAULT_OCCASIONS = ["Svensexa", "Teambuilding", "Afterwork", "Workshop"];
+const MAIN_TABS = ["baspaket", "aktiviteter"];
+const SPY_OFFSET = 70;
 
 const BASE_FEATURE_DEFINITIONS = [
   { id: "planning", icon: <Calendar size={20} /> },
@@ -105,7 +105,6 @@ function MohippaPage() {
   const [activeTab, setActiveTab] = useState("alla");
   const [guestCount, setGuestCount] = useState(10);
   const [selectedActivities, setSelectedActivities] = useState([]);
-  const [showMailFallback, setShowMailFallback] = useState(false);
 
   const toggleActivity = (id) => {
     setSelectedActivities((prev) =>
@@ -122,20 +121,35 @@ function MohippaPage() {
   const activitiesText = selectedObjects.length > 0
     ? selectedObjects.map((a) => `- ${a.title} (${a.price})`).join("\n")
     : copy("calc.email-no-options");
-  const inquirySubject = copy("calc.email-subject", "Förfrågan gruppdag på Storegården 7");
-  const inquiryBody =
-    `${copy("calc.email-greeting")}\n\n` +
+  // The day the group put together, handed to the site's enquiry form with the request.
+  const inquirySummary =
     `${copy("calc.email-intro")}\n\n` +
     `- ${copy("calc.guests-label")}: ${guestCount} st\n` +
     `- ${copy("calc.package-label")}: ${copy("calc.base-package-name")} (${formatKronor(basePricePerPerson)} kr/person)\n` +
     `- ${copy("calc.chosen-activities")}:\n${activitiesText}\n\n` +
-    `${copy("calc.estimated-total")} ${formatKronor(grandTotal)} kr (${formatKronor(totalPerPerson)} kr/person)\n\n` +
-    `${copy("calc.requested-date")}: [Fyll i datum här]\n\n` +
-    `${copy("calc.email-closing")}\n\n` +
-    `${copy("calc.email-regards")}\n` +
-    `[${copy("calc.email-name-placeholder", "Ditt namn")}]\n` +
-    `[${copy("calc.email-phone-placeholder", "Ditt telefonnummer")}]`;
-  const mailtoLink = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(inquirySubject)}&body=${encodeURIComponent(inquiryBody)}`;
+    `${copy("calc.estimated-total")} ${formatKronor(grandTotal)} kr (${formatKronor(totalPerPerson)} kr/person)`;
+
+  // One inbox and one form for the farm: the request goes through the form App renders after the page.
+  const goToContactForm = (event) => {
+    event.preventDefault();
+    window.dispatchEvent(
+      new CustomEvent("expand-contact-form", {
+        detail: { subject: "group", message: inquirySummary },
+      })
+    );
+    smoothScrollTo(".contact-container", SPY_OFFSET);
+    // A keyboard activation (click detail 0) continues in the form; a tap does not open the keyboard.
+    if (event.detail === 0) document.getElementById("contact-name")?.focus({ preventScroll: true });
+  };
+
+  const handleTabKeyDown = (event) => {
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+    if (!step) return;
+    event.preventDefault();
+    const next = MAIN_TABS[(MAIN_TABS.indexOf(mainTab) + step + MAIN_TABS.length) % MAIN_TABS.length];
+    setMainTab(next);
+    document.getElementById(`mohippa-tab-${next}`)?.focus();
+  };
 
   const spySections = [
     { id: "mohippa-hero-section", label: copy("nav.start") },
@@ -146,7 +160,7 @@ function MohippaPage() {
 
   return (
     <div className="mohippa-page-container">
-      <ScrollSpyNav sections={spySections} offset={70} />
+      <ScrollSpyNav sections={spySections} offset={SPY_OFFSET} />
 
       <div className="mohippa-page">
         <main>
@@ -154,8 +168,9 @@ function MohippaPage() {
             <div className="mohippa-hero__inner">
               <div className="mohippa-hero__copy" data-cms-hero-content>
                 <span className="mohippa-eyebrow">{copy("hero.eyebrow")}</span>
-                <h1 id="mohippa-heading" aria-label={copy("hero.title-prefix")}>
+                <h1 id="mohippa-heading">
                   {copy("hero.title-prefix")}{" "}
+                  <span className="visually-hidden">{OCCASIONS_SPOKEN}</span>
                   <span className="mohippa-word-switch" aria-hidden="true">
                     <span className="mohippa-word-switch__track">
                       {[...DEFAULT_OCCASIONS, DEFAULT_OCCASIONS[0]].map((occasion, index) => (
@@ -169,7 +184,7 @@ function MohippaPage() {
                   {copy("hero.lead")}
                 </p>
 
-                <div className="mohippa-hero__facts" aria-label="Snabbfakta">
+                <div className="mohippa-hero__facts">
                   {heroFacts.map((fact, index) => (
                     <div key={fact.id || fact.body || fact.value || index}>
                       <span>{fact.body}</span>
@@ -181,35 +196,30 @@ function MohippaPage() {
                 <div className="mohippa-hero__actions" data-cms-hero-actions>
                   <button
                     type="button"
-                    className="mohippa-button mohippa-button--primary"
+                    className="btn btn--primary"
                     onClick={() => {
                       setMainTab("baspaket");
-                      smoothScrollTo("mohippa-planering", 70);
+                      smoothScrollTo("mohippa-planering", SPY_OFFSET);
                     }}
-                    style={{ cursor: "pointer" }}
                   >
                     {copy("hero.primary-cta")}
                   </button>
                   <button
                     type="button"
-                    className="mohippa-button mohippa-button--secondary"
+                    className="btn btn--secondary"
                     onClick={() => {
                       setMainTab("aktiviteter");
-                      smoothScrollTo("mohippa-planering", 70);
+                      smoothScrollTo("mohippa-planering", SPY_OFFSET);
                     }}
-                    style={{ background: "none", border: "1px solid rgba(0,0,0,0.15)", cursor: "pointer" }}
                   >
                     {copy("hero.secondary-cta")}
-                    <ArrowDown size={17} />
+                    <ArrowDown size={17} aria-hidden="true" />
                   </button>
                 </div>
               </div>
 
               <div className="mohippa-hero__media" aria-hidden="true">
                 {media("hero", "/images/evenemang/slide2.webp", "hero") && <img src={media("hero", "/images/evenemang/slide2.webp", "hero")} alt="" />}
-                <div className="mohippa-hero__note">
-                  <strong>{copy("hero.note")}</strong>
-                </div>
               </div>
             </div>
           </section>
@@ -278,7 +288,7 @@ function MohippaPage() {
                                   type="button"
                                   onClick={() => toggleActivity(a.id)}
                                   title={copy("calc.remove-addon")}
-                                  aria-label={copy("calc.remove-addon")}
+                                  aria-label={`${copy("calc.remove-addon")}: ${a.title}`}
                                 >
                                   &times;
                                 </button>
@@ -296,45 +306,45 @@ function MohippaPage() {
                       </div>
 
                       <a
-                        className="mohippa-button mohippa-button--primary mohippa-calculator__button"
-                        href={mailtoLink}
-                        onClick={() => setShowMailFallback(true)}
+                        className="btn btn--primary mohippa-calculator__button"
+                        href="#site-contact"
+                        onClick={goToContactForm}
                       >
-                        <Mail size={18} />
                         {copy("calc.send-inquiry")}
+                        <ArrowDown size={18} aria-hidden="true" />
                       </a>
-                      {showMailFallback && (
-                        <MailtoFallback
-                          email={CONTACT_EMAIL}
-                          copyText={`${inquirySubject}\n\n${inquiryBody}`}
-                        />
-                      )}
                     </div>
                   </div>
 
                   {/* Right Column: Tabbed Content */}
                   <div className="mohippa-planner-content">
                     {/* Main Tabs */}
-                    <div className="mohippa-main-tabs">
-                       <button
-                        type="button"
-                        className={`mohippa-main-tab-btn ${mainTab === "baspaket" ? "active" : ""}`}
-                        onClick={() => setMainTab("baspaket")}
-                      >
-                        {copy("calc.tab-base")}
-                      </button>
-                      <button
-                        type="button"
-                        className={`mohippa-main-tab-btn ${mainTab === "aktiviteter" ? "active" : ""}`}
-                        onClick={() => setMainTab("aktiviteter")}
-                      >
-                        {copy("calc.tab-addons")}
-                      </button>
+                    <div className="mohippa-main-tabs" role="tablist" onKeyDown={handleTabKeyDown}>
+                      {MAIN_TABS.map((tab) => (
+                        <button
+                          key={tab}
+                          id={`mohippa-tab-${tab}`}
+                          type="button"
+                          role="tab"
+                          aria-selected={mainTab === tab}
+                          aria-controls={`mohippa-panel-${tab}`}
+                          tabIndex={mainTab === tab ? 0 : -1}
+                          className={`mohippa-main-tab-btn ${mainTab === tab ? "active" : ""}`}
+                          onClick={() => setMainTab(tab)}
+                        >
+                          {copy(tab === "baspaket" ? "calc.tab-base" : "calc.tab-addons")}
+                        </button>
+                      ))}
                     </div>
 
                     {/* Tab Contents */}
                     {mainTab === "baspaket" && (
-                      <div className="mohippa-tab-content-pane">
+                      <div
+                        id="mohippa-panel-baspaket"
+                        role="tabpanel"
+                        aria-labelledby="mohippa-tab-baspaket"
+                        className="mohippa-tab-content-pane"
+                      >
                         <div className="mohippa-section-heading">
                           <span className="mohippa-eyebrow">{copy("package.eyebrow")}</span>
                           <div className="section-ornament align-left" aria-hidden="true">
@@ -365,7 +375,7 @@ function MohippaPage() {
                           <ul>
                             {details.map((detail, index) => (
                               <li key={detail.id || index}>
-                                <CheckCircle2 size={17} />
+                                <CheckCircle2 size={17} aria-hidden="true" />
                                 <span>{detail.body}</span>
                               </li>
                             ))}
@@ -375,7 +385,12 @@ function MohippaPage() {
                     )}
 
                     {mainTab === "aktiviteter" && (
-                      <div className="mohippa-tab-content-pane">
+                      <div
+                        id="mohippa-panel-aktiviteter"
+                        role="tabpanel"
+                        aria-labelledby="mohippa-tab-aktiviteter"
+                        className="mohippa-tab-content-pane"
+                      >
                         <div className="mohippa-section-heading">
                           <span className="mohippa-eyebrow">{copy("activities.eyebrow")}</span>
                           <div className="section-ornament align-left" aria-hidden="true">
@@ -393,6 +408,7 @@ function MohippaPage() {
                           <button
                             type="button"
                             className={`mohippa-tab-btn ${activeTab === "alla" ? "active" : ""}`}
+                            aria-pressed={activeTab === "alla"}
                             onClick={() => setActiveTab("alla")}
                           >
                             {copy("calc.filter-all")}
@@ -400,6 +416,7 @@ function MohippaPage() {
                           <button
                             type="button"
                             className={`mohippa-tab-btn ${activeTab === "lugn" ? "active" : ""}`}
+                            aria-pressed={activeTab === "lugn"}
                             onClick={() => setActiveTab("lugn")}
                           >
                             {copy("calc.filter-calm")}
@@ -407,6 +424,7 @@ function MohippaPage() {
                           <button
                             type="button"
                             className={`mohippa-tab-btn ${activeTab === "kreativt" ? "active" : ""}`}
+                            aria-pressed={activeTab === "kreativt"}
                             onClick={() => setActiveTab("kreativt")}
                           >
                             {copy("calc.filter-creative")}
@@ -414,6 +432,7 @@ function MohippaPage() {
                           <button
                             type="button"
                             className={`mohippa-tab-btn ${activeTab === "festligt" ? "active" : ""}`}
+                            aria-pressed={activeTab === "festligt"}
                             onClick={() => setActiveTab("festligt")}
                           >
                             {copy("calc.filter-festive")}
@@ -427,10 +446,8 @@ function MohippaPage() {
                             const isSelected = selectedActivities.includes(activity.id);
                             return (
                               <article
-                                key={activity.title}
+                                key={activity.id}
                                 className={`mohippa-activity ${isSelected ? "mohippa-activity--selected" : ""}`}
-                                onClick={() => toggleActivity(activity.id)}
-                                style={{ cursor: "pointer" }}
                               >
                                 <span className="mohippa-activity__number">
                                   {formatActivityNumber(index)}
@@ -441,10 +458,10 @@ function MohippaPage() {
                                   </div>
                                   <p>{activity.description}</p>
                                 </div>
-                                <div className="mohippa-activity__meta" onClick={(e) => e.stopPropagation()}>
+                                <div className="mohippa-activity__meta">
                                   {activity.duration && (
                                     <span>
-                                      <Clock size={14} />
+                                      <Clock size={14} aria-hidden="true" />
                                       {activity.duration}
                                     </span>
                                   )}
@@ -455,16 +472,12 @@ function MohippaPage() {
                                   <button
                                     type="button"
                                     className={`mohippa-select-btn ${isSelected ? "mohippa-select-btn--selected" : ""}`}
+                                    aria-pressed={isSelected}
                                     onClick={() => toggleActivity(activity.id)}
                                   >
-                                    {isSelected ? (
-                                      <>
-                                        <CheckCircle2 size={14} />
-                                        {copy("calc.addon-selected")}
-                                      </>
-                                    ) : (
-                                      copy("calc.add-addon")
-                                    )}
+                                    {isSelected && <CheckCircle2 size={14} aria-hidden="true" />}
+                                    {isSelected ? copy("calc.addon-selected") : copy("calc.add-addon")}
+                                    <span className="visually-hidden">: {activity.title}</span>
                                   </button>
                                 </div>
                               </article>
@@ -483,18 +496,8 @@ function MohippaPage() {
 
           <SectionDivider above="white" below="green" variant="wave" />
 
-          {/* Andra erbjudanden */}
           <div id="mohippa-services-recommendation">
-            <PageSection background="green" spacing="default">
-              <FadeInSection>
-                <HomeServicesSection
-                  cmsPage="group-days"
-                  excludeId="gruppdagar"
-                  title={copy("services-section.title")}
-                  eyebrow={copy("services-section.eyebrow")}
-                />
-              </FadeInSection>
-            </PageSection>
+            <ExploreMore exclude={["gruppdagar"]} background="green" />
           </div>
 
           <SectionDivider above="green" below="alt" variant="hill" />
