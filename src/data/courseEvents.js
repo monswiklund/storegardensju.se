@@ -23,6 +23,7 @@ import { cdnAsset } from "../config/cdnAssets.js";
 import { contactEmail } from "../features/contact/contact.js";
 import CMS_CONTENT from "./cmsContent.generated.js";
 import { isUpcoming, knownEndTimeOf, startTimeOf } from "./schedulePlacement.js";
+import { sessionsOf } from "./eventSeries.js";
 
 export const COURSE_LOCATION = {
   name: "Storegården 7",
@@ -315,9 +316,9 @@ export function upcomingPasses(trackId, now = new Date(), passes = COURSE_PASSES
   return passes.filter(onTrack(trackId)).filter((pass) => isUpcoming(pass, now)).sort(byStartAsc);
 }
 
-/** Finished passes on a track, most recent first - kept as recap on the page. */
+/** Finished passes on a track, most recent first - kept as recap on the page. A cancelled one never took place. */
 export function pastPasses(trackId, now = new Date(), passes = COURSE_PASSES) {
-  return passes.filter(onTrack(trackId)).filter((pass) => !isUpcoming(pass, now)).sort(byStartDesc);
+  return passes.filter(onTrack(trackId)).filter((pass) => !isUpcoming(pass, now) && pass.status !== "cancelled").sort(byStartDesc);
 }
 
 /** Every unfinished pass across all tracks, soonest first - for the notification bell. */
@@ -436,7 +437,7 @@ export function eventToPass(event) {
     price: event.price,
     priceCurrency: "SEK",
     dropIn: event.dropIn,
-    status: "scheduled",
+    status: event.status || "open",
     spots: event.spots,
     instructorId: primaryTrack ? INSTRUCTOR_BY_TRACK[primaryTrack] : null,
     bookingEmail: null,
@@ -484,10 +485,32 @@ export function coursePassToPass(coursePass) {
   };
 }
 
+/** One pass per session of a course that meets several times; an ordinary event is one pass. */
+function eventPasses(event) {
+  const sessions = sessionsOf(event);
+  if (sessions.length === 0) return [eventToPass(event)];
+  return sessions.map((session) => {
+    const pass = eventToPass({ ...event, startAt: session.startAt, endAt: session.endAt, durationMinutes: null });
+    const status = session.cancelled ? "cancelled" : pass.status;
+    return { ...pass, id: `${pass.id}:${session.startAt}`, seriesId: pass.id, legacyKey: null, status };
+  });
+}
+
+/** Passes in their order, a series' sessions gathered where its first one stands: [{ id, passes }]. */
+export function groupSeries(passes) {
+  const groups = new Map();
+  for (const pass of passes) {
+    const id = pass.seriesId || pass.id;
+    if (!groups.has(id)) groups.set(id, { id, passes: [] });
+    groups.get(id).passes.push(pass);
+  }
+  return [...groups.values()];
+}
+
 /** Passes on the hubs from one schedule ({ events, coursePasses }) - never a union of sources. */
 export function schedulePasses(schedule) {
   return [
-    ...(schedule?.events || []).map(eventToPass),
+    ...(schedule?.events || []).flatMap(eventPasses),
     ...(schedule?.coursePasses || []).map(coursePassToPass),
   ].filter((pass) => pass.tracks.length > 0 && startTimeOf(pass) !== null);
 }

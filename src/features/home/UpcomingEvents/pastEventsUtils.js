@@ -49,7 +49,8 @@ export function groupPastEvents(events) {
     const isSpecialEvent =
       (Array.isArray(event.moments) && event.moments.length > 0) || durationMinutes(event) >= 240;
 
-    if (isYoga && !isSpecialEvent) {
+    // A course entered as one event with its sessions is already one card.
+    if (isYoga && !isSpecialEvent && !event.isGroupedSeries) {
       let yearMonth = "";
       if (event.startAt) {
         const d = new Date(event.startAt);
@@ -139,8 +140,46 @@ export function groupPastEvents(events) {
   }
 
   return [...otherEvents, ...groupedResults].sort((a, b) => {
-    const timeA = new Date(a.startAt || 0).getTime();
-    const timeB = new Date(b.startAt || 0).getTime();
+    const timeA = new Date(a.sortAt || a.startAt || 0).getTime();
+    const timeB = new Date(b.sortAt || b.startAt || 0).getTime();
     return timeB - timeA;
   });
+}
+
+/** What kind of thing it was, in a word, from the editor's category. */
+export function pastEventType(event) {
+  if (eventMatchesCategory(event, "yoga")) return "Yoga";
+  if (eventMatchesCategory(event, "courses")) return "Kurs";
+  return "Evenemang";
+}
+
+const yearOf = (event) => {
+  const date = new Date(event.sortAt || event.startAt || "");
+  if (!Number.isNaN(date.getTime())) return date.toLocaleDateString("sv-SE", { timeZone: "Europe/Stockholm", year: "numeric" });
+  return (event.date || "").split(" ")[2] || "";
+};
+
+/** Events (newest first) under their year: [{ year, events }]. */
+export function pastYearGroups(events) {
+  const groups = [];
+  for (const event of events) {
+    const year = yearOf(event);
+    if (groups.at(-1)?.year !== year) groups.push({ year, events: [] });
+    groups.at(-1).events.push(event);
+  }
+  return groups;
+}
+
+/** Up to `limit` different photos, newest event first, each with the event it shows. */
+export function bandImages(events, limit = 4) {
+  const seen = new Set();
+  const band = [];
+  for (const event of events) {
+    const image = [...(event.images || []), event.image].find((candidate) => candidate?.src && !seen.has(candidate.src));
+    if (!image) continue;
+    seen.add(image.src);
+    band.push({ image, event });
+    if (band.length === limit) break;
+  }
+  return band;
 }

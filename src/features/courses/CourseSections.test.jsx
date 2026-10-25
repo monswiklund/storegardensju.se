@@ -1,6 +1,12 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { ContactSection, NoUpcomingSection, PassSection, PastPassesSection } from "./CourseSections.jsx";
+import {
+  ContactSection,
+  NoUpcomingSection,
+  PassSection,
+  PastPassesSection,
+  YogaScheduleSection,
+} from "./CourseSections.jsx";
 import {
   MALERI_TRACK_ID,
   YOGA_TRACK_ID,
@@ -103,5 +109,94 @@ describe("course enquiries", () => {
     expect(section.querySelector("form")).not.toBeNull();
     expect(section.querySelector('input[name="subject"]:checked')).toHaveAttribute("value", "course");
     expect(section.innerHTML).not.toContain("bylinawiklund");
+  });
+});
+
+describe("courses that meet several times", () => {
+  const course = (id, starts) => projectEvent({
+    id,
+    category: "yoga",
+    title: `Kurs ${id}`,
+    startAt: starts[0],
+    sessions: starts.map((startAt) => ({ startAt, endAt: startAt.replace("T16", "T17") })),
+  });
+  const single = (id, startAt) => projectEvent({ id, category: "yoga", title: `Pass ${id}`, startAt });
+
+  it("shows a course as one card with its calendar, every session's anchor landing on it", () => {
+    const passes = schedulePasses({
+      events: [course(1, ["2026-09-01T16:00:00.000Z", "2026-09-03T16:00:00.000Z", "2026-09-08T16:00:00.000Z"])],
+      coursePasses: [],
+    });
+    const { container } = render(<BrowserRouter><YogaScheduleSection passes={passes} /></BrowserRouter>);
+
+    const cards = container.querySelectorAll(".kurser-schedule-card");
+    expect(cards).toHaveLength(1);
+    expect(screen.getByRole("heading", { name: "Kurs 1" })).toBeInTheDocument();
+    expect(screen.getByText(/1–8 sep · 3 tillfällen/)).toBeInTheDocument();
+    for (const anchor of ["yoga-1-september", "yoga-3-september", "yoga-8-september"]) {
+      expect(cards[0].contains(document.getElementById(anchor))).toBe(true);
+    }
+  });
+
+  it("follows the course's drop-in box: drop-in needs no sign-up, otherwise the card asks for one", () => {
+    const starts = ["2026-09-01T16:00:00.000Z", "2026-09-08T16:00:00.000Z"];
+    const passes = schedulePasses({
+      events: [{ ...course(1, starts), dropIn: true }, { ...course(2, starts.map((at) => at.replace("09-", "10-"))), dropIn: false }],
+      coursePasses: [],
+    });
+    const { container } = render(<BrowserRouter><YogaScheduleSection passes={passes} /></BrowserRouter>);
+
+    const [dropIn, signUp] = container.querySelectorAll(".kurser-schedule-card");
+    expect(dropIn).toHaveTextContent(/drop-in/i);
+    expect(dropIn.querySelector("a, button.btn")).toBeNull();
+    expect(signUp).toHaveTextContent(/föranmälan/i);
+    expect(signUp.querySelector("a")).not.toBeNull();
+  });
+
+  it("strikes a called-off session in the calendar and counts only the ones that take place", () => {
+    const starts = ["2026-09-01T16:00:00.000Z", "2026-09-08T16:00:00.000Z", "2026-09-15T16:00:00.000Z"];
+    const event = course(1, starts);
+    event.sessions[1].cancelled = true;
+    const passes = schedulePasses({ events: [event], coursePasses: [] });
+    const { container } = render(<BrowserRouter><YogaScheduleSection passes={passes} /></BrowserRouter>);
+
+    expect(screen.getByText(/1–15 sep · 2 tillfällen/)).toBeInTheDocument();
+    const cancelled = container.querySelectorAll(".upcoming-schedule-session.is-cancelled");
+    expect(cancelled).toHaveLength(1);
+    expect(cancelled[0]).toHaveTextContent("8 sep");
+    expect(cancelled[0]).toHaveTextContent("Inställt");
+    expect(container.querySelector(".kurser-schedule-card").dataset.status).toBe("open");
+  });
+
+  it("closes sign-up on a course that is called off or full", () => {
+    const starts = ["2026-09-01T16:00:00.000Z", "2026-09-08T16:00:00.000Z"];
+    const passes = schedulePasses({
+      events: [{ ...course(1, starts), status: "cancelled" }, { ...course(2, starts.map((at) => at.replace("09-", "10-"))), status: "fully_booked" }],
+      coursePasses: [],
+    });
+    const { container } = render(<BrowserRouter><YogaScheduleSection passes={passes} /></BrowserRouter>);
+
+    const [cancelled, full] = container.querySelectorAll(".kurser-schedule-card");
+    expect(cancelled.dataset.status).toBe("cancelled");
+    expect(cancelled).toHaveTextContent("Inställt");
+    expect(full).toHaveTextContent("Fullbokat");
+    expect(container.querySelector(".kurser-series__action a")).toBeNull();
+  });
+
+  it("recaps a finished course as one entry and folds out passes beyond the first five", () => {
+    const passes = schedulePasses({
+      events: [
+        course(1, ["2026-09-01T16:00:00.000Z", "2026-09-08T16:00:00.000Z"]),
+        ...[2, 3, 4, 5, 6, 7].map((id) => single(id, `2026-08-${10 + id}T16:00:00.000Z`)),
+      ],
+      coursePasses: [],
+    }).sort((a, b) => new Date(b.startAt) - new Date(a.startAt));
+    render(<BrowserRouter><PastPassesSection passes={passes} trackId={YOGA_TRACK_ID} heading="Tidigare pass" /></BrowserRouter>);
+
+    expect(screen.getAllByRole("listitem")).toHaveLength(5);
+    expect(screen.getByText("1–8 sep 2026 · 2 tillfällen")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Visa fler (2)" }));
+    expect(screen.getAllByRole("listitem")).toHaveLength(7);
+    expect(screen.getByRole("button", { name: "Visa färre" })).toHaveAttribute("aria-expanded", "true");
   });
 });

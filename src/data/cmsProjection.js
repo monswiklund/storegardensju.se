@@ -122,6 +122,12 @@ export function projectEvent(doc, cmsUrl) {
     price: optionalNumber(doc.price),
     durationMinutes: optionalNumber(doc.durationMinutes),
     dropIn: typeof doc.dropIn === "boolean" ? doc.dropIn : null,
+    status: ["few_left", "fully_booked", "cancelled"].includes(doc.status) ? doc.status : "open",
+    // A course that meets several times; one or none means an ordinary single-date event.
+    sessions: (Array.isArray(doc.sessions) ? doc.sessions : [])
+      .filter((session) => typeof session?.startAt === "string" && Number.isFinite(new Date(session.startAt).getTime()))
+      .map((session) => ({ startAt: session.startAt, endAt: optionalText(session.endAt), cancelled: session.cancelled === true }))
+      .sort((a, b) => new Date(a.startAt) - new Date(b.startAt)),
     bucketOverride: doc.bucketOverride === "upcoming" || doc.bucketOverride === "past" ? doc.bucketOverride : null,
     sortOrder: optionalNumber(doc.sortOrder),
     links: (Array.isArray(doc.links) ? doc.links : [])

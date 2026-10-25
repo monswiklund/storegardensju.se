@@ -13,12 +13,12 @@ const event = {
 };
 
 describe("PastEventsAccordion history", () => {
-  it("shows up to 5 events initially and displays an expand button when more exist", () => {
-    const events = Array.from({ length: 8 }, (_, index) => ({
+  it("shows the newest 8 events and the rest behind Visa fler", () => {
+    const events = Array.from({ length: 10 }, (_, index) => ({
       ...event,
       id: `event-${index}`,
       title: `Evenemang ${index + 1}`,
-      category: "marknad",
+      startAt: `2026-0${9 - Math.floor(index / 2)}-01T10:00:00Z`,
     }));
 
     render(
@@ -27,52 +27,26 @@ describe("PastEventsAccordion history", () => {
       </BrowserRouter>
     );
 
-    // Initial limit should display 5 items
-    const expandButton = screen.getByRole("button", { name: /Visa fler/i });
-    expect(expandButton).toBeInTheDocument();
-    expect(screen.getByText(/Visa fler \(3\)/)).toBeInTheDocument();
-
-    // Clicking expand button displays all 8 items and turns into "Visa färre"
-    fireEvent.click(expandButton);
+    expect(screen.getAllByRole("listitem")).toHaveLength(8);
+    fireEvent.click(screen.getByRole("button", { name: /Visa fler \(2\)/i }));
+    expect(screen.getAllByRole("listitem")).toHaveLength(10);
     expect(screen.getByRole("button", { name: /Visa färre/i })).toBeInTheDocument();
   });
 
-  it("filters events when clicking category filter pills", () => {
-    const mixedEvents = [
-      {
-        id: "yoga-1",
-        title: "Yogapass",
-        category: "yoga",
-        date: "12 Aug 2026",
-      },
-      {
-        id: "keramik-1",
-        title: "Helgkurs Keramik",
-        category: "keramik",
-        date: "10 Aug 2026",
-      },
-      {
-        id: "marknad-1",
-        title: "Konstafton 2025",
-        category: "marknad",
-        date: "1 Nov 2025",
-      },
-    ];
-
+  it("lists events under their year with the kind of event", () => {
     render(
       <BrowserRouter>
-        <PastEventsAccordion events={mixedEvents} />
+        <PastEventsAccordion
+          events={[
+            { id: "keramik-1", title: "Helgkurs Keramik", category: "keramik", date: "22 November 2024", startAt: "2024-11-22T10:00:00Z" },
+            { id: "konst-1", title: "Konstafton 2025", category: "kultur", date: "1 November 2025", startAt: "2025-11-01T10:00:00Z" },
+          ]}
+        />
       </BrowserRouter>
     );
 
-    // Click on Yoga filter pill
-    const yogaFilter = screen.getAllByRole("tab", { name: /Yoga/i })[0];
-    fireEvent.click(yogaFilter);
-
-    // Yoga item should be visible, keramik and konstafton should not
-    expect(screen.getByRole("button", { name: /Yogapass/i })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /Helgkurs Keramik/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /Konstafton/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "2025" })).toHaveTextContent(/1 november.*Konstafton 2025.*Evenemang/);
+    expect(screen.getByRole("region", { name: "2024" })).toHaveTextContent(/22 november.*Helgkurs Keramik.*Kurs/);
   });
 
   it("V34 closes the home past-event overlay on Back before leaving the route", async () => {

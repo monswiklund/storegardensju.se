@@ -38,12 +38,12 @@ const renderPage = async () => {
 };
 
 describe("TeamPage", () => {
-  it("shows the hosts from the CMS, without Måns", async () => {
+  it("shows the family from the CMS, Måns included", async () => {
     await renderPage();
 
     expect(screen.getByRole("heading", { name: "Lina Wiklund" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Ann Wiklund" })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Måns Wiklund" })).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Måns Wiklund" })).toBeInTheDocument();
   });
 
   it("falls back to the profileData bio when the CMS bio is empty", async () => {

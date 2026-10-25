@@ -171,12 +171,12 @@ function MohippaPage() {
                 <h1 id="mohippa-heading">
                   {copy("hero.title-prefix")}{" "}
                   <span className="visually-hidden">{OCCASIONS_SPOKEN}</span>
+                  {/* The words share one grid cell: the slot is as wide as the longest and sits on the
+                      heading's baseline; each word takes its turn (MohippaPage.css). */}
                   <span className="mohippa-word-switch" aria-hidden="true">
-                    <span className="mohippa-word-switch__track">
-                      {[...DEFAULT_OCCASIONS, DEFAULT_OCCASIONS[0]].map((occasion, index) => (
-                        <span key={`${occasion}-${index}`}>{occasion}</span>
-                      ))}
-                    </span>
+                    {DEFAULT_OCCASIONS.map((occasion, index) => (
+                      <span key={occasion} style={{ "--word-index": index }}>{occasion}</span>
+                    ))}
                   </span>{" "}
                   {copy("hero.title-suffix")}
                 </h1>

@@ -199,7 +199,7 @@ function PastEventDetail({
                 <li key={session.id || idx} className="past-event-modal-session-item">
                   <span className="session-date">{session.date}</span>
                   {session.time && <span className="session-time">{session.time}</span>}
-                  <span className="session-title">{session.title}</span>
+                  {session.title && <span className="session-title">{session.title}</span>}
                 </li>
               ))}
             </ul>

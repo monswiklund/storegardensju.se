@@ -52,16 +52,20 @@ function HomePage() {
     };
   }, [siteCopy]);
 
+  // sortAt is a course's next session (its last once it is over), so a running course is filed
+  // by when it meets next, not by the day it began.
   const upcomingEvents = useMemo(() => {
-    return [...eventsData.upcoming]
-      .sort((a, b) => new Date(a.startAt || 0) - new Date(b.startAt || 0))
-      .map(toUiEvent);
+    return eventsData.upcoming
+      .map((event) => toUiEvent(event))
+      .sort((a, b) => new Date(a.sortAt || 0) - new Date(b.sortAt || 0));
   }, [eventsData.upcoming]);
 
   const pastEvents = useMemo(() => {
-    return [...eventsData.past]
-      .sort((a, b) => new Date(b.startAt || 0) - new Date(a.startAt || 0))
-      .map(toUiEvent);
+    // A cancelled event never took place, so it is no memory to show.
+    return eventsData.past
+      .filter((event) => event.status !== "cancelled")
+      .map((event) => toUiEvent(event))
+      .sort((a, b) => new Date(b.sortAt || 0) - new Date(a.sortAt || 0));
   }, [eventsData.past]);
 
   return (

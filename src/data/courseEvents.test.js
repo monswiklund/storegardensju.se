@@ -7,6 +7,7 @@ import {
   COURSE_PASSES,
   formatPassDate,
   formatPassTime,
+  groupSeries,
   MALERI_TRACK_ID,
   hubFaq,
   INSTRUCTORS,
@@ -267,6 +268,76 @@ describe("passes from CMS records", () => {
     });
 
     expect(passes.map((pass) => pass.id)).toEqual(["events:7", "course-pass-7"]);
+  });
+
+  it("lists each session of a course as its own pass, with the next one first", () => {
+    const passes = schedulePasses({
+      events: [projectEvent({
+        id: 9,
+        category: "yoga",
+        title: "Yoga på loftet",
+        startAt: "2026-09-01T16:00:00.000Z",
+        endAt: "2026-09-03T17:00:00.000Z",
+        sessions: [
+          { startAt: "2026-09-03T16:00:00.000Z", endAt: "2026-09-03T17:00:00.000Z" },
+          { startAt: "2026-09-01T16:00:00.000Z", endAt: "2026-09-01T17:00:00.000Z" },
+        ],
+      })],
+      coursePasses: [],
+    });
+
+    expect(passes.map((pass) => [pass.id, pass.startAt, pass.durationMinutes])).toEqual([
+      ["events:9:2026-09-01T16:00:00.000Z", "2026-09-01T16:00:00.000Z", 60],
+      ["events:9:2026-09-03T16:00:00.000Z", "2026-09-03T16:00:00.000Z", 60],
+    ]);
+    expect(nextPass(YOGA_TRACK_ID, new Date("2026-09-02T00:00:00Z"), passes).startAt).toBe("2026-09-03T16:00:00.000Z");
+  });
+
+  it("gathers a course's sessions where its first one stands, and leaves single passes alone", () => {
+    const passes = schedulePasses({
+      events: [
+        projectEvent({ id: 1, category: "yoga", title: "Enstaka", startAt: "2026-08-30T16:00:00.000Z" }),
+        projectEvent({
+          id: 2,
+          category: "yoga",
+          title: "Kurs",
+          startAt: "2026-09-01T16:00:00.000Z",
+          sessions: [{ startAt: "2026-09-01T16:00:00.000Z" }, { startAt: "2026-09-08T16:00:00.000Z" }],
+        }),
+      ],
+      coursePasses: [],
+    });
+
+    const groups = groupSeries(upcomingPasses(YOGA_TRACK_ID, new Date("2026-08-01T00:00:00Z"), passes));
+    expect(groups.map(({ id, passes: group }) => [id, group.map((pass) => pass.startAt)])).toEqual([
+      ["events:1", ["2026-08-30T16:00:00.000Z"]],
+      ["events:2", ["2026-09-01T16:00:00.000Z", "2026-09-08T16:00:00.000Z"]],
+    ]);
+  });
+
+  it("carries the event's booking status, calls off a single session and leaves called-off passes out of the recap", () => {
+    const passes = schedulePasses({
+      events: [projectEvent({
+        id: 3,
+        category: "yoga",
+        title: "Kurs",
+        status: "few_left",
+        startAt: "2026-09-01T16:00:00.000Z",
+        sessions: [
+          { startAt: "2026-09-01T16:00:00.000Z" },
+          { startAt: "2026-09-08T16:00:00.000Z", cancelled: true },
+          { startAt: "2026-09-15T16:00:00.000Z" },
+        ],
+      })],
+      coursePasses: [],
+    });
+
+    expect(passes.map((pass) => pass.status)).toEqual(["few_left", "cancelled", "few_left"]);
+    expect(nextPass(YOGA_TRACK_ID, new Date("2026-09-02T00:00:00Z"), passes).startAt).toBe("2026-09-15T16:00:00.000Z");
+    expect(pastPasses(YOGA_TRACK_ID, new Date("2026-10-01T00:00:00Z"), passes).map((pass) => pass.startAt)).toEqual([
+      "2026-09-15T16:00:00.000Z",
+      "2026-09-01T16:00:00.000Z",
+    ]);
   });
 
   it("keeps a course pass's status, instructor and spots", () => {

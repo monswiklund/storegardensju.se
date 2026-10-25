@@ -350,8 +350,16 @@
     height: 40px;
   }
 
+  /* Logo, links and Kontakt are centred as one group: a logo lifted out to the left edge, with
+     nothing on the right, pulled the visible bar off the page's centre line. */
   .navbar-container {
     justify-content: center;
+    gap: clamp(16px, 3vw, 48px);
+  }
+
+  .navbar-brand {
+    position: static;
+    flex-shrink: 0;
   }
 
   .nav-menu {
@@ -375,7 +383,7 @@
     display: flex;
     align-items: center;
     overflow: visible;
-    flex: 1;
+    flex: 0 1 auto;
     justify-content: center;
     transition: none !important;
   }

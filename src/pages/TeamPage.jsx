@@ -13,9 +13,6 @@ import usePageCopy from "../hooks/usePageCopy.js";
 import { fetchTeamMembers } from "../services/cmsService.js";
 import { resolveMediaUrl } from "../services/mediaService.js";
 
-// Måns built the site but is not one of the hosts; his portfolio route stays, off the team grid.
-const HIDDEN_FROM_TEAM = new Set(["mans"]);
-
 // CMS slug, or the first name without diacritics ("Måns" -> "mans") to match profileData's keys.
 const memberSlug = (member) =>
   member.slug ||
@@ -69,9 +66,7 @@ function TeamPage() {
     };
   }, []);
 
-  const members = teamList
-    .filter((member) => !HIDDEN_FROM_TEAM.has(memberSlug(member)))
-    .map(toProfile);
+  const members = teamList.map(toProfile);
 
   return (
     <main role="main" id="main-content">

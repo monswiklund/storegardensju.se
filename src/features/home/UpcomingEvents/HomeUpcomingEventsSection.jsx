@@ -1,31 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  ArrowUpRight,
-  Calendar
-} from "lucide-react";
+import { ArrowUpRight, Calendar } from "lucide-react";
 import "./UpcomingEvents.css";
 import EventCard from "./components/EventCard";
 import useScrollToSelector from "../../../hooks/useScrollToSelector";
-import { canonicalPath } from "../../../config/routes.js";
 import usePageCopy, { useSiteCopy } from "../../../hooks/usePageCopy.js";
-
-// Helper component to render either react-router Link or standard anchor tag
-const SmartLink = ({ href, className, children, ...props }) => {
-  const isInternal = href && href.startsWith("/") && !href.startsWith("//");
-  if (isInternal) {
-    return (
-      <Link to={canonicalPath(href)} className={className} {...props}>
-        {children}
-      </Link>
-    );
-  }
-  return (
-    <a href={href} className={className} target="_blank" rel="noopener noreferrer" {...props}>
-      {children}
-    </a>
-  );
-};
 
 function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error = "" }) {
   const copy = usePageCopy("home");
@@ -58,7 +36,6 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
   }, []);
 
   const activeEvent = upcomingEvents[activeIndex] || upcomingEvents[0] || null;
-  const primaryLink = activeEvent?.links?.[0] || { href: "/kurser/yoga", label: copy("events.upcoming.read-more") };
 
   return (
     <div id="events-section" className={`events-section ${isCentered ? "is-centered" : ""}`}>
@@ -313,59 +290,44 @@ function HomeUpcomingEventsSection({ upcomingEvents = [], loading = false, error
         {!loading && !error && (
           upcomingEvents.length > 0 ? (
             <div className="upcoming-events-layout">
-              {/* Left Column: Text info and Call to action buttons */}
-              <div className="upcoming-events-content-col">
-                <span className="events-eyebrow">{copy("events.upcoming.eyebrow")}</span>
-                <div className="section-ornament align-left" aria-hidden="true">
-                  <span className="section-ornament-line"></span>
-                  <Calendar size={18} />
-                  <span className="section-ornament-line"></span>
+              <div className="upcoming-events-header">
+                <div className="upcoming-events-heading">
+                  <span className="events-eyebrow">{copy("events.upcoming.eyebrow")}</span>
+                  <div className="section-ornament align-left" aria-hidden="true">
+                    <span className="section-ornament-line"></span>
+                    <Calendar size={18} />
+                    <span className="section-ornament-line"></span>
+                  </div>
+                  <h2 className="events-heading-large">{copy("events.upcoming.title")}</h2>
                 </div>
-                <h2 className="events-heading-large">{copy("events.upcoming.title")}</h2>
-                <p className="events-description-large">
-                  {copy("events.upcoming.body")}
-                </p>
-                
-                <div className="upcoming-desktop-actions desktop-only">
-                  {primaryLink && (
-                    <SmartLink href={primaryLink.href} className="btn btn--primary">
-                      <span>{primaryLink.label}</span>
-                      <ArrowUpRight size={16} />
-                    </SmartLink>
-                  )}
-                </div>
+                <p className="events-description-large">{copy("events.upcoming.body")}</p>
               </div>
 
-              {/* Right Column: Event card carousel */}
-              <div className="upcoming-events-carousel-col">
-                {upcomingEvents.length > 1 && (
-                  <div className="upcoming-date-tabs-bar">
-                    <span className="upcoming-date-tabs-label">{copy("events.upcoming.choose-date")}</span>
-                    <div className="upcoming-date-tabs-list">
-                      {upcomingEvents.map((evt, idx) => {
-                        const parts = (evt.date || "").split(" ");
-                        const dayStr = parts[0] || `${idx + 1}`;
-                        const monthStr = parts[1] ? parts[1].slice(0, 3) : "aug";
-                        return (
-                          <button
-                            key={evt.id || idx}
-                            type="button"
-                            className={`upcoming-date-chip ${idx === activeIndex ? "is-active" : ""}`}
-                            onClick={() => setActiveIndex(idx)}
-                          >
-                            {dayStr} {monthStr}
-                          </button>
-                        );
-                      })}
-                    </div>
+              {upcomingEvents.length > 1 && (
+                <div className="upcoming-date-tabs-bar">
+                  <span className="upcoming-date-tabs-label">{copy("events.upcoming.choose-date")}</span>
+                  <div className="upcoming-date-tabs-list">
+                    {upcomingEvents.map((evt, idx) => {
+                      const parts = (evt.date || "").split(" ");
+                      const dayStr = parts[0] || `${idx + 1}`;
+                      const monthStr = parts[1] ? parts[1].slice(0, 3) : "aug";
+                      return (
+                        <button
+                          key={evt.id || idx}
+                          type="button"
+                          className={`upcoming-date-chip ${idx === activeIndex ? "is-active" : ""}`}
+                          aria-pressed={idx === activeIndex}
+                          onClick={() => setActiveIndex(idx)}
+                        >
+                          {dayStr} {monthStr}
+                        </button>
+                      );
+                    })}
                   </div>
-                )}
-                {activeEvent && (
-                  <div className="upcoming-event-carousel">
-                    <EventCard event={activeEvent} />
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
+
+              {activeEvent && <EventCard event={activeEvent} />}
             </div>
           ) : (
             <div className="events-empty-panel">

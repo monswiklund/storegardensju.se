@@ -160,57 +160,19 @@
   margin: 0;
 }
 
-/* Centered Top Navigation Buttons */
-.events-top-nav {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 50px;
-}
-
-.events-nav-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 24px;
-  border: 1px solid rgba(95, 111, 82, 0.25);
-  border-radius: 999px;
-  background: #ffffff;
-  color: var(--primary-hover);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-  transition: all 0.25s ease;
-}
-
-.events-nav-btn:hover {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  color: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(95, 111, 82, 0.15);
-}
-
-.events-nav-btn svg {
-  stroke-width: 2px;
-}
-
-/* Two Column Layout */
+/* Heading first, then the event at full width: the image beside everything a visitor needs to
+   decide, and for a course every session laid out as a calendar. */
 .upcoming-events-layout {
   display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: 60px;
-  align-items: center;
+  gap: 32px;
   margin-bottom: 50px;
 }
 
-/* Left Column: Content Description */
-.upcoming-events-content-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+.upcoming-events-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+  align-items: end;
+  gap: 16px 48px;
 }
 
 .events-eyebrow {
@@ -229,7 +191,7 @@
   font-size: clamp(2rem, 1.6rem + 1.8vw, 3rem);
   font-weight: 500;
   line-height: 1.1;
-  margin: 0 0 20px 0;
+  margin: 0;
   letter-spacing: -0.01em;
 }
 
@@ -237,279 +199,148 @@
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.65;
-  margin: 0 0 32px 0;
+  margin: 0;
 }
 
-/* Desktop CTA Buttons */
-.upcoming-desktop-actions {
-  display: flex;
-  gap: 12px;
-}
-
-/* Right Column: Carousel Card */
-.upcoming-events-carousel-col {
-  width: 100%;
-}
-
-.upcoming-event-carousel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Event Card layout - Split */
+/* The event */
 .upcoming-event-card {
-  position: relative;
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  min-height: 380px;
   background: #ffffff;
   border: 1px solid rgba(95, 111, 82, 0.12);
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(95, 111, 82, 0.05);
-  height: 310px; /* Fixed height on desktop to crop portrait/landscape images perfectly */
-  transform: scale(0.96);
-  opacity: 0.92;
-  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out, box-shadow 0.6s ease-out, border-color 0.6s ease-out;
+  box-shadow: 0 18px 40px -24px rgba(95, 111, 82, 0.35);
 }
 
-.events-section.is-centered .upcoming-event-card,
-.upcoming-event-card:hover {
-  transform: scale(1.03);
-  opacity: 1;
-  border-color: rgba(95, 111, 82, 0.22);
-  box-shadow: 0 14px 40px rgba(95, 111, 82, 0.12);
-}
-
-
-
-/* Left portion of card: Content */
-.upcoming-card-info {
-  display: flex;
-  gap: 16px;
-  padding: 24px;
-  align-items: center; /* Vertically center badge and details */
-  height: 100%;
-  box-sizing: border-box;
-}
-
-/* Date Badge: White Card */
-.upcoming-card-date-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 68px;
-  min-height: 80px;
-  padding: 8px;
-  border: 1px solid rgba(95, 111, 82, 0.15);
-  border-radius: 8px;
-  background: #ffffff;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-  flex-shrink: 0;
-}
-
-.upcoming-date-day {
-  color: var(--text-main);
-  font-family: var(--font-heading);
-  font-size: 1.8rem;
-  font-weight: 500;
-  line-height: 1;
-}
-
-.upcoming-date-month {
-  margin-top: 2px;
-  color: var(--primary-color);
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.upcoming-date-year {
-  margin-top: 4px;
-  color: rgba(0, 0, 0, 0.4);
-  font-size: 0.65rem;
-  font-weight: 700;
-}
-
-/* Details inside card */
-.upcoming-card-details {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  flex-grow: 1;
-}
-
-.upcoming-spots-pill {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 4px;
-  background: rgba(95, 111, 82, 0.08);
-  color: var(--primary-hover);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.upcoming-event-title {
-  color: var(--text-main);
-  font-family: var(--font-heading);
-  font-size: clamp(1.2rem, 1rem + 0.6vw, 1.6rem);
-  font-weight: 500;
-  line-height: 1.2;
-  margin: 0 0 12px 0;
-}
-
-.upcoming-event-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.upcoming-meta-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.upcoming-meta-spots {
-  margin-top: 6px;
-  color: var(--text-secondary);
-  font-size: 0.88rem;
-  font-weight: 400;
-}
-
-.upcoming-meta-item svg {
-  color: var(--primary-color);
-  flex-shrink: 0;
-}
-
-/* Right portion of card: Image */
-.upcoming-card-image-wrap {
+.upcoming-card-media {
   position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
   background: #f7f6f2;
 }
 
 .upcoming-card-image {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-/* Carousel Controls Below Card */
-.carousel-controls-row {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  margin-top: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.carousel-dots-indicator {
-  grid-column: 2;
+.upcoming-card-date {
+  position: absolute;
+  top: 20px;
+  left: 20px;
   display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-
-.carousel-dot-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(95, 111, 82, 0.2);
-  padding: 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.carousel-dot-indicator.active {
-  background: var(--primary-hover);
-  transform: scale(1.1);
-}
-
-.carousel-nav-arrows {
-  grid-column: 3;
-  justify-self: end;
-  display: flex;
-  gap: 10px;
-}
-
-.carousel-nav-arrow {
-  display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(95, 111, 82, 0.2);
-  background: #ffffff;
-  color: var(--text-main);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.carousel-nav-arrow:hover {
-  border-color: var(--primary-color);
-  background: var(--primary-color);
+  min-width: 72px;
+  padding: 10px 8px 8px;
+  border-radius: 10px;
+  background: var(--text-accent);
   color: #ffffff;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(20, 31, 22, 0.22);
 }
 
-/* Separator Line */
-.events-section-separator {
-  width: 100%;
-  height: 1px;
-  background: rgba(95, 111, 82, 0.12);
-  margin: 55px 0 45px;
+.upcoming-date-day {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  line-height: 1;
 }
 
-/* Bottom Features Banner */
-.events-features-banner {
+.upcoming-date-month {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.upcoming-date-year {
+  margin-top: 2px;
+  font-size: 0.68rem;
+  opacity: 0.85;
+}
+
+.upcoming-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: clamp(28px, 3.5vw, 44px);
+}
+
+.upcoming-event-title {
+  margin: 0;
+  color: var(--text-main);
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 1.25rem + 1.1vw, 2.25rem);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.upcoming-event-meta {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  padding: 24px 30px;
-  border: 1px solid rgba(95, 111, 82, 0.1);
-  border-radius: 12px;
-  background: rgba(247, 246, 242, 0.5); /* Subtle beige rounded card background */
-  margin-top: 45px;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.feature-item {
+.upcoming-event-meta li {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
-.feature-icon {
-  color: var(--primary-hover);
+.upcoming-event-meta svg {
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 1px;
+  color: var(--text-accent);
 }
 
-.feature-text h4 {
-  margin: 0 0 4px 0;
-  color: var(--text-main);
-  font-size: 0.95rem;
+/* Booking state over the title: called off reads as a warning, the rest as plain news. */
+.upcoming-card-status {
+  align-self: flex-start;
+  margin: 0 0 -8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #edf4f0;
+  color: var(--text-accent);
+  font-size: 0.75rem;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.feature-text p {
+.upcoming-card-status.is-cancelled {
+  background: #f8ece9;
+  color: #9b4032;
+}
+
+.upcoming-event-card.is-cancelled .upcoming-event-title {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  color: var(--text-muted);
+}
+
+.upcoming-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.upcoming-card-spots {
   margin: 0;
   color: var(--text-secondary);
-  font-size: 0.85rem;
-  line-height: 1.4;
+  font-size: 0.95rem;
 }
 
 /* Helper responsive display utilities */
@@ -525,185 +356,48 @@
    ========================================================================== */
 
 @media (max-width: 900px) {
-  .upcoming-events-layout {
+  .upcoming-events-header {
     grid-template-columns: 1fr;
-    gap: 30px;
   }
-  
-  .upcoming-events-content-col {
-    align-items: center;
-    text-align: center;
+
+  .upcoming-event-card {
+    grid-template-columns: 1fr;
+    min-height: 0;
   }
-  
+
+  .upcoming-card-media {
+    aspect-ratio: 16 / 9;
+  }
+
+  .upcoming-card-date {
+    top: 14px;
+    left: 14px;
+    min-width: 62px;
+  }
+
+  .upcoming-date-day {
+    font-size: 1.45rem;
+  }
+
   .desktop-only {
     display: none !important;
   }
-  
+
   .mobile-only {
     display: flex !important;
-  }
-  
-  /* Mobile style card */
-  .upcoming-event-card {
-    grid-template-columns: 1fr;
-    min-height: auto;
-    height: auto !important; /* Allow auto height on mobile */
-  }
-  
-  .upcoming-card-image-wrap {
-    aspect-ratio: 16 / 9;
-    height: auto;
-    grid-row: 1; /* Image on top */
-  }
-  
-  .upcoming-card-info {
-    padding: 24px;
-    grid-row: 2; /* Content on bottom */
-    align-items: flex-start;
-  }
-  
-  .upcoming-card-details {
-    width: 100%;
-  }
-  
-  .upcoming-card-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    width: 100%;
-    margin-top: 24px;
-  }
-  
-  /* Dark Green Date Badge Overlay on Mobile Image */
-  .upcoming-card-date-badge-overlay {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 60px;
-    padding: 6px;
-    border-radius: 6px;
-    background: var(--primary-hover);
-    color: #ffffff;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  }
-  
-  .upcoming-card-date-badge-overlay .upcoming-date-day {
-    color: #ffffff;
-    font-size: 1.45rem;
-  }
-  
-  .upcoming-card-date-badge-overlay .upcoming-date-month {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.65rem;
-  }
-  
-  .upcoming-card-date-badge-overlay .upcoming-date-year {
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 0.6rem;
-  }
-  
-  .events-features-banner {
-    grid-template-columns: 1fr;
-    gap: 20px;
   }
 }
 
 @media (max-width: 480px) {
-  .events-top-nav {
-    flex-direction: row;
+  .upcoming-card-body {
+    gap: 18px;
+    padding: 24px 20px;
+  }
+
+  .upcoming-card-footer .btn {
     width: 100%;
-  }
-  
-  .events-nav-btn {
-    flex: 1;
     justify-content: center;
-    font-size: 0.82rem;
-    padding: 8px 12px;
   }
-  
-  .upcoming-card-actions {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-}
-
-/* --- Schedule Summary Card Highlights --- */
-.upcoming-event-card--schedule {
-  height: auto;
-  min-height: 310px;
-}
-
-.upcoming-event-card--schedule .upcoming-card-date-badge {
-  width: 78px;
-  padding: 8px 4px;
-}
-
-.upcoming-event-card--schedule .upcoming-date-day {
-  font-size: 1.25rem;
-  font-weight: 600;
-  white-space: nowrap;
-  letter-spacing: -0.02em;
-}
-
-.upcoming-schedule-highlights {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 10px 14px;
-  background: #fbf9f6;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.upcoming-schedule-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
-}
-
-.upcoming-schedule-dates {
-  font-weight: 700;
-  color: var(--text-main);
-  min-width: 80px;
-  white-space: nowrap;
-}
-
-.upcoming-schedule-type {
-  color: var(--text-secondary);
-  flex: 1;
-  white-space: nowrap;
-}
-
-.upcoming-schedule-tag {
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 12px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.upcoming-schedule-tag.tag--signup {
-  background: #edf4f9;
-  color: #2b6cb0;
-}
-
-.upcoming-schedule-tag.tag--dropin {
-  background: #edf7f2;
-  color: #2e7d56;
-}
-
-.upcoming-schedule-price {
-  font-weight: 700;
-  color: var(--text-main);
-  white-space: nowrap;
 }
 
 /* --- Interactive Date Chips Bar --- */
@@ -753,10 +447,4 @@
   color: #ffffff;
   border-color: var(--primary-color);
   box-shadow: 0 2px 8px rgba(61, 94, 75, 0.25);
-}
-
-.upcoming-meta-series {
-  color: var(--primary-hover);
-  font-weight: 500;
-  font-size: 0.85rem;
 }

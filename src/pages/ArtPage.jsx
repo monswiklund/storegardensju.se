@@ -32,6 +32,7 @@ import {
   COURSE_LOCATION,
   MALERI_TRACK_ID,
   TRACKS,
+  groupSeries,
   hubFaq,
   pastPasses,
   schedulePasses,
@@ -165,10 +166,11 @@ function ArtPage() {
               ctaLabel={copy("contact.cta")}
             />
           ) : (
-            upcomingPassesList.map((pass) => (
+            groupSeries(upcomingPassesList).map(({ id, passes: group }) => (
               <PassSection
-                key={pass.id}
-                pass={pass}
+                key={id}
+                pass={group[0]}
+                series={group.length > 1 ? group : null}
                 trackId={MALERI_TRACK_ID}
                 background="white"
                 variant="split-reverse"

@@ -63,7 +63,15 @@ function HomeSubnav() {
     window.addEventListener("scroll", updateActiveSection, { passive: true });
     updateActiveSection();
 
-    return () => window.removeEventListener("scroll", updateActiveSection);
+    // The events sections mount after their fetch, so recount when the page changes, not on the next scroll.
+    const observer = new MutationObserver(updateActiveSection);
+    // The whole body: during a route transition #main-content may still be the previous page's.
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection);
+      observer.disconnect();
+    };
   }, []);
 
   return (

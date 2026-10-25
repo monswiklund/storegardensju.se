@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   eventMatchesCategory,
+  bandImages,
   groupPastEvents,
+  pastEventType,
+  pastYearGroups,
 } from "./pastEventsUtils.js";
 
 describe("pastEventsUtils", () => {
@@ -112,5 +115,41 @@ describe("pastEventsUtils", () => {
       expect(grouped.find((e) => e.id === "yoga-heldag")).toBeDefined();
       expect(grouped.find((e) => e.id === "yoga-single")).toBeDefined();
     });
+  });
+
+  it("keeps a course entered with its sessions as its own card, apart from the month grouping", () => {
+    const loose = ["2026-08-11", "2026-08-12"].map((day, i) => ({ id: `y${i}`, title: "Yoga", category: "yoga", date: `${Number(day.slice(8))} Augusti 2026`, startAt: `${day}T16:00:00.000Z` }));
+    const course = { id: "events:9", title: "Yoga på loftet", category: "yoga", isGroupedSeries: true, startAt: "2026-08-04T16:00:00.000Z", sortAt: "2026-08-27T16:00:00.000Z" };
+
+    const grouped = groupPastEvents([...loose, course]);
+    expect(grouped.map((event) => event.id)).toEqual(["events:9", "yoga-series-2026-08"]);
+  });
+});
+
+describe("year list", () => {
+  const at = (id, startAt, images = []) => ({ id, title: id, startAt, images });
+
+  it("puts events under their year on the farm's clock", () => {
+    // 23:30Z on 31 Dec 2025 is already New Year's Day in Stockholm.
+    const events = [at("a", "2026-07-13T08:00:00Z"), at("b", "2025-12-31T23:30:00Z"), at("c", "2025-11-01T10:00:00Z")];
+    expect(pastYearGroups(events).map((group) => [group.year, group.events.map((event) => event.id)])).toEqual([
+      ["2026", ["a", "b"]],
+      ["2025", ["c"]],
+    ]);
+  });
+
+  it("picks different photos for the band, skipping events without one", () => {
+    const loft = { src: "loft.jpg" };
+    const events = [
+      at("a", "2026-09-01T08:00:00Z", [loft]),
+      at("b", "2026-08-01T08:00:00Z", [loft, { src: "mat.jpg" }]),
+      at("c", "2026-07-01T08:00:00Z"),
+      at("d", "2025-11-01T08:00:00Z", [{ src: "konst.jpg" }]),
+    ];
+    expect(bandImages(events).map(({ image, event }) => `${event.id}:${image.src}`)).toEqual(["a:loft.jpg", "b:mat.jpg", "d:konst.jpg"]);
+  });
+
+  it("names the kind of event in a word", () => {
+    expect([{ category: "yoga" }, { category: "keramik" }, { category: "kultur" }].map(pastEventType)).toEqual(["Yoga", "Kurs", "Evenemang"]);
   });
 });

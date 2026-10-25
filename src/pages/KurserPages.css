@@ -800,6 +800,18 @@
   transform: translate(2px, -2px);
 }
 
+.kurser-past__more {
+  margin-top: 28px;
+}
+
+.kurser-past__more svg {
+  transition: transform 200ms ease;
+}
+
+.kurser-past__more svg.is-rotated {
+  transform: rotate(180deg);
+}
+
 .kurser-past__date {
   display: flex;
   align-items: center;
@@ -1311,6 +1323,83 @@ a.kurser-schedule-card__location:hover svg {
   max-width: 200px;
 }
 
+/* A pass's booking state under its title, as a tag like the schedule's. */
+.kurser-details__status {
+  display: inline-block;
+  margin: 0 0 16px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #edf4f0;
+  color: var(--text-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.kurser-details__status[data-status="cancelled"] {
+  background: #f8ece9;
+  color: #9b4032;
+}
+
+/* Called off: the tag turns from booking information into a warning. */
+.kurser-schedule-card[data-status="cancelled"] .kurser-schedule-card__tag {
+  background: #f8ece9;
+  color: #9b4032;
+  border-color: rgba(155, 64, 50, 0.25);
+}
+
+/* A course that meets several times: the row's columns on top, its calendar across the card. */
+.kurser-schedule-card--series {
+  row-gap: 18px;
+  padding: 24px 26px;
+}
+
+.kurser-schedule-card--series:hover {
+  transform: none;
+}
+
+.kurser-series__title {
+  margin: 0 0 8px;
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-main);
+}
+
+.kurser-series__line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.kurser-series__line + .kurser-series__line {
+  margin-top: 3px;
+}
+
+.kurser-series__line svg {
+  flex-shrink: 0;
+  color: var(--text-accent);
+}
+
+.kurser-series__tag {
+  justify-self: center;
+}
+
+.kurser-series__action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.kurser-series__schedule {
+  grid-column: 1 / -1;
+}
+
 /* --- Mobile layout: the same breakpoint as the global .mobile-only/.desktop-only
    switch the card's markup relies on, so layout and visible columns change together. */
 @media (max-width: 767px) {
@@ -1448,5 +1537,41 @@ a.kurser-schedule-card__location:hover svg {
 
   .kurser-schedule-card:hover {
     transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  /* The card is a flex column here; tag and price share a line under the title. */
+  .kurser-schedule-card--series {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 14px 12px;
+    padding: 20px 18px;
+  }
+
+  .kurser-series__info {
+    grid-column: 1 / -1;
+  }
+
+  .kurser-series__price {
+    text-align: right;
+  }
+
+  /* After the calendar: first the dates, then how to come. */
+  .kurser-series__action {
+    grid-column: 1 / -1;
+    order: 1;
+    justify-content: stretch;
+  }
+
+  .kurser-series__action .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .kurser-series__action .kurser-schedule-card__note {
+    max-width: none;
+    text-align: left;
   }
 }

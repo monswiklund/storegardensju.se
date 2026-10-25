@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useLocation, useNavigationType } from "react-router-dom";
 
 const SCROLL_POSITIONS_KEY = "storegarden-scroll-positions";
@@ -75,6 +75,7 @@ function scrollToHash(hash) {
 function ScrollToTop() {
   const { pathname, hash, key } = useLocation();
   const navigationType = useNavigationType();
+  const previousPathname = useRef(null);
 
   // Track scroll position for the current history entry so a later
   // back/forward navigation can land where the user left off.
@@ -92,6 +93,8 @@ function ScrollToTop() {
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
+    const samePage = previousPathname.current === pathname;
+    previousPathname.current = pathname;
 
     // A hash wins over both top-scroll and position restoration: the URL names
     // the section the visitor asked for.
@@ -106,6 +109,9 @@ function ScrollToTop() {
         window.cancelAnimationFrame(frame);
       };
     }
+
+    // A new query on the same page (an opened event, an admin filter) keeps the visitor where they are.
+    if (samePage && navigationType !== "POP") return;
 
     // POP = back/forward: restore saved position. PUSH/REPLACE: start at top.
     const targetY = navigationType === "POP" ? savedScrollPosition(key) : 0;

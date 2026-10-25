@@ -29,14 +29,17 @@ import {
   COURSE_LOCATION,
   formatPassDate,
   formatPassTime,
+  groupSeries,
   passAnchor,
   passHref,
   passInstructor,
   passYear,
   trackById,
 } from "../../data/courseEvents.js";
+import { commonHours, dayRange, scheduleSessions, weekdaysOf } from "../../data/eventSeries.js";
 import { FEATURED_PAST_EVENTS_BY_ID } from "../../data/featuredPastEvents.js";
 import PastEventModal from "../home/UpcomingEvents/components/PastEventModal.jsx";
+import SessionSchedule from "../home/UpcomingEvents/components/SessionSchedule.jsx";
 import { toUiEvent } from "../home/UpcomingEvents/toUiEvent.js";
 import { useSiteCopy } from "../../hooks/usePageCopy.js";
 import "../../pages/KurserPages.css";
@@ -121,6 +124,37 @@ function passSpotsText(pass, siteCopy) {
   return pass.spots || "";
 }
 
+// Older passes beyond this fold out, so the recap stays a glance rather than a log.
+const PAST_LIMIT = 5;
+
+const byStart = (a, b) => new Date(a.startAt) - new Date(b.startAt);
+
+/** A course is called off only when every session is; otherwise its held sessions carry its status. */
+const seriesStatus = (passes) => passes.find((pass) => pass.status !== "cancelled")?.status ?? "cancelled";
+
+/** A series' passes as the calendar draws them, called-off days included. */
+const calendarOf = (passes) =>
+  scheduleSessions(passes.map(({ startAt, endAt, status }) => ({ startAt, endAt, cancelled: status === "cancelled" })));
+
+/** "tis, tors · 18:00 - 19:00", "8 sep – 27 okt" and "8 tillfällen" (the ones that take place) for a series (oldest first). */
+function seriesLines(passes, siteCopy) {
+  const span = dayRange(passes[0].startAt, passes[passes.length - 1].startAt);
+  const held = passes.filter((pass) => pass.status !== "cancelled").length || passes.length;
+  const count = `${held} ${siteCopy("courses.sessions-suffix")}`;
+  return {
+    days: [weekdaysOf(passes), commonHours(passes)].filter(Boolean).join(" · "),
+    span,
+    count,
+    range: `${span} · ${count}`,
+  };
+}
+
+// Every later session keeps its anchor (shared links, Event markup); placed in the series' title,
+// they all land on it.
+function SeriesAnchors({ passes }) {
+  return passes.slice(1).map((pass) => <span key={pass.id} id={passAnchor(pass)} aria-hidden="true" />);
+}
+
 /**
  * One upcoming pass as an anchored section. Status, instructor, spots and location are the
  * pass's own; a cancelled pass keeps its section (shared links land on it) without a sign-up card.
@@ -132,13 +166,16 @@ export function PassSection({
   background = "white",
   variant = "split",
   sticky = false,
+  series = null,
 }) {
   const siteCopy = useSiteCopy();
   const track = trackById(trackId);
+  const lines = series && seriesLines(series, siteCopy);
   const instructor = passInstructor(pass);
-  const status = passStatusLabel(pass, siteCopy);
+  const bookingStatus = series ? seriesStatus(series) : pass.status;
+  const status = passStatusLabel({ status: bookingStatus }, siteCopy);
   const spots = passSpotsText(pass, siteCopy);
-  const cancelled = pass.status === "cancelled";
+  const cancelled = bookingStatus === "cancelled";
 
   return (
     <CourseBand
@@ -156,22 +193,23 @@ export function PassSection({
             {track.id === pass.primaryTrack ? siteCopy("courses.upcoming-pass") : siteCopy("courses.upcoming-day")}
           </span>
           <h2>
+            {series && <SeriesAnchors passes={series} />}
             {pass.title}
           </h2>
-          {status && <p className="kurser-details__status"><strong>{status}</strong></p>}
+          {status && <p className="kurser-details__status" data-status={bookingStatus}>{status}</p>}
           <p className="kurser-details__description">{pass.summary}</p>
 
           <ul className="kurser-details__meta">
             <li>
               <Calendar size={20} aria-hidden="true" />
               <span>
-                <strong>{formatPassDate(pass)}</strong>
+                <strong>{lines ? lines.range : formatPassDate(pass)}</strong>
               </span>
             </li>
             <li>
               <Clock size={20} aria-hidden="true" />
               <span>
-                <strong>{siteCopy("ui.time-at")} {formatPassTime(pass.startAt)}</strong>
+                <strong>{lines ? lines.days : `${siteCopy("ui.time-at")} ${formatPassTime(pass.startAt)}`}</strong>
                 {pass.doorsOpenAt && (
                   <>
                     {" "}
@@ -198,6 +236,8 @@ export function PassSection({
               </li>
             )}
           </ul>
+
+          {series && <SessionSchedule sessions={calendarOf(series)} />}
 
           <div className="kurser-details__extra">
             {pass.price && (
@@ -494,6 +534,10 @@ export function PastPassesSection({
 }) {
   const siteCopy = useSiteCopy();
   const [selectedEvent, setSelectedEvent] = useState(null);
+  // A shared link to an older pass opens the fold, so its anchor exists to land on.
+  const [showAll, setShowAll] = useState(() =>
+    typeof window !== "undefined" &&
+    passes.some((pass) => pass.primaryTrack === trackId && `#${passAnchor(pass)}` === window.location.hash));
   const ownsHistoryEntryRef = useRef(false);
 
   const openEvent = useCallback((event) => {
@@ -536,6 +580,9 @@ export function PastPassesSection({
   }, [selectedEvent]);
 
   if (passes.length === 0) return null;
+  const groups = groupSeries(passes);
+  const shownGroups = showAll ? groups : groups.slice(0, PAST_LIMIT);
+  let previousYear = null;
 
   return (
     <>
@@ -548,8 +595,16 @@ export function PastPassesSection({
           <span className="kurser-label">{siteCopy("courses.recap-label")}</span>
           <h2>{heading}</h2>
           <ol className={`kurser-past__list kurser-past__list--${variant}`}>
-            {passes.map((pass) => {
+            {shownGroups.map(({ id, passes: group }) => {
+              // A finished course is one entry: its first session stands for it, its span as the date.
+              const series = group.length > 1 ? [...group].sort(byStart) : null;
+              const pass = series ? series[0] : group[0];
+              const lines = series && seriesLines(series, siteCopy);
               const ownedHere = pass.primaryTrack === trackId;
+              // The year opens its run of passes instead of standing on every row.
+              const year = passYear(pass);
+              const newYear = year !== previousYear;
+              previousYear = year;
               // Only migrated records carry a legacy key linking them to a hand-written recap.
               const eventSource = pass.legacyKey ? FEATURED_PAST_EVENTS_BY_ID[pass.legacyKey] : null;
               const eventDetail = eventSource ? toUiEvent(eventSource) : null;
@@ -558,17 +613,18 @@ export function PastPassesSection({
 
               return (
                 <li
-                  key={pass.id}
+                  key={id}
                   id={ownedHere ? passAnchor(pass) : undefined}
                   className="kurser-past__item"
                 >
                   {variant === "timeline" && (
                     <span className="kurser-past__year" aria-hidden="true">
-                      {passYear(pass)}
+                      {newYear ? year : ""}
                     </span>
                   )}
                   <div className="kurser-past__body">
                     <h3>
+                      {series && ownedHere && <SeriesAnchors passes={series} />}
                       {eventDetail ? (
                         <button
                           type="button"
@@ -586,7 +642,7 @@ export function PastPassesSection({
                     <p className="kurser-past__date">
                       <Calendar size={16} aria-hidden="true" />
                       <time dateTime={pass.startAt}>
-                        {formatPassDate(pass)} {passYear(pass)}
+                        {lines ? `${lines.span} ${passYear(pass)} · ${lines.count}` : `${formatPassDate(pass)} ${passYear(pass)}`}
                       </time>
                     </p>
                     <p>{pass.description}</p>
@@ -605,6 +661,17 @@ export function PastPassesSection({
               );
             })}
           </ol>
+          {groups.length > PAST_LIMIT && (
+            <button
+              type="button"
+              className="btn btn--secondary kurser-past__more"
+              aria-expanded={showAll}
+              onClick={() => setShowAll(!showAll)}
+            >
+              {showAll ? siteCopy("ui.show-less") : `${siteCopy("ui.show-more")} (${groups.length - PAST_LIMIT})`}
+              <ChevronDown size={18} aria-hidden="true" className={showAll ? "is-rotated" : undefined} />
+            </button>
+          )}
         </div>
       </CourseBand>
 
@@ -703,6 +770,161 @@ export function OtherHubLink({
   );
 }
 
+/** One class as a row: date, booking tag, price and how to come. */
+function ScheduleCard({ pass }) {
+  const siteCopy = useSiteCopy();
+  const isDropIn = pass.dropIn === true;
+  const status = passStatusLabel(pass, siteCopy);
+  // Cancelled or full: nothing to sign up for, the status replaces the button.
+  const closed = pass.status === "cancelled" || pass.status === "fully_booked";
+  const duration = pass.durationMinutes;
+
+  const dateParts = formatPassDate(pass).split(" ");
+  const weekday = dateParts[0] || "";
+  const dayNum = dateParts[1] || "";
+  const monthName = dateParts[2] || "";
+
+  return (
+    <div
+      id={passAnchor(pass)}
+      data-status={pass.status}
+      className={`kurser-schedule-card ${isDropIn ? "kurser-schedule-card--dropin" : "kurser-schedule-card--signup"}`}
+    >
+      {/* Mobile Top Row: Date Badge + Weekday & Time + Tag */}
+      <div className="kurser-schedule-card__mobile-top mobile-only">
+        <div className="kurser-schedule-badge">
+          <span className="kurser-schedule-badge__day">{dayNum}</span>
+          <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : ""}</span>
+        </div>
+        <div className="kurser-schedule-card__mobile-header-info">
+          <div className="kurser-schedule-card__mobile-header-title">
+            <span className="kurser-schedule-card__weekday">{weekday}</span>
+            <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
+              {status || (isDropIn ? siteCopy("courses.dropin-badge", "DROP-IN") : siteCopy("courses.signup-badge", "FÖRANMÄLAN"))}
+            </span>
+          </div>
+          <span className="kurser-schedule-card__time">
+            <Clock size={13} aria-hidden="true" />
+            kl {formatPassTime(pass.startAt)}{duration ? ` (${duration} min)` : ""}
+          </span>
+        </div>
+      </div>
+
+      {/* Left Column: Date & Time Side-by-Side (Desktop) */}
+      <div className="kurser-schedule-card__datetime-col desktop-only">
+        <div className="kurser-schedule-badge">
+          <span className="kurser-schedule-badge__day">{dayNum}</span>
+          <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : ""}</span>
+        </div>
+        <div className="kurser-schedule-card__datetime-info">
+          <span className="kurser-schedule-card__weekday">{weekday}</span>
+          <span className="kurser-schedule-card__time">
+            <Clock size={14} aria-hidden="true" />
+            kl {formatPassTime(pass.startAt)}{duration ? ` (${duration} min)` : ""}
+          </span>
+        </div>
+      </div>
+
+
+
+      {/* Tag Column */}
+      <div className="kurser-schedule-card__tag-col desktop-only">
+        <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
+          {status || (isDropIn ? siteCopy("courses.dropin-badge", "DROP-IN") : siteCopy("courses.signup-badge", "FÖRANMÄLAN"))}
+        </span>
+      </div>
+
+      {/* Price Column */}
+      <div className="kurser-schedule-card__price-col desktop-only">
+        <span className="kurser-schedule-card__price">{pass.price ? `${pass.price}:-` : ""}</span>
+      </div>
+
+      {/* Action Column */}
+      <div className="kurser-schedule-card__action-col desktop-only">
+        {closed ? (
+          <span className="kurser-schedule-card__note">{status}</span>
+        ) : isDropIn ? (
+          <span className="kurser-schedule-card__note">
+            {siteCopy("courses.dropin-note")}
+          </span>
+        ) : (
+          <CourseContactLink>{siteCopy("courses.pre-register-cta")}</CourseContactLink>
+        )}
+      </div>
+
+      {/* Mobile Footer Row */}
+      <div className="kurser-schedule-card__mobile-footer mobile-only">
+        <div className="kurser-schedule-card__mobile-price-chip">
+          <span className="kurser-schedule-card__price-val">{pass.price ? `${pass.price}:-` : ""}</span>
+        </div>
+        <div className="kurser-schedule-card__mobile-action">
+          {closed ? (
+            <span className="kurser-schedule-card__note">{status}</span>
+          ) : isDropIn ? (
+            <span className="kurser-schedule-card__note">
+              {siteCopy("courses.pay-on-site")}
+            </span>
+          ) : (
+            <CourseContactLink>{siteCopy("courses.pre-register-cta")}</CourseContactLink>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** A course that meets several times: one card with its calendar instead of a row per session. */
+function SeriesScheduleCard({ passes }) {
+  const siteCopy = useSiteCopy();
+  const pass = passes[0];
+  const isDropIn = pass.dropIn === true;
+  const lines = seriesLines(passes, siteCopy);
+  const bookingStatus = seriesStatus(passes);
+  const status = passStatusLabel({ status: bookingStatus }, siteCopy);
+  // Cancelled or full: nothing to sign up for, the status replaces the button.
+  const closed = bookingStatus === "cancelled" || bookingStatus === "fully_booked";
+  const tagClass = isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup";
+
+  return (
+    <div
+      id={passAnchor(pass)}
+      data-status={bookingStatus}
+      className={`kurser-schedule-card kurser-schedule-card--series ${isDropIn ? "kurser-schedule-card--dropin" : "kurser-schedule-card--signup"}`}
+    >
+      <div className="kurser-series__info">
+        <h3 className="kurser-series__title">
+          <SeriesAnchors passes={passes} />
+          {pass.title}
+        </h3>
+        <p className="kurser-series__line">
+          <Clock size={14} aria-hidden="true" />
+          {lines.days}
+        </p>
+        <p className="kurser-series__line">
+          <Calendar size={14} aria-hidden="true" />
+          {lines.range}
+        </p>
+      </div>
+      <span className={`kurser-schedule-card__tag kurser-series__tag ${tagClass}`}>
+        {status || (isDropIn ? siteCopy("courses.dropin-badge", "DROP-IN") : siteCopy("courses.signup-badge", "FÖRANMÄLAN"))}
+      </span>
+      <span className="kurser-schedule-card__price kurser-series__price">{pass.price ? `${pass.price}:-` : ""}</span>
+      <div className="kurser-series__action">
+        {closed ? (
+          <span className="kurser-schedule-card__note">{status}</span>
+        ) : isDropIn ? (
+          <span className="kurser-schedule-card__note">{siteCopy("courses.dropin-note")}</span>
+        ) : (
+          <CourseContactLink>{siteCopy("courses.pre-register-cta")}</CourseContactLink>
+        )}
+      </div>
+      <div className="kurser-series__schedule">
+        <SessionSchedule sessions={calendarOf(passes)} />
+      </div>
+    </div>
+  );
+}
+
 /**
  * Interactive monthly schedule for yoga classes.
  * Displays recurring or multi-pass monthly schedules cleanly.
@@ -711,8 +933,6 @@ export function YogaScheduleSection({
   passes = [],
   background = "alt",
 }) {
-  const siteCopy = useSiteCopy();
-
   return (
     <CourseBand id="kommande" background={background} className="kurser-schedule-section">
       <div className="kurser-schedule__header">
@@ -725,106 +945,9 @@ export function YogaScheduleSection({
       </div>
 
       <div className="kurser-schedule__grid">
-        {passes.map((pass) => {
-          const isDropIn = pass.dropIn === true;
-          const status = passStatusLabel(pass, siteCopy);
-          // Cancelled or full: nothing to sign up for, the status replaces the button.
-          const closed = pass.status === "cancelled" || pass.status === "fully_booked";
-          const duration = pass.durationMinutes;
-
-          const dateParts = formatPassDate(pass).split(" ");
-          const weekday = dateParts[0] || "";
-          const dayNum = dateParts[1] || "";
-          const monthName = dateParts[2] || "";
-
-          return (
-            <div
-              key={pass.id}
-              id={passAnchor(pass)}
-              className={`kurser-schedule-card ${isDropIn ? "kurser-schedule-card--dropin" : "kurser-schedule-card--signup"}`}
-            >
-              {/* Mobile Top Row: Date Badge + Weekday & Time + Tag */}
-              <div className="kurser-schedule-card__mobile-top mobile-only">
-                <div className="kurser-schedule-badge">
-                  <span className="kurser-schedule-badge__day">{dayNum}</span>
-                  <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : ""}</span>
-                </div>
-                <div className="kurser-schedule-card__mobile-header-info">
-                  <div className="kurser-schedule-card__mobile-header-title">
-                    <span className="kurser-schedule-card__weekday">{weekday}</span>
-                    <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
-                      {status || (isDropIn ? siteCopy("courses.dropin-badge", "DROP-IN") : siteCopy("courses.signup-badge", "FÖRANMÄLAN"))}
-                    </span>
-                  </div>
-                  <span className="kurser-schedule-card__time">
-                    <Clock size={13} aria-hidden="true" />
-                    kl {formatPassTime(pass.startAt)}{duration ? ` (${duration} min)` : ""}
-                  </span>
-                </div>
-              </div>
-
-              {/* Left Column: Date & Time Side-by-Side (Desktop) */}
-              <div className="kurser-schedule-card__datetime-col desktop-only">
-                <div className="kurser-schedule-badge">
-                  <span className="kurser-schedule-badge__day">{dayNum}</span>
-                  <span className="kurser-schedule-badge__month">{monthName ? monthName.slice(0, 3).toUpperCase() : ""}</span>
-                </div>
-                <div className="kurser-schedule-card__datetime-info">
-                  <span className="kurser-schedule-card__weekday">{weekday}</span>
-                  <span className="kurser-schedule-card__time">
-                    <Clock size={14} aria-hidden="true" />
-                    kl {formatPassTime(pass.startAt)}{duration ? ` (${duration} min)` : ""}
-                  </span>
-                </div>
-              </div>
-
-
-
-              {/* Tag Column */}
-              <div className="kurser-schedule-card__tag-col desktop-only">
-                <span className={`kurser-schedule-card__tag ${isDropIn ? "kurser-schedule-card__tag--dropin" : "kurser-schedule-card__tag--signup"}`}>
-                  {status || (isDropIn ? siteCopy("courses.dropin-badge", "DROP-IN") : siteCopy("courses.signup-badge", "FÖRANMÄLAN"))}
-                </span>
-              </div>
-
-              {/* Price Column */}
-              <div className="kurser-schedule-card__price-col desktop-only">
-                <span className="kurser-schedule-card__price">{pass.price ? `${pass.price}:-` : ""}</span>
-              </div>
-
-              {/* Action Column */}
-              <div className="kurser-schedule-card__action-col desktop-only">
-                {closed ? (
-                  <span className="kurser-schedule-card__note">{status}</span>
-                ) : isDropIn ? (
-                  <span className="kurser-schedule-card__note">
-                    {siteCopy("courses.dropin-note")}
-                  </span>
-                ) : (
-                  <CourseContactLink>{siteCopy("courses.pre-register-cta")}</CourseContactLink>
-                )}
-              </div>
-
-              {/* Mobile Footer Row */}
-              <div className="kurser-schedule-card__mobile-footer mobile-only">
-                <div className="kurser-schedule-card__mobile-price-chip">
-                  <span className="kurser-schedule-card__price-val">{pass.price ? `${pass.price}:-` : ""}</span>
-                </div>
-                <div className="kurser-schedule-card__mobile-action">
-                  {closed ? (
-                    <span className="kurser-schedule-card__note">{status}</span>
-                  ) : isDropIn ? (
-                    <span className="kurser-schedule-card__note">
-                      {siteCopy("courses.pay-on-site")}
-                    </span>
-                  ) : (
-                    <CourseContactLink>{siteCopy("courses.pre-register-cta")}</CourseContactLink>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {groupSeries(passes).map(({ id, passes: group }) =>
+          group.length > 1 ? <SeriesScheduleCard key={id} passes={group} /> : <ScheduleCard key={id} pass={group[0]} />
+        )}
       </div>
     </CourseBand>
   );

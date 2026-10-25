@@ -19,7 +19,6 @@ import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import SectionSubnav, {
   sectionForPath,
 } from "../components/layout/Navbar/SectionSubnav.jsx";
-import PageTransition from "../components/layout/PageTransition/PageTransition.jsx";
 import HomeInstagramSection from "../features/home/InstagramFeed/HomeInstagramSection.jsx";
 import { ToastProvider } from "../contexts/ToastContext";
 import usePageAppearance, { pageSlugForPath } from "../hooks/usePageAppearance.js";
@@ -198,45 +197,47 @@ function AppContent() {
       {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <SectionSubnav />}
       {!isAdminRoute && <CartDrawer />}
-      <ErrorBoundary key={path}>
+      {/* One Suspense for the page and everything under it: navigations run as transitions, so the
+          old page stays until the next one has loaded and is then swapped at once, with no blank or
+          faded frame in between. On a first load the contact form and footer wait for the page instead
+          of showing alone under the navbar. It sits outside the per-page ErrorBoundary, whose new key
+          on every page would otherwise mount a fresh, empty boundary. */}
       <Suspense fallback={null}>
-        <PageTransition>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/event" element={<EventPage />} />
-            <Route path="/event/brollop" element={<WeddingPage />} />
-            <Route path="/gruppdagar" element={<MohippaPage />} />
-            <Route
-              path="/mohippa"
-              element={<Navigate to="/gruppdagar/" replace />}
-            />
-            {/* /konst was the maleri & keramik hub before the two course hubs
-                got a shared parent. GitHub Pages cannot 301, so the old URL is
-                forwarded here (and by a static redirect page in dist/konst/
-                for direct hits). */}
-            <Route
-              path="/konst"
-              element={<Navigate to="/kurser/konst/" replace />}
-            />
-            <Route path="/kurser" element={<KurserIndexPage />} />
-            <Route path="/kurser/yoga" element={<KurserPage />} />
-            <Route path="/kurser/konst" element={<ArtPage />} />
-            <Route path="/galleri" element={<GalleriPage />} />
-            {/* BUTIK */}
-            <Route path="/butik" element={<ButikPage />} />
-            <Route path="/butik/:productId" element={<ProductDetailPage />} />
-            <Route path="/varukorg" element={<CartPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/success" element={<SuccessPage />} />
-            <Route path="/cancel" element={<CancelPage />} />
-            <Route path="/om-oss" element={<TeamPage />} />
-            <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
-            <Route path="/kontakt" element={<ContactPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </PageTransition>
-      </Suspense>
+      <ErrorBoundary key={path}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/event" element={<EventPage />} />
+          <Route path="/event/brollop" element={<WeddingPage />} />
+          <Route path="/gruppdagar" element={<MohippaPage />} />
+          <Route
+            path="/mohippa"
+            element={<Navigate to="/gruppdagar/" replace />}
+          />
+          {/* /konst was the maleri & keramik hub before the two course hubs
+              got a shared parent. GitHub Pages cannot 301, so the old URL is
+              forwarded here (and by a static redirect page in dist/konst/
+              for direct hits). */}
+          <Route
+            path="/konst"
+            element={<Navigate to="/kurser/konst/" replace />}
+          />
+          <Route path="/kurser" element={<KurserIndexPage />} />
+          <Route path="/kurser/yoga" element={<KurserPage />} />
+          <Route path="/kurser/konst" element={<ArtPage />} />
+          <Route path="/galleri" element={<GalleriPage />} />
+          {/* BUTIK */}
+          <Route path="/butik" element={<ButikPage />} />
+          <Route path="/butik/:productId" element={<ProductDetailPage />} />
+          <Route path="/varukorg" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/success" element={<SuccessPage />} />
+          <Route path="/cancel" element={<CancelPage />} />
+          <Route path="/om-oss" element={<TeamPage />} />
+          <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
+          <Route path="/kontakt" element={<ContactPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
       </ErrorBoundary>
       {showSiteContact && (
         <div id={isHomePage ? "home-contact" : "site-contact"}>
@@ -253,6 +254,7 @@ function AppContent() {
         </>
       )}
       {!isAdminRoute && <Footer />}
+      </Suspense>
     </div>
   );
 }

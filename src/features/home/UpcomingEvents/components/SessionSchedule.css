@@ -1,0 +1,136 @@
+/* A course's sessions */
+.upcoming-schedule {
+  padding-top: 20px;
+  border-top: 1px solid rgba(95, 111, 82, 0.14);
+}
+
+.upcoming-schedule-grid {
+  width: calc(100% + 12px);
+  margin: -6px;
+  border-collapse: separate;
+  border-spacing: 6px;
+  table-layout: fixed;
+}
+
+.upcoming-schedule-grid th {
+  padding: 0 2px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.upcoming-schedule-grid td {
+  padding: 0;
+  vertical-align: top;
+}
+
+.upcoming-schedule-flow {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.upcoming-schedule-session {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: #f1f6f3;
+  font-variant-numeric: tabular-nums;
+}
+
+.upcoming-schedule-session + .upcoming-schedule-session {
+  margin-top: 6px;
+}
+
+.upcoming-schedule-day {
+  color: var(--text-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.upcoming-schedule-time {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* Called off: the day keeps its place, struck, and says why. */
+.upcoming-schedule-session.is-cancelled {
+  /* Day and "Inställt" share a line, so the week's row keeps its height. */
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 8px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(155, 64, 50, 0.22);
+}
+
+.upcoming-schedule-session.is-cancelled .upcoming-schedule-day {
+  color: var(--text-muted);
+  font-weight: 400;
+  text-decoration: line-through;
+}
+
+.upcoming-schedule-session.is-cancelled .upcoming-schedule-time {
+  color: #9b4032;
+  font-weight: 700;
+}
+
+/* Earlier this week: still in the calendar, but done. */
+.upcoming-schedule-session.is-past {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(95, 111, 82, 0.14);
+}
+
+.upcoming-schedule-session.is-past .upcoming-schedule-day {
+  color: var(--text-muted);
+  font-weight: 400;
+  text-decoration: line-through;
+}
+
+.upcoming-schedule-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--text-accent);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.upcoming-schedule-more svg {
+  transition: transform 200ms ease;
+}
+
+.upcoming-schedule-more[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.upcoming-schedule-more:focus-visible {
+  outline: 2px solid var(--text-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (max-width: 480px) {
+  .upcoming-schedule-session {
+    padding: 8px 9px;
+  }
+
+  .upcoming-schedule-day {
+    font-size: 0.88rem;
+  }
+}

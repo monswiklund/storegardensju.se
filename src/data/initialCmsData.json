@@ -1285,7 +1285,10 @@
       "ui.page-sections": "Avsnitt på sidan",
       "contact.form.topic-label": "Vad gäller det? *",
       "contact.chips.other": "Övrigt",
-      "contact.direct-lead": "Hellre mejl eller Instagram?"
+      "contact.direct-lead": "Hellre mejl eller Instagram?",
+      "ui.all-sessions": "Alla tillfällen",
+      "ui.show-more": "Visa fler",
+      "ui.show-less": "Visa färre"
     },
     "lists": {},
     "images": {

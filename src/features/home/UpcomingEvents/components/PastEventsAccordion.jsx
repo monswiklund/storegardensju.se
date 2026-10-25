@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { flushSync } from "react-dom";
 import {
   useLocation,
   useNavigate,
@@ -7,67 +8,57 @@ import {
 } from "react-router-dom";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import PastEventModal from "./PastEventModal.jsx";
-import {
-  PAST_EVENT_CATEGORIES,
-  eventMatchesCategory,
-  groupPastEvents,
-} from "../pastEventsUtils.js";
+import { bandImages, groupPastEvents, pastEventType, pastYearGroups } from "../pastEventsUtils.js";
 import "../../PastEvents/PastEvents.css";
-import usePageCopy, { useSiteCopy } from "../../../../hooks/usePageCopy.js";
+import usePageCopy from "../../../../hooks/usePageCopy.js";
 
 const pastEventHistoryStateKey = "__storegardenPastEvent";
-const INITIAL_LIMIT = 5;
+const INITIAL_LIMIT = 8;
+
+// Each row keeps a name so the browser can glide it into place when the list grows or shrinks.
+const rowName = (event, index) => `past-row-${String(event.id || index).replace(/[^\w-]/g, "-")}`;
 
 function PastEventsAccordion({ events }) {
   const copy = usePageCopy("home");
-  const siteCopy = useSiteCopy();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [hasUserHovered, setHasUserHovered] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("all");
   const [isExpanded, setIsExpanded] = useState(false);
+  const expandButtonRef = useRef(null);
   const requestedEventId = searchParams.get("pastEvent");
-
-  const handleItemMouseEnter = () => {
-    if (!hasUserHovered) {
-      setHasUserHovered(true);
-      setActiveIndex(null);
-    }
-  };
 
   // Consolidate recurring series (e.g. weekly/daily yoga passes)
   const groupedEvents = useMemo(() => groupPastEvents(events), [events]);
 
-  // Counts for category badges
-  const categoryCounts = useMemo(() => {
-    const counts = {};
-    for (const cat of PAST_EVENT_CATEGORIES) {
-      counts[cat.id] = groupedEvents.filter((e) =>
-        eventMatchesCategory(e, cat.id)
-      ).length;
+  const band = useMemo(() => bandImages(groupedEvents), [groupedEvents]);
+  const shownEvents = isExpanded ? groupedEvents : groupedEvents.slice(0, INITIAL_LIMIT);
+  const hiddenCount = groupedEvents.length - INITIAL_LIMIT;
+
+  const toggleExpanded = () => {
+    const expanding = !isExpanded;
+    const button = expandButtonRef.current;
+    const buttonTop = button?.getBoundingClientRect().top ?? 0;
+    const update = () => {
+      flushSync(() => setIsExpanded(expanding));
+      // Fewer rows: keep the button where it was on screen, so the list folds up into it
+      // instead of the page jumping away from the visitor.
+      if (!expanding && button) {
+        const y = window.scrollY + button.getBoundingClientRect().top - buttonTop;
+        window.storegardenLenis?.scrollTo?.(y, { immediate: true, force: true });
+        window.scrollTo({ top: y, behavior: "auto" });
+      }
+    };
+
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (!document.startViewTransition || reduceMotion) {
+      update();
+      return;
     }
-    return counts;
-  }, [groupedEvents]);
-
-  // Filter by active category
-  const filteredEvents = useMemo(() => {
-    return groupedEvents.filter((e) =>
-      eventMatchesCategory(e, activeCategory)
-    );
-  }, [groupedEvents, activeCategory]);
-
-  // Split into primary and extra items for animated accordion reveal
-  const primaryEvents = useMemo(
-    () => filteredEvents.slice(0, INITIAL_LIMIT),
-    [filteredEvents]
-  );
-  const extraEvents = useMemo(
-    () => filteredEvents.slice(INITIAL_LIMIT),
-    [filteredEvents]
-  );
+    const root = document.documentElement;
+    root.classList.add("past-list-moving");
+    document.startViewTransition(update).finished.finally(() => root.classList.remove("past-list-moving"));
+  };
 
   const openEvent = (event) => {
     setSelectedEvent(event);
@@ -131,133 +122,22 @@ function PastEventsAccordion({ events }) {
     }
   }, [events, groupedEvents, requestedEventId]);
 
-  // Scroll-listener that calculates which past event item is closest to the vertical center of the screen
-  // Disabled once the user hovers over an item to prevent fighting with manual cursor interaction.
-  useEffect(() => {
-    if (typeof window === "undefined" || hasUserHovered) {
-      setActiveIndex(null);
-      return;
-    }
-
-    const handleScroll = () => {
-      if (hasUserHovered) return;
-      const elements = document.querySelectorAll(".past-event-item");
-      if (!elements.length) return;
-
-      const viewportCenter = window.innerHeight / 2;
-      let closestIdx = null;
-      let minDistance = Infinity;
-
-      elements.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        const itemCenter = rect.top + rect.height / 2;
-        const distance = Math.abs(itemCenter - viewportCenter);
-
-        // Only consider elements that are reasonably within the viewport area
-        if (rect.bottom > 100 && rect.top < window.innerHeight - 100) {
-          if (distance < minDistance) {
-            minDistance = distance;
-            const idx = Number(el.getAttribute("data-index"));
-            if (!Number.isNaN(idx)) {
-              closestIdx = idx;
-            }
-          }
-        }
-      });
-
-      if (closestIdx !== null) {
-        setActiveIndex(closestIdx);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [filteredEvents.length, isExpanded, hasUserHovered]);
-
-  const renderEventArticle = (event, index) => {
-    const dateParts = (event.date || "").split(" ");
-    const day = dateParts[0] || "";
-    const month = dateParts[1]
-      ? dateParts[1].substring(0, 3).toUpperCase()
-      : "";
-    const year = dateParts[2] || "";
-
-    const thumbImage = event.images?.[0] || event.image;
-
+  let rowIndex = 0;
+  const renderRow = (event) => {
+    const index = rowIndex++;
     return (
-      <div
-        key={event.id || `${event.title}-${index}`}
-        data-index={index}
-        className={`past-event-item ${
-          thumbImage?.src ? "" : "past-event-item--no-image"
-        } ${!hasUserHovered && activeIndex === index ? "is-highlighted" : ""}`}
-        aria-labelledby={`past-event-title-${index}`}
-        onClick={() => openEvent(event)}
-        onMouseEnter={handleItemMouseEnter}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            openEvent(event);
-          }
-        }}
-      >
-        {/* Left component: Date Stack */}
-        <div className="past-event-date-side">
-          <span className="date-day">{day}</span>
-          <span className="date-month">{month}</span>
-          {year && <span className="date-year">{year}</span>}
-        </div>
-
-        {/* Center component: Vertical timeline dot & line */}
-        <div className="past-event-timeline-marker">
-          <div className="timeline-marker-dot" />
-          <div className="timeline-marker-line" />
-        </div>
-
-        {/* Next component: Thumbnail Image */}
-        {thumbImage?.src && (
-          <div className="past-event-thumbnail">
-            <img
-              src={thumbImage.src}
-              alt={thumbImage.alt || ""}
-              loading="lazy"
-            />
-          </div>
-        )}
-
-        {/* Next component: Info Area */}
-        <div className="past-event-info">
-          <div className="past-event-meta-top">
-            <span className="past-event-time">
-              {event.time || "12:00 - 23:59"}
-            </span>
-            {event.badge && (
-              <span className="past-event-badge">{event.badge}</span>
-            )}
-          </div>
-          <h3
-            id={`past-event-title-${index}`}
-            className="past-event-title"
-          >
+      <li key={event.id || `${event.title}-${index}`} style={{ viewTransitionName: rowName(event, index) }}>
+        <button type="button" className="past-row" onClick={() => openEvent(event)}>
+          {/* The year stands beside the group, so the row keeps day and month. */}
+          <span className="past-row-date">{(event.date || "").split(" ").slice(0, 2).join(" ").toLowerCase()}</span>
+          <span className="past-row-title">
             {event.title}
-          </h3>
-          <span className="past-event-location">
-            {event.location}
+            {event.badge && <span className="past-row-badge">{event.badge}</span>}
           </span>
-        </div>
-
-        {/* Right component: Action Link */}
-        <div className="past-event-action-side">
-          <span className="past-event-open-link">
-            <span>{siteCopy("ui.read-more")}</span>
-            <ArrowUpRight size={16} />
-          </span>
-        </div>
-      </div>
+          <span className="past-row-type">{pastEventType(event)}</span>
+          <ArrowUpRight className="past-row-arrow" size={18} aria-hidden="true" />
+        </button>
+      </li>
     );
   };
 
@@ -267,139 +147,53 @@ function PastEventsAccordion({ events }) {
       className="past-events-section"
       data-section="past-events"
     >
-      {/* Mobile-only header row */}
-      <div className="past-events-mobile-header mobile-only">
+      <div className="past-events-header">
         <span className="past-events-eyebrow">{copy("events.past.eyebrow")}</span>
+        <h2 className="past-events-heading">{copy("events.past.title")}</h2>
+        <p className="past-events-intro">{copy("events.past.body")}</p>
       </div>
 
-      <div className="past-events-split-layout">
-        {/* Left Column (Desktop only) */}
-        <div className="past-events-info-col desktop-only">
-          <span className="past-events-eyebrow">{copy("events.past.eyebrow")}</span>
-          <h2 className="past-events-heading">{copy("events.past.title")}</h2>
-          <p className="past-events-intro">
-            {copy("events.past.body")}
-          </p>
-
-          {/* Desktop Filter Pills */}
-          <div
-            className="past-events-filter-bar"
-            role="tablist"
-          >
-            {PAST_EVENT_CATEGORIES.map((cat) => {
-              const count = categoryCounts[cat.id] || 0;
-              const isActive = activeCategory === cat.id;
-
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  className={`past-events-filter-btn ${
-                    isActive ? "is-active" : ""
-                  }`}
-                  onClick={() => {
-                    setActiveCategory(cat.id);
-                    setIsExpanded(false);
-                  }}
-                >
-                  <span className="filter-label">{cat.label}</span>
-                  <span className="filter-count">({count})</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Right Column / Main List (Timeline) */}
-        <div className="past-events-timeline-col">
-          {/* Mobile Filter Pills */}
-          <div
-            className="past-events-filter-bar past-events-filter-bar--mobile mobile-only"
-            role="tablist"
-          >
-            {PAST_EVENT_CATEGORIES.map((cat) => {
-              const count = categoryCounts[cat.id] || 0;
-              const isActive = activeCategory === cat.id;
-
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  className={`past-events-filter-btn ${
-                    isActive ? "is-active" : ""
-                  }`}
-                  onClick={() => {
-                    setActiveCategory(cat.id);
-                    setIsExpanded(false);
-                  }}
-                >
-                  <span className="filter-label">{cat.label}</span>
-                  <span className="filter-count">({count})</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="past-events-list" onMouseEnter={handleItemMouseEnter}>
-            {filteredEvents.length === 0 && (
-              <div className="past-events-empty">
-                <p>{copy("events.past.empty")}</p>
-              </div>
-            )}
-
-            {/* Always visible primary items */}
-            {primaryEvents.map((event, index) =>
-              renderEventArticle(event, index)
-            )}
-
-            {/* Expandable extra items with smooth drop animation */}
-            {extraEvents.length > 0 && (
-              <div
-                id="past-events-extra-content"
-                className={`past-events-extra-wrapper ${
-                  isExpanded ? "is-expanded" : "is-collapsed"
-                }`}
-                aria-hidden={!isExpanded}
-              >
-                <div className="past-events-extra-inner">
-                  {extraEvents.map((event, index) =>
-                    renderEventArticle(event, primaryEvents.length + index)
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Progressive Disclosure: Show more / less button */}
-          {filteredEvents.length > INITIAL_LIMIT && (
-            <div className="past-events-expand-wrapper">
-              <button
-                type="button"
-                className="btn btn--secondary past-events-expand-btn"
-                onClick={() => setIsExpanded((prev) => !prev)}
-                aria-expanded={isExpanded}
-                aria-controls="past-events-extra-content"
-              >
-                <span>
-                  {isExpanded
-                    ? (copy("events.past.show-less", "Visa färre"))
-                    : `${copy("events.past.show-more", "Visa fler")} (${extraEvents.length})`}
-                </span>
-                <ChevronDown
-                  className={`past-events-expand-icon ${
-                    isExpanded ? "is-rotated" : ""
-                  }`}
-                  size={18}
-                />
+      {/* A few different photos carry the feeling once, instead of one picture on every row. */}
+      {band.length > 0 && (
+        <ul className={`past-band past-band--${band.length}`}>
+          {band.map(({ image, event }) => (
+            <li key={image.src}>
+              <button type="button" className="past-band-photo" onClick={() => openEvent(event)} aria-label={event.title}>
+                <img src={image.src} alt={image.alt || ""} loading="lazy" decoding="async" />
+                <span className="past-band-caption" aria-hidden="true">{event.title}</span>
               </button>
-            </div>
-          )}
-        </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="past-years">
+        {pastYearGroups(shownEvents).map(({ year, events: yearEvents }) => (
+          <section key={year} className="past-year" aria-label={year}>
+            <h3 className="past-year-label">{year}</h3>
+            <ul className="past-year-list">{yearEvents.map(renderRow)}</ul>
+          </section>
+        ))}
       </div>
+
+      {hiddenCount > 0 && (
+        <div className="past-events-expand-wrapper">
+          <button
+            type="button"
+            ref={expandButtonRef}
+            className="btn btn--secondary past-events-expand-btn"
+            onClick={toggleExpanded}
+            aria-expanded={isExpanded}
+          >
+            <span>
+              {isExpanded
+                ? copy("events.past.show-less", "Visa färre")
+                : `${copy("events.past.show-more", "Visa fler")} (${hiddenCount})`}
+            </span>
+            <ChevronDown className={`past-events-expand-icon ${isExpanded ? "is-rotated" : ""}`} size={18} aria-hidden="true" />
+          </button>
+        </div>
+      )}
 
       {/* Modal */}
       {selectedEvent && (
