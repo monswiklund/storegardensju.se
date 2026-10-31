@@ -15,6 +15,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowDown,
+  ArrowRight,
   ArrowUpRight,
   Calendar,
   ChevronDown,
@@ -22,6 +23,8 @@ import {
   MapPin,
   User,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { canonicalPath } from "../../config/routes.js";
 import { ContactSection as EnquiryForm } from "../contact";
 import SectionHeader from "../../components/ui/SectionHeader/SectionHeader.jsx";
 import { smoothScrollTo } from "../../utils/scrollUtils.js";
@@ -341,6 +344,12 @@ export function InstructorSection({
           </span>
         </li>
       </ul>
+      {instructor.portfolioUrl && (
+        <Link to={canonicalPath(instructor.portfolioUrl)} className="btn btn--secondary btn--sm kurser-details__portfolio">
+          <span>Se {instructor.shortName || instructor.name.split(" ")[0]}s konst</span>
+          <ArrowRight size={16} aria-hidden="true" />
+        </Link>
+      )}
     </div>
   );
 

@@ -53,6 +53,7 @@ export const INSTRUCTORS = {
     name: "Ann Wiklund",
     email: CONTACT_EMAIL,
     role: "Konstnär och keramiker",
+    portfolioUrl: "/ann",
     bio: "Ann Wiklund är konstnär och keramiker och håller kurserna i ateljén på Storegården 7. Hon undervisar i akvarell och akryl. Du behöver inte ha målat tidigare.",
   },
 };

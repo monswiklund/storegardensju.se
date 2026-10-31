@@ -593,6 +593,20 @@ export const seoMeta = {
       ],
     },
   },
+  annPortfolio: {
+    title: "Ann Wiklund | Konstnär i Rackeby | Storegården 7",
+    description:
+      "Målningar av Ann Wiklund, konstnär och keramiker med ateljé på Storegården 7 i Rackeby utanför Lidköping. Se ett urval verk och hör av dig om du vill veta mer.",
+    path: "/ann",
+    image: `${SITE_URL}/images/ann/kolibri.webp`,
+    staticContent: {
+      h1: "Ann Wiklund",
+      paragraphs: [
+        "Måleri och teckning från ateljén på Storegården 7 i Rackeby, utanför Lidköping.",
+        "Ann Wiklund är konstnär och keramiker. Här visas ett urval av hennes målningar, och kort, skisser och mindre verk finns på plats i ateljén på gården.",
+      ],
+    },
+  },
   butik: {
     title: "Butik - Keramik & konst | Storegården 7",
     description:

@@ -42,6 +42,7 @@ const NAV_ROUTES = [
   { path: "/galleri", label: "Bildgalleri" },
   { path: "/butik", label: "Butik" },
   { path: "/om-oss", label: "Om oss" },
+  { path: "/ann", label: "Konst av Ann Wiklund" },
   { path: "/kontakt", label: "Kontakt och hitta hit" },
 ];
 

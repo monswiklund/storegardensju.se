@@ -26,6 +26,7 @@ export const profiles = {
       "Konstprojekt",
     ],
     imageSrc: cdnAsset("/images/ann-profile.webp"),
+    portfolioUrl: "/ann",
     portfolio: [],
   },
 

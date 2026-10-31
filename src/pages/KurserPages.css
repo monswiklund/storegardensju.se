@@ -1575,3 +1575,7 @@ a.kurser-schedule-card__location:hover svg {
     text-align: left;
   }
 }
+
+.kurser-details__portfolio {
+  margin-top: 1.5rem;
+}

@@ -1,0 +1,416 @@
+/* Ann's portfolio: the paintings hang like on a studio wall, with soft drop shadows and an uneven
+   salon hang on wide screens. Everything else steps back. */
+
+.ann-page {
+  --ann-gutter: clamp(16px, 5vw, 64px);
+  --ann-max: 1240px;
+  --ann-hang-shadow:
+    0 1px 1px rgb(var(--shadow-color) / 0.1),
+    0 8px 12px -6px rgb(var(--shadow-color) / 0.16),
+    0 26px 40px -22px rgb(var(--shadow-color) / 0.34);
+  --ann-hang-shadow-near:
+    0 1px 1px rgb(var(--shadow-color) / 0.1),
+    0 12px 18px -8px rgb(var(--shadow-color) / 0.2),
+    0 36px 56px -26px rgb(var(--shadow-color) / 0.4);
+  background: var(--background-alt);
+  color: var(--text-body);
+}
+
+.ann-page ::selection {
+  background: rgb(185 148 112 / 0.32);
+  color: var(--text-strong);
+}
+
+.ann-page h1,
+.ann-page h2 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  color: var(--text-strong);
+  text-wrap: balance;
+}
+
+/* ---------- Opening: name beside one painting ---------- */
+
+.ann-hero {
+  max-width: var(--ann-max);
+  margin: 0 auto;
+  padding: calc(60px + clamp(2rem, 6vw, 5rem)) var(--ann-gutter) clamp(3rem, 7vw, 6rem);
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: center;
+}
+
+.ann-hero h1 {
+  font-size: clamp(3rem, 9vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  margin: 0 0 1.25rem;
+}
+
+.ann-hero__lead {
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  line-height: 1.6;
+  max-width: 34ch;
+  margin: 0 0 2rem;
+}
+
+.ann-hero__actions,
+.ann-about__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ann-hero__work {
+  margin: 0;
+}
+
+.ann-hero__work .ann-painting img {
+  animation: ann-hang 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* The one authored moment: the opening painting settles onto the wall. */
+@keyframes ann-hang {
+  from {
+    transform: translateY(-14px);
+    box-shadow: 0 2px 4px rgb(var(--shadow-color) / 0.08);
+  }
+  to {
+    transform: none;
+    box-shadow: var(--ann-hang-shadow);
+  }
+}
+
+@media (min-width: 960px) {
+  .ann-hero {
+    grid-template-columns: 5fr 7fr;
+    min-height: min(88vh, 860px);
+  }
+}
+
+/* ---------- Painting (shared) ---------- */
+
+.ann-painting {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.ann-painting img {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-shadow: var(--ann-hang-shadow);
+  transition: box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ann-painting:hover img,
+.ann-painting:focus-visible img {
+  box-shadow: var(--ann-hang-shadow-near);
+}
+
+.ann-painting:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 6px;
+}
+
+.ann-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  margin-top: 1.1rem;
+}
+
+.ann-caption__title {
+  flex: 1 1 auto;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--text-strong);
+}
+
+.ann-caption__details {
+  flex-basis: 100%;
+  order: 1;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.ann-caption__ask {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  font-size: 0.9rem;
+  color: var(--text-accent);
+  text-decoration: underline;
+  text-decoration-color: rgb(54 120 98 / 0.35);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.ann-caption__ask:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ---------- The wall ---------- */
+
+.ann-wall {
+  max-width: var(--ann-max);
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 6rem) var(--ann-gutter) clamp(4rem, 9vw, 8rem);
+}
+
+.ann-section-head {
+  max-width: 56ch;
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+
+.ann-section-head h2 {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1.1;
+  margin: 0 0 0.75rem;
+}
+
+.ann-section-head p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.ann-wall__grid {
+  display: grid;
+  gap: 3.5rem;
+}
+
+.ann-work {
+  margin: 0;
+}
+
+/* Small canvases stay small on a phone, so the size difference still reads. */
+.ann-work--fjall-litet {
+  max-width: 68%;
+}
+
+.ann-work--dromrum,
+.ann-work--pumpa {
+  max-width: 84%;
+}
+
+.ann-wall__grid > :nth-child(even) .ann-work {
+  margin-left: auto;
+}
+
+@media (min-width: 600px) {
+  .ann-wall__grid {
+    grid-template-columns: 1fr 1fr;
+    column-gap: clamp(2rem, 4vw, 3rem);
+    row-gap: 4.5rem;
+    align-items: start;
+  }
+
+  .ann-wall__grid > :nth-child(even) {
+    margin-top: 5rem;
+  }
+
+  .ann-work--fjall-litet {
+    max-width: 72%;
+  }
+
+  .ann-work--dromrum,
+  .ann-work--pumpa {
+    max-width: 88%;
+  }
+}
+
+/* Salon hang: large works in the first row, smaller ones below, each at its own height. */
+@media (min-width: 960px) {
+  .ann-wall__grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1.75rem, 3vw, 3rem);
+    row-gap: 5.5rem;
+  }
+
+  .ann-wall__grid > * {
+    margin-top: 0;
+  }
+
+  .ann-work,
+  .ann-work--fjall-litet,
+  .ann-work--dromrum,
+  .ann-work--pumpa {
+    max-width: none;
+    margin-left: 0;
+  }
+
+  .ann-wall__grid > :nth-child(1) { grid-column: 1 / span 4; }
+  .ann-wall__grid > :nth-child(2) { grid-column: 5 / span 4; margin-top: 7rem; }
+  .ann-wall__grid > :nth-child(3) { grid-column: 9 / span 4; margin-top: 2.5rem; }
+  .ann-wall__grid > :nth-child(4) { grid-column: 2 / span 3; margin-top: 4rem; }
+  .ann-wall__grid > :nth-child(5) { grid-column: 6 / span 3; }
+  .ann-wall__grid > :nth-child(6) { grid-column: 10 / span 3; margin-top: 5.5rem; }
+}
+
+/* ---------- Studio ---------- */
+
+.ann-studio {
+  background: var(--background-green);
+  padding: clamp(3rem, 7vw, 5.5rem) var(--ann-gutter);
+}
+
+.ann-studio__inner {
+  max-width: var(--ann-max);
+  margin: 0 auto;
+}
+
+.ann-studio .ann-section-head {
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.ann-studio__grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+@media (min-width: 760px) {
+  .ann-studio__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.ann-studio__photo {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-surface);
+  cursor: zoom-in;
+}
+
+.ann-studio__photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ann-studio__photo:hover img,
+.ann-studio__photo:focus-visible img {
+  transform: scale(1.035);
+}
+
+.ann-studio__photo:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
+.ann-studio__link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  min-height: 44px;
+  margin-top: 1.5rem;
+  color: var(--text-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ann-studio__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+/* ---------- About ---------- */
+
+.ann-about {
+  background: white;
+  padding: clamp(3.5rem, 8vw, 6.5rem) var(--ann-gutter);
+  display: grid;
+  gap: 2rem;
+  justify-items: start;
+}
+
+.ann-about > * {
+  width: 100%;
+}
+
+.ann-about__portrait {
+  width: clamp(160px, 40vw, 280px);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+}
+
+.ann-about__text {
+  max-width: 62ch;
+}
+
+.ann-about__text h2 {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1.1;
+  margin: 0 0 1.25rem;
+}
+
+.ann-about__text p {
+  line-height: 1.7;
+  margin: 0 0 1rem;
+}
+
+.ann-about__actions {
+  margin-top: 2rem;
+}
+
+.ann-about__instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  margin-top: 1rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.ann-about__instagram:hover {
+  color: var(--text-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+@media (min-width: 860px) {
+  .ann-about {
+    grid-template-columns: 280px minmax(0, 62ch);
+    justify-content: center;
+    column-gap: clamp(3rem, 6vw, 5.5rem);
+    align-items: start;
+  }
+
+  .ann-about__portrait {
+    width: 280px;
+    position: sticky;
+    top: 100px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ann-hero__work .ann-painting img {
+    animation: none;
+  }
+
+  .ann-painting img,
+  .ann-studio__photo img {
+    transition: none;
+  }
+}

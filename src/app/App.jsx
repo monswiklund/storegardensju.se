@@ -34,6 +34,7 @@ const ArtPage = lazy(() => import("../pages/ArtPage.jsx"));
 const GalleriPage = lazy(() => import("../pages/GalleriPage.jsx"));
 const TeamPage = lazy(() => import("../pages/TeamPage.jsx"));
 const MansPortfolioPage = lazy(() => import("../pages/MansPortfolioPage.jsx"));
+const AnnPortfolioPage = lazy(() => import("../pages/AnnPortfolioPage.jsx"));
 const KurserPage = lazy(() => import("../pages/KurserPage.jsx"));
 const KurserIndexPage = lazy(() => import("../pages/KurserIndexPage.jsx"));
 const ContactPage = lazy(() => import("../pages/ContactPage.jsx"));
@@ -53,6 +54,7 @@ import { normalizePath } from "../config/routes.js";
 // form would pull people away from paying.
 const NO_SITE_CONTACT = [
   "/om-oss",
+  "/ann",
   "/kontakt",
   "/kurser/konst",
   "/kurser/yoga",
@@ -234,6 +236,7 @@ function AppContent() {
           <Route path="/cancel" element={<CancelPage />} />
           <Route path="/om-oss" element={<TeamPage />} />
           <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
+          <Route path="/ann" element={<AnnPortfolioPage />} />
           <Route path="/kontakt" element={<ContactPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFoundPage />} />
