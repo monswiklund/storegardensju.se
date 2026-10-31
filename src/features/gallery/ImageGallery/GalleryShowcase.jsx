@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import "./Gallery.css";
 import CategoryToggle from "../CategoryToggle/CategoryToggle";
 import GalleryGrid from "./components/GalleryGrid";
@@ -6,12 +6,17 @@ import GalleryLightbox from "./components/GalleryLightbox";
 import useGalleryLightbox from "./hooks/useGalleryLightbox";
 import { fetchGalleryCategories } from "../../../services/galleryService";
 import { normalizeGalleryData } from "../normalizeGalleryData";
+import { smoothScrollTo } from "../../../utils/scrollUtils";
+
+// Where the category picker sticks: under the 60px navbar, see .category-toggle in CategoryToggle.css.
+const STUCK_TOGGLE_TOP = 68;
 
 // The page's own heading introduces the photos, so the wall starts right under it.
 function GalleryShowcase() {
   // The visitor's choice; until then the gallery opens on "Utvalda".
   const [chosenCategory, setChosenCategory] = useState(null);
   const [galleryData, setGalleryData] = useState(null);
+  const galleryRef = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -85,12 +90,17 @@ function GalleryShowcase() {
     (categoryId) => {
       setChosenCategory(categoryId);
       closeLightbox();
+      // Picked from the stuck picker further down: start the new category from its first photo.
+      const gallery = galleryRef.current;
+      if (gallery && gallery.getBoundingClientRect().top < STUCK_TOGGLE_TOP) {
+        smoothScrollTo(gallery, STUCK_TOGGLE_TOP);
+      }
     },
     [closeLightbox]
   );
 
   return (
-    <div className="storegarden-gallery" id="gallery-images">
+    <div className="storegarden-gallery" id="gallery-images" ref={galleryRef}>
       <CategoryToggle
         categories={normalizedGallery.categories}
         activeCategory={activeCategory}

@@ -1,7 +1,28 @@
+/* Follows the visitor down the wall, just under the 60px navbar, so the category is one tap away.
+   GalleryShowcase scrolls back to this same 68px when a category is picked further down. */
 .category-toggle {
   width: 100%;
   margin-bottom: 2.5rem;
   padding: 0 1rem;
+  position: sticky;
+  top: 68px;
+  z-index: 50;
+  container-type: scroll-state;
+  /* The row is wider than the control; taps beside it reach the photos. */
+  pointer-events: none;
+}
+
+.category-toggle-container,
+.category-toggle-dropdown-container {
+  pointer-events: auto;
+}
+
+/* Once stuck it floats over the photos, so it gets a shadow to lift it off them. */
+@container scroll-state(stuck: top) {
+  .category-toggle .category-toggle-container,
+  .category-toggle .category-select-trigger {
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.14), 0 1px 3px rgb(0 0 0 / 0.08);
+  }
 }
 
 /* Desktop Segmented Control */
