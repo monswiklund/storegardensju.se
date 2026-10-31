@@ -121,7 +121,7 @@ function AnnPortfolioPage() {
         <div className="ann-wall__grid">
           {wallWorks.map((work, i) => (
             <FadeInSection key={work.id}>
-              <figure className={`ann-work ann-work--${work.id}`}>
+              <figure className={`ann-work ann-work--${work.size ?? "large"}`}>
                 <Painting
                   work={work}
                   index={i + 1}
