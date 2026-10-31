@@ -34,6 +34,18 @@
   transform: scale(0.6) rotate(15deg);
 }
 
+/* The section sits only 20px from the screen edge here; further out, the full-size vines
+   (.is-centered) widen the page and phones let it pan sideways. */
+@media (max-width: 768px) {
+  .section-vine-left {
+    left: -20px;
+  }
+
+  .section-vine-right {
+    right: -20px;
+  }
+}
+
 .section-vine-center {
   top: -30px;
   left: 45%;
@@ -72,7 +84,7 @@
 .events-empty-kicker {
   display: block;
   margin-bottom: 10px;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -125,7 +137,7 @@
 
 .events-primary-action {
   border-bottom-color: var(--primary-color);
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-weight: 700;
 }
 
@@ -177,7 +189,7 @@
 
 .events-eyebrow {
   display: inline-block;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -462,7 +474,7 @@
 .upcoming-date-tabs-label {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   white-space: nowrap;

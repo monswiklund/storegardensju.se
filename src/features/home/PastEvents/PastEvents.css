@@ -14,7 +14,7 @@
 .past-events-eyebrow {
   display: inline-block;
   margin-bottom: 10px;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -428,7 +428,7 @@
 .past-event-modal-date-card span,
 .past-event-modal-fact strong {
   display: block;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -465,7 +465,7 @@
   padding: 6px 12px;
   border-radius: 999px;
   background: rgba(95, 111, 82, 0.1);
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -496,7 +496,7 @@
 .past-event-modal-moments > span {
   display: block;
   margin-bottom: 14px;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -545,7 +545,7 @@
 .past-event-modal-moment-time {
   display: block;
   margin-bottom: 3px;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.01em;
@@ -732,7 +732,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--primary-hover);
+  color: var(--text-accent);
   margin-bottom: 10px;
 }
 

@@ -36,12 +36,21 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Mobile Small */
-@media (max-width: 480px) {
+/* Phones: an icon-only 44px circle, so it covers less text and is easy to hit.
+   The aria-label still names it. */
+@media (max-width: 767px) {
   .scroll-to-top {
-    padding: 6px 6px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
     right: 15px;
     bottom: 15px;
+  }
+
+  .scroll-to-top span {
+    display: none;
   }
 }
 
