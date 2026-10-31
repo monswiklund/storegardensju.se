@@ -12,11 +12,15 @@ import {
 const SCROLL_SPEED = 0.25;
 const HOME_CAROUSEL_IMAGE_LIMIT = 20;
 
+// The gallery's own selection when the CMS has one: one photo per room and angle, instead of
+// the first twenty of "Alla bilder", which open with several near-identical shots of the bar.
 export const getHomeCarouselSlides = (galleryData) => {
   const normalized = normalizeGalleryData(galleryData);
-  const allImagesCategory = normalized.categories.find(isAllGalleryCategory);
+  const source =
+    normalized.categories.find((category) => category.id === "utvalda") ||
+    normalized.categories.find(isAllGalleryCategory);
 
-  return (allImagesCategory?.images || [])
+  return (source?.images || [])
     .map((image) => image.path)
     .filter(Boolean)
     .slice(0, HOME_CAROUSEL_IMAGE_LIMIT);

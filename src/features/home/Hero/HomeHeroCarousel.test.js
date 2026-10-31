@@ -23,4 +23,16 @@ describe("getHomeCarouselSlides", () => {
     expect(slides[0]).toBe("/images/gallery/image-1.webp");
     expect(slides[19]).toBe("/images/gallery/image-20.webp");
   });
+
+  it("prefers the gallery's Utvalda selection over Alla bilder", () => {
+    const slides = getHomeCarouselSlides({
+      categories: [
+        { id: "alla", name: "Alla bilder", images: [{ id: "a", path: "/a.webp" }, { id: "b", path: "/b.webp" }] },
+        { id: "utvalda", name: "Utvalda", order: -2, images: [{ id: "b", path: "/b.webp" }] },
+        { id: "ladan", name: "Ladan", images: [{ id: "a", path: "/a.webp" }, { id: "b", path: "/b.webp" }] },
+      ],
+    });
+
+    expect(slides).toEqual(["/b.webp"]);
+  });
 });

@@ -142,7 +142,8 @@
   flex-direction: column;
   gap: 16px;
   max-width: 680px;
-  margin: 0 auto;
+  /* Room after the buttons, which now close the opening rather than the photo strip. */
+  margin: clamp(20px, 3vw, 32px) auto 0;
 }
 
 /* Content: Title & Text */
@@ -207,11 +208,20 @@
 /* Adjustments for smaller screens */
 @media (max-width: 480px) {
   /* Enforce same max-width for both rows so buttons are identical size */
+  /* Contact stands alone; the two lighter buttons share the row under it, so the pair lines
+     up with the primary button's full width. */
   .hero-cta-primary-row,
   .hero-cta-secondary-row {
-    grid-template-columns: 1fr; /* Stack secondary */
     max-width: 320px; /* Standard width for all buttons on mobile */
     width: 100%;
+  }
+
+  .hero-cta-secondary-row {
+    gap: 10px;
+  }
+
+  .hero-cta-secondary-row .hero-cta {
+    padding-inline: 12px;
   }
 
   /* Remove flex centering for primary on mobile to let it fill width */
@@ -322,66 +332,74 @@
   cursor: grabbing;
 }
 
+/* Prints laid along the table: each one slightly over the last, room above and below for
+   their tilt and shadow. The play button sits in the room below them. */
 .hero-carousel-inner {
   display: flex;
   align-items: center;
-  gap: 0.25rem; /* Base spacing; per-item margins vary it */
   width: max-content;
   flex-wrap: nowrap;
-  padding: 40px 0; /* Space for shadows + tilt/stagger */
+  padding: 44px 24px 68px;
 }
 
-/* Match .gallery-thumbnail style */
+/* A polaroid: thin paper edge on three sides, the wide one at the bottom. */
 .hero-carousel-item {
-  width: 200px;
-  height: 300px; /* 2:3 Aspect ratio */
+  --print-edge: 10px;
+  --print-foot: 38px;
+  position: relative;
+  width: 210px;
   flex-shrink: 0;
+  padding: var(--print-edge) var(--print-edge) var(--print-foot);
+  background: #fffdf9;
+  border-radius: 1px;
+  box-shadow:
+    0 1px 1px rgb(45 40 35 / 0.08),
+    0 6px 14px rgb(45 40 35 / 0.1),
+    0 22px 34px -16px rgb(45 40 35 / 0.28);
+  transform: translateY(var(--print-y, 0)) rotate(var(--print-tilt, 0deg));
 
-  /* Gallery Styles */
-  background: white;
-  padding: 12px;
-  border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  /* CRITICAL: Remove all interactivity */
+  /* Decorative strip: no clicks, no dragging the image itself */
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
 }
 
-/* Playful scattered polaroid look: alternating tilt + vertical stagger */
-.hero-carousel-item:nth-child(4n + 1) {
-  transform: rotate(-3deg) scale(1.08);
-  margin-left: 0.75rem;
-}
-.hero-carousel-item:nth-child(4n + 2) {
-  transform: rotate(2deg) scale(0.88);
-  margin-left: -0.5rem;
-}
-.hero-carousel-item:nth-child(4n + 3) {
-  transform: rotate(-1.5deg) scale(1);
-  margin-left: 1rem;
-}
-.hero-carousel-item:nth-child(4n + 4) {
-  transform: rotate(3deg) scale(0.94);
-  margin-left: -0.25rem;
+/* Each print overlaps the one before it a little, the way they land when dealt by hand. */
+.hero-carousel-item + .hero-carousel-item {
+  margin-left: -14px;
 }
 
-/* User requested "remove click", so hover effects are likely unwanted too.
-   Since pointer-events: none is set, this won't trigger anyway on the item. 
-*/
-/*.hero-carousel-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
-}*/
+/* A five-step scatter: five is not a factor of the eye's usual groups of two or four, so the
+   repeat is hard to spot. Every other print lies on top. */
+.hero-carousel-item:nth-child(5n + 1) { --print-tilt: -2.4deg; --print-y: -8px; z-index: 2; }
+.hero-carousel-item:nth-child(5n + 2) { --print-tilt: 1.6deg; --print-y: 10px; z-index: 1; }
+.hero-carousel-item:nth-child(5n + 3) { --print-tilt: -0.8deg; --print-y: -2px; z-index: 2; }
+.hero-carousel-item:nth-child(5n + 4) { --print-tilt: 2.6deg; --print-y: 6px; z-index: 1; }
+.hero-carousel-item:nth-child(5n + 5) { --print-tilt: -1.6deg; --print-y: -12px; z-index: 2; }
+
+/* A strip of masking tape holding every other print. */
+.hero-carousel-item:nth-child(odd)::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 58px;
+  height: 16px;
+  background: linear-gradient(90deg, rgb(222 216 198 / 0.4), rgb(222 216 198 / 0.55) 12%, rgb(222 216 198 / 0.55) 88%, rgb(222 216 198 / 0.4));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  transform: translateX(-50%) rotate(calc(var(--print-tilt, 0deg) * -1.4));
+}
 
 .hero-carousel-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
   display: block;
-  border-radius: 0; /* Sharp corners inside padding */
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0;
+  /* The photo's own edge on the paper */
+  outline: 1px solid rgb(0 0 0 / 0.05);
+  outline-offset: -1px;
 }
 
 /* Auto-scroll is JS-driven (see HomeHeroCarousel.jsx) so the track stays
@@ -389,13 +407,23 @@
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
-  .hero-carousel-item {
-    width: 160px;
-    height: 240px; /* 2:3 Aspect ratio */
-    padding: 8px; /* Slightly less padding on mobile */
+  .hero-carousel-inner {
+    padding: 36px 16px 64px;
   }
 
-  .hero-carousel-inner {
-    gap: 0.5rem;
+  .hero-carousel-item {
+    --print-edge: 7px;
+    --print-foot: 28px;
+    width: 156px;
+  }
+
+  .hero-carousel-item + .hero-carousel-item {
+    margin-left: -10px;
+  }
+
+  .hero-carousel-item:nth-child(odd)::before {
+    width: 48px;
+    height: 14px;
+    top: -7px;
   }
 }

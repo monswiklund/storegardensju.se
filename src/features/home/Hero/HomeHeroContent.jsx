@@ -63,6 +63,9 @@ function HomeHeroContent({
       {subtitle ? <p className="hero-subtitle">{subtitle}</p> : null}
       {paragraphs[0] ? <p>{String(paragraphs[0])}</p> : null}
 
+      {/* The farm in pictures first, then what to do about it. */}
+      <HomeHeroCarousel />
+
       {(primaryCta || (secondaryCtas && secondaryCtas.length > 0)) && (
         <div className="hero-cta-container" data-cms-hero-actions>
           {/* Primary Row - Centered & Alone */}
@@ -117,8 +120,6 @@ function HomeHeroContent({
           )}
         </div>
       )}
-
-      <HomeHeroCarousel />
 
       {paragraphs.length > 1 && (
         <div className="hero-more-text">
