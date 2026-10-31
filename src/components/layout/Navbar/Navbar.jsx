@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import usePageCopy from "../../../hooks/usePageCopy.js";
 import usePageMedia from "../../../hooks/usePageMedia.js";
@@ -36,6 +36,9 @@ function Navbar() {
   const currentPath = normalizePath(location.pathname);
   const currentTitle = getCurrentTitle(currentPath, siteCopy);
   const shopHasProducts = useShopHasProducts();
+  // On the home page the hero carries the big logo; the bar's own fades in once that one is gone.
+  const isHome = currentPath === "/";
+  const [heroLogoInView, setHeroLogoInView] = useState(isHome);
   const navItems = shopHasProducts
     ? NAV_ITEMS
     : NAV_ITEMS.filter((route) => !route.shopOnly);
@@ -76,6 +79,34 @@ function Navbar() {
   };
 
   useEffect(() => {
+    if (!isHome) {
+      setHeroLogoInView(false);
+      return undefined;
+    }
+
+    const update = () => {
+      const mark = document.querySelector(".hero-logo-mark");
+      // Until the hero has rendered, keep the state: showing and hiding again would blink.
+      if (!mark) return;
+      const barBottom = document.querySelector(".navbar")?.getBoundingClientRect().bottom ?? 0;
+      setHeroLogoInView(mark.getBoundingClientRect().bottom > barBottom);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    // The hero is a lazy page chunk, so it can mount after this effect.
+    const observer = new MutationObserver(update);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      observer.disconnect();
+    };
+  }, [isHome]);
+
+  useEffect(() => {
     if (location.pathname !== "/") {
       pendingScrollTargetRef.current = null;
       return;
@@ -93,7 +124,7 @@ function Navbar() {
 
         <Link
           to="/"
-          className="navbar-brand"
+          className={`navbar-brand${isHome && heroLogoInView ? " is-tucked" : ""}`}
           aria-label={siteCopy("nav.home")}
           onClick={() => handleNavigate("/")}
         >

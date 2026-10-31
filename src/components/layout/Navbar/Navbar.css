@@ -35,6 +35,17 @@
   z-index: 1003;
 }
 
+/* Keeps its place so the links stay put; hidden also leaves the tab order. */
+.navbar-brand {
+  transition: opacity 0.3s ease, visibility 0s linear 0s;
+}
+
+.navbar-brand.is-tucked {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
 .navbar-logo {
   display: block;
   width: auto;
