@@ -1,4 +1,23 @@
 {
+  "portfolio-ann": {
+    "copy": {
+      "hero.title": "Ann Wiklund",
+      "hero.lead": "Måleri och teckning från ateljén på Storegården 7 i Rackeby, utanför Lidköping.",
+      "hero.works-cta": "Se verken",
+      "ui.mail-cta": "Mejla Ann",
+      "wall.title": "Verk",
+      "wall.lead": "Ett urval målningar. Tryck på en bild för att se den större, och hör av dig om du vill veta mer om något av verken.",
+      "work.ask": "Fråga om verket",
+      "work.show-larger": "Visa större",
+      "studio.title": "I ateljén",
+      "studio.lead": "Kort, skisser och mindre målningar finns på plats i ateljén på gården.",
+      "studio.link": "Hitta hit",
+      "about.title": "Om Ann",
+      "about.course-cta": "Måla med Ann"
+    },
+    "lists": {},
+    "images": {}
+  },
   "portfolio-mans": {
     "copy": {
       "hero.back-to-about": "Tillbaka till Om Oss",

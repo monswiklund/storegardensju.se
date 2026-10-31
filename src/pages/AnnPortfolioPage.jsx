@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowRight, Instagram, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ExploreMore, SectionDivider } from "../components";
@@ -6,43 +7,66 @@ import GalleryLightbox from "../features/gallery/ImageGallery/components/Gallery
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
 import "../features/gallery/ImageGallery/Gallery.css";
 import { profiles } from "../data/profileData.js";
-import {
-  ANN_EMAIL,
-  ANN_INSTAGRAM,
-  annStudio,
-  annWorks,
-  askAboutWork,
-} from "../data/annPortfolio.js";
+import { toProfile, memberSlug } from "../features/team/teamProfile.js";
 import { seoMeta } from "../config/seoMeta.js";
+import useArtworks from "../hooks/useArtworks.js";
+import usePageCopy from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
+import { fetchTeamMembers } from "../services/cmsService.js";
+import { resolveMediaUrl } from "../services/mediaService.js";
 import { smoothScrollTo } from "../utils/scrollUtils.js";
 import "./AnnPortfolioPage.css";
 
-const [heroWork, ...wallWorks] = annWorks;
+const externalUrl = (url) => (/^https?:\/\//.test(url) ? url : `https://${url}`);
 
-// One lightbox pages through the paintings first, then the studio photos.
-const lightboxImages = [...annWorks, ...annStudio].map((item) => ({
-  original: item.src,
-  thumbnail: item.srcSmall,
-  originalAlt: item.alt,
-  filename: item.id,
-  width: item.width,
-  height: item.height,
-}));
-const studioOffset = annWorks.length;
+/** An artwork from the CMS as the page shows it: the uncropped 900px size first, the original when wide. */
+function toPiece(artwork) {
+  const { image } = artwork;
+  const medium = image.sizes?.medium;
+  return {
+    id: artwork.id,
+    title: artwork.title,
+    details: artwork.details,
+    size: artwork.size,
+    alt: image.alt || artwork.title,
+    src: image.url,
+    srcSmall: medium?.url || image.url,
+    srcSet: medium?.url && medium.width && image.width ? `${medium.url} ${medium.width}w, ${image.url} ${image.width}w` : undefined,
+    width: image.width,
+    height: image.height,
+  };
+}
 
-function Painting({ work, index, onOpen, sizes, priority = false }) {
+/** Ann's card from Teamet in the CMS; profileData.js stands in until it loads or where it is empty. */
+function useAnnProfile() {
+  const [member, setMember] = useState(null);
+  useEffect(() => {
+    let active = true;
+    fetchTeamMembers().then((members) => {
+      const ann = members.find((candidate) => memberSlug(candidate) === "ann");
+      if (active && ann) setMember(ann);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+  if (!member) return profiles.ann;
+  const profile = toProfile(member);
+  return { ...profile, imageSrc: resolveMediaUrl(member.image) || profiles.ann.imageSrc };
+}
+
+function Painting({ work, index, onOpen, sizes, showLarger, priority = false }) {
   return (
     <button
       type="button"
       className="ann-painting"
       onClick={() => onOpen(index)}
-      aria-label={`Visa större: ${work.title}`}
+      aria-label={`${showLarger}: ${work.title}`}
     >
       <img
         src={work.srcSmall}
-        srcSet={`${work.srcSmall} 800w, ${work.src} 1800w`}
-        sizes={sizes}
+        srcSet={work.srcSet}
+        sizes={work.srcSet ? sizes : undefined}
         width={work.width}
         height={work.height}
         alt={work.alt}
@@ -54,34 +78,58 @@ function Painting({ work, index, onOpen, sizes, priority = false }) {
   );
 }
 
-function WorkCaption({ work }) {
+// The mail names the work, so Ann knows which painting the question is about.
+function WorkCaption({ work, email, ask }) {
+  const subject = encodeURIComponent(`${ask} "${work.title}"`);
   return (
     <figcaption className="ann-caption">
       <span className="ann-caption__title">{work.title}</span>
       {work.details && <span className="ann-caption__details">{work.details}</span>}
-      <a className="ann-caption__ask" href={askAboutWork(work)}>
-        <Mail size={15} aria-hidden="true" />
-        Fråga om verket
-      </a>
+      {email && (
+        <a className="ann-caption__ask" href={`mailto:${email}?subject=${subject}`}>
+          <Mail size={15} aria-hidden="true" />
+          {ask}
+        </a>
+      )}
     </figcaption>
   );
 }
 
 function AnnPortfolioPage() {
   useSeo(seoMeta.annPortfolio);
-  const profile = profiles.ann;
+  const copy = usePageCopy("portfolio-ann");
+  const profile = useAnnProfile();
+  const artworks = useArtworks();
+  const email = profile.contact?.email?.trim();
+  const instagram = profile.contact?.instagram?.trim();
+
+  const { works, studio, lightboxImages } = useMemo(() => {
+    const works = artworks.filter((artwork) => artwork.placement === "wall").map(toPiece);
+    const studio = artworks.filter((artwork) => artwork.placement === "studio").map(toPiece);
+    // One lightbox pages through the paintings first, then the studio photos.
+    const lightboxImages = [...works, ...studio].map((item) => ({
+      original: item.src,
+      thumbnail: item.srcSmall,
+      originalAlt: item.alt,
+      filename: `ann-${item.id}`,
+      width: item.width,
+      height: item.height,
+    }));
+    return { works, studio, lightboxImages };
+  }, [artworks]);
+  const [heroWork, ...wallWorks] = works;
   const lightbox = useGalleryLightbox(lightboxImages, "ann");
+  const showLarger = copy("work.show-larger");
+  const ask = copy("work.ask");
 
   return (
     <main role="main" id="main-content" className="ann-page">
       <section className="ann-hero" aria-labelledby="ann-title">
         <div className="ann-hero__text">
-          <h1 id="ann-title">Ann Wiklund</h1>
-          <p className="ann-hero__lead">
-            Måleri och teckning från ateljén på Storegården 7 i Rackeby, utanför Lidköping.
-          </p>
+          <h1 id="ann-title">{copy("hero.title")}</h1>
+          <p className="ann-hero__lead">{copy("hero.lead")}</p>
           <div className="ann-hero__actions">
-            <a
+            {wallWorks.length > 0 && <a
               href="#verk"
               className="btn btn--primary"
               onClick={(event) => {
@@ -89,34 +137,36 @@ function AnnPortfolioPage() {
                 smoothScrollTo("verk", 80);
               }}
             >
-              <span>Se verken</span>
+              <span>{copy("hero.works-cta")}</span>
               <ArrowDown size={18} aria-hidden="true" />
-            </a>
-            <a href={`mailto:${ANN_EMAIL}`} className="btn btn--secondary">
-              <Mail size={18} aria-hidden="true" />
-              <span>Mejla Ann</span>
-            </a>
+            </a>}
+            {email && (
+              <a href={`mailto:${email}`} className="btn btn--secondary">
+                <Mail size={18} aria-hidden="true" />
+                <span>{copy("ui.mail-cta")}</span>
+              </a>
+            )}
           </div>
         </div>
-        <figure className="ann-hero__work">
-          <Painting
-            work={heroWork}
-            index={0}
-            onOpen={lightbox.openLightbox}
-            sizes="(min-width: 960px) 58vw, 100vw"
-            priority
-          />
-          <WorkCaption work={heroWork} />
-        </figure>
+        {heroWork && (
+          <figure className="ann-hero__work">
+            <Painting
+              work={heroWork}
+              index={0}
+              onOpen={lightbox.openLightbox}
+              sizes="(min-width: 960px) 58vw, 100vw"
+              showLarger={showLarger}
+              priority
+            />
+            <WorkCaption work={heroWork} email={email} ask={ask} />
+          </figure>
+        )}
       </section>
 
-      <section id="verk" className="ann-wall" aria-labelledby="ann-wall-title">
+      {wallWorks.length > 0 && <section id="verk" className="ann-wall" aria-labelledby="ann-wall-title">
         <header className="ann-section-head">
-          <h2 id="ann-wall-title">Verk</h2>
-          <p>
-            Ett urval målningar. Tryck på en bild för att se den större, och hör av dig om
-            du vill veta mer om något av verken.
-          </p>
+          <h2 id="ann-wall-title">{copy("wall.title")}</h2>
+          <p>{copy("wall.lead")}</p>
         </header>
         <div className="ann-wall__grid">
           {wallWorks.map((work, i) => (
@@ -127,32 +177,31 @@ function AnnPortfolioPage() {
                   index={i + 1}
                   onOpen={lightbox.openLightbox}
                   sizes="(min-width: 960px) 34vw, (min-width: 600px) 46vw, 92vw"
+                  showLarger={showLarger}
                 />
-                <WorkCaption work={work} />
+                <WorkCaption work={work} email={email} ask={ask} />
               </figure>
             </FadeInSection>
           ))}
         </div>
-      </section>
+      </section>}
 
       <SectionDivider above="alt" below="green" variant="wave" />
 
       <section className="ann-studio" aria-labelledby="ann-studio-title">
         <div className="ann-studio__inner">
           <header className="ann-section-head">
-            <h2 id="ann-studio-title">I ateljén</h2>
-            <p>
-              Kort, skisser och mindre målningar finns på plats i ateljén på gården.
-            </p>
+            <h2 id="ann-studio-title">{copy("studio.title")}</h2>
+            <p>{copy("studio.lead")}</p>
           </header>
-          <ul className="ann-studio__grid">
-            {annStudio.map((photo, i) => (
+          {studio.length > 0 && <ul className="ann-studio__grid">
+            {studio.map((photo, i) => (
               <li key={photo.id}>
                 <button
                   type="button"
                   className="ann-studio__photo"
-                  onClick={() => lightbox.openLightbox(studioOffset + i)}
-                  aria-label={`Visa större: ${photo.alt}`}
+                  onClick={() => lightbox.openLightbox(works.length + i)}
+                  aria-label={`${showLarger}: ${photo.alt}`}
                 >
                   <img
                     src={photo.srcSmall}
@@ -165,9 +214,9 @@ function AnnPortfolioPage() {
                 </button>
               </li>
             ))}
-          </ul>
+          </ul>}
           <Link to="/kontakt/" className="ann-studio__link">
-            Hitta hit
+            {copy("studio.link")}
             <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </div>
@@ -179,30 +228,35 @@ function AnnPortfolioPage() {
         <img
           className="ann-about__portrait"
           src={profile.imageSrc}
-          alt="Porträtt av Ann Wiklund"
+          alt={`Porträtt av ${profile.title}`}
           width="320"
           height="320"
           loading="lazy"
         />
         <div className="ann-about__text">
-          <h2 id="ann-about-title">Om Ann</h2>
-          {profile.texts.map((text) => (
+          <h2 id="ann-about-title">{copy("about.title")}</h2>
+          {/* A bio in Teamet is one text field; a blank line starts a new paragraph. */}
+          {profile.texts.flatMap((text) => text.split(/\n\s*\n/)).map((text) => (
             <p key={text}>{text}</p>
           ))}
           <div className="ann-about__actions">
-            <a href={`mailto:${ANN_EMAIL}`} className="btn btn--primary">
-              <Mail size={18} aria-hidden="true" />
-              <span>Mejla Ann</span>
-            </a>
+            {email && (
+              <a href={`mailto:${email}`} className="btn btn--primary">
+                <Mail size={18} aria-hidden="true" />
+                <span>{copy("ui.mail-cta")}</span>
+              </a>
+            )}
             <Link to="/kurser/konst/" className="btn btn--secondary">
-              <span>Måla med Ann</span>
+              <span>{copy("about.course-cta")}</span>
               <ArrowRight size={18} aria-hidden="true" />
             </Link>
           </div>
-          <a className="ann-about__instagram" href={ANN_INSTAGRAM} target="_blank" rel="noreferrer">
-            <Instagram size={18} aria-hidden="true" />
-            @annwiklundstudio
-          </a>
+          {instagram && (
+            <a className="ann-about__instagram" href={externalUrl(instagram)} target="_blank" rel="noreferrer">
+              <Instagram size={18} aria-hidden="true" />
+              @{instagram.replace(/\/+$/, "").split("/").pop().replace(/^@/, "")}
+            </a>
+          )}
         </div>
       </section>
 

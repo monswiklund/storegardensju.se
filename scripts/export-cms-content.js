@@ -1,6 +1,6 @@
 // Writes the published CMS content into src/data/cmsContent.generated.js before the build, so the
 // first render, the prerendered HTML, the metadata and the JSON-LD all come from one validated
-// snapshot of what the editors published: pages, events, course passes and shop products.
+// snapshot of what the editors published: pages, events, course passes, shop products and artworks.
 //
 // In CI (or with CMS_EXPORT=required) any failed, incomplete or invalid export fails the build:
 // GitHub Pages then keeps serving the previous site rather than one built from partial data.
@@ -11,6 +11,8 @@ import {
   REQUIRED_PAGE_SLUGS,
   fetchAllPublished,
   latestUpdate,
+  orderArtworks,
+  projectArtwork,
   projectCoursePass,
   projectEvent,
   projectPage,
@@ -18,7 +20,7 @@ import {
 } from "../src/data/cmsProjection.js";
 
 export const TARGET = "src/data/cmsContent.generated.js";
-const COLLECTIONS = ["pages", "events", "course-passes", "shop-products"];
+const COLLECTIONS = ["pages", "events", "course-passes", "shop-products", "artworks"];
 const ATTEMPTS = 3;
 
 async function newestState(cmsUrl, collection, fetchImpl) {
@@ -30,10 +32,10 @@ async function newestState(cmsUrl, collection, fetchImpl) {
 }
 
 async function readOnce(cmsUrl, fetchImpl) {
-  const [pages, events, coursePasses, shopProducts] = await Promise.all(
+  const [pages, events, coursePasses, shopProducts, artworks] = await Promise.all(
     COLLECTIONS.map((collection) => fetchAllPublished(cmsUrl, collection, { fetchImpl })),
   );
-  return { pages, events, "course-passes": coursePasses, "shop-products": shopProducts };
+  return { pages, events, "course-passes": coursePasses, "shop-products": shopProducts, artworks };
 }
 
 /**
@@ -66,13 +68,15 @@ export async function exportCmsContent(cmsUrl, { fetchImpl = fetch, now = () => 
     const slugs = shopProducts.map((product) => product.slug);
     if (slugs.some((slug) => !/^[a-z0-9-]+$/.test(slug))) throw new Error("en publicerad produkt saknar giltig webbadress");
     if (new Set(slugs).size !== slugs.length) throw new Error("två publicerade produkter har samma webbadress");
+    const artworks = orderArtworks(raw.artworks.map((doc) => projectArtwork(doc, cmsUrl)));
     return {
       exportedAt: now().toISOString(),
-      revision: latestUpdate([...Object.values(pages), ...events, ...coursePasses, ...shopProducts]),
+      revision: latestUpdate([...Object.values(pages), ...events, ...coursePasses, ...shopProducts, ...artworks]),
       pages,
       events,
       coursePasses,
       shopProducts,
+      artworks,
     };
   }
   throw new Error(`innehållet ändrades under ${ATTEMPTS} exportförsök i rad`);
@@ -97,7 +101,8 @@ if (runAsScript) {
       writeFileSync(TARGET, renderModule(snapshot));
       console.log(
         `CMS-export: ${Object.keys(snapshot.pages).length} sidor, ${snapshot.events.length} evenemang, ` +
-        `${snapshot.coursePasses.length} kurstillfällen, ${snapshot.shopProducts.length} produkter, revision ${snapshot.revision}.`,
+        `${snapshot.coursePasses.length} kurstillfällen, ${snapshot.shopProducts.length} produkter, ` +
+        `${snapshot.artworks.length} konstverk, revision ${snapshot.revision}.`,
       );
     } catch (error) {
       console.error(`CMS-export misslyckades: ${error.message}`);

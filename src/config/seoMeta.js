@@ -598,7 +598,8 @@ export const seoMeta = {
     description:
       "Målningar av Ann Wiklund, konstnär och keramiker med ateljé på Storegården 7 i Rackeby utanför Lidköping. Se ett urval verk och hör av dig om du vill veta mer.",
     path: "/ann",
-    image: `${SITE_URL}/images/ann/kolibri.webp`,
+    // The CMS share image (the opening painting) replaces this in the built page.
+    image: absoluteUrl("/images/ann-profile.webp"),
     staticContent: {
       h1: "Ann Wiklund",
       paragraphs: [

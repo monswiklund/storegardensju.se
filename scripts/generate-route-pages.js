@@ -19,6 +19,7 @@ const PAGE_SLUG_BY_PATH = {
   "/butik": "shop",
   "/om-oss": "about",
   "/kontakt": "contact",
+  "/ann": "portfolio-ann",
 };
 
 // Share images come from the same CMS export as the page text (none in a local build).

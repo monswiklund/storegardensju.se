@@ -19,6 +19,7 @@ export const REQUIRED_PAGE_SLUGS = Object.freeze([
   "shop",
   "about",
   "contact",
+  "portfolio-ann",
   "portfolio-mans",
   "not-found",
 ]);
@@ -155,6 +156,27 @@ export function projectShopProduct(doc, cmsUrl) {
     image: projectMedia(Array.isArray(doc.images) ? doc.images[0] : null, cmsUrl),
     updatedAt: optionalText(doc.updatedAt),
   };
+}
+
+/** A published artwork on /ann. `order` is Payload's drag order key, compared as plain strings. */
+export function projectArtwork(doc, cmsUrl) {
+  return {
+    id: doc.id,
+    order: text(doc._order),
+    title: text(doc.title),
+    details: text(doc.details),
+    placement: doc.placement === "studio" ? "studio" : "wall",
+    size: ["small", "narrow"].includes(doc.size) ? doc.size : "large",
+    image: projectMedia(doc.image, cmsUrl),
+    updatedAt: optionalText(doc.updatedAt),
+  };
+}
+
+/** Artworks in the editors' drag order; one whose image was removed is left out. */
+export function orderArtworks(artworks) {
+  return artworks
+    .filter((artwork) => artwork.image?.url)
+    .sort((a, b) => (a.order < b.order ? -1 : a.order > b.order ? 1 : a.id - b.id));
 }
 
 /** A published course pass (the older bookable-session collection, kept compatible). */

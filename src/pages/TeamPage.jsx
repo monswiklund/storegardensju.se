@@ -6,46 +6,14 @@ import { ExploreMore, PageSection, SectionDivider } from "../components";
 import { ContactSection } from "../features/contact";
 import TeamProfileShowcase from "../features/team/ProfileShowcase/TeamProfileShowcase.jsx";
 import { profiles } from "../data/profileData.js";
+import { toProfile } from "../features/team/teamProfile.js";
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import "./TeamPage.css";
 import usePageCopy from "../hooks/usePageCopy.js";
 import { fetchTeamMembers } from "../services/cmsService.js";
-import { resolveMediaUrl } from "../services/mediaService.js";
-
-// CMS slug, or the first name without diacritics ("Måns" -> "mans") to match profileData's keys.
-const memberSlug = (member) =>
-  member.slug ||
-  member.name
-    ?.split(" ")[0]
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase() ||
-  "";
 
 const FALLBACK_TEAM = [profiles.ann, profiles.carl, profiles.lina];
-
-/** A CMS team member as a card profile, with profileData.js filling what the CMS leaves empty. */
-const toProfile = (member) => {
-  const slug = memberSlug(member);
-  const fallback = profiles[slug] || {};
-  return {
-    key: member.id || slug,
-    title: member.name || fallback.title,
-    about: member.role || fallback.about,
-    texts: member.bio?.trim() ? [member.bio] : fallback.texts || [],
-    listItems: Array.isArray(member.skills)
-      ? member.skills.map((skill) => skill.label)
-      : fallback.listItems,
-    imageSrc: resolveMediaUrl(member.image, "thumbnail"),
-    contact: {
-      email: member.email || fallback.contact?.email,
-      instagram: member.instagram || fallback.contact?.instagram,
-    },
-    portfolioUrl: member.portfolioUrl || fallback.portfolioUrl,
-    portfolio: fallback.portfolio || [],
-  };
-};
 
 function TeamPage() {
   useSeo(seoMeta.omOss);
