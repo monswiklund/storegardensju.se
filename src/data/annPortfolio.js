@@ -23,10 +23,10 @@ export const annWorks = [
     ...image("kolibri", 1800, 1334),
   },
   {
-    id: "solvandet",
-    title: "Kvinna i solen",
-    alt: "Målning i guldram av en naken kvinna med armarna bakom huvudet i en äng med solrosor under en stor gul sol.",
-    ...image("solvandet", 1376, 1800),
+    id: "trollslanda",
+    title: "Trollslända",
+    alt: "Målning av en stor blå trollslända med genomskinliga vingar mot mörkgröna och lila fält.",
+    ...image("trollslanda", 1452, 1800),
   },
   {
     id: "landskap-gra",
@@ -101,12 +101,6 @@ export const annWorks = [
     size: "small",
     alt: "Målning i ljus ram med drömlika motiv: en rosa fåtölj, tulpaner, en sköldpadda och blå slingor.",
     ...image("dromrum", 1446, 1800),
-  },
-  {
-    id: "trollslanda",
-    title: "Trollslända",
-    alt: "Målning av en stor blå trollslända med genomskinliga vingar mot mörkgröna och lila fält.",
-    ...image("trollslanda", 1452, 1800),
   },
   {
     id: "lotus-krona",
