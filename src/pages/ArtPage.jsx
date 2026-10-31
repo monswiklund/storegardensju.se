@@ -1,23 +1,14 @@
 import { useMemo } from "react";
-import {
-  ArrowDown,
-  ArrowRight,
-  MapPin,
-  Palette,
-  Sparkles,
-  Flame,
-  Users,
-} from "lucide-react";
-import CreativeWorkshopsSection from "../features/creation/CreativeWorkshopsSection.jsx";
-import FadeInSection from "../components/ui/FadeInSection.jsx";
-import { PageSection, ScrollSpyNav, SectionDivider } from "../components";
+import { Link } from "react-router-dom";
+import { ArrowDown, ArrowRight, MapPin } from "lucide-react";
+import { ScrollSpyNav, SectionDivider } from "../components";
 import { smoothScrollTo } from "../utils/scrollUtils.js";
+import { canonicalPath } from "../config/routes.js";
 import {
   COURSE_CONTACT_ID,
   ContactSection,
   FaqSection,
   InstructorSection,
-  NoUpcomingSection,
   PassSection,
   PastPassesSection,
   goToCourseContact,
@@ -25,6 +16,8 @@ import {
 import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta, activeJsonLd } from "../config/seoMeta.js";
 import useCmsSchedule from "../hooks/useCmsSchedule.js";
+import useArtworks, { useCeramics } from "../hooks/useArtworks.js";
+import { ceramicImageProps } from "../data/ceramics.js";
 import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
 import usePageLists from "../hooks/usePageLists.js";
@@ -40,21 +33,48 @@ import {
 } from "../data/courseEvents.js";
 import "./ArtPage.css";
 
-
 const MALERI_TRACK = TRACKS[MALERI_TRACK_ID];
 const INSTRUCTOR = MALERI_TRACK.instructor;
 
 // Navbar (60px) plus the section subnav (48px).
 const SPY_OFFSET = 130;
 
+// How many of Ann's paintings and ceramics the page shows; the rest are one link away on /ann.
+const WORKS_SHOWN = 6;
+const CERAMICS_SHOWN = 4;
+
 function ArtPage() {
   const copy = usePageCopy("art");
   const siteCopy = useSiteCopy();
+  // The ceramics texts are the ones the teaser on /ann already uses.
+  const annCopy = usePageCopy("portfolio-ann");
   const media = usePageMedia("art");
   const list = usePageLists("art");
+  const facts = list("facts", [
+    { body: "Akvarell och akryl" },
+    { body: "Material finns på plats" },
+    { body: "Ingen förkunskap behövs" },
+    { body: "15 minuter från Lidköping" },
+  ]);
+  const steps = list("steps", [
+    {
+      title: "Värm upp",
+      body: "Passet börjar med prestationsfria uppvärmningsövningar. Ann visar momenten innan du sätter igång.",
+    },
+    {
+      title: "Måla fritt",
+      body: "Sedan målar du med akvarell eller akryl. Ann går runt och hjälper dig vidare under hela passet.",
+    },
+    {
+      title: "Kom som du är",
+      body: "Material och verktyg finns i ateljén. Ta med kläder som får bli lite färg på.",
+    },
+  ]);
   const offerings = list("offerings", []);
-  const offeringIcons = [Palette, Flame, Users, Sparkles];
-  const offeringClasses = ["offering-terracotta", "offering-green", "offering-slate", "offering-gold"];
+  const artworks = useArtworks();
+  const works = artworks.filter((work) => work.placement === "wall").slice(0, WORKS_SHOWN);
+  const ceramics = useCeramics();
+  const showStudio = works.length > 0 || ceramics.length > 0;
   const schedule = useCmsSchedule();
   const passes = useMemo(() => schedulePasses(schedule), [schedule]);
   const now = new Date();
@@ -67,6 +87,7 @@ function ArtPage() {
     bio: copy("instructor.bio"),
   };
   const upcomingPassesList = upcomingPasses(MALERI_TRACK_ID, now, passes);
+  const hasUpcoming = upcomingPassesList.length > 0;
   const recapPasses = pastPasses(MALERI_TRACK_ID, now, passes);
   // Same passes and answers as rendered; recomputed when either source changes.
   const jsonLd = useMemo(
@@ -77,95 +98,106 @@ function ArtPage() {
   const spySections = [
     { id: "art-hero", label: siteCopy("nav.start") },
     { id: "art-courses-section", label: siteCopy("courses.courses-label") },
-    { id: "art-content-section", label: copy("content.title") },
-    { id: "art-offerings-section", label: copy("offerings.title") },
+    { id: "sa-gar-det-till", label: copy("steps.title", "Så går en kurs till") },
+    works.length > 0 && { id: "anns-malningar", label: copy("works.title", "Anns målningar") },
+    ceramics.length > 0 && { id: "anns-keramik", label: annCopy("ceramics.teaser-title", "Keramik") },
     { id: "om-ann", label: instructor.name },
+    recapPasses.length > 0 && { id: "tidigare-pass", label: siteCopy("courses.past-label") },
     { id: "fragor-och-svar", label: siteCopy("courses.faq-label") },
-    { id: "tidigare-pass", label: siteCopy("courses.past-label") },
-    { id: "hitta-hit", label: siteCopy("courses.directions-label") },
     { id: COURSE_CONTACT_ID, label: siteCopy("nav.contact") },
-  ];
+  ].filter(Boolean);
 
   useSeo({
     ...seoMeta.kurserKonst,
     jsonLd: jsonLd.length > 0 ? jsonLd : undefined,
   });
 
-  const scrollToSection = (id) => {
-    smoothScrollTo(id, SPY_OFFSET);
-  };
+  const studioImage = media("hero.background", "/images/portfolio/ann-2.webp");
+  const tableImage = media("workshops.0", "/images/evenemang/maleri-kurs.webp", "card");
 
   return (
     <div className="art-page">
       <ScrollSpyNav sections={spySections} offset={SPY_OFFSET} />
 
       <main id="main-content">
-        {/* Hero Section */}
-        <section className="art-hero" id="art-hero" data-cms-hero data-cms-hero-visual>
-          <div className="art-hero__bg" style={{ backgroundImage: media("hero.background", "/images/portfolio/ann-2.webp", "hero") ? `url(${media("hero.background", "/images/portfolio/ann-2.webp", "hero")})` : "none" }} />
-          <div className="art-hero__overlay" data-cms-hero-overlay />
+        {/* The work table first: the studio and a painting in progress, beside what a course is. */}
+        <section className="art-hero" id="art-hero" data-cms-hero>
+          <div className="art-hero__inner">
+            <div className="art-hero__text" data-cms-hero-content>
+              <h1>{copy("hero.title")}</h1>
+              <p className="art-hero__lead">{copy("hero.lead")}</p>
 
-          <div className="art-hero__content" data-cms-hero-content>
-            <span className="art-hero__eyebrow">
-              <Sparkles size={16} aria-hidden="true" />
-              {copy("hero.eyebrow")}
-            </span>
+              {facts.length > 0 && (
+                <ul className="art-hero__facts">
+                  {facts.map((fact, index) => (
+                    <li key={fact.id || fact.body || index}>{fact.body}</li>
+                  ))}
+                </ul>
+              )}
 
-            <h1 className="art-hero__heading">{copy("hero.title")}</h1>
-
-            <p className="art-hero__subheading">
-              {copy("hero.lead")}
-            </p>
-
-            <div className="art-hero__actions" data-cms-hero-actions>
-              <button
-                type="button"
-                className="btn btn--light"
-                onClick={() => scrollToSection("art-courses-section")}
-              >
-                {copy("hero.primary-cta")}
-              </button>
-              {/* The second way in is the enquiry form, which works whether or not
-                  a dated course is in the calendar. */}
-              <a
-                href={`#${COURSE_CONTACT_ID}`}
-                className="btn btn--ghost"
-                onClick={goToCourseContact}
-              >
-                {copy("contact.cta")}
-                <ArrowDown size={18} aria-hidden="true" />
-              </a>
+              {/* With no dated course, "Se kurserna" would only lead to an empty calendar, so the
+                  enquiry form leads instead. */}
+              <div className="art-hero__actions" data-cms-hero-actions>
+                {hasUpcoming ? (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn--primary"
+                      onClick={() => smoothScrollTo("art-courses-section", SPY_OFFSET)}
+                    >
+                      {copy("hero.primary-cta")}
+                      <ArrowDown size={18} aria-hidden="true" />
+                    </button>
+                    <a href={`#${COURSE_CONTACT_ID}`} className="btn btn--secondary" onClick={goToCourseContact}>
+                      {copy("contact.cta")}
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <a href={`#${COURSE_CONTACT_ID}`} className="btn btn--primary" onClick={goToCourseContact}>
+                      {copy("contact.cta")}
+                      <ArrowDown size={18} aria-hidden="true" />
+                    </a>
+                    <a
+                      href="#sa-gar-det-till"
+                      className="art-hero__more"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        smoothScrollTo("sa-gar-det-till", SPY_OFFSET);
+                      }}
+                    >
+                      {copy("steps.title", "Så går en kurs till")}
+                    </a>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className="art-hero__wave">
-            <svg
-              viewBox="0 0 1200 48"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="M0,24 C300,42 450,6 600,24 C750,42 900,6 1200,24 L1200,48 L0,48 Z"
-                fill="currentColor"
-              />
-            </svg>
+            {/* Editors can swap these photos, so they carry no description that could go stale. */}
+            <div className="art-hero__table" data-cms-hero-visual aria-hidden="true">
+              {studioImage && (
+                <img
+                  className="art-sheet art-hero__studio"
+                  src={studioImage}
+                  alt=""
+                  fetchPriority="high"
+                  decoding="async"
+                />
+              )}
+              {tableImage && (
+                <img
+                  className="art-sheet art-hero__paper"
+                  src={tableImage}
+                  alt=""
+                  decoding="async"
+                />
+              )}
+            </div>
           </div>
         </section>
 
-        {/* Course hub for maleri & keramik: dated passes as anchored sections on
-            this one URL, mirroring /kurser/yoga for yoga. Separate URLs per course
-            date would only produce thin pages that expire. */}
         <div id="art-courses-section">
-          {upcomingPassesList.length === 0 ? (
-            <NoUpcomingSection
-              trackId={MALERI_TRACK_ID}
-              background="white"
-              heading={copy("empty.title")}
-              body={copy("empty.body")}
-              ctaLabel={copy("contact.cta")}
-            />
-          ) : (
+          {hasUpcoming ? (
             groupSeries(upcomingPassesList).map(({ id, passes: group }) => (
               <PassSection
                 key={id}
@@ -176,88 +208,127 @@ function ArtPage() {
                 variant="split-reverse"
               />
             ))
+          ) : (
+            <section id="kommande" className="art-next">
+              <div className="art-next__inner">
+                <div>
+                  <h2>{copy("empty.title")}</h2>
+                  <p>{copy("empty.body")}</p>
+                </div>
+                <a href={`#${COURSE_CONTACT_ID}`} className="btn btn--secondary" onClick={goToCourseContact}>
+                  {copy("contact.cta")}
+                  <ArrowDown size={18} aria-hidden="true" />
+                </a>
+              </div>
+            </section>
           )}
         </div>
 
-        <SectionDivider above="white" below="alt" variant="hill" />
+        <section id="sa-gar-det-till" className="art-steps" aria-labelledby="art-steps-title">
+          <div className="art-steps__inner">
+            <div className="art-steps__intro">
+              <h2 id="art-steps-title">{copy("steps.title", "Så går en kurs till")}</h2>
+              <p>{copy("steps.lead", "Ann leder hela passet, och du behöver inte ha målat förut.")}</p>
+            </div>
+            <ol className="art-steps__list">
+              {steps.map((step, index) => (
+                <li key={step.id || step.title || index}>
+                  <h3>{step.title}</h3>
+                  <p>{step.body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
 
-        {/* Content Section (Philosophy & alternating rows) - alt background */}
-        <div id="art-content-section">
-          <CreativeWorkshopsSection />
-        </div>
-
-        <SectionDivider above="alt" below="white" variant="wave" />
-
-        {/* Offerings Grid Section */}
-        <div id="art-offerings-section">
-          <PageSection background="white" spacing="default">
-            <FadeInSection>
-              <div className="art-section-heading">
-                <div
-                  className="section-ornament"
-                  aria-hidden="true"
-                  style={{ color: "var(--accent-color)" }}
-                >
-                  <span
-                    className="section-ornament-line"
-                    style={{ background: "var(--accent-color)" }}
+        {showStudio && <SectionDivider above="white" below="alt" variant="wave" />}
+        {works.length > 0 && (
+          <section id="anns-malningar" className="art-works" aria-labelledby="art-works-title">
+            <div className="art-works__head">
+              <h2 id="art-works-title">{copy("works.title", "Anns målningar")}</h2>
+              <p>{copy("works.lead", "Ett urval av det Ann har målat i ateljén på gården.")}</p>
+            </div>
+            {/* Hung in a row at their own proportions; on phones the row scrolls sideways. */}
+            <ul className="art-works__row">
+              {works.map((work) => (
+                <li key={work.id} style={{ "--ratio": work.image.width / work.image.height || 0.8 }}>
+                  <figure>
+                    <img
+                      className="art-sheet"
+                      src={work.image.sizes?.medium?.url || work.image.url}
+                      width={work.image.width}
+                      height={work.image.height}
+                      alt={work.image.alt || work.title}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <figcaption>{work.title}</figcaption>
+                  </figure>
+                </li>
+              ))}
+            </ul>
+            <div className="art-works__more">
+              <Link to={canonicalPath(INSTRUCTOR.portfolioUrl || "/ann")} className="art-link">
+                {copy("works.cta", "Se alla Anns verk")}
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
+          </section>
+        )}
+        {/* Only what Ann makes; the page offers no ceramics course. */}
+        {ceramics.length > 0 && (
+          <section id="anns-keramik" className="art-works art-works--ceramics" aria-labelledby="art-ceramics-title">
+            <div className="art-works__head">
+              <h2 id="art-ceramics-title">{annCopy("ceramics.teaser-title", "Keramik")}</h2>
+              <p>{annCopy("ceramics.teaser-lead", "Ann drejar, bygger och glaserar i ateljén. Här är ett smakprov.")}</p>
+            </div>
+            <ul className="art-ceramics">
+              {ceramics.slice(0, CERAMICS_SHOWN).map((piece) => (
+                <li key={piece.id}>
+                  <img
+                    className="art-sheet"
+                    {...ceramicImageProps(piece, "(min-width: 760px) 22vw, 44vw")}
+                    loading="lazy"
+                    decoding="async"
                   />
-                  <Palette size={18} />
-                  <span
-                    className="section-ornament-line"
-                    style={{ background: "var(--accent-color)" }}
-                  />
-                </div>
-                <h2>{copy("offerings.title")}</h2>
+                </li>
+              ))}
+            </ul>
+            <div className="art-works__more">
+              <Link to={canonicalPath("/ann/keramik")} className="art-link">
+                {annCopy("ceramics.teaser-link", "Se all keramik")} ({ceramics.length})
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
+          </section>
+        )}
+        <SectionDivider above={showStudio ? "alt" : "white"} below="green" variant="hill" />
+
+        {offerings.length > 0 && (
+          <section className="art-ways" aria-labelledby="art-ways-title">
+            <div className="art-ways__inner">
+              <div className="art-ways__head">
+                <h2 id="art-ways-title">{copy("offerings.title")}</h2>
                 <p>{copy("offerings.lead")}</p>
               </div>
-
-              <div className="art-offerings-grid">
-                {offerings.map((offering, index) => {
-                  const Icon = offeringIcons[index % offeringIcons.length];
-                  return (
-                    <div
-                      key={offering.id || offering.title || index}
-                      className={`art-offering-card ${offeringClasses[index % offeringClasses.length]}`}
-                    >
-                      <div className="offering-icon-wrapper"><Icon size={28} aria-hidden="true" /></div>
-                      <h3>{offering.title}</h3>
-                      <p>{offering.body}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </FadeInSection>
-          </PageSection>
-        </div>
-
-        <SectionDivider above="white" below="green" variant="wave" />
-
-        {/* Booking CTA Section */}
-        <div id="art-cta-section">
-          <PageSection background="green" spacing="default">
-            <FadeInSection>
-              <div className="art-cta-banner">
-                <div className="art-cta-banner__inner">
-                  <h2>{copy("contact.title")}</h2>
-                  <p>{copy("contact.body")}</p>
-                  <a
-                    href={`#${COURSE_CONTACT_ID}`}
-                    className="btn btn--light"
-                    onClick={goToCourseContact}
-                  >
-                    {copy("contact.cta")}
-                    <ArrowDown size={18} aria-hidden="true" />
-                  </a>
-                </div>
-              </div>
-            </FadeInSection>
-          </PageSection>
-        </div>
+              <ul className="art-ways__list">
+                {offerings.map((offering, index) => (
+                  <li key={offering.id || offering.title || index}>
+                    <h3>{offering.title}</h3>
+                    <p>{offering.body}</p>
+                  </li>
+                ))}
+              </ul>
+              <a href={`#${COURSE_CONTACT_ID}`} className="btn btn--primary art-ways__cta" onClick={goToCourseContact}>
+                {copy("contact.cta")}
+                <ArrowDown size={18} aria-hidden="true" />
+              </a>
+            </div>
+          </section>
+        )}
 
         <SectionDivider above="green" below="white" variant="wave" />
 
-        {/* Instruktör */}
         <InstructorSection
           id="om-ann"
           instructor={instructor}
@@ -267,9 +338,17 @@ function ArtPage() {
           image={media("instructor.image", "/images/ann-profile.webp", "avatar") || instructor.image}
         />
 
-        <SectionDivider above="white" below="green" variant="hill" />
+        {recapPasses.length > 0 && <SectionDivider above="white" below="alt" variant="valley" />}
+        <PastPassesSection
+          passes={recapPasses}
+          trackId={MALERI_TRACK_ID}
+          heading={copy("past.title")}
+          background="alt"
+          variant="cards"
+        />
 
-        {/* Frågor & Svar */}
+        <SectionDivider above={recapPasses.length > 0 ? "alt" : "white"} below="green" variant="hill" />
+
         <FaqSection
           faq={faq}
           label={copy("faq.eyebrow")}
@@ -281,54 +360,31 @@ function ArtPage() {
 
         <SectionDivider above="green" below="alt" variant="valley" />
 
-        {/* Tidigare kurser / Inspiration */}
-        <PastPassesSection
-          passes={recapPasses}
-          trackId={MALERI_TRACK_ID}
-          heading={copy("past.title")}
-          background="alt"
-          variant="cards"
-        />
-
-        <SectionDivider above="alt" below="white" variant="wave" />
-
-        {/* Hitta hit */}
-        <section id="hitta-hit" className="art-location">
-          <div className="art-location__content">
-            <span className="art-eyebrow">{copy("directions.eyebrow")}</span>
-            <h2>{copy("directions.title")}</h2>
-            <p>{copy("directions.body")}</p>
-          </div>
-          <div className="art-location__details">
-            <address>
-              {COURSE_LOCATION.streetAddress}, {COURSE_LOCATION.postalCode}{" "}
-              {COURSE_LOCATION.locality}
-            </address>
-            <a
-              href={COURSE_LOCATION.mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <MapPin size={17} aria-hidden="true" />
-              {copy("directions.cta")}
-              <ArrowRight size={16} aria-hidden="true" />
-            </a>
-          </div>
-        </section>
-
         <ContactSection
           heading={copy("contact.section-title")}
           body={copy("contact.section-body")}
           background="alt"
         />
 
-        {/* Where next, once the visitor knows how to sign up. */}
-        <section className="art-next-course">
-          <span>{copy("other.eyebrow")}</span>
-          <a href={`${TRACKS.yoga.hubPath}/`}>
-            {copy("other.title")}
-            <ArrowRight size={16} aria-hidden="true" />
-          </a>
+        {/* Where the studio is, and where next once the visitor knows how to sign up. */}
+        <section id="hitta-hit" className="art-location">
+          <div className="art-location__content">
+            <h2>{copy("directions.title")}</h2>
+            <p>{copy("directions.body")}</p>
+          </div>
+          <div className="art-location__details">
+            <address>
+              {COURSE_LOCATION.streetAddress}, {COURSE_LOCATION.postalCode} {COURSE_LOCATION.locality}
+            </address>
+            <a href={COURSE_LOCATION.mapsUrl} target="_blank" rel="noopener noreferrer" className="art-link">
+              <MapPin size={17} aria-hidden="true" />
+              {copy("directions.cta")}
+            </a>
+            <a href={`${TRACKS.yoga.hubPath}/`} className="art-link">
+              {copy("other.title")}
+              <ArrowRight size={16} aria-hidden="true" />
+            </a>
+          </div>
         </section>
       </main>
     </div>

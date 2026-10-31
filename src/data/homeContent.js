@@ -107,32 +107,3 @@ export const venueIntro = {
 export const featuredGalleryImages = [
   { src: cdnAsset("/images/event/hero/hero.webp"), alt: "Evenemang" },
 ];
-
-export const creationContent = {
-  title: "Måleri",
-  sections: [
-    {
-      heading: "Prova måleri",
-      body: [
-        "I ateljén håller Ann kurser i måleri. Du får hjälp under hela passet och behöver inte ha provat tidigare.",
-      ],
-    },
-    {
-      heading: "Kurser och workshops",
-      body: [
-        "Du kan boka en plats på en kurs i måleri. Vi tar också emot privata grupper, till exempel kompisgäng, kollegor, möhippor och svensexor.",
-      ],
-    },
-    {
-      heading: "Utställningar",
-      body: [
-        "I ladan ordnar vi ibland utställningar och loppisar. Hör av dig om du vill ställa ut egen konst eller har en idé som skulle passa här.",
-      ],
-    },
-  ],
-  offerings: [
-    "Målningskurser i olika tekniker",
-    "Workshops för alla nivåer",
-    "Privata kurser och teambuilding",
-  ],
-};
