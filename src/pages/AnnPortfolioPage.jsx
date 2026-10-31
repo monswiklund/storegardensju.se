@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ArrowDown, ArrowRight, Instagram, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ExploreMore, SectionDivider } from "../components";
@@ -6,14 +6,12 @@ import FadeInSection from "../components/ui/FadeInSection.jsx";
 import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
 import "../features/gallery/ImageGallery/Gallery.css";
-import { profiles } from "../data/profileData.js";
-import { toProfile, memberSlug } from "../features/team/teamProfile.js";
+import { useMemberProfile } from "../features/team/teamProfile.js";
 import { seoMeta } from "../config/seoMeta.js";
-import useArtworks from "../hooks/useArtworks.js";
+import useArtworks, { useCeramics } from "../hooks/useArtworks.js";
+import { ceramicImageProps } from "../data/ceramics.js";
 import usePageCopy from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
-import { fetchTeamMembers } from "../services/cmsService.js";
-import { resolveMediaUrl } from "../services/mediaService.js";
 import { smoothScrollTo } from "../utils/scrollUtils.js";
 import "./AnnPortfolioPage.css";
 
@@ -35,24 +33,6 @@ function toPiece(artwork) {
     width: image.width,
     height: image.height,
   };
-}
-
-/** Ann's card from Teamet in the CMS; profileData.js stands in until it loads or where it is empty. */
-function useAnnProfile() {
-  const [member, setMember] = useState(null);
-  useEffect(() => {
-    let active = true;
-    fetchTeamMembers().then((members) => {
-      const ann = members.find((candidate) => memberSlug(candidate) === "ann");
-      if (active && ann) setMember(ann);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
-  if (!member) return profiles.ann;
-  const profile = toProfile(member);
-  return { ...profile, imageSrc: resolveMediaUrl(member.image) || profiles.ann.imageSrc };
 }
 
 function Painting({ work, index, onOpen, sizes, showLarger, priority = false }) {
@@ -98,7 +78,7 @@ function WorkCaption({ work, email, ask }) {
 function AnnPortfolioPage() {
   useSeo(seoMeta.annPortfolio);
   const copy = usePageCopy("portfolio-ann");
-  const profile = useAnnProfile();
+  const profile = useMemberProfile("ann");
   const artworks = useArtworks();
   const email = profile.contact?.email?.trim();
   const instagram = profile.contact?.instagram?.trim();
@@ -121,6 +101,8 @@ function AnnPortfolioPage() {
   const lightbox = useGalleryLightbox(lightboxImages, "ann");
   const showLarger = copy("work.show-larger");
   const ask = copy("work.ask");
+  const ceramics = useCeramics();
+  const ceramicsSoon = copy("ceramics.soon");
 
   return (
     <main role="main" id="main-content" className="ann-page">
@@ -185,6 +167,30 @@ function AnnPortfolioPage() {
           ))}
         </div>
       </section>}
+
+      {/* A look at the ceramics: four pieces once some are published, a line of text before that. */}
+      {ceramics.length > 0 ? (
+        <section className="ann-ceramics-teaser" aria-labelledby="ann-ceramics-title">
+          <header className="ann-section-head">
+            <h2 id="ann-ceramics-title">{copy("ceramics.teaser-title")}</h2>
+            <p>{copy("ceramics.teaser-lead")}</p>
+          </header>
+          <Link to="/ann/keramik/" className="ann-ceramics-teaser__pieces" tabIndex={-1} aria-hidden="true">
+            {ceramics.slice(0, 4).map((piece) => (
+              <img key={piece.id} {...ceramicImageProps(piece, "(min-width: 760px) 22vw, 46vw")} loading="lazy" decoding="async" />
+            ))}
+          </Link>
+          <Link to="/ann/keramik/" className="ann-studio__link">
+            {copy("ceramics.teaser-link")} ({ceramics.length})
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </section>
+      ) : ceramicsSoon && (
+        <aside className="ann-ceramics-teaser ann-ceramics-teaser--soon" aria-label={copy("ceramics.teaser-title")}>
+          <span className="ann-ceramics-teaser__eyebrow">{copy("ceramics.teaser-title")}</span>
+          <p>{ceramicsSoon}</p>
+        </aside>
+      )}
 
       <SectionDivider above="alt" below="green" variant="wave" />
 

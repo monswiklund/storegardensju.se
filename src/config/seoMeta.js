@@ -377,6 +377,19 @@ export function productSeoMeta({ slug, title, description, image = null }) {
   };
 }
 
+// Outside seoMeta: the build adds /ann/keramik to the sitemap only once a piece is published.
+export const annCeramicsSeoMeta = {
+  title: "Keramik av Ann Wiklund | Storegården 7",
+  description:
+    "Handgjord keramik av Ann Wiklund: skålar, koppar, vaser och skulpturer från ateljén på Storegården 7 i Rackeby utanför Lidköping.",
+  path: "/ann/keramik",
+  image: absoluteUrl("/images/ann-profile.webp"),
+  staticContent: {
+    h1: "Keramik",
+    paragraphs: ["Skålar, koppar, vaser och skulpturer från Anns ateljé på Storegården 7."],
+  },
+};
+
 export function activeJsonLd(meta, now = new Date(), context) {
   if (typeof meta?.buildJsonLd === "function") {
     return meta.buildJsonLd(now, context);

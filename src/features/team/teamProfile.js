@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { profiles } from "../../data/profileData.js";
+import { fetchTeamMembers } from "../../services/cmsService.js";
 import { resolveMediaUrl } from "../../services/mediaService.js";
 
 // CMS slug, or the first name without diacritics ("Måns" -> "mans") to match profileData's keys.
@@ -32,3 +34,20 @@ export const toProfile = (member) => {
     portfolio: fallback.portfolio || [],
   };
 };
+
+/** One person's card from Teamet in the CMS; profileData.js stands in until it loads or where it is empty. */
+export function useMemberProfile(slug) {
+  const [member, setMember] = useState(null);
+  useEffect(() => {
+    let active = true;
+    fetchTeamMembers().then((members) => {
+      const found = members.find((candidate) => memberSlug(candidate) === slug);
+      if (active && found) setMember(found);
+    });
+    return () => {
+      active = false;
+    };
+  }, [slug]);
+  if (!member) return profiles[slug];
+  return { ...toProfile(member), imageSrc: resolveMediaUrl(member.image) || profiles[slug]?.imageSrc };
+}

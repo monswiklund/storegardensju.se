@@ -255,6 +255,81 @@
   .ann-wall__grid > :nth-child(6n) { grid-column: 10 / span 3; margin-top: 5.5rem; }
 }
 
+/* ---------- Ceramics teaser ---------- */
+
+.ann-ceramics-teaser {
+  max-width: var(--ann-max);
+  margin: 0 auto;
+  padding: 0 var(--ann-gutter) clamp(4rem, 9vw, 7rem);
+}
+
+.ann-ceramics-teaser__pieces {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+@media (min-width: 760px) {
+  .ann-ceramics-teaser__pieces {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.ann-ceramics-teaser__pieces img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--bg-surface);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ann-ceramics-teaser__pieces:hover img {
+  transform: translateY(-4px);
+}
+
+/* Before any piece is published: a quiet line, set off by a short rule. */
+.ann-ceramics-teaser--soon {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+}
+
+.ann-ceramics-teaser--soon::before {
+  content: "";
+  width: 3rem;
+  height: 1px;
+  margin-bottom: 0.75rem;
+  background: currentColor;
+  opacity: 0.25;
+}
+
+.ann-ceramics-teaser__eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-accent-warm);
+}
+
+.ann-ceramics-teaser--soon p {
+  max-width: 48ch;
+  margin: 0;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+  line-height: 1.5;
+  color: var(--text-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ann-ceramics-teaser__pieces img {
+    transition: none;
+  }
+}
+
 /* ---------- Studio ---------- */
 
 .ann-studio {
@@ -290,7 +365,7 @@
   width: 100%;
   padding: 0;
   border: 0;
-  border-radius: 10px;
+  border-radius: 6px;
   overflow: hidden;
   background: var(--bg-surface);
   cursor: zoom-in;

@@ -1,40 +1,51 @@
 import { useEffect, useState } from "react";
 import { getCmsUrl } from "../services/cmsService";
-import { fetchAllPublished, orderArtworks, projectArtwork } from "../data/cmsProjection.js";
+import { fetchAllPublished, inDragOrder, projectArtwork, projectCeramic } from "../data/cmsProjection.js";
 import CMS_CONTENT from "../data/cmsContent.generated.js";
 
-let request = null;
+const requests = new Map();
 
-/** Every published artwork in drag order, or null when the CMS could not be read completely. */
-export function fetchArtworks() {
-  if (!request) {
+/** Every published document of an ordered collection, or null when the CMS could not be read completely. */
+function fetchOrdered(collection, project) {
+  if (!requests.has(collection)) {
     const cmsUrl = getCmsUrl();
-    request = fetchAllPublished(cmsUrl, "artworks")
-      .then((docs) => orderArtworks(docs.map((doc) => projectArtwork(doc, cmsUrl))))
+    const request = fetchAllPublished(cmsUrl, collection)
+      .then((docs) => inDragOrder(docs.map((doc) => project(doc, cmsUrl))))
       .catch(() => {
-        request = null;
+        requests.delete(collection);
         return null;
       });
+    requests.set(collection, request);
   }
-  return request;
+  return requests.get(collection);
 }
 
 /**
- * Ann's works: first what the build exported, then the CMS's live answer, so a work published
- * since the last build shows at once. A failed read keeps what the build shipped.
+ * First what the build exported, then the CMS's live answer, so a piece published since the last
+ * build shows at once. A failed read keeps what the build shipped.
  */
-export default function useArtworks() {
-  const [artworks, setArtworks] = useState(() => CMS_CONTENT?.artworks || []);
+function useOrdered(collection, project, snapshot) {
+  const [works, setWorks] = useState(() => snapshot || []);
 
   useEffect(() => {
     let active = true;
-    fetchArtworks().then((live) => {
-      if (active && live) setArtworks(live);
+    fetchOrdered(collection, project).then((live) => {
+      if (active && live) setWorks(live);
     });
     return () => {
       active = false;
     };
-  }, []);
+  }, [collection, project]);
 
-  return artworks;
+  return works;
+}
+
+/** Ann's paintings and studio photos. */
+export default function useArtworks() {
+  return useOrdered("artworks", projectArtwork, CMS_CONTENT?.artworks);
+}
+
+/** Ann's ceramics. */
+export function useCeramics() {
+  return useOrdered("ceramics", projectCeramic, CMS_CONTENT?.ceramics);
 }

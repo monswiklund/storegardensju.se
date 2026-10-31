@@ -35,6 +35,7 @@ const GalleriPage = lazy(() => import("../pages/GalleriPage.jsx"));
 const TeamPage = lazy(() => import("../pages/TeamPage.jsx"));
 const MansPortfolioPage = lazy(() => import("../pages/MansPortfolioPage.jsx"));
 const AnnPortfolioPage = lazy(() => import("../pages/AnnPortfolioPage.jsx"));
+const AnnCeramicsPage = lazy(() => import("../pages/AnnCeramicsPage.jsx"));
 const KurserPage = lazy(() => import("../pages/KurserPage.jsx"));
 const KurserIndexPage = lazy(() => import("../pages/KurserIndexPage.jsx"));
 const ContactPage = lazy(() => import("../pages/ContactPage.jsx"));
@@ -237,6 +238,7 @@ function AppContent() {
           <Route path="/om-oss" element={<TeamPage />} />
           <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
           <Route path="/ann" element={<AnnPortfolioPage />} />
+          <Route path="/ann/keramik" element={<AnnCeramicsPage />} />
           <Route path="/kontakt" element={<ContactPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFoundPage />} />

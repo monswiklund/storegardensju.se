@@ -172,11 +172,29 @@ export function projectArtwork(doc, cmsUrl) {
   };
 }
 
-/** Artworks in the editors' drag order; one whose image was removed is left out. */
-export function orderArtworks(artworks) {
-  return artworks
-    .filter((artwork) => artwork.image?.url)
+/** Artworks or ceramics in the editors' drag order; one without an image is left out. */
+export function inDragOrder(works) {
+  return works
+    .filter((work) => work.image?.url)
     .sort((a, b) => (a.order < b.order ? -1 : a.order > b.order ? 1 : a.id - b.id));
+}
+
+const CERAMIC_TYPES = new Set(["skal", "kopp", "vas", "fat", "kanna", "skulptur", "ovrigt"]);
+
+/** A published piece of Ann's ceramics. The piece is its own upload, so its image is the document. */
+export function projectCeramic(doc, cmsUrl) {
+  const image = projectMedia(doc, cmsUrl);
+  return {
+    id: doc.id,
+    order: text(doc._order),
+    title: text(doc.title),
+    type: CERAMIC_TYPES.has(doc.type) ? doc.type : null,
+    glaze: text(doc.glaze),
+    dimensions: text(doc.dimensions),
+    // Where the editor set the focal point (percent); the grid crops around it.
+    image: image && { ...image, focalX: optionalNumber(doc.focalX), focalY: optionalNumber(doc.focalY) },
+    updatedAt: optionalText(doc.updatedAt),
+  };
 }
 
 /** A published course pass (the older bookable-session collection, kept compatible). */

@@ -10,7 +10,7 @@ const NOW = () => new Date("2026-07-20T00:00:00.000Z");
 
 describe("exportCmsContent", () => {
   it("exports every published page, event and course pass with a content revision", async () => {
-    const fetchImpl = fakePayloadFetch({ pages: allPages(), events: RAW_EVENTS, "course-passes": RAW_COURSE_PASSES, "shop-products": [], artworks: [] });
+    const fetchImpl = fakePayloadFetch({ pages: allPages(), events: RAW_EVENTS, "course-passes": RAW_COURSE_PASSES, "shop-products": [], artworks: [], ceramics: [] });
 
     const snapshot = await exportCmsContent(CMS_URL, { fetchImpl, now: NOW });
 
@@ -23,7 +23,7 @@ describe("exportCmsContent", () => {
 
   it("exports each published product for its own page, and refuses one without a web address", async () => {
     const product = { id: 1, slug: "kopp-havsbla", title: "Kopp", price: 280, status: "in_stock", images: [], updatedAt: "2026-07-03T10:00:00.000Z" };
-    const collections = { pages: allPages(), events: [], "course-passes": [], "shop-products": [product], artworks: [] };
+    const collections = { pages: allPages(), events: [], "course-passes": [], "shop-products": [product], artworks: [], ceramics: [] };
 
     const snapshot = await exportCmsContent(CMS_URL, { fetchImpl: fakePayloadFetch(collections) });
     expect(snapshot.shopProducts).toEqual([expect.objectContaining({ slug: "kopp-havsbla", title: "Kopp", price: 280 })]);
@@ -38,7 +38,7 @@ describe("exportCmsContent", () => {
     const artwork = (id, _order, extra = {}) => ({ id, _order, title: `Verk ${id}`, image: image(id), placement: "wall", size: "large", updatedAt: "2026-07-01T10:00:00.000Z", ...extra });
     // Drag order keys compare as plain strings: "a0" < "aV" < "a~", which localeCompare does not keep.
     const artworks = [artwork(1, "a~"), artwork(2, "a0"), artwork(3, "aV", { size: "narrow", updatedAt: "2026-07-05T10:00:00.000Z" }), artwork(4, "a1", { image: null })];
-    const collections = { pages: allPages(), events: [], "course-passes": [], "shop-products": [], artworks };
+    const collections = { pages: allPages(), events: [], "course-passes": [], "shop-products": [], artworks, ceramics: [] };
 
     const snapshot = await exportCmsContent(CMS_URL, { fetchImpl: fakePayloadFetch(collections) });
 
@@ -47,20 +47,35 @@ describe("exportCmsContent", () => {
     expect(snapshot.revision).toBe("2026-07-05T10:00:00.000Z");
   });
 
+  it("exports ceramics with the piece itself as the image, its focal point and a known type only", async () => {
+    const piece = (id, _order, extra = {}) => ({
+      id, _order, url: `/api/ceramics/file/${id}.webp`, filename: `${id}.webp`, width: 1200, height: 1600, focalX: 50, focalY: 35,
+      sizes: { medium: { url: `/api/ceramics/file/${id}-900.webp`, width: 900, height: 1200 } }, type: "skal", glaze: "Stengods", updatedAt: "2026-07-01T10:00:00.000Z", ...extra,
+    });
+    const ceramics = [piece(1, "a1"), piece(2, "a0", { type: "tekanna", title: "Kanna" }), piece(3, "a2", { url: null, filename: null, sizes: {} })];
+    const collections = { pages: allPages(), events: [], "course-passes": [], "shop-products": [], artworks: [], ceramics };
+
+    const snapshot = await exportCmsContent(CMS_URL, { fetchImpl: fakePayloadFetch(collections) });
+
+    expect(snapshot.ceramics.map((work) => work.id)).toEqual([2, 1]);
+    expect(snapshot.ceramics[0]).toMatchObject({ title: "Kanna", type: null });
+    expect(snapshot.ceramics[1]).toMatchObject({ type: "skal", glaze: "Stengods", image: { url: `${CMS_URL}/api/ceramics/file/1.webp`, focalX: 50, focalY: 35, sizes: { medium: { width: 900 } } } });
+  });
+
   it("refuses a build when a page the site renders is not published", async () => {
-    const fetchImpl = fakePayloadFetch({ pages: allPages().filter((doc) => doc.slug !== "site"), events: [], "course-passes": [], "shop-products": [], artworks: [] });
+    const fetchImpl = fakePayloadFetch({ pages: allPages().filter((doc) => doc.slug !== "site"), events: [], "course-passes": [], "shop-products": [], artworks: [], ceramics: [] });
 
     await expect(exportCmsContent(CMS_URL, { fetchImpl })).rejects.toThrow(/site/);
   });
 
   it("refuses two published pages with one slug", async () => {
-    const fetchImpl = fakePayloadFetch({ pages: [...allPages(), { ...page("home"), id: "dup" }], events: [], "course-passes": [], "shop-products": [], artworks: [] });
+    const fetchImpl = fakePayloadFetch({ pages: [...allPages(), { ...page("home"), id: "dup" }], events: [], "course-passes": [], "shop-products": [], artworks: [], ceramics: [] });
 
     await expect(exportCmsContent(CMS_URL, { fetchImpl })).rejects.toThrow(/home/);
   });
 
   it("7: reads again when content changes during the export, and gives up after three changes", async () => {
-    const collections = { pages: allPages(), events: [...RAW_EVENTS], "course-passes": [], "shop-products": [], artworks: [] };
+    const collections = { pages: allPages(), events: [...RAW_EVENTS], "course-passes": [], "shop-products": [], artworks: [], ceramics: [] };
     const serve = fakePayloadFetch(collections);
     let consistencyChecks = 0;
     // An editor publishes a new event right after every full read.
@@ -77,7 +92,7 @@ describe("exportCmsContent", () => {
   });
 
   it("succeeds on a retry when the change stops", async () => {
-    const collections = { pages: allPages(), events: [...RAW_EVENTS], "course-passes": [], "shop-products": [], artworks: [] };
+    const collections = { pages: allPages(), events: [...RAW_EVENTS], "course-passes": [], "shop-products": [], artworks: [], ceramics: [] };
     const serve = fakePayloadFetch(collections);
     let changed = false;
     const fetchImpl = async (url) => {
@@ -109,7 +124,7 @@ describe("exportCmsContent", () => {
     );
     const events = [{ ...RAW_EVENTS[0], description: "", internalNote: "hemlig", createdBy: { email: "x@example.test" } }];
     const snapshot = await exportCmsContent(CMS_URL, {
-      fetchImpl: fakePayloadFetch({ pages, events, "course-passes": [], "shop-products": [], artworks: [] }),
+      fetchImpl: fakePayloadFetch({ pages, events, "course-passes": [], "shop-products": [], artworks: [], ceramics: [] }),
     });
     const home = snapshot.pages.home;
 
