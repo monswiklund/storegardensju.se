@@ -106,7 +106,7 @@ function PastEventDetail({
                 type="button"
                 className="carousel-nav prev"
                 onClick={step(-1)}
-                aria-label={siteCopy("ui.previous-image")}
+                aria-label={siteCopy("ui.prev-image")}
               >
                 <ChevronLeft size={24} />
               </button>
@@ -192,12 +192,14 @@ function PastEventDetail({
         {event.sessions?.length > 0 && (
           <div className="past-event-modal-sessions">
             <span className="past-event-modal-sessions-heading">
-              Genomförda tillfällen ({event.sessions.length} st)
+              {/* An upcoming course lists its dates ahead; a grouped past series what took place. */}
+              {event.sessions.some((session) => session.isPast === false) ? "Alla tillfällen" : "Genomförda tillfällen"} ({event.sessions.length} st)
             </span>
             <ul className="past-event-modal-sessions-list">
               {event.sessions.map((session, idx) => (
-                <li key={session.id || idx} className="past-event-modal-session-item">
+                <li key={session.id || idx} className={`past-event-modal-session-item${session.cancelled ? " is-cancelled" : ""}`}>
                   <span className="session-date">{session.date}</span>
+                  {session.cancelled && <span className="session-cancelled">{siteCopy("ui.cancelled", "Inställt")}</span>}
                   {session.time && <span className="session-time">{session.time}</span>}
                   {session.title && <span className="session-title">{session.title}</span>}
                 </li>

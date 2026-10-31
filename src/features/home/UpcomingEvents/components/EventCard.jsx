@@ -1,9 +1,11 @@
 import PropTypes from "prop-types";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
-import { Clock, MapPin, ArrowUpRight, CalendarDays } from "lucide-react";
+import { Clock, MapPin, ArrowUpRight, CalendarDays, Images } from "lucide-react";
 import { canonicalPath } from "../../../../config/routes.js";
 import { useSiteCopy } from "../../../../hooks/usePageCopy.js";
 import SessionSchedule from "./SessionSchedule.jsx";
+import PastEventModal from "./PastEventModal.jsx";
 
 const splitDateString = (dateStr) => {
   if (!dateStr) return { day: "", month: "", year: "" };
@@ -40,20 +42,34 @@ const SmartLink = ({ href, className, children, ...props }) => {
 
 function EventCard({ event }) {
   const siteCopy = useSiteCopy();
-  const { title, spots, date, time, range, location, links, link, linkLabel, image, sessions, status } = event;
+  const { title, description, spots, date, time, range, location, links, link, linkLabel, image, sessions, status } = event;
   const statusLabel = STATUS_COPY[status] ? siteCopy(...STATUS_COPY[status]) : "";
   const cancelled = status === "cancelled";
   const eventDate = splitDateString(date);
   const eventLinks = links || (link ? [{ href: link, label: linkLabel ?? siteCopy("ui.read-more") }] : []);
   const primaryLink = eventLinks[0] || null;
   const isSeries = sessions?.length > 1;
+  const imageCount = (event.images || []).filter((item) => item?.src).length;
+  const [isOpen, setIsOpen] = useState(false);
+  const open = () => setIsOpen(true);
+  const close = useCallback(() => setIsOpen(false), []);
+  const openLabel = `${siteCopy("ui.show-event", "Visa hela evenemanget")}: ${title}`;
 
   return (
     <article className={`upcoming-event-card${isSeries ? " is-series" : ""}${cancelled ? " is-cancelled" : ""}`}>
       <div className="upcoming-card-media">
-        {image?.src && (
-          <img src={image.src} alt={image.alt || ""} className="upcoming-card-image" loading="lazy" decoding="async" />
-        )}
+        {/* The picture opens the whole event, with every photo the editor added. */}
+        <button type="button" className="upcoming-card-open" onClick={open} aria-label={openLabel}>
+          {image?.src && (
+            <img src={image.src} alt={image.alt || ""} className="upcoming-card-image" loading="lazy" decoding="async" />
+          )}
+          {imageCount > 1 && (
+            <span className="upcoming-card-photos" aria-hidden="true">
+              <Images size={16} />
+              {imageCount}
+            </span>
+          )}
+        </button>
         <div className="upcoming-card-date">
           <span className="upcoming-date-day">{eventDate.day}</span>
           <span className="upcoming-date-month">{eventDate.month}</span>
@@ -63,7 +79,11 @@ function EventCard({ event }) {
 
       <div className="upcoming-card-body">
         {statusLabel && <p className={`upcoming-card-status is-${status}`}>{statusLabel}</p>}
-        <h3 className="upcoming-event-title">{title}</h3>
+        <h3 className="upcoming-event-title">
+          <button type="button" className="upcoming-card-title-button" onClick={open}>
+            {title}
+          </button>
+        </h3>
 
         <ul className="upcoming-event-meta">
           {time && (
@@ -86,6 +106,8 @@ function EventCard({ event }) {
           )}
         </ul>
 
+        {description && <p className="upcoming-card-description">{description}</p>}
+
         {isSeries && <SessionSchedule key={event.id} sessions={sessions} />}
 
         {((spots && !cancelled) || primaryLink) && (
@@ -100,6 +122,8 @@ function EventCard({ event }) {
           </div>
         )}
       </div>
+
+      {isOpen && <PastEventModal event={event} onClose={close} />}
     </article>
   );
 }
@@ -108,6 +132,7 @@ EventCard.propTypes = {
   event: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string.isRequired,
+    description: PropTypes.string,
     spots: PropTypes.string,
     date: PropTypes.string,
     time: PropTypes.string,
@@ -125,6 +150,12 @@ EventCard.propTypes = {
       src: PropTypes.string,
       alt: PropTypes.string,
     }),
+    images: PropTypes.arrayOf(
+      PropTypes.shape({
+        src: PropTypes.string,
+        alt: PropTypes.string,
+      })
+    ),
     sessions: PropTypes.array,
     status: PropTypes.oneOf(["open", "few_left", "fully_booked", "cancelled"]),
   }).isRequired,

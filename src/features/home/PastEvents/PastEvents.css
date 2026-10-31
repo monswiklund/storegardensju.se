@@ -768,3 +768,13 @@
   color: var(--text-secondary);
 }
 
+.past-event-modal-session-item.is-cancelled .session-date {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.past-event-modal-session-item .session-cancelled {
+  color: #9b4032;
+  font-weight: 600;
+}
+

@@ -696,6 +696,8 @@
   .event-hero__actions {
     width: 100%;
     flex-direction: column;
+    /* The buttons stop at 320px, so centre them in the column instead of leaving them at its start. */
+    align-items: center;
   }
 
   .event-hero__actions .btn {

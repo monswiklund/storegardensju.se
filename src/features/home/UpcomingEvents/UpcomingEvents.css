@@ -227,7 +227,65 @@
   object-fit: cover;
 }
 
+.upcoming-card-open {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.upcoming-card-open .upcoming-card-image {
+  transition: transform 0.5s ease;
+}
+
+.upcoming-card-open:hover .upcoming-card-image {
+  transform: scale(1.03);
+}
+
+.upcoming-card-open:focus-visible {
+  outline: 3px solid var(--text-accent);
+  outline-offset: -3px;
+}
+
+/* How many photos wait behind the cover. */
+.upcoming-card-photos {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(20, 31, 22, 0.72);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.upcoming-card-title-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  cursor: pointer;
+}
+
+.upcoming-card-title-button:hover {
+  color: var(--text-accent);
+}
+
 .upcoming-card-date {
+  pointer-events: none;
   position: absolute;
   top: 20px;
   left: 20px;
@@ -302,6 +360,14 @@
   color: var(--text-accent);
 }
 
+.upcoming-card-description {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
 /* Booking state over the title: called off reads as a warning, the rest as plain news. */
 .upcoming-card-status {
   align-self: flex-start;
@@ -343,14 +409,6 @@
   font-size: 0.95rem;
 }
 
-/* Helper responsive display utilities */
-.desktop-only {
-  display: flex !important;
-}
-.mobile-only {
-  display: none !important;
-}
-
 /* ==========================================================================
    Responsive Media Queries
    ========================================================================== */
@@ -377,14 +435,6 @@
 
   .upcoming-date-day {
     font-size: 1.45rem;
-  }
-
-  .desktop-only {
-    display: none !important;
-  }
-
-  .mobile-only {
-    display: flex !important;
   }
 }
 
