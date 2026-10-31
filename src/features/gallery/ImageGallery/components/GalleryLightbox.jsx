@@ -15,9 +15,6 @@ function GalleryLightbox({
   onSelectImage,
   dialogRef,
   closeButtonRef,
-  categories,
-  activeCategory,
-  onCategoryChange,
 }) {
   const siteCopy = useSiteCopy();
   const [immersive, setImmersive] = useState(false);
@@ -26,6 +23,7 @@ function GalleryLightbox({
 
   const containerRef = useRef(null);
   const imageRef = useRef(null);
+  const thumbnailsRef = useRef(null);
 
   // Constants
   const MIN_SWIPE_DISTANCE = 50;
@@ -61,6 +59,14 @@ function GalleryLightbox({
       }
     };
   }, [isOpen]);
+
+  // Keep the current photo's thumbnail in view as the visitor pages through a long strip.
+  useEffect(() => {
+    const strip = thumbnailsRef.current;
+    const thumb = strip?.children[currentIndex];
+    if (!isOpen || !thumb) return;
+    strip.scrollTo?.({ left: thumb.offsetLeft - (strip.clientWidth - thumb.offsetWidth) / 2 });
+  }, [isOpen, currentIndex]);
 
   // Swipe Handlers
   const onTouchStart = (e) => {
@@ -110,31 +116,9 @@ function GalleryLightbox({
       <div className="gallery-model-content">
         {/* Top Controls */}
         <div className={`lightbox-controls ${immersive ? "is-hidden" : ""}`}>
-          <div className="lightbox-header-left">
-            <span className="lightbox-counter">
-              {currentCount} / {totalCount}
-            </span>
-            {categories && onCategoryChange && (
-              <div className="lightbox-categories desktop-only">
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    className={`lightbox-category-btn ${
-                      activeCategory === cat.id ? "is-active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (activeCategory !== cat.id) {
-                        onCategoryChange(cat.id);
-                      }
-                    }}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <span className="lightbox-counter">
+            {currentCount} / {totalCount}
+          </span>
 
           <button
             className="gallery-close-button"
@@ -171,14 +155,17 @@ function GalleryLightbox({
 
           {/* Main Image */}
           <figure className="lightbox-image-wrapper">
+            {/* Keyed so each new photo fades in instead of cutting over. */}
             <img
+              key={currentImage.original}
               ref={imageRef}
               src={currentImage.original}
               alt={currentImage.originalAlt || ""}
               loading="eager"
               onClick={handleImageClick}
-              className="lightbox-image"
-              style={{ opacity: 1 }}
+              className="lightbox-image animate-fade"
+              // Lets CSS enlarge the photo past its file size, but only so far before it turns soft.
+              style={{ "--img-w": currentImage.width, "--img-h": currentImage.height }}
             />
           </figure>
 
@@ -203,29 +190,7 @@ function GalleryLightbox({
         {/* Bottom Thumbnails */}
         {!immersive && images.length > 1 && (
           <div className="lightbox-footer">
-            {/* Mobile Categories (situated above thumbnails) */}
-            {categories && onCategoryChange && (
-              <div className="lightbox-categories mobile-only">
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    className={`lightbox-category-btn ${
-                      activeCategory === cat.id ? "is-active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (activeCategory !== cat.id) {
-                        onCategoryChange(cat.id);
-                      }
-                    }}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <div className="lightbox-thumbnails" role="list">
+            <div className="lightbox-thumbnails" ref={thumbnailsRef}>
               {images.map((image, idx) => {
                 const isActive = idx === currentIndex;
                 return (
@@ -267,9 +232,6 @@ GalleryLightbox.propTypes = {
   onNext: PropTypes.func.isRequired,
   onPrevious: PropTypes.func.isRequired,
   onSelectImage: PropTypes.func.isRequired,
-  activeCategory: PropTypes.string,
-  onCategoryChange: PropTypes.func,
-  categories: PropTypes.array,
   dialogRef: PropTypes.any,
   closeButtonRef: PropTypes.any,
 };

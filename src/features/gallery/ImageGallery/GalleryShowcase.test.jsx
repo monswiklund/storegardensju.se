@@ -21,9 +21,10 @@ vi.mock("../../../services/galleryService", () => ({
 describe("GalleryShowcase", () => {
   it("opens on Utvalda, the first tab, and still lets the visitor see every photo", async () => {
     const { container } = render(<GalleryShowcase />);
+    await within(container).findAllByRole("button", { name: /Utvalda/ });
     const tabs = container.querySelector(".category-toggle-container");
 
-    const picks = await within(tabs).findByRole("button", { name: /Utvalda/ });
+    const picks = within(tabs).getByRole("button", { name: /Utvalda/ });
     expect(within(tabs).getAllByRole("button")[0]).toBe(picks);
     expect(picks).toHaveAttribute("aria-pressed", "true");
     expect(container.querySelectorAll(".gallery-grid img")).toHaveLength(1);
@@ -33,5 +34,15 @@ describe("GalleryShowcase", () => {
     expect(within(tabs).getByRole("button", { name: /Alla bilder/ })).toHaveAttribute("aria-pressed", "true");
     expect(container.querySelectorAll(".gallery-grid img")).toHaveLength(2);
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("shows no photos until the CMS answers, so the bundled set is never loaded and swapped out", async () => {
+    const { container } = render(<GalleryShowcase />);
+
+    expect(container.querySelector("#gallery-images")).toHaveAttribute("aria-busy", "true");
+    expect(container.querySelectorAll(".gallery-grid img")).toHaveLength(0);
+
+    await within(container).findByRole("button", { name: /Utvalda/, pressed: true });
+    expect(container.querySelector("#gallery-images")).not.toHaveAttribute("aria-busy");
   });
 });

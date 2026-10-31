@@ -15,7 +15,9 @@ const STUCK_TOGGLE_TOP = 68;
 function GalleryShowcase() {
   // The visitor's choice; until then the gallery opens on "Utvalda".
   const [chosenCategory, setChosenCategory] = useState(null);
-  const [galleryData, setGalleryData] = useState(null);
+  // undefined while the CMS answers; null when it failed and the bundled photos stand in.
+  // Showing the bundled set first would load photos the CMS answer then swaps out.
+  const [galleryData, setGalleryData] = useState(undefined);
   const galleryRef = useRef(null);
 
   useEffect(() => {
@@ -99,6 +101,10 @@ function GalleryShowcase() {
     [closeLightbox]
   );
 
+  if (galleryData === undefined) {
+    return <div className="storegarden-gallery is-loading" id="gallery-images" ref={galleryRef} aria-busy="true" />;
+  }
+
   return (
     <div className="storegarden-gallery" id="gallery-images" ref={galleryRef}>
       <CategoryToggle
@@ -125,9 +131,6 @@ function GalleryShowcase() {
         onSelectImage={goToImage}
         dialogRef={dialogRef}
         closeButtonRef={closeButtonRef}
-        categories={normalizedGallery.categories}
-        activeCategory={activeCategory}
-        onCategoryChange={setChosenCategory}
       />
     </div>
   );

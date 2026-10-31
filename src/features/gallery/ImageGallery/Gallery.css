@@ -77,6 +77,11 @@
   position: relative;
 }
 
+/* Holds the wall's place while the photos are on their way, so nothing below jumps up and back. */
+.storegarden-gallery.is-loading {
+  min-height: 100vh;
+}
+
 /* On wide screens the wall breaks out of the text column, so the prints get room to be seen.
    Centred on the column: the room either side stays wider than any scrollbar. */
 @media (min-width: 1100px) {
@@ -331,22 +336,19 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(20, 25, 19, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* Solid, so nothing of the page behind competes with the photo. */
+  background: #0e100e;
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s ease, backdrop-filter 0.3s ease;
+  transition: background 0.3s ease;
   overflow: hidden;
   animation: lightboxOverlayFadeIn 0.3s ease-out forwards;
 }
 
 .gallery-model.is-immersive {
-  background: rgba(0, 0, 0, 0.98);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: #000;
 }
 
 .gallery-model-content {
@@ -385,11 +387,6 @@
   pointer-events: none;
 }
 
-.lightbox-header-left {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
 
 .lightbox-counter {
   font-size: 0.9rem;
@@ -403,35 +400,9 @@
   white-space: nowrap;
 }
 
-.lightbox-categories {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
 
-.lightbox-category-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.7);
-  padding: 6px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(4px);
-}
 
-.lightbox-category-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-}
 
-.lightbox-category-btn.is-active {
-  background: var(--text-accent);
-  border-color: var(--text-accent);
-  color: var(--text-on-dark);
-  font-weight: 500;
-}
 
 /* Mobile responsive for header */
 @media (max-width: 768px) {
@@ -472,7 +443,8 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 0;
+  /* Clears the counter and close button, so they never sit on the photo. */
+  padding: 84px 0 0;
   overflow: hidden;
   width: 100%;
 }
@@ -487,16 +459,15 @@
   position: relative;
 }
 
+/* Fills the stage, but at most 1.5x the file's own size: most photos are only 800px wide.
+   Without known dimensions (--img-w/--img-h unset) it simply fills the stage. */
 .lightbox-image {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  max-width: min(100%, calc(var(--img-w, 100000) * 1.5px));
+  max-height: min(100%, calc(var(--img-h, 100000) * 1.5px));
   object-fit: contain;
   transition: transform 0.3s ease;
-  cursor: zoom-in;
-}
-
-.gallery-model.is-immersive .lightbox-image {
-  cursor: zoom-out;
 }
 
 /* Navigation Arrows */
@@ -579,6 +550,12 @@
   max-width: 100%;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  /* Still drags and scrolls; the bar itself only adds a grey stripe. */
+  scrollbar-width: none;
+}
+
+.lightbox-thumbnails::-webkit-scrollbar {
+  display: none;
 }
 
 .lightbox-thumbnail {
@@ -618,47 +595,19 @@
   font-weight: 300;
 }
 
-/* Mobile lightbox. Which category row shows (header or footer) is decided by the global
-   .desktop-only / .mobile-only in index.css, so this switches at the same width (768). */
+/* Mobile lightbox: swipe instead of arrows, smaller thumbnails. */
 @media (max-width: 767px) {
   .lightbox-controls {
-    /* Reset header layout now that categories are gone from it */
     padding: 16px;
     align-items: center;
   }
 
-  .lightbox-header-left {
-    /* Reset left header part */
-    flex-direction: row;
-    align-items: center;
-    width: auto;
-  }
-
-  /* Footer categories styling */
-  .lightbox-footer .lightbox-categories {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    margin-bottom: 8px;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    mask-image: linear-gradient(to right, black 85%, transparent 100%);
-  }
-
-  .lightbox-footer .lightbox-categories::-webkit-scrollbar {
-    display: none;
-  }
-
-  .lightbox-footer .lightbox-category-btn {
-    white-space: nowrap;
-    flex-shrink: 0;
+  .lightbox-stage {
+    padding-top: 76px;
   }
 
   .lightbox-nav {
-    display: none; /* Hide arrows on mobile, rely on swipe */
+    display: none;
   }
 
   .lightbox-thumbnails {
@@ -669,11 +618,18 @@
     width: 48px;
     height: 48px;
   }
+}
 
-  .gallery-close-button {
-    width: 40px;
-    height: 40px;
-    font-size: 1.8rem;
+/* Opening, photo changes and the thumbnail strip keep their state changes but drop the motion. */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-model,
+  .gallery-model-content,
+  .animate-fade {
+    animation: none;
+  }
+
+  .lightbox-thumbnails {
+    scroll-behavior: auto;
   }
 }
 
