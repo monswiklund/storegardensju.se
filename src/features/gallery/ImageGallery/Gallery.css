@@ -87,6 +87,15 @@
   }
 }
 
+/* On phones the wall runs to the screen edges, with the same 2px border as the gap between photos. */
+@media (max-width: 768px) {
+  .storegarden-gallery {
+    --gallery-wall-width: calc(100vw - 4px);
+    width: var(--gallery-wall-width);
+    margin-inline: calc((100% - var(--gallery-wall-width)) / 2);
+  }
+}
+
 /* Gallery Grid - Masonry Layout */
 /* The photos lie edge to edge with a hairline between them, in their own proportions. */
 .gallery-grid {
