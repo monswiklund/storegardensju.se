@@ -22,12 +22,11 @@ function CategoryToggle({ categories, activeCategory, onCategoryChange, classNam
             return orderA - orderB;
         });
 
-        // Position "alla" specifically
-        const allaIndex = next.findIndex((cat) => cat.id === "alla");
-        if (allaIndex > 0) {
-            const [alla] = next.splice(allaIndex, 1);
-            next.unshift(alla);
-        }
+        // "Utvalda" opens the gallery, then "Alla bilder", then the rooms.
+        ["alla", "utvalda"].forEach((id) => {
+            const index = next.findIndex((cat) => cat.id === id);
+            if (index > 0) next.unshift(...next.splice(index, 1));
+        });
 
         return next;
     }, [categories]);

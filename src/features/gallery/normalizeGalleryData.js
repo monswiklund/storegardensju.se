@@ -97,7 +97,8 @@ export const normalizeGalleryData = (data) => {
   });
 
   const uniqueImages = new Map();
-  specificCategories.forEach((category) => {
+  // "Utvalda" repeats photos that belong to a room, so it adds nothing to "Alla bilder".
+  specificCategories.filter((category) => category.id !== "utvalda").forEach((category) => {
     (category.images || []).forEach((image, index) => {
       const identity = imageIdentity(image, category.id, index);
       if (!uniqueImages.has(identity)) {

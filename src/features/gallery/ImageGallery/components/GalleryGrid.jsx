@@ -10,21 +10,6 @@ const breakpointColumns = {
   768: 2,
 };
 
-// Simple helper to get a deterministic pseudo-random value [0, 1] from a string seed
-const getSeededValue = (str) => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return Math.abs(hash % 1000) / 1000;
-};
-
-const getDirectionMultiplier = (index, columnCount) => {
-  const row = Math.floor(index / columnCount);
-  const column = index % columnCount;
-  return (row + column) % 2 === 0 ? 1 : -1;
-};
-
 function GalleryGrid({
   images,
   onImageSelect,
@@ -82,53 +67,6 @@ function GalleryGrid({
         columnClassName="gallery-column"
       >
         {visibleImages.map((image, index) => {
-          const seed = image.filename || image.original || String(index);
-
-          // Use a checkerboard direction for each responsive column layout.
-          const threeColumnDirection = getDirectionMultiplier(index, 3);
-          const twoColumnDirection = getDirectionMultiplier(index, 2);
-
-          // Generate rotation magnitude between 0.8deg and 2.0deg.
-          const magRand = getSeededValue(seed + "-rot-mag-" + index);
-          const rotMagnitude = 0.8 + magRand * 1.2;
-          const threeColumnRotation = (
-            threeColumnDirection * rotMagnitude
-          ).toFixed(2);
-          const twoColumnRotation = (
-            twoColumnDirection * rotMagnitude
-          ).toFixed(2);
-
-          // Keep the tape tilted in the opposite direction from its image.
-          const tapeMagRand = getSeededValue(seed + "-tape-" + index);
-          const tapeRotMagnitude = 0.5 + tapeMagRand * 1.5;
-          const threeColumnTapeRotation = (
-            -threeColumnDirection * tapeRotMagnitude
-          ).toFixed(2);
-          const twoColumnTapeRotation = (
-            -twoColumnDirection * tapeRotMagnitude
-          ).toFixed(2);
-          const tapeWidthVal = Math.floor(
-            getSeededValue(seed + "-width-" + index) * 16 + 60
-          ); // 60px to 76px
-
-          // Vertikal förskjutning (-8px till +16px)
-          const yOffsetVal = (
-            getSeededValue(seed + "-y-" + index) * 24 -
-            8
-          ).toFixed(1);
-
-          // Keep wider cards in the two-column layout while preserving scrapbook variation.
-          const widthRand = getSeededValue(seed + "-width-pct-" + index);
-          const threeColumnWidth = Math.floor(widthRand * 18 + 82);
-          const twoColumnWidth = Math.floor(widthRand * 8 + 92);
-          const alignRand = getSeededValue(seed + "-align-" + index);
-          const alignVal =
-            alignRand < 0.33
-              ? "flex-start"
-              : alignRand < 0.66
-                ? "center"
-                : "flex-end";
-
           return (
             <div
               key={image.filename || image.original || index}
@@ -136,17 +74,6 @@ function GalleryGrid({
               onClick={() => onImageSelect(index)}
               role="button"
               tabIndex={0}
-              style={{
-                "--item-rotation-3-columns": `${threeColumnRotation}deg`,
-                "--item-rotation-2-columns": `${twoColumnRotation}deg`,
-                "--item-y-offset": `${yOffsetVal}px`,
-                "--item-tape-rotation-3-columns": `${threeColumnTapeRotation}deg`,
-                "--item-tape-rotation-2-columns": `${twoColumnTapeRotation}deg`,
-                "--item-tape-width": `${tapeWidthVal}px`,
-                "--item-width-3-columns": `${threeColumnWidth}%`,
-                "--item-width-2-columns": `${twoColumnWidth}%`,
-                "--item-align-self": alignVal,
-              }}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();

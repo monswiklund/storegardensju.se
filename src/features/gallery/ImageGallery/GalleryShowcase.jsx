@@ -1,18 +1,16 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Camera } from "lucide-react";
 import "./Gallery.css";
-import SectionHeader from "../../../components/ui/SectionHeader/SectionHeader.jsx";
 import CategoryToggle from "../CategoryToggle/CategoryToggle";
 import GalleryGrid from "./components/GalleryGrid";
 import GalleryLightbox from "./components/GalleryLightbox";
-import VenueIntroSection from "../../venue/VenueIntro/VenueIntroSection.jsx";
 import useGalleryLightbox from "./hooks/useGalleryLightbox";
 import { fetchGalleryCategories } from "../../../services/galleryService";
 import { normalizeGalleryData } from "../normalizeGalleryData";
 
-function GalleryShowcase({ eyebrow = "GALLERI", title = "Bildgalleri", lead }) {
-  const [activeCategory, setActiveCategory] = useState("alla");
+// The page's own heading introduces the photos, so the wall starts right under it.
+function GalleryShowcase() {
+  // The visitor's choice; until then the gallery opens on "Utvalda".
+  const [chosenCategory, setChosenCategory] = useState(null);
   const [galleryData, setGalleryData] = useState(null);
 
   useEffect(() => {
@@ -38,17 +36,11 @@ function GalleryShowcase({ eyebrow = "GALLERI", title = "Bildgalleri", lead }) {
     [galleryData]
   );
 
-  // Fallback if the active category is not found (e.g. if "stellet" is not present)
-  useEffect(() => {
-    if (normalizedGallery.categories.length > 0) {
-      const exists = normalizedGallery.categories.some(
-        (cat) => cat.id === activeCategory
-      );
-      if (!exists) {
-        setActiveCategory(normalizedGallery.categories[0].id);
-      }
-    }
-  }, [activeCategory, normalizedGallery]);
+  // Derived rather than stored: the CMS answer may add "Utvalda" after a first render without it.
+  const activeCategory = useMemo(() => {
+    const ids = normalizedGallery.categories.map((cat) => cat.id);
+    return [chosenCategory, "utvalda", "alla"].find((id) => ids.includes(id)) || ids[0] || "alla";
+  }, [chosenCategory, normalizedGallery]);
 
   const activeCategoryData = useMemo(
     () =>
@@ -91,22 +83,14 @@ function GalleryShowcase({ eyebrow = "GALLERI", title = "Bildgalleri", lead }) {
 
   const handleCategoryChange = useCallback(
     (categoryId) => {
-      setActiveCategory(categoryId);
+      setChosenCategory(categoryId);
       closeLightbox();
     },
     [closeLightbox]
   );
 
   return (
-    <div className="storegarden-gallery">
-
-      {/* Venue Intro Section (Om platsen) */}
-      <div className="gallery-venue-intro-wrapper" style={{ margin: "20px auto 40px", maxWidth: "800px", borderBottom: "1px solid #eae7e0", paddingBottom: "40px" }}>
-        <VenueIntroSection />
-      </div>
-
-      <SectionHeader id="gallery-heading" eyebrow={eyebrow} title={title} lead={lead} icon={Camera} />
-
+    <div className="storegarden-gallery" id="gallery-images">
       <CategoryToggle
         categories={normalizedGallery.categories}
         activeCategory={activeCategory}
@@ -133,16 +117,10 @@ function GalleryShowcase({ eyebrow = "GALLERI", title = "Bildgalleri", lead }) {
         closeButtonRef={closeButtonRef}
         categories={normalizedGallery.categories}
         activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
+        onCategoryChange={setChosenCategory}
       />
     </div>
   );
 }
-
-GalleryShowcase.propTypes = {
-  eyebrow: PropTypes.string,
-  title: PropTypes.string,
-  lead: PropTypes.string,
-};
 
 export default GalleryShowcase;

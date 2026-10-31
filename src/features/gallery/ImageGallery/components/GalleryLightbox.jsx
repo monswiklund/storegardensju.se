@@ -101,7 +101,7 @@ function GalleryLightbox({
       className={`gallery-model ${immersive ? "is-immersive" : ""}`}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="gallery-heading"
+      aria-label={siteCopy("ui.carousel-label")}
       ref={containerRef}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();

@@ -13,6 +13,7 @@ function VenueIntroSection() {
         <h2 id="venue-intro-heading">{copy("venue.title")}</h2>
         <p>{copy("venue.description")}</p>
       </div>
+      {highlights.length > 0 && (
       <ul
         className="venue-intro__highlights"
       >
@@ -25,6 +26,7 @@ function VenueIntroSection() {
           </li>
         ))}
       </ul>
+      )}
     </div>
   );
 }

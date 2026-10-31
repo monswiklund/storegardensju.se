@@ -12,16 +12,18 @@ vi.mock("../features/gallery/ImageGallery/GalleryShowcase.jsx", () => ({
 }));
 
 describe("GalleriPage", () => {
-  it("keeps the hero's picture button on the page, pointing at the images", async () => {
-    render(
+  it("opens on one heading with the photos right under it, the venue note after them", async () => {
+    const { container } = render(
       <MemoryRouter>
         <GalleriPage />
       </MemoryRouter>
     );
 
-    const cta = screen.getByRole("link", { name: /Se alla bilder/ });
-    expect(cta).toHaveAttribute("href", "#gallery-heading");
-    expect(await screen.findByRole("heading", { name: "Bilder" })).toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(screen.queryByRole("link", { name: /Se alla bilder/ })).toBeNull();
+    const wall = await screen.findByRole("heading", { name: "Bilder" });
+    const venue = container.querySelector(".gallery-venue");
+    expect(wall.compareDocumentPosition(venue) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("ends with an enquiry step and then where to go next", () => {

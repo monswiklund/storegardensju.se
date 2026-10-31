@@ -83,6 +83,43 @@ describe("galleryService", () => {
     expect(result.featured).toEqual(["first", "second"]);
   });
 
+  it("collects the photos marked for the gallery's selection as Utvalda, in Alla bilder order", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          docs: [
+            { id: 1, category: "overvaning", allOrder: 2, externalUrl: "/a.webp", galleryFeatured: true },
+            { id: 2, category: "undervaning", allOrder: 0, externalUrl: "/b.webp", galleryFeatured: true },
+            { id: 3, category: "undervaning", allOrder: 1, externalUrl: "/c.webp", galleryFeatured: false },
+          ],
+        }),
+      })
+    );
+
+    const result = await fetchGalleryCategories();
+    const picks = result.categories.find((category) => category.id === "utvalda");
+
+    expect(picks.name).toBe("Utvalda");
+    expect(picks.order).toBeLessThan(result.categories.find((category) => category.id === "alla").order);
+    expect(picks.images.map((image) => image.id)).toEqual(["2", "1"]);
+  });
+
+  it("leaves out Utvalda when no photo is marked for it", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ docs: [{ id: 1, category: "overvaning", externalUrl: "/a.webp" }] }),
+      })
+    );
+
+    const result = await fetchGalleryCategories();
+
+    expect(result.categories.some((category) => category.id === "utvalda")).toBe(false);
+  });
+
   describe("pagination", () => {
     const docsFor = (from, to) =>
       Array.from({ length: to - from }, (_, i) => ({

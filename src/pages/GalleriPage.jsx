@@ -1,5 +1,6 @@
 import { Suspense, lazy } from "react";
 import { ArrowDown } from "lucide-react";
+import VenueIntroSection from "../features/venue/VenueIntro/VenueIntroSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import LoadingSpinner from "../components/ui/LoadingSpinner.jsx";
 import { ExploreMore, PageSection, SectionDivider } from "../components";
@@ -29,11 +30,6 @@ function GalleriPage() {
   useSeo(seoMeta.galleri);
   const copy = usePageCopy("gallery");
 
-  const showImages = (event) => {
-    event.preventDefault();
-    scrollAndFocus("#gallery-heading");
-  };
-
   // The enquiry form follows this page (App renders it after <main>).
   const openEnquiry = () => {
     window.dispatchEvent(new CustomEvent("expand-contact-form"));
@@ -49,19 +45,8 @@ function GalleriPage() {
         ariaLabelledBy="gallery-page-heading"
       >
         <div className="gallery-page-intro" data-cms-hero data-cms-hero-content>
-          <span className="section-eyebrow">{copy("hero.eyebrow")}</span>
           <h1 id="gallery-page-heading">{copy("hero.title")}</h1>
-          <p>
-            {copy("hero.lead")}
-          </p>
-          <a
-            href="#gallery-heading"
-            className="btn btn--primary gallery-page-intro__cta"
-            onClick={showImages}
-          >
-            {copy("hero.primary-cta")}
-            <ArrowDown size={18} aria-hidden="true" />
-          </a>
+          <p>{copy("hero.lead")}</p>
         </div>
         <ErrorBoundary>
           <Suspense
@@ -69,12 +54,14 @@ function GalleriPage() {
               <LoadingSpinner size="large" />
             }
           >
-            <GalleryShowcase
-              title={copy("showcase.title")}
-              lead={copy("showcase.lead")}
-            />
+            <GalleryShowcase />
           </Suspense>
         </ErrorBoundary>
+
+        {/* Where the farm is, once the photos have shown what it looks like. */}
+        <div className="gallery-venue">
+          <VenueIntroSection />
+        </div>
 
         <section className="gallery-plan" aria-labelledby="gallery-plan-title">
           <h2 id="gallery-plan-title" className="gallery-plan__title">

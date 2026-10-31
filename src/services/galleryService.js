@@ -4,10 +4,13 @@ import { getPageCopySync } from "../hooks/usePageCopy";
 let galleryCategoriesCache = null;
 let galleryCategoriesRequest = null;
 
+// Until the CMS has the copy row, the selection still needs a name on its tab.
+const CATEGORY_FALLBACKS = { utvalda: "Utvalda" };
+
 const getCategoryName = (catId) => {
   const siteCopy = getPageCopySync("site");
   const copyId = catId === "alla" ? "all" : catId;
-  return siteCopy ? siteCopy(`gallery.cat.${copyId}`) : catId;
+  return siteCopy ? siteCopy(`gallery.cat.${copyId}`, CATEGORY_FALLBACKS[catId]) : catId;
 };
 
 const absoluteMediaUrl = (url, cmsUrl) => {
@@ -106,33 +109,45 @@ export function fetchGalleryCategories() {
             });
           });
 
+          const allOrderImage = (doc) => {
+            const imagePath =
+              absoluteMediaUrl(doc.externalUrl, cmsUrl) ||
+              absoluteMediaUrl(doc.url, cmsUrl);
+            return {
+              id: String(doc.legacyId || doc.id),
+              filename: doc.filename || doc.legacyId,
+              displayName: doc.displayName || doc.alt || doc.filename,
+              alt: doc.alt || doc.displayName,
+              category: doc.category || "ovrigt",
+              path: imagePath,
+              thumbnailPath:
+                absoluteMediaUrl(doc.sizes?.thumbnail?.url || doc.thumbnailURL, cmsUrl) ||
+                imagePath,
+              width: doc.width,
+              height: doc.height,
+              order: mediaOrder(doc, "allOrder"),
+            };
+          };
+
           categoryMap.set("alla", {
             id: "alla",
             name: getCategoryName("alla"),
             description: "",
             order: -1,
-            images: [...data.docs]
-              .sort(compareMedia("allOrder"))
-              .map((doc) => {
-                const imagePath =
-                  absoluteMediaUrl(doc.externalUrl, cmsUrl) ||
-                  absoluteMediaUrl(doc.url, cmsUrl);
-                return {
-                  id: String(doc.legacyId || doc.id),
-                  filename: doc.filename || doc.legacyId,
-                  displayName: doc.displayName || doc.alt || doc.filename,
-                  alt: doc.alt || doc.displayName,
-                  category: doc.category || "ovrigt",
-                  path: imagePath,
-                  thumbnailPath:
-                    absoluteMediaUrl(doc.sizes?.thumbnail?.url || doc.thumbnailURL, cmsUrl) ||
-                    imagePath,
-                  width: doc.width,
-                  height: doc.height,
-                  order: mediaOrder(doc, "allOrder"),
-                };
-              }),
+            images: [...data.docs].sort(compareMedia("allOrder")).map(allOrderImage),
           });
+
+          // The selection the gallery opens on; it keeps the "Alla bilder" order.
+          const picks = data.docs.filter((doc) => doc.galleryFeatured);
+          if (picks.length > 0) {
+            categoryMap.set("utvalda", {
+              id: "utvalda",
+              name: getCategoryName("utvalda"),
+              description: "",
+              order: -2,
+              images: [...picks].sort(compareMedia("allOrder")).map(allOrderImage),
+            });
+          }
 
           const categories = Array.from(categoryMap.values());
           const featured = [...data.docs]
