@@ -9,7 +9,9 @@ import { savedScrollPosition } from "../../../components/layout/ScrollToTop/Scro
 import "./Hero.css";
 import HomeHeroContent from "./HomeHeroContent.jsx";
 
-const INTRO_HOLD_MS = 2000;
+// The glide starts as the logo's fade-in (0.6 s, Hero.css) is ending, so the two read as one
+// movement instead of a fade, a pause and a move.
+const INTRO_HOLD_MS = 450;
 // If the logo never loads (offline, slow CDN), the intro still ends.
 const INTRO_MAX_MS = 5000;
 // The page holds still while the logo glides into place (0.9 s)...
@@ -30,8 +32,9 @@ function shouldPlayIntro(location, navigationType) {
 // The intro logo is as wide as the old full-screen logo: clamp(240px, 42vw, 380px).
 const introLogoWidth = () => Math.min(380, Math.max(240, window.innerWidth * 0.42));
 
-// Two seconds after the logo has loaded, or at the first scroll, tap or key press, it glides
-// into place above the heading and the welcome text and actions fade in.
+// Once the logo has loaded it fades in at the centre and, without stopping, glides into place
+// above the heading while the welcome text and actions fade in. A scroll, tap or key press
+// starts the glide at once.
 function HomeHeroSection() {
   const navigate = useNavigate();
   const copy = usePageCopy("home");
@@ -48,6 +51,8 @@ function HomeHeroSection() {
   const location = useLocation();
   const navigationType = useNavigationType();
   const [isIntro, setIsIntro] = useState(() => shouldPlayIntro(location, navigationType));
+  // The fade-in waits for the image, so a slow logo does not pop in after its animation ran.
+  const [logoReady, setLogoReady] = useState(false);
 
   const sectionRef = useRef(null);
 
@@ -137,13 +142,14 @@ function HomeHeroSection() {
     return release;
   }, []);
 
-  // Without any input, the intro ends two seconds after the logo has loaded.
+  // Without any input, the glide starts shortly after the logo has loaded.
   useEffect(() => {
     if (!isIntro) return undefined;
     const settle = () => settleRef.current();
     let holdTimer;
     const image = new Image();
     image.onload = () => {
+      setLogoReady(true);
       holdTimer = setTimeout(settle, INTRO_HOLD_MS);
     };
     image.onerror = settle;
@@ -169,7 +175,7 @@ function HomeHeroSection() {
       id="home-welcome"
       ref={sectionRef}
       data-cms-hero
-      className={`hero-content-section${isIntro ? " is-intro" : ""}`}
+      className={`hero-content-section${isIntro ? " is-intro" : ""}${logoReady ? " is-logo-ready" : ""}`}
     >
       <HomeHeroContent
         logo={logo}

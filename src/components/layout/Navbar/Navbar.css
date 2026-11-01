@@ -53,6 +53,10 @@
   object-fit: contain;
 }
 
+.navbar-right .navbar-contact {
+  display: none;
+}
+
 /* Phones: the page's name and the menu icon are one button at the right of the bar. */
 .menu-trigger {
   display: none;
@@ -221,7 +225,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 12px 0;
+  padding: 10px 0;
   text-align: left;
   text-decoration: none;
   background: none;
@@ -281,7 +285,7 @@
 /* Kontakt closes the list as a button; below it, how to reach the farm. */
 .nav-item--cta {
   border-bottom: 0;
-  padding-top: 18px;
+  padding-top: 12px;
 }
 
 .nav-item--cta .nav-link--cta {
@@ -307,7 +311,7 @@
   display: grid;
   justify-items: center;
   gap: 0;
-  margin-top: 14px;
+  margin-top: 8px;
   font-size: 0.95rem;
   text-align: center;
   opacity: 0;
@@ -359,25 +363,37 @@
     display: none;
   }
 
-  .navbar-right {
-    position: absolute;
-    right: 15px;
-  }
-
   .navbar-logo {
     height: 40px;
   }
 
-  /* Logo, links and Kontakt are centred as one group: a logo lifted out to the left edge, with
-     nothing on the right, pulled the visible bar off the page's centre line. */
+  /* Logo at the left, links on the page's centre line, Kontakt at the right: the two outer
+     columns share the leftover room equally, so the links stay centred whatever sits beside them. */
   .navbar-container {
-    justify-content: center;
-    gap: clamp(16px, 3vw, 48px);
+    display: grid;
+    grid-template-columns: minmax(max-content, 1fr) auto minmax(max-content, 1fr);
+    max-width: 1240px;
+    padding: 0 clamp(16px, 3vw, 32px);
+    gap: clamp(12px, 2.5vw, 40px);
   }
 
   .navbar-brand {
     position: static;
-    flex-shrink: 0;
+    justify-self: start;
+  }
+
+  .navbar-container > .navbar-right {
+    position: static;
+    justify-self: end;
+  }
+
+  .nav-item--cta {
+    display: none;
+  }
+
+  .navbar-right .navbar-contact {
+    display: inline-flex;
+    width: auto;
   }
 
   .nav-menu {
@@ -488,14 +504,35 @@
   }
 }
 
+/* Narrow desktops: logo, seven links and Kontakt only fit with tighter spacing. */
+@media (min-width: 769px) and (max-width: 900px) {
+  .navbar-container {
+    padding-inline: 10px;
+    gap: 8px;
+  }
+
+  .nav-list {
+    gap: 2px;
+  }
+
+  .nav-link {
+    padding-inline: 10px;
+  }
+
+  .nav-link.nav-link--cta {
+    padding-inline: 16px;
+  }
+}
+
 .event-subnav {
   position: fixed;
   top: 60px;
   left: 0;
   right: 0;
   height: 48px;
-  /* A green tint under the white bar: the section's own row, not more of the bar. */
-  background: color-mix(in srgb, var(--text-accent) 7%, #ffffff);
+  /* The page's light beige under the white bar: the section's own row, not more of the bar. */
+  background: var(--background-alt);
+  border-bottom: 1px solid rgb(185 148 112 / 0.18);
   z-index: 999;
   transform: translateY(-100%);
   opacity: 0;
@@ -617,7 +654,7 @@
     top: 55px;
     height: calc(100vh - 55px);
     height: calc(100dvh - 55px);
-    padding: 16px 20px 36px;
+    padding: 16px 20px 32px;
   }
 }
 

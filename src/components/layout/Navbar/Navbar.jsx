@@ -6,7 +6,7 @@ import usePageMedia from "../../../hooks/usePageMedia.js";
 import "./Navbar.css";
 import NavLinks from "./NavLinks";
 import useNavbarToggle from "./useNavbarToggle";
-import { appRoutes, normalizePath, routeLabel } from "../../../config/routes.js";
+import { appRoutes, canonicalPath, normalizePath, routeLabel } from "../../../config/routes.js";
 import CartBadge from "./CartBadge.jsx";
 import NotificationBell from "./NotificationBell.jsx";
 import useShopHasProducts from "../../../hooks/useShopHasProducts.js";
@@ -19,7 +19,6 @@ const NAV_ITEMS = ALL_NAV_ITEMS.filter((route) => !route.headerHidden);
 // Pages outside the menu still say where you are, instead of falling back to "Hem".
 const EXTRA_TITLES = [
   { path: "/ann", label: "Ann Wiklund" },
-  { path: "/ann/keramik", label: "Keramik" },
   { path: "/evenemang", label: "Evenemang" },
   { path: "/varukorg", label: "Varukorg" },
 ];
@@ -54,6 +53,7 @@ function Navbar() {
   const navItems = shopHasProducts
     ? NAV_ITEMS
     : NAV_ITEMS.filter((route) => !route.shopOnly);
+  const contactRoute = navItems.find((route) => route.cta);
 
   const scrollToHeroTitle = () => {
     if (typeof window === "undefined") return;
@@ -182,6 +182,17 @@ function Navbar() {
         <div className="navbar-right">
           <NotificationBell />
           <CartBadge />
+          {/* Desktop: Kontakt stands at the right edge, apart from the links; phones have it in the menu. */}
+          {contactRoute && (
+            <Link
+              to={canonicalPath(contactRoute.path)}
+              className={`nav-link nav-link--cta navbar-contact${currentPath === contactRoute.path ? " active" : ""}`}
+              aria-current={currentPath === contactRoute.path ? "page" : undefined}
+              onClick={() => handleNavigate(contactRoute.path)}
+            >
+              {routeLabel(contactRoute, siteCopy)}
+            </Link>
+          )}
           {/* The page you are on, next to the menu it lives in; the name stays in the button's label. */}
           <button
             ref={triggerRef}

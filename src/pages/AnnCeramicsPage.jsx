@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
 import { annCeramicsSeoMeta } from "../config/seoMeta.js";
@@ -111,6 +111,12 @@ function AnnCeramicsPage() {
           </button>
         </div>
       )}
+
+      {/* The pieces end here, so lead on to the paintings instead of a dead end. */}
+      <Link to="/ann/" className="ann-studio__link ann-ceramics__onward">
+        {copy("ceramics.paintings-link", "Se Anns målningar")}
+        <ArrowRight size={16} aria-hidden="true" />
+      </Link>
 
       <CeramicFocus
         lightbox={lightbox}

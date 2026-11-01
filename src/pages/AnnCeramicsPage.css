@@ -168,6 +168,10 @@
   margin-top: clamp(2rem, 4vw, 3rem);
 }
 
+.ann-ceramics__onward {
+  margin: clamp(2.5rem, 5vw, 3.5rem) auto 0;
+}
+
 /* ---------- Focus: one piece above a blurred page ---------- */
 
 .ceramic-focus {
