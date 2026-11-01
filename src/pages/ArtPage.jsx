@@ -246,7 +246,7 @@ function ArtPage() {
           <section id="anns-malningar" className="art-works" aria-labelledby="art-works-title">
             <div className="art-works__head">
               <h2 id="art-works-title">{copy("works.title", "Anns målningar")}</h2>
-              <p>{copy("works.lead", "Ett urval av det Ann har målat i ateljén på gården.")}</p>
+              <p>{copy("works.lead", "Ett urval från ateljén på gården.")}</p>
             </div>
             {/* Hung in a row at their own proportions; on phones the row scrolls sideways. */}
             <ul className="art-works__row">
@@ -269,7 +269,7 @@ function ArtPage() {
             </ul>
             <div className="art-works__more">
               <Link to={canonicalPath(INSTRUCTOR.portfolioUrl || "/ann")} className="art-link">
-                {copy("works.cta", "Se alla Anns verk")}
+                {copy("works.cta", "Se alla verk")}
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
