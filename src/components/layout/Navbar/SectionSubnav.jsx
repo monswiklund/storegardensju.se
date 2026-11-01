@@ -6,7 +6,6 @@ import {
   normalizePath,
   routeLabel,
 } from "../../../config/routes.js";
-import HomeSubnav from "./HomeSubnav.jsx";
 
 // Desktop hides the navbar dropdowns (see .nav-submenu in Navbar.css), so a
 // child route is only reachable from this bar. It used to be hardcoded to the
@@ -36,10 +35,6 @@ function SectionSubnav() {
   const siteCopy = usePageCopy("site");
   const location = useLocation();
   const currentPath = normalizePath(location.pathname);
-
-  if (currentPath === "/") {
-    return <HomeSubnav />;
-  }
 
   const section = sectionForPath(currentPath);
 

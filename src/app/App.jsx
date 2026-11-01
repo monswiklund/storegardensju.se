@@ -177,9 +177,8 @@ function AppContent() {
   const showSiteContact =
     !isAdminRoute && !NO_SITE_CONTACT.some((prefix) => path.startsWith(prefix));
   const showInstagram = INSTAGRAM_PATHS.includes(path);
-  // Any top-level route with children gets a subnav bar, not just /event.
-  const isSubnavSection =
-    isHomePage || sectionForPath(location.pathname) !== null;
+  // Any top-level route with children gets a subnav bar, not just /event; the home page has none.
+  const isSubnavSection = sectionForPath(location.pathname) !== null;
 
   useLayoutEffect(() => {
     if (isSubnavSection && !isAdminRoute) {

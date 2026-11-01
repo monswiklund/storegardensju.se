@@ -24,12 +24,28 @@ function useNavbarToggle() {
       document.body.style.overflow = "hidden";
       document.body.classList.add("mobile-nav-open");
 
+      // Everything but the bar is out of reach while the menu covers it: no tabbing or
+      // screen-reader browsing into the page behind. The bar keeps its close button.
+      const inerted = [];
+      for (let node = menuNode?.closest(".navbar"); node?.parentElement; node = node.parentElement) {
+        if (node === document.body) break;
+        for (const sibling of node.parentElement.children) {
+          if (sibling !== node && !sibling.inert) {
+            sibling.inert = true;
+            inerted.push(sibling);
+          }
+        }
+      }
+
       const focusFrame = window.requestAnimationFrame(() => {
-        menuNode?.querySelector(".nav-menu-header")?.focus();
+        menuNode?.querySelector("a[href]")?.focus({ preventScroll: true });
       });
 
       return () => {
         window.cancelAnimationFrame(focusFrame);
+        inerted.forEach((node) => {
+          node.inert = false;
+        });
         document.body.style.overflow = previousOverflowRef.current;
         document.body.classList.remove("mobile-nav-open");
       };

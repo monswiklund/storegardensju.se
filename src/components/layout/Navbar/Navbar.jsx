@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Facebook, Instagram } from "lucide-react";
 import usePageCopy from "../../../hooks/usePageCopy.js";
 import usePageMedia from "../../../hooks/usePageMedia.js";
 import "./Navbar.css";
@@ -9,19 +10,30 @@ import { appRoutes, normalizePath, routeLabel } from "../../../config/routes.js"
 import CartBadge from "./CartBadge.jsx";
 import NotificationBell from "./NotificationBell.jsx";
 import useShopHasProducts from "../../../hooks/useShopHasProducts.js";
+import { COURSE_LOCATION } from "../../../data/courseEvents.js";
+import { contactEmail } from "../../../features/contact/contact.js";
 
 const ALL_NAV_ITEMS = appRoutes.filter((route) => !route.hidden);
 const NAV_ITEMS = ALL_NAV_ITEMS.filter((route) => !route.headerHidden);
 
-const getCurrentTitle = (pathname, copy) => {
-  for (const item of ALL_NAV_ITEMS) {
-    const children = item.children ?? [];
-    const child = children.find(route => route.path === pathname);
-    if (child) return routeLabel(child, copy);
-    if (item.path === pathname) return routeLabel(item, copy);
-  }
+// Pages outside the menu still say where you are, instead of falling back to "Hem".
+const EXTRA_TITLES = [
+  { path: "/ann", label: "Ann Wiklund" },
+  { path: "/ann/keramik", label: "Keramik" },
+  { path: "/evenemang", label: "Evenemang" },
+  { path: "/varukorg", label: "Varukorg" },
+];
+const TITLED_ROUTES = [
+  ...ALL_NAV_ITEMS.flatMap((item) => [item, ...(item.children ?? [])]),
+  ...EXTRA_TITLES,
+];
 
-  return (copy && copy("nav.home")) || "";
+/** The name of the page or, below it (/butik/12, /evenemang/x), its section; empty when unknown. */
+export const getCurrentTitle = (pathname, copy) => {
+  const match = TITLED_ROUTES.filter(
+    (route) => route.path === pathname || (route.path !== "/" && pathname.startsWith(`${route.path}/`)),
+  ).sort((a, b) => b.path.length - a.path.length)[0];
+  return match ? routeLabel(match, copy) : "";
 };
 
 function Navbar() {
@@ -120,8 +132,6 @@ function Navbar() {
   return (
     <nav className="navbar" aria-label={siteCopy("ui.menu")}>
       <div className="navbar-container">
-        <span className="navbar-page-title">{currentTitle}</span>
-
         <Link
           to="/"
           className={`navbar-brand${isHome && heroLogoInView ? " is-tucked" : ""}`}
@@ -135,45 +145,61 @@ function Navbar() {
           id="mobile-navigation"
           ref={menuRef}
           className={`nav-menu ${isOpen ? "open" : ""}`}
-          aria-label={siteCopy("ui.menu")}
         >
-          <div className="nav-menu-header" tabIndex="-1">
-            <span className="nav-menu-title">{siteCopy("ui.menu")}</span>
-            <span className="nav-menu-subtitle">{siteCopy("ui.menu-subtitle")}</span>
-          </div>
           <NavLinks
             items={navItems}
             currentPath={currentPath}
             onNavigate={handleNavigate}
             copy={siteCopy}
           />
+          {/* Phone menu only: what people most often open a menu for. */}
+          <div className="nav-menu-contact">
+            <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+            <a href={COURSE_LOCATION.mapsUrl} target="_blank" rel="noopener noreferrer">
+              {COURSE_LOCATION.name}, {COURSE_LOCATION.locality}
+            </a>
+            <div className="nav-menu-social">
+              <a
+                href="https://www.instagram.com/storegarden7/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Besök oss på Instagram"
+              >
+                <Instagram size={22} aria-hidden="true" />
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61564642647081"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Besök oss på Facebook"
+              >
+                <Facebook size={22} aria-hidden="true" />
+              </a>
+            </div>
+          </div>
         </div>
-
-        {isOpen && (
-          <button
-            type="button"
-            className="nav-overlay"
-            aria-label={siteCopy("ui.close-menu")}
-            tabIndex="-1"
-            onClick={close}
-          />
-        )}
 
         <div className="navbar-right">
           <NotificationBell />
           <CartBadge />
+          {/* The page you are on, next to the menu it lives in; the name stays in the button's label. */}
           <button
             ref={triggerRef}
-            className={`hamburger ${isOpen ? "open" : ""}`}
+            className="menu-trigger"
             onClick={toggle}
-            aria-label={isOpen ? siteCopy("ui.close-menu") : siteCopy("ui.open-menu")}
+            aria-label={[currentTitle, isOpen ? siteCopy("ui.close-menu") : siteCopy("ui.open-menu")]
+              .filter(Boolean)
+              .join(", ")}
             aria-expanded={isOpen}
             aria-controls="mobile-navigation"
             type="button"
           >
-            <span />
-            <span />
-            <span />
+            {currentTitle && <span className="navbar-page-title">{currentTitle}</span>}
+            <span className={`hamburger ${isOpen ? "open" : ""}`} aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </button>
         </div>
       </div>

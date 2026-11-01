@@ -1,30 +1,10 @@
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { canonicalPath, routeLabel } from "../../../config/routes.js";
 
-function activeSectionPath(items, currentPath) {
-  return (
-    items.find((item) => {
-      const children = (item.children ?? []).filter((child) => !child.hidden);
-      return (
-        children.length > 0 &&
-        (item.path === currentPath ||
-          children.some((child) => child.path === currentPath))
-      );
-    })?.path ?? null
-  );
-}
-
+// The phone menu lists every subpage under its section, so nothing hides behind a toggle;
+// desktop hides them and uses the section bar instead (see .nav-submenu in Navbar.css).
 function NavLinks({ items, currentPath, onNavigate, copy }) {
-  const [openSection, setOpenSection] = useState(() =>
-    activeSectionPath(items, currentPath),
-  );
-
-  useEffect(() => {
-    setOpenSection(activeSectionPath(items, currentPath));
-  }, [items, currentPath]);
-
   return (
     <ul className="nav-list">
       {items.map((item, index) => {
@@ -37,20 +17,12 @@ function NavLinks({ items, currentPath, onNavigate, copy }) {
           (child) => child.path === currentPath,
         );
         const isActive = currentPath === item.path;
-        const isExpanded = hasChildren && openSection === item.path;
-        const submenuId = `nav-submenu-${item.path.replace(/\W+/g, "-")}`;
-
-        const handleParentClick = () => {
-          onNavigate(item.path);
-        };
 
         return (
           <li
             key={item.path}
             style={{ "--i": index }}
-            className={`nav-item ${hasChildren ? "has-submenu" : ""} ${
-              isExpanded ? "submenu-open" : ""
-            }`}
+            className={`nav-item${hasChildren ? " has-submenu" : ""}${item.cta ? " nav-item--cta" : ""}`}
           >
             <div className="nav-item-row">
               <Link
@@ -59,34 +31,14 @@ function NavLinks({ items, currentPath, onNavigate, copy }) {
                   isChildActive ? "section-active" : ""
                 } ${item.cta ? "nav-link--cta" : ""}`}
                 aria-current={isActive ? "page" : undefined}
-                onClick={handleParentClick}
+                onClick={() => onNavigate(item.path)}
               >
                 <span className="nav-link-label">{itemLabel}</span>
               </Link>
-              {hasChildren && (
-                <button
-                  type="button"
-                  className="nav-submenu-toggle"
-                  aria-label={itemLabel || undefined}
-                  aria-expanded={isExpanded}
-                  aria-controls={submenuId}
-                  onClick={() =>
-                    setOpenSection((current) =>
-                      current === item.path ? null : item.path,
-                    )
-                  }
-                >
-                  <span className="nav-submenu-caret" aria-hidden="true" />
-                </button>
-              )}
             </div>
             {hasChildren && (
               <div className="nav-submenu-wrapper">
-                <ul
-                  id={submenuId}
-                  className="nav-submenu"
-                  aria-label={itemLabel || undefined}
-                >
+                <ul className="nav-submenu" aria-label={itemLabel || undefined}>
                   {children.map((child, childIndex) => (
                     <li
                       key={child.path}
