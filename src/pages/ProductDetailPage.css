@@ -25,26 +25,6 @@
   }
 }
 
-/* Breadcrumb navigation */
-.breadcrumb {
-  margin-bottom: 2rem;
-  font-size: 0.9rem;
-  color: var(--text-body);
-}
-
-.breadcrumb a {
-  color: var(--text-accent);
-  text-decoration: none;
-}
-
-.breadcrumb a:hover {
-  text-decoration: underline;
-}
-
-.breadcrumb span[aria-current="page"] {
-  color: var(--text-main);
-}
-
 /* Product detail layout */
 .product-detail {
   display: grid;
@@ -168,10 +148,6 @@
 }
 
 .back-link:focus-visible,
-.breadcrumb a:focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 2px;
-}
 
 /* Product not found */
 .product-not-found {
@@ -191,7 +167,6 @@
   color: var(--text-body);
   margin-bottom: 2rem;
 }
-
 
 /* Responsive */
 @media (max-width: 768px) {

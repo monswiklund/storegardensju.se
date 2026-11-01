@@ -14,6 +14,7 @@ import usePageCopy from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
 import { smoothScrollTo } from "../utils/scrollUtils.js";
 import "./AnnPortfolioPage.css";
+import { lightboxTile } from "../utils/tileFlight.js";
 
 const externalUrl = (url) => (/^https?:\/\//.test(url) ? url : `https://${url}`);
 
@@ -41,6 +42,7 @@ function Painting({ work, index, onOpen, sizes, showLarger, priority = false }) 
       type="button"
       className="ann-painting"
       onClick={() => onOpen(index)}
+      data-lightbox-index={index}
       aria-label={`${showLarger}: ${work.title}`}
     >
       <img
@@ -207,6 +209,7 @@ function AnnPortfolioPage() {
                   type="button"
                   className="ann-studio__photo"
                   onClick={() => lightbox.openLightbox(works.length + i)}
+                  data-lightbox-index={works.length + i}
                   aria-label={`${showLarger}: ${photo.alt}`}
                 >
                   <img
@@ -279,6 +282,7 @@ function AnnPortfolioPage() {
         onSelectImage={lightbox.goToImage}
         dialogRef={lightbox.dialogRef}
         closeButtonRef={lightbox.closeButtonRef}
+        tileFor={lightboxTile}
       />
     </main>
   );

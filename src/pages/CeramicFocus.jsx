@@ -4,27 +4,7 @@ import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, Mail, X } from "lucide-react";
 import { useSiteCopy } from "../hooks/usePageCopy.js";
 import { ceramicImageProps, ceramicName } from "../data/ceramics.js";
-
-const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
-const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-
-/**
- * Keyframe that lays `node` over the photo in `tile`: scaled to cover it and clipped to its
- * square crop, so the piece grows out of the grid without being squashed.
- */
-function overTile(node, tile) {
-  const from = (tile.querySelector("img") || tile).getBoundingClientRect();
-  const to = node.getBoundingClientRect();
-  if (!to.width || !from.width) return null;
-  const scale = Math.max(from.width / to.width, from.height / to.height);
-  const insetX = Math.max(0, (to.width - from.width / scale) / 2);
-  const insetY = Math.max(0, (to.height - from.height / scale) / 2);
-  const dx = from.left + from.width / 2 - (to.left + to.width / 2);
-  const dy = from.top + from.height / 2 - (to.top + to.height / 2);
-  return { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, clipPath: `inset(${insetY}px ${insetX}px)` };
-}
-
-const settled = { transform: "none", clipPath: "inset(0px 0px)" };
+import { FLIGHT_EASE, cancelCssAnimation, overTile, reducedMotion, settled } from "../utils/tileFlight.js";
 
 /**
  * One piece lifted out of the grid: it grows from its tile to the middle of the screen while the
@@ -44,16 +24,21 @@ function CeramicFocus({ lightbox, pieces, tileFor, email, ask }) {
     const image = imageRef.current;
     const tile = isOpen && tileFor(currentIndex);
     if (!image || !tile || reducedMotion()) return;
+    // The fade meant for paging would start the piece at 40% while its tile is already hidden.
+    cancelCssAnimation(image, "ceramic-focus-swap");
     const start = overTile(image, tile);
-    if (start) image.animate([start, settled], { duration: 520, easing: EASE });
+    if (start) image.animate([start, settled], { duration: 520, easing: FLIGHT_EASE });
     // Only on opening; paging to the next piece cross-fades instead.
   }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
+    // Keeps the scrollbar's space, so the page behind does not jump sideways when it locks.
+    document.documentElement.style.scrollbarGutter = "stable";
     document.body.style.overflow = "hidden";
     window.storegardenLenis?.stop();
     return () => {
+      document.documentElement.style.scrollbarGutter = "";
       document.body.style.overflow = "";
       window.storegardenLenis?.start();
       setClosing(false);
@@ -70,7 +55,7 @@ function CeramicFocus({ lightbox, pieces, tileFor, email, ask }) {
     const end = image && tile && !reducedMotion() ? overTile(image, tile) : null;
     if (!end) return lightbox.closeLightbox();
     setClosing(true);
-    image.animate([settled, end], { duration: 380, easing: EASE, fill: "forwards" })
+    image.animate([settled, end], { duration: 380, easing: FLIGHT_EASE, fill: "forwards" })
       .finished.then(lightbox.closeLightbox, lightbox.closeLightbox);
   };
 

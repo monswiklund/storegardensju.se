@@ -15,22 +15,6 @@
   margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
-.ann-ceramics__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: 44px;
-  margin-bottom: 1rem;
-  color: var(--text-muted);
-  text-decoration: none;
-}
-
-.ann-ceramics__back:hover {
-  color: var(--text-accent);
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-}
-
 .ann-ceramics__head h1 {
   font-size: clamp(2.75rem, 8vw, 5rem);
   line-height: 1;

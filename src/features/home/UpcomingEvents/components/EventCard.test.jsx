@@ -21,6 +21,18 @@ const event = {
 };
 
 describe("EventCard", () => {
+  it("leads to the event's own page when it has one", () => {
+    render(
+      <MemoryRouter>
+        <EventCard event={{ ...event, slug: "konstafton-2026" }} />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("link", { name: /Visa hela evenemanget: Konstafton 2026/ })).toHaveAttribute("href", "/evenemang/konstafton-2026/");
+    expect(screen.getByRole("link", { name: "Konstafton 2026" })).toHaveAttribute("href", "/evenemang/konstafton-2026/");
+    expect(screen.queryByRole("button", { name: /Visa hela evenemanget/ })).toBeNull();
+  });
+
   it("shows the description and opens the whole event with every photo", () => {
     render(
       <MemoryRouter>

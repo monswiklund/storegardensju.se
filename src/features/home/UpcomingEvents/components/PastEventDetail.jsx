@@ -216,7 +216,15 @@ function PastEventDetail({
 
         {(links.length > 0 || event.slug) && (
           <div className="past-event-modal-actions">
+            {/* The event's own page leads; outside links follow as secondary. */}
+            {event.slug && (
+              <Link to={canonicalPath(`/evenemang/${event.slug}`)} className="btn btn--sm btn--primary">
+                <ArrowUpRight size={16} aria-hidden="true" />
+                {siteCopy("ui.event-page")}
+              </Link>
+            )}
             {links.map((link, index) => {
+              const variant = index === 0 && !event.slug ? "btn--primary" : "btn--secondary";
               const isMapLink = link.href?.includes(MAPS_HOST);
               const isInternalLink = link.href?.startsWith("/");
 
@@ -225,7 +233,7 @@ function PastEventDetail({
                   <Link
                     key={link.href || index}
                     to={canonicalPath(link.href)}
-                    className={`btn btn--sm ${index === 0 ? "btn--primary" : "btn--secondary"}`}
+                    className={`btn btn--sm ${variant}`}
                   >
                     <ArrowUpRight size={16} aria-hidden="true" />
                     {link.label || defaultLinkLabel}
@@ -239,7 +247,7 @@ function PastEventDetail({
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`btn btn--sm ${index === 0 ? "btn--primary" : "btn--secondary"}`}
+                  className={`btn btn--sm ${variant}`}
                 >
                   {isMapLink ? (
                     <MapPin size={16} aria-hidden="true" />
@@ -250,15 +258,6 @@ function PastEventDetail({
                 </a>
               );
             })}
-            {event.slug && (
-              <Link
-                to={canonicalPath(`/evenemang/${event.slug}`)}
-                className={`btn btn--sm ${links.length === 0 ? "btn--primary" : "btn--secondary"}`}
-              >
-                <ArrowUpRight size={16} aria-hidden="true" />
-                {siteCopy("ui.event-page")}
-              </Link>
-            )}
           </div>
         )}
       </div>

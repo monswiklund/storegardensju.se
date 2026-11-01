@@ -37,6 +37,8 @@ import {
 } from "../data/courseEvents.js";
 import "./KurserPages.css";
 import "../features/gallery/ImageGallery/Gallery.css";
+import { lightboxTile } from "../utils/tileFlight.js";
+import Breadcrumbs from "../components/layout/Breadcrumbs/Breadcrumbs.jsx";
 
 const linaYogaHeaderImg = cdnAsset("/images/evenemang/lina-yoga-header.jpg");
 const linaYogaImg = cdnAsset("/images/evenemang/lina-yoga.jpg");
@@ -134,6 +136,7 @@ function KurserPage() {
           />
           <div className="kurser-hero__overlay" data-cms-hero-overlay />
           <div className="kurser-hero__inner" data-cms-hero-content>
+            <Breadcrumbs tone="light" />
             {nextPassItem && (
               <div className="kurser-hero__badge">
                 <span className="kurser-hero__badge-pulse" />
@@ -216,6 +219,7 @@ function KurserPage() {
                 key={imgItem.original}
                 className={`kurser-recap__image ${idx === 0 ? "kurser-recap__image--large" : ""}`}
                 onClick={() => openLightbox(idx)}
+                data-lightbox-index={idx}
                 tabIndex={0}
                 role="button"
                 aria-label={`${copy("gallery.open-image")} ${idx + 1} av ${recapImages.length}`}
@@ -282,6 +286,7 @@ function KurserPage() {
           onSelectImage={goToImage}
           dialogRef={dialogRef}
           closeButtonRef={closeButtonRef}
+          tileFor={lightboxTile}
         />
       </main>
     </div>

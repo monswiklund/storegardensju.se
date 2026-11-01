@@ -22,7 +22,7 @@ function NavLinks({ items, currentPath, onNavigate, copy }) {
           <li
             key={item.path}
             style={{ "--i": index }}
-            className={`nav-item${hasChildren ? " has-submenu" : ""}${item.cta ? " nav-item--cta" : ""}`}
+            className={`nav-item${hasChildren ? " has-submenu" : ""}${item.cta ? " nav-item--cta" : ""}${item.path === "/" ? " nav-item--home" : ""}`}
           >
             <div className="nav-item-row">
               <Link

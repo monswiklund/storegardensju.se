@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import FadeInSection from "../components/ui/FadeInSection.jsx";
 import ErrorBoundary from "../components/ui/ErrorBoundary.jsx";
 import { ExploreMore, PageSection } from "../components";
@@ -8,6 +7,7 @@ import { useSeo } from "../hooks/useSeo.js";
 import { seoMeta } from "../config/seoMeta.js";
 import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import "./MansPortfolioPage.css";
+import Breadcrumbs from "../components/layout/Breadcrumbs/Breadcrumbs.jsx";
 
 function MansPortfolioPage() {
   useSeo(seoMeta.mansPortfolio || seoMeta.omOss);
@@ -30,9 +30,7 @@ function MansPortfolioPage() {
         <ErrorBoundary>
           <FadeInSection>
             <div className="retro-wrapper">
-              <nav className="retro-nav">
-                <Link to="/om-oss/">&larr; {copy("hero.back-to-about")}</Link>
-              </nav>
+              <Breadcrumbs current={profile.title} className="retro-nav" />
 
               <hr className="retro-hr" />
 

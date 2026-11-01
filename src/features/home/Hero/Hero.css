@@ -367,9 +367,8 @@
     0 6px 14px rgb(45 40 35 / 0.1),
     0 22px 34px -16px rgb(45 40 35 / 0.28);
   transform: translateY(var(--print-y, 0)) rotate(var(--print-tilt, 0deg));
-
-  /* Decorative strip: no clicks, no dragging the image itself */
-  pointer-events: none;
+  /* A tap opens the print big (HomeHeroCarousel); a drag still moves the strip. */
+  cursor: zoom-in;
   user-select: none;
   -webkit-user-drag: none;
 }

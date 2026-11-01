@@ -27,22 +27,6 @@
   padding: calc(60px + clamp(2rem, 5vw, 4rem)) var(--event-gutter) clamp(4rem, 9vw, 7rem);
 }
 
-.event-page__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: 44px;
-  margin-bottom: clamp(1rem, 2vw, 1.5rem);
-  color: var(--text-muted);
-  text-decoration: none;
-}
-
-.event-page__back:hover {
-  color: var(--text-accent);
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-}
-
 /* ---------- Opening: facts beside the first photo ---------- */
 
 .event-page__hero {
@@ -144,7 +128,7 @@
   width: 100%;
   padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 0;
   overflow: hidden;
   background: var(--bg-surface);
   cursor: zoom-in;

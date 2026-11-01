@@ -504,7 +504,23 @@
   }
 }
 
-/* Narrow desktops: logo, seven links and Kontakt only fit with tighter spacing. */
+/* Smaller desktops: the logo already leads home, so Hem gives way, and the links sit closer. */
+@media (min-width: 769px) and (max-width: 1099px) {
+  .nav-item--home {
+    display: none;
+  }
+
+  .nav-link {
+    padding-inline: 9px;
+    font-size: 1rem;
+  }
+
+  .nav-link.nav-link--cta {
+    padding-inline: 18px;
+  }
+}
+
+/* Narrow desktops: the bar's own margins and gaps tighten too. */
 @media (min-width: 769px) and (max-width: 900px) {
   .navbar-container {
     padding-inline: 10px;
@@ -516,7 +532,7 @@
   }
 
   .nav-link {
-    padding-inline: 10px;
+    padding-inline: 7px;
   }
 
   .nav-link.nav-link--cta {

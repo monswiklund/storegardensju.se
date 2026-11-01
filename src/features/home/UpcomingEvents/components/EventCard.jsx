@@ -54,12 +54,20 @@ function EventCard({ event }) {
   const open = () => setIsOpen(true);
   const close = useCallback(() => setIsOpen(false), []);
   const openLabel = `${siteCopy("ui.show-event", "Visa hela evenemanget")}: ${title}`;
+  // With a page of its own the card leads there; without one it opens in the overlay.
+  const page = event.slug ? canonicalPath(`/evenemang/${event.slug}`) : null;
+  const opener = (className, children, props = {}) =>
+    page ? (
+      <Link to={page} className={className} {...props}>{children}</Link>
+    ) : (
+      <button type="button" className={className} onClick={open} {...props}>{children}</button>
+    );
 
   return (
     <article className={`upcoming-event-card${isSeries ? " is-series" : ""}${cancelled ? " is-cancelled" : ""}`}>
       <div className="upcoming-card-media">
         {/* The picture opens the whole event, with every photo the editor added. */}
-        <button type="button" className="upcoming-card-open" onClick={open} aria-label={openLabel}>
+        {opener("upcoming-card-open", <>
           {image?.src && (
             <img src={image.src} alt={image.alt || ""} className="upcoming-card-image" loading="lazy" decoding="async" />
           )}
@@ -69,7 +77,7 @@ function EventCard({ event }) {
               {imageCount}
             </span>
           )}
-        </button>
+        </>, { "aria-label": openLabel })}
         <div className="upcoming-card-date">
           <span className="upcoming-date-day">{eventDate.day}</span>
           <span className="upcoming-date-month">{eventDate.month}</span>
@@ -80,9 +88,7 @@ function EventCard({ event }) {
       <div className="upcoming-card-body">
         {statusLabel && <p className={`upcoming-card-status is-${status}`}>{statusLabel}</p>}
         <h3 className="upcoming-event-title">
-          <button type="button" className="upcoming-card-title-button" onClick={open}>
-            {title}
-          </button>
+          {opener("upcoming-card-title-button", title)}
         </h3>
 
         <ul className="upcoming-event-meta">

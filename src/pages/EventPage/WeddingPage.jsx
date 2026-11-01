@@ -23,6 +23,7 @@ import { useSeo } from "../../hooks/useSeo.js";
 import useSequentialScrollTimeline from "../../hooks/useSequentialScrollTimeline.js";
 import "./EventPage.css";
 import "./WeddingPage.css";
+import Breadcrumbs from "../../components/layout/Breadcrumbs/Breadcrumbs.jsx";
 
 const SPACE_ICONS = [UtensilsCrossed, GlassWater, Music];
 
@@ -117,6 +118,7 @@ function WeddingPage() {
           aria-labelledby="wedding-heading"
         >
           <div className="event-hero__inner" data-cms-hero-content>
+            <Breadcrumbs tone="light" className="breadcrumbs--centered" />
             <span className="event-eyebrow">{copy("hero.eyebrow")}</span>
             <div className="section-ornament wedding-hero__ornament" aria-hidden="true">
               <span className="section-ornament-line" />

@@ -49,6 +49,30 @@ describe("PastEventsAccordion history", () => {
     expect(screen.getByRole("region", { name: "2024" })).toHaveTextContent(/22 november.*Helgkurs Keramik.*Kurs/);
   });
 
+  it("links an event with a page of its own straight to it", () => {
+    render(
+      <BrowserRouter>
+        <PastEventsAccordion events={[{ ...event, slug: "sommarkvall-2026" }]} />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByRole("link", { name: /Sommarkväll/ })).toHaveAttribute("href", "/evenemang/sommarkvall-2026/");
+    expect(screen.queryByRole("button", { name: /Sommarkväll/ })).toBeNull();
+  });
+
+  it("sends an old ?pastEvent= link on to the event's page", async () => {
+    window.history.replaceState({}, "", "/?pastEvent=sommarkvall");
+
+    render(
+      <BrowserRouter>
+        <PastEventsAccordion events={[{ ...event, slug: "sommarkvall-2026" }]} />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(window.location.pathname).toBe("/evenemang/sommarkvall-2026/"));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
   it("V34 closes the home past-event overlay on Back before leaving the route", async () => {
     window.history.replaceState({}, "", "/fore");
     window.history.pushState({}, "", "/");

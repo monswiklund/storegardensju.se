@@ -251,6 +251,11 @@
   overflow: hidden;
 }
 
+/* Leading to the event's page rather than opening an enlargement. */
+a.upcoming-card-open {
+  cursor: pointer;
+}
+
 .upcoming-card-open .upcoming-card-image {
   transition: transform 0.5s ease;
 }

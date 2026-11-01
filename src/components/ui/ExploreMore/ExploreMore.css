@@ -41,6 +41,11 @@
   .explore-more__grid--5 > li:nth-child(-n + 2) {
     grid-column: span 3;
   }
+
+  /* The two wide cards get a wider photo, so all five keep about the same photo height. */
+  .explore-more__grid--5 > li:nth-child(-n + 2) .explore-more__media {
+    aspect-ratio: 16 / 9;
+  }
 }
 
 .explore-more__grid > li {
@@ -82,10 +87,6 @@
   overflow: hidden;
 }
 
-.explore-more__grid--5 > li:nth-child(-n + 2) .explore-more__media {
-  aspect-ratio: 16 / 9;
-}
-
 .explore-more__media img {
   width: 100%;
   height: 100%;
@@ -125,9 +126,16 @@
   line-height: 1.55;
 }
 
+/* The details sit with the link at the card's foot, so they line up across a row. */
 .explore-more__meta {
+  margin-top: auto;
+  padding-top: 4px;
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+.explore-more__meta + .explore-more__cta {
+  margin-top: 0;
 }
 
 .explore-more__cta {
@@ -146,6 +154,53 @@
 
 .explore-more__cta svg {
   transition: transform 0.25s ease;
+}
+
+/* Phones: two cards per row, so the block stays a glance instead of a long scroll. */
+@media (max-width: 599px) {
+  .explore-more {
+    padding-inline: 16px;
+  }
+
+  .explore-more__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .explore-more__card {
+    border-radius: 12px;
+  }
+
+  .explore-more__body {
+    gap: 6px;
+    padding: 12px 12px 14px;
+  }
+
+  .explore-more__kicker {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
+
+  .explore-more__title {
+    font-size: 1.15rem;
+  }
+
+  .explore-more__text {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  .explore-more__meta {
+    font-size: 0.75rem;
+  }
+
+  /* Room for a link that wraps (Planera er gruppdag), so the details above still line up. */
+  .explore-more__cta {
+    min-height: calc(2.7em + 8px);
+    align-items: flex-end;
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -10,6 +10,8 @@ describe("home service cards", () => {
       "fest",
       "kurser-konst",
       "yoga",
+      "ann",
+      "keramik",
     ]);
   });
 

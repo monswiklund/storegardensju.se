@@ -2,10 +2,12 @@ import PropTypes from "prop-types";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { flushSync } from "react-dom";
 import {
+  Link,
   useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
+import { canonicalPath } from "../../../../config/routes.js";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import PastEventModal from "./PastEventModal.jsx";
 import { bandImages, groupPastEvents, pastEventType, pastYearGroups } from "../pastEventsUtils.js";
@@ -14,6 +16,10 @@ import usePageCopy from "../../../../hooks/usePageCopy.js";
 
 const pastEventHistoryStateKey = "__storegardenPastEvent";
 const INITIAL_LIMIT = 8;
+
+// An event with a page of its own opens that page; a grouped series (a month of yoga) has none
+// and opens in the overlay instead.
+const eventPage = (event) => (event.slug ? canonicalPath(`/evenemang/${event.slug}`) : null);
 
 // Each row keeps a name so the browser can glide it into place when the list grows or shrinks.
 const rowName = (event, index) => `past-row-${String(event.id || index).replace(/[^\w-]/g, "-")}`;
@@ -117,26 +123,37 @@ function PastEventsAccordion({ events }) {
       match = events.find((e) => e.id === requestedEventId);
     }
 
-    if (match) {
+    // A shared ?pastEvent= link from before the event pages goes on to the page itself.
+    if (match && eventPage(match)) {
+      navigate(eventPage(match), { replace: true });
+    } else if (match) {
       setSelectedEvent(match);
     }
-  }, [events, groupedEvents, requestedEventId]);
+  }, [events, groupedEvents, requestedEventId, navigate]);
 
   let rowIndex = 0;
   const renderRow = (event) => {
     const index = rowIndex++;
+    const page = eventPage(event);
+    const content = (
+      <>
+        {/* The year stands beside the group, so the row keeps day and month. */}
+        <span className="past-row-date">{(event.date || "").split(" ").slice(0, 2).join(" ").toLowerCase()}</span>
+        <span className="past-row-title">
+          {event.title}
+          {event.badge && <span className="past-row-badge">{event.badge}</span>}
+        </span>
+        <span className="past-row-type">{pastEventType(event)}</span>
+        <ArrowUpRight className="past-row-arrow" size={18} aria-hidden="true" />
+      </>
+    );
     return (
       <li key={event.id || `${event.title}-${index}`} style={{ viewTransitionName: rowName(event, index) }}>
-        <button type="button" className="past-row" onClick={() => openEvent(event)}>
-          {/* The year stands beside the group, so the row keeps day and month. */}
-          <span className="past-row-date">{(event.date || "").split(" ").slice(0, 2).join(" ").toLowerCase()}</span>
-          <span className="past-row-title">
-            {event.title}
-            {event.badge && <span className="past-row-badge">{event.badge}</span>}
-          </span>
-          <span className="past-row-type">{pastEventType(event)}</span>
-          <ArrowUpRight className="past-row-arrow" size={18} aria-hidden="true" />
-        </button>
+        {page ? (
+          <Link to={page} className="past-row">{content}</Link>
+        ) : (
+          <button type="button" className="past-row" onClick={() => openEvent(event)}>{content}</button>
+        )}
       </li>
     );
   };
@@ -156,14 +173,26 @@ function PastEventsAccordion({ events }) {
       {/* A few different photos carry the feeling once, instead of one picture on every row. */}
       {band.length > 0 && (
         <ul className={`past-band past-band--${band.length}`}>
-          {band.map(({ image, event }) => (
-            <li key={image.src}>
-              <button type="button" className="past-band-photo" onClick={() => openEvent(event)} aria-label={event.title}>
+          {band.map(({ image, event }) => {
+            const page = eventPage(event);
+            const photo = (
+              <>
                 <img src={image.src} alt={image.alt || ""} loading="lazy" decoding="async" />
                 <span className="past-band-caption" aria-hidden="true">{event.title}</span>
-              </button>
-            </li>
-          ))}
+              </>
+            );
+            return (
+              <li key={image.src}>
+                {page ? (
+                  <Link to={page} className="past-band-photo" aria-label={event.title}>{photo}</Link>
+                ) : (
+                  <button type="button" className="past-band-photo" onClick={() => openEvent(event)} aria-label={event.title}>
+                    {photo}
+                  </button>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
 

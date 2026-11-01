@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import GalleryLightbox from "./GalleryLightbox.jsx";
 
@@ -39,5 +39,37 @@ describe("GalleryLightbox", () => {
 
     expect(scrollTo).toHaveBeenCalledTimes(1);
     expect(scrollTo.mock.contexts[0]).toBe(document.querySelector(".lightbox-thumbnails"));
+  });
+
+  it("leaves the open photo's tile empty and closes even when there is nothing to animate", () => {
+    const tiles = images.map(() => document.createElement("div"));
+    const onClose = vi.fn();
+    const lightbox = (isOpen, currentIndex) => (
+      <GalleryLightbox
+        isOpen={isOpen}
+        images={images}
+        currentIndex={currentIndex}
+        currentImage={images[currentIndex]}
+        onClose={onClose}
+        onNext={() => {}}
+        onPrevious={() => {}}
+        onSelectImage={() => {}}
+        tileFor={(index) => tiles[index]}
+      />
+    );
+    const { rerender } = render(lightbox(true, 0));
+    expect(tiles[0].style.visibility).toBe("hidden");
+
+    // Paging moves the empty spot along, so closing returns to the photo shown.
+    rerender(lightbox(true, 1));
+    expect(tiles[0].style.visibility).toBe("");
+    expect(tiles[1].style.visibility).toBe("hidden");
+
+    // jsdom lays nothing out, so the photo has no size to fly with and closes at once.
+    fireEvent.click(document.querySelector(".gallery-close-button"));
+    expect(onClose).toHaveBeenCalledTimes(1);
+
+    rerender(lightbox(false, 1));
+    expect(tiles[1].style.visibility).toBe("");
   });
 });

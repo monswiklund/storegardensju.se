@@ -44,6 +44,7 @@ const AdminPage = lazy(() => import("../pages/AdminPage/AdminPage.jsx"));
 const ButikPage = lazy(() => import("../pages/ButikPage.jsx"));
 const ProductDetailPage = lazy(() => import("../pages/ProductDetailPage.jsx"));
 const EventDetailPage = lazy(() => import("../pages/EventDetailPage.jsx"));
+const EventsPage = lazy(() => import("../pages/EventsPage.jsx"));
 const CartPage = lazy(() => import("../pages/CartPage.jsx"));
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage/CheckoutPage.jsx"));
 const SuccessPage = lazy(() => import("../pages/SuccessPage.jsx"));
@@ -239,6 +240,7 @@ function AppContent() {
           <Route path="/om-oss/portfolj/mans" element={<MansPortfolioPage />} />
           <Route path="/ann" element={<AnnPortfolioPage />} />
           <Route path="/ann/keramik" element={<AnnCeramicsPage />} />
+          <Route path="/evenemang" element={<EventsPage />} />
           <Route path="/evenemang/:slug" element={<EventDetailPage />} />
           <Route path="/kontakt" element={<ContactPage />} />
           <Route path="/admin" element={<AdminPage />} />

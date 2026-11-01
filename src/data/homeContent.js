@@ -1,4 +1,11 @@
 import { cdnAsset } from "../config/cdnAssets.js";
+import CMS_CONTENT from "./cmsContent.generated.js";
+
+// The first published piece in the build's CMS snapshot, so Ann's cards show her current work.
+const firstWork = (works, keep = () => true) => {
+  const image = works?.find((work) => work.image?.url && keep(work))?.image;
+  return image && (image.sizes?.card?.url || image.sizes?.medium?.url || image.url);
+};
 
 export const heroContent = {
   title: "Välkommen till Storegården\xa07",
@@ -94,6 +101,31 @@ export const services = [
     route: "/kurser/yoga",
     image: cdnAsset("/images/evenemang/lina-yoga-header.jpg"),
     ctaLabel: "Se yogan",
+  },
+  {
+    id: "ann",
+    kicker: "Konstnären på gården",
+    title: "Konst",
+    description: "Målningar av Ann Wiklund, konstnär och keramiker med ateljé här på gården.",
+    meta: "Målningar · Ateljé",
+    route: "/ann",
+    image:
+      firstWork(CMS_CONTENT?.artworks, (work) => work.placement === "wall") ||
+      cdnAsset("/images/portfolio/ann-2.webp"),
+    ctaLabel: "Se målningarna",
+  },
+  {
+    id: "keramik",
+    kicker: "Från ateljén",
+    title: "Keramik",
+    description: "Handgjord keramik av Ann: skålar, koppar, vaser och skulpturer.",
+    meta: "Skålar · Koppar · Vaser",
+    route: "/ann/keramik",
+    // Fallback: a shelf of Ann's bowls, for builds without the CMS snapshot.
+    image:
+      firstWork(CMS_CONTENT?.ceramics) ||
+      "https://media.storegardensju.se/keramik/keramik-a35e8aff2ef93bfe14c6c4bc866f6a7d27a82f99754be336baa4f2c8790c26eb-900x1200.webp",
+    ctaLabel: "Se keramiken",
   },
 ];
 

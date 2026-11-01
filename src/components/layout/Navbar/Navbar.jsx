@@ -17,11 +17,7 @@ const ALL_NAV_ITEMS = appRoutes.filter((route) => !route.hidden);
 const NAV_ITEMS = ALL_NAV_ITEMS.filter((route) => !route.headerHidden);
 
 // Pages outside the menu still say where you are, instead of falling back to "Hem".
-const EXTRA_TITLES = [
-  { path: "/ann", label: "Ann Wiklund" },
-  { path: "/evenemang", label: "Evenemang" },
-  { path: "/varukorg", label: "Varukorg" },
-];
+const EXTRA_TITLES = [{ path: "/varukorg", label: "Varukorg" }];
 const TITLED_ROUTES = [
   ...ALL_NAV_ITEMS.flatMap((item) => [item, ...(item.children ?? [])]),
   ...EXTRA_TITLES,

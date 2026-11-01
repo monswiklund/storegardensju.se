@@ -10,6 +10,7 @@ import { useSiteCopy } from "../hooks/usePageCopy";
 import { useSeo } from "../hooks/useSeo.js";
 import { productSeoMeta } from "../config/seoMeta.js";
 import "./ProductDetailPage.css";
+import Breadcrumbs from "../components/layout/Breadcrumbs/Breadcrumbs.jsx";
 
 function ProductDetailPage() {
   const siteCopy = useSiteCopy();
@@ -69,14 +70,7 @@ function ProductDetailPage() {
   return (
     <main role="main" id="main-content">
       <PageSection background="alt" spacing="default">
-        {/* Breadcrumb navigation */}
-        <nav className="breadcrumb" aria-label="breadcrumb">
-          <Link to="/">{siteCopy("nav.home")}</Link>
-          <span> / </span>
-          <Link to="/butik/">{siteCopy("nav.shop")}</Link>
-          <span> / </span>
-          <span aria-current="page">{product?.name || ""}</span>
-        </nav>
+        <Breadcrumbs current={product?.name || ""} />
 
         <div className="product-detail">
           {/* Bildgalleri */}

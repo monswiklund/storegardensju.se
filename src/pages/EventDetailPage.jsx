@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowUpRight, ExternalLink, Loader2, MapPin } from "lucide-react";
+import { ArrowUpRight, ExternalLink, Loader2, MapPin } from "lucide-react";
 import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
 import "../features/gallery/ImageGallery/Gallery.css";
@@ -13,6 +13,9 @@ import useCmsSchedule from "../hooks/useCmsSchedule.js";
 import { useSiteCopy } from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
 import "./EventDetailPage.css";
+import { lightboxTile } from "../utils/tileFlight.js";
+import Breadcrumbs from "../components/layout/Breadcrumbs/Breadcrumbs.jsx";
+import { ExploreMore } from "../components";
 
 /** The event's photos: uploads from the media library, else addresses saved before it existed. */
 function eventPhotos(doc) {
@@ -130,7 +133,7 @@ function EventDetailPage() {
             <>
               <h1>{siteCopy("event-page.not-found")}</h1>
               <p>{siteCopy("event-page.not-found-desc")}</p>
-              <Link to="/#past-events" className="btn btn--primary">
+              <Link to="/evenemang/" className="btn btn--primary">
                 {siteCopy("event-page.back")}
               </Link>
             </>
@@ -149,10 +152,7 @@ function EventDetailPage() {
   return (
     <main role="main" id="main-content" className="event-page">
       <div className="event-page__inner">
-        <Link to={past ? "/#past-events" : "/#home-events"} className="event-page__back">
-          <ArrowLeft size={16} aria-hidden="true" />
-          {siteCopy("event-page.back")}
-        </Link>
+        <Breadcrumbs current={event.title} />
 
         <article className={`event-page__hero${cover ? "" : " event-page__hero--text"}`}>
           <header className="event-page__head">
@@ -189,6 +189,7 @@ function EventDetailPage() {
               <button
                 type="button"
                 onClick={() => lightbox.openLightbox(0)}
+                data-lightbox-index={0}
                 aria-label={`${siteCopy("event-page.show-larger")}: ${cover.caption || cover.alt || event.title}`}
               >
                 <img src={cover.src} alt={cover.alt} width={cover.width} height={cover.height} fetchPriority="high" />
@@ -235,6 +236,7 @@ function EventDetailPage() {
                     <button
                       type="button"
                       onClick={() => lightbox.openLightbox(index + 1)}
+                      data-lightbox-index={index + 1}
                       aria-label={`${siteCopy("event-page.show-larger")}: ${photo.caption || photo.alt || index + 2}`}
                     >
                       <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" />
@@ -248,6 +250,9 @@ function EventDetailPage() {
         )}
       </div>
 
+      {/* An evening ends here; lead on to the rest of the farm instead of a dead end. */}
+      <ExploreMore ids={["ann", "keramik", "event", "brollop"]} background="green" />
+
       <GalleryLightbox
         isOpen={lightbox.isOpen}
         images={lightboxImages}
@@ -259,6 +264,7 @@ function EventDetailPage() {
         onSelectImage={lightbox.goToImage}
         dialogRef={lightbox.dialogRef}
         closeButtonRef={lightbox.closeButtonRef}
+        tileFor={lightboxTile}
       />
     </main>
   );

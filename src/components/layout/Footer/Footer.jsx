@@ -30,7 +30,9 @@ const footerGroups = [
   {
     titleKey: "footer.nav.farm",
     links: [
+      { path: "/evenemang", label: "Evenemang" },
       { path: "/galleri", label: "Galleri" },
+      { path: "/ann", label: "Konst" },
       { path: "/ann/keramik", label: "Keramik" },
       { path: "/butik", label: "Butik", shopOnly: true },
       { path: "/om-oss", label: "Om Oss" },

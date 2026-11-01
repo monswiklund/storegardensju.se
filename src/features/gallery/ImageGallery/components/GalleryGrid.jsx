@@ -71,6 +71,7 @@ function GalleryGrid({
             <div
               key={image.filename || image.original || index}
               className="gallery-thumbnail"
+              data-lightbox-index={index}
               onClick={() => onImageSelect(index)}
               role="button"
               tabIndex={0}

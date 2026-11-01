@@ -46,8 +46,13 @@ export const appRoutes = [
       { path: "/kurser/konst", label: "Måleri" },
     ],
   },
+  { path: "/evenemang", label: "Evenemang" },
   { path: "/galleri", label: "Galleri" },
-  { path: "/ann/keramik", label: "Keramik" },
+  {
+    path: "/ann",
+    label: "Konst",
+    children: [{ path: "/ann/keramik", label: "Keramik" }],
+  },
   // shopOnly: hidden in the menus while the shop has no published products.
   { path: "/butik", label: "Butik", shopOnly: true },
   { path: "/om-oss", label: "Om Oss" },

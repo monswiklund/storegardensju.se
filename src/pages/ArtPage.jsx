@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowDown, ArrowRight, MapPin } from "lucide-react";
-import { ScrollSpyNav, SectionDivider } from "../components";
+import { ExploreMore, ScrollSpyNav, SectionDivider } from "../components";
 import { smoothScrollTo } from "../utils/scrollUtils.js";
 import { canonicalPath } from "../config/routes.js";
 import {
@@ -32,6 +32,7 @@ import {
   upcomingPasses,
 } from "../data/courseEvents.js";
 import "./ArtPage.css";
+import Breadcrumbs from "../components/layout/Breadcrumbs/Breadcrumbs.jsx";
 
 const MALERI_TRACK = TRACKS[MALERI_TRACK_ID];
 const INSTRUCTOR = MALERI_TRACK.instructor;
@@ -124,6 +125,7 @@ function ArtPage() {
         <section className="art-hero" id="art-hero" data-cms-hero>
           <div className="art-hero__inner">
             <div className="art-hero__text" data-cms-hero-content>
+              <Breadcrumbs />
               <h1>{copy("hero.title")}</h1>
               <p className="art-hero__lead">{copy("hero.lead")}</p>
 
@@ -386,6 +388,8 @@ function ArtPage() {
             </a>
           </div>
         </section>
+
+        <ExploreMore ids={["ann", "keramik", "event", "brollop"]} background="green" />
       </main>
     </div>
   );

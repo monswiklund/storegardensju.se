@@ -40,6 +40,7 @@ const NAV_ROUTES = [
   { path: "/kurser", label: "Kurser i Lidköping" },
   { path: "/kurser/yoga", label: "Yoga på loftet" },
   { path: "/kurser/konst", label: "Målarkurs" },
+  { path: "/evenemang", label: "Evenemang på gården" },
   { path: "/galleri", label: "Bildgalleri" },
   { path: "/butik", label: "Butik" },
   { path: "/om-oss", label: "Om oss" },

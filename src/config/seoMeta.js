@@ -593,6 +593,18 @@ export const seoMeta = {
       ],
     },
   },
+  evenemang: {
+    title: "Evenemang | Storegården 7",
+    description:
+      "Konstkvällar, yoga och annat som händer på Storegården 7 i Rackeby utanför Lidköping: kommande datum och evenemang vi har haft.",
+    path: "/evenemang",
+    staticContent: {
+      h1: "Evenemang",
+      paragraphs: [
+        "Konstkvällar, yoga och annat som händer på gården. Kommande datum först, sedan det vi redan har gjort.",
+      ],
+    },
+  },
   omOss: {
     title: "Om oss | Storegården 7",
     description:

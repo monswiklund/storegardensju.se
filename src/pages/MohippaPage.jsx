@@ -19,6 +19,7 @@ import usePageCopy from "../hooks/usePageCopy.js";
 import usePageMedia from "../hooks/usePageMedia.js";
 import usePageLists from "../hooks/usePageLists.js";
 import "./MohippaPage.css";
+import Breadcrumbs from "../components/layout/Breadcrumbs/Breadcrumbs.jsx";
 
 const DEFAULT_OCCASIONS = ["Möhippa", "Svensexa", "Teambuilding", "Afterwork", "Workshop"];
 // The rotating word is hidden from screen readers, so the heading reads every occasion instead.
@@ -167,6 +168,7 @@ function MohippaPage() {
           <section id="mohippa-hero-section" data-cms-hero className="mohippa-hero" aria-labelledby="mohippa-heading">
             <div className="mohippa-hero__inner">
               <div className="mohippa-hero__copy" data-cms-hero-content>
+                <Breadcrumbs />
                 <span className="mohippa-eyebrow">{copy("hero.eyebrow")}</span>
                 <h1 id="mohippa-heading">
                   {copy("hero.title-prefix")}{" "}

@@ -7,6 +7,7 @@ import useGalleryLightbox from "./hooks/useGalleryLightbox";
 import { fetchGalleryCategories } from "../../../services/galleryService";
 import { normalizeGalleryData } from "../normalizeGalleryData";
 import { smoothScrollTo } from "../../../utils/scrollUtils";
+import { lightboxTile } from "../../../utils/tileFlight.js";
 
 // Where the category picker sticks: under the 60px navbar, see .category-toggle in CategoryToggle.css.
 const STUCK_TOGGLE_TOP = 68;
@@ -131,6 +132,7 @@ function GalleryShowcase() {
         onSelectImage={goToImage}
         dialogRef={dialogRef}
         closeButtonRef={closeButtonRef}
+        tileFor={lightboxTile}
       />
     </div>
   );

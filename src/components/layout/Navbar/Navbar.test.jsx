@@ -6,7 +6,7 @@ describe("getCurrentTitle", () => {
     ["/", "Hem"],
     ["/kurser/konst", "Måleri"],
     ["/event/brollop", "Bröllop"],
-    ["/ann", "Ann Wiklund"],
+    ["/ann", "Konst"],
     ["/ann/keramik", "Keramik"],
     ["/evenemang/konstafton-2026", "Evenemang"],
     ["/butik/12", "Butik"],

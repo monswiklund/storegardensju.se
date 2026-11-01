@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useState } from "react";
+import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { Pause, Play } from "lucide-react";
 import "./Hero.css";
 import { useSiteCopy } from "../../../hooks/usePageCopy.js";
@@ -7,6 +7,12 @@ import {
   isAllGalleryCategory,
   normalizeGalleryData,
 } from "../../gallery/normalizeGalleryData";
+import GalleryLightbox from "../../gallery/ImageGallery/components/GalleryLightbox";
+import useGalleryLightbox from "../../gallery/ImageGallery/hooks/useGalleryLightbox";
+import "../../gallery/ImageGallery/Gallery.css";
+
+// A press that travels further than this was a drag along the strip, not a tap on a print.
+const TAP_SLOP = 6;
 
 // Auto-scroll speed (px/frame ~60fps). Idle time before resume after interaction.
 const SCROLL_SPEED = 0.25;
@@ -66,6 +72,41 @@ const HomeHeroCarousel = () => {
     [galleryData],
   );
 
+  // A print opens big and grows out of its frame; the strip holds still until it is back.
+  const lightboxImages = useMemo(
+    () => slides.map((src) => ({ original: src, thumbnail: src, filename: src, originalAlt: "" })),
+    [slides],
+  );
+  const lightbox = useGalleryLightbox(lightboxImages, "hem");
+  const isLightboxOpenRef = useRef(false);
+  isLightboxOpenRef.current = lightbox.isOpen;
+  const pressRef = useRef(null);
+  const openedRef = useRef(null);
+
+  // The strip repeats every print once (addAnimation), so the photo returns to the copy it came
+  // from, or for another photo to the copy nearest the middle of the screen.
+  const tileFor = useCallback((index) => {
+    const opened = openedRef.current;
+    if (opened?.dataset.slide === String(index)) return opened.querySelector("img");
+    const middle = window.innerWidth / 2;
+    const copies = [...(scrollerRef.current?.querySelectorAll(`[data-slide="${index}"]`) || [])];
+    const distance = (node) => {
+      const rect = node.getBoundingClientRect();
+      return Math.abs(rect.left + rect.width / 2 - middle);
+    };
+    return copies.sort((a, b) => distance(a) - distance(b))[0]?.querySelector("img") || null;
+  }, []);
+
+  const openPrint = (event) => {
+    const press = pressRef.current;
+    if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > TAP_SLOP) return;
+    // A mouse drag captures the pointer on the strip, so the print is found under the click.
+    const print = document.elementFromPoint(event.clientX, event.clientY)?.closest(".hero-carousel-item");
+    if (!print || !scrollerRef.current?.contains(print)) return;
+    openedRef.current = print;
+    lightbox.openLightbox(Number(print.dataset.slide));
+  };
+
   useEffect(() => {
     addAnimation();
   }, [slides.length]);
@@ -94,6 +135,7 @@ const HomeHeroCarousel = () => {
     let rafId;
     const tick = () => {
       const paused =
+        isLightboxOpenRef.current ||
         isDraggingRef.current ||
         isStoppedRef.current ||
         isHeldRef.current ||
@@ -119,6 +161,7 @@ const HomeHeroCarousel = () => {
   const dragStartScroll = useRef(0);
 
   const handlePointerDown = (e) => {
+    pressRef.current = { x: e.clientX, y: e.clientY };
     if (e.pointerType === "mouse" && e.button !== 0) return;
     if (e.pointerType !== "mouse") return;
     const el = scrollerRef.current;
@@ -229,13 +272,15 @@ const HomeHeroCarousel = () => {
         onTouchMove={handleTouchMove}
         onTouchEnd={endDrag}
         onTouchCancel={endDrag}
+        onClick={openPrint}
       >
         <div className="hero-carousel-inner">
           {slides.map((src, index) => (
-            <div className="hero-carousel-item" key={index}>
+            <div className="hero-carousel-item" key={index} data-slide={index}>
               <img
                 src={src}
                 alt=""
+                draggable={false}
                 loading={index < 3 ? "eager" : "lazy"}
                 decoding="async"
               />
@@ -261,6 +306,19 @@ const HomeHeroCarousel = () => {
           ? siteCopy("ui.carousel-play")
           : siteCopy("ui.carousel-pause")}
       </button>
+      <GalleryLightbox
+        isOpen={lightbox.isOpen}
+        images={lightboxImages}
+        currentIndex={lightbox.currentIndex}
+        currentImage={lightbox.currentImage}
+        onClose={lightbox.closeLightbox}
+        onNext={lightbox.goToNextImage}
+        onPrevious={lightbox.goToPreviousImage}
+        onSelectImage={lightbox.goToImage}
+        dialogRef={lightbox.dialogRef}
+        closeButtonRef={lightbox.closeButtonRef}
+        tileFor={tileFor}
+      />
     </div>
   );
 };

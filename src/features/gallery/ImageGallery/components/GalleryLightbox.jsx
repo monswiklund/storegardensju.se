@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useSiteCopy } from "../../../../hooks/usePageCopy";
+import { FLIGHT_EASE, cancelCssAnimation, overTile, reducedMotion, settled, tilePhoto } from "../../../../utils/tileFlight.js";
 
 function GalleryLightbox({
   isOpen,
@@ -15,9 +16,11 @@ function GalleryLightbox({
   onSelectImage,
   dialogRef,
   closeButtonRef,
+  tileFor,
 }) {
   const siteCopy = useSiteCopy();
   const [immersive, setImmersive] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
@@ -39,26 +42,58 @@ function GalleryLightbox({
     }
   }, [dialogRef]);
 
-  // Lock body scroll when open (including Lenis compatibility)
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      if (window.storegardenLenis) {
-        window.storegardenLenis.stop();
-      }
-    } else {
-      document.body.style.overflow = "";
-      if (window.storegardenLenis) {
-        window.storegardenLenis.start();
-      }
-    }
+  // Lock body scroll when open (including Lenis compatibility). The scrollbar keeps its space,
+  // so the page behind does not jump sideways while the photo grows out of it. A layout effect,
+  // declared before the flight below, so the tile is measured where it sits once locked
+  // (a full-width strip still moves when 100vw stops counting the scrollbar).
+  useLayoutEffect(() => {
+    if (!isOpen) return undefined;
+    document.documentElement.style.scrollbarGutter = "stable";
+    document.body.style.overflow = "hidden";
+    window.storegardenLenis?.stop();
     return () => {
+      document.documentElement.style.scrollbarGutter = "";
       document.body.style.overflow = "";
-      if (window.storegardenLenis) {
-        window.storegardenLenis.start();
-      }
+      window.storegardenLenis?.start();
+      setClosing(false);
     };
   }, [isOpen]);
+
+  // With tiles to come from, the open photo leaves an empty spot in the grid it can return to.
+  useEffect(() => {
+    const tile = isOpen && tileFor?.(currentIndex);
+    if (!tile) return undefined;
+    tile.style.visibility = "hidden";
+    return () => {
+      tile.style.visibility = "";
+    };
+  }, [isOpen, currentIndex, tileFor]);
+
+  // Grows out of the tile it was opened from; paging to the next photo keeps its fade.
+  useLayoutEffect(() => {
+    const image = imageRef.current;
+    const tile = isOpen && tileFor?.(currentIndex);
+    if (!image || !tile || reducedMotion()) return;
+    cancelCssAnimation(image, "fadeIn");
+    // The big file may still be on its way: the tile's own photo stands in, placed exactly as
+    // object-fit: contain will place it, so nothing flashes empty mid-flight.
+    const stand = tilePhoto(tile).currentSrc;
+    if (!image.complete && stand) image.style.background = `url("${stand}") center / contain no-repeat`;
+    const start = overTile(image, tile, { contain: true });
+    if (start) image.animate([start, settled], { duration: 520, easing: FLIGHT_EASE });
+    // Only on opening.
+  }, [isOpen]);
+
+  // Settles back into its tile before the lightbox goes away.
+  const close = () => {
+    if (closing) return;
+    const image = imageRef.current;
+    const tile = tileFor?.(currentIndex);
+    const end = image && tile && !reducedMotion() ? overTile(image, tile, { contain: true }) : null;
+    if (!end) return onClose();
+    setClosing(true);
+    image.animate([settled, end], { duration: 380, easing: FLIGHT_EASE, fill: "forwards" }).finished.then(onClose, onClose);
+  };
 
   // Keep the current photo's thumbnail in view as the visitor pages through a long strip.
   useEffect(() => {
@@ -104,13 +139,13 @@ function GalleryLightbox({
 
   return createPortal(
     <div
-      className={`gallery-model ${immersive ? "is-immersive" : ""}`}
+      className={`gallery-model${tileFor ? " gallery-model--lift" : ""}${immersive ? " is-immersive" : ""}${closing ? " is-closing" : ""}`}
       role="dialog"
       aria-modal="true"
       aria-label={siteCopy("ui.carousel-label")}
       ref={containerRef}
       onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) close();
       }}
     >
       <div className="gallery-model-content">
@@ -122,7 +157,7 @@ function GalleryLightbox({
 
           <button
             className="gallery-close-button"
-            onClick={onClose}
+            onClick={close}
             aria-label={siteCopy("ui.close")}
             ref={closeButtonRef}
           >
@@ -237,6 +272,8 @@ GalleryLightbox.propTypes = {
   onSelectImage: PropTypes.func.isRequired,
   dialogRef: PropTypes.any,
   closeButtonRef: PropTypes.any,
+  // The grid tile showing image `index`, for the photo to grow out of and return to.
+  tileFor: PropTypes.func,
 };
 
 export default GalleryLightbox;

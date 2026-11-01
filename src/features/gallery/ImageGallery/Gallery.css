@@ -631,11 +631,66 @@
   }
 }
 
+/* Opened from the gallery wall: the photo itself grows out of its tile (GalleryLightbox), so the
+   stage stays put and unclipped, and only the dark backdrop and the controls fade in around it. */
+@keyframes lightboxBackdropIn {
+  from {
+    background-color: transparent;
+  }
+}
+
+@keyframes lightboxControlsIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes lightboxControlsOut {
+  to {
+    opacity: 0;
+  }
+}
+
+.gallery-model--lift {
+  animation: lightboxBackdropIn 0.4s ease;
+}
+
+.gallery-model--lift .gallery-model-content {
+  animation: none;
+}
+
+/* min-height: 0 keeps what overflow: hidden gave for free: the stage does not grow to the
+   loaded photo's own height and push it off the screen. */
+.gallery-model--lift .lightbox-stage {
+  overflow: visible;
+  min-height: 0;
+}
+
+.gallery-model--lift .lightbox-controls,
+.gallery-model--lift .lightbox-nav,
+.gallery-model--lift .lightbox-footer {
+  animation: lightboxControlsIn 0.4s 0.15s ease backwards;
+}
+
+/* On the way back into the wall everything but the photo fades first. */
+.gallery-model--lift.is-closing {
+  background-color: transparent;
+}
+
+.gallery-model--lift.is-closing .lightbox-controls,
+.gallery-model--lift.is-closing .lightbox-nav,
+.gallery-model--lift.is-closing .lightbox-footer {
+  animation: lightboxControlsOut 0.25s ease forwards;
+}
+
 /* Opening, photo changes and the thumbnail strip keep their state changes but drop the motion. */
 @media (prefers-reduced-motion: reduce) {
   .gallery-model,
   .gallery-model-content,
-  .animate-fade {
+  .animate-fade,
+  .gallery-model--lift .lightbox-controls,
+  .gallery-model--lift .lightbox-nav,
+  .gallery-model--lift .lightbox-footer {
     animation: none;
   }
 

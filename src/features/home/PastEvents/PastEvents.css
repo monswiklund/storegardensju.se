@@ -153,6 +153,7 @@
   color: var(--text-main);
   font: inherit;
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
   transition: background-color 200ms ease;
 }
