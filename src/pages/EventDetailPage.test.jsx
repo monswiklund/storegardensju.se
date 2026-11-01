@@ -91,18 +91,18 @@ describe("EventDetailPage", () => {
     const mail = (link) => decodeURIComponent(link.getAttribute("href"));
 
     expect(mail(screen.getByRole("link", { name: "Mejla oss" }))).toBe(
-      "mailto:storegardensju@gmail.com?subject=work.ask – Konstafton 2026",
+      "mailto:storegardensju@gmail.com?subject=Fråga om verket – Konstafton 2026",
     );
 
     // A photo without a caption is named by its number in the viewer.
     fireEvent.click(screen.getByRole("button", { name: "event-page.show-larger: Målning 2" }));
-    expect(mail(screen.getByRole("link", { name: "work.ask" }))).toBe(
-      `mailto:storegardensju@gmail.com?subject=work.ask – Konstafton 2026, bild 2&body=Bilden: ${konstafton.media[1].url}\n\n`,
+    expect(mail(screen.getByRole("link", { name: "Fråga om verket" }))).toBe(
+      `mailto:storegardensju@gmail.com?subject=Fråga om verket – Konstafton 2026, bild 2&body=Bilden: ${konstafton.media[1].url}\n\n`,
     );
     // A captioned photo is named by its caption, which says the work and the artist.
     fireEvent.click(screen.getByRole("button", { name: "Målning 3" }));
-    expect(mail(screen.getByRole("link", { name: "work.ask" }))).toMatch(
-      /subject=work\.ask "Havet – Ann Wiklund" – Konstafton 2026&body=/,
+    expect(mail(screen.getByRole("link", { name: "Fråga om verket" }))).toMatch(
+      /subject=Fråga om verket "Havet – Ann Wiklund" – Konstafton 2026&body=/,
     );
   });
 
@@ -112,6 +112,6 @@ describe("EventDetailPage", () => {
 
     expect(screen.queryByRole("link", { name: "Mejla oss" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "event-page.show-larger: Målning 2" }));
-    expect(screen.queryByRole("link", { name: "work.ask" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Fråga om verket" })).not.toBeInTheDocument();
   });
 });

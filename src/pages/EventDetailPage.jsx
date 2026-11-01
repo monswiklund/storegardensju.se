@@ -11,7 +11,7 @@ import { canonicalPath } from "../config/routes.js";
 import { eventSeoMeta } from "../config/seoMeta.js";
 import { isUpcoming } from "../data/schedulePlacement.js";
 import useCmsSchedule from "../hooks/useCmsSchedule.js";
-import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
+import { useSiteCopy } from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
 import "./EventDetailPage.css";
 import { lightboxTile } from "../utils/tileFlight.js";
@@ -73,11 +73,14 @@ function EventLinks({ links, fallbackLabel }) {
   );
 }
 
+// An art evening's walls hold paintings, reliefs and drawings by several artists, so "verk".
+const ASK = "Fråga om verket";
+
 // The farm forwards to the right artist: the subject names the work by its caption, else by the
 // photo's number, and the body links the photo itself.
-function askHref(ask, title, photo, number) {
+function askHref(title, photo, number) {
   const work = photo?.caption ? ` "${photo.caption}"` : "";
-  const subject = photo && !work ? `${ask} – ${title}, bild ${number}` : `${ask}${work} – ${title}`;
+  const subject = photo && !work ? `${ASK} – ${title}, bild ${number}` : `${ASK}${work} – ${title}`;
   const body = photo ? `Bilden: ${photo.full}\n\n` : "";
   return `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}${body ? `&body=${encodeURIComponent(body)}` : ""}`;
 }
@@ -90,7 +93,6 @@ EventLinks.propTypes = {
 function EventDetailPage() {
   const { slug } = useParams();
   const siteCopy = useSiteCopy();
-  const ask = usePageCopy("portfolio-ann")("work.ask");
   const schedule = useCmsSchedule();
   const doc = schedule.events.find((event) => event.slug === slug) || null;
   const event = useMemo(() => (doc ? toUiEvent(doc) : null), [doc]);
@@ -262,9 +264,9 @@ function EventDetailPage() {
             {askAboutWorks && (
               <aside className="event-page__ask">
                 <p>
-                  <strong>Intresserad av ett verk?</strong> Öppna bilden och tryck på ”{ask}”, så vet vi vilket det gäller.
+                  <strong>Intresserad av något du ser?</strong> Öppna bilden och tryck på ”{ASK}”, så vet vi vilket det gäller.
                 </p>
-                <a className="btn btn--secondary" href={askHref(ask, event.title)}>
+                <a className="btn btn--secondary" href={askHref(event.title)}>
                   <Mail size={18} aria-hidden="true" />
                   Mejla oss
                 </a>
@@ -293,10 +295,10 @@ function EventDetailPage() {
           askAboutWorks && (
             <a
               className="btn btn--primary"
-              href={askHref(ask, event.title, photos[lightbox.currentIndex], lightbox.currentIndex + 1)}
+              href={askHref(event.title, photos[lightbox.currentIndex], lightbox.currentIndex + 1)}
             >
               <Mail size={18} aria-hidden="true" />
-              {ask}
+              {ASK}
             </a>
           )
         }

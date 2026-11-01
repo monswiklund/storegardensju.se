@@ -262,24 +262,20 @@
   margin: 0;
   padding: 0;
   columns: 2;
-  column-gap: clamp(0.75rem, 2vw, 1.5rem);
+  column-gap: 1.25rem;
 }
 
+/* Three columns at most, with room around each photo, so the works hang like on a wall. */
 @media (min-width: 700px) {
   .event-page__grid {
     columns: 3;
-  }
-}
-
-@media (min-width: 1100px) {
-  .event-page__grid {
-    columns: 4;
+    column-gap: clamp(2.5rem, 6.5vw, 6rem);
   }
 }
 
 .event-page__grid li {
   break-inside: avoid;
-  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  margin-bottom: clamp(2rem, 7.5vw, 6.5rem);
 }
 
 .event-page__grid figure {
