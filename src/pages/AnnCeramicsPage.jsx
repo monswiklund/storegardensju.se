@@ -1,16 +1,15 @@
-import { useMemo, useState } from "react";
-import { ArrowLeft, Mail } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
-import "../features/gallery/ImageGallery/Gallery.css";
 import { annCeramicsSeoMeta } from "../config/seoMeta.js";
-import { CERAMIC_TYPES, ceramicAlt, ceramicDetails, ceramicImageProps, ceramicName } from "../data/ceramics.js";
+import { CERAMIC_TYPES, ceramicImageProps, ceramicName } from "../data/ceramics.js";
 import { useMemberProfile } from "../features/team/teamProfile.js";
 import { useCeramics } from "../hooks/useArtworks.js";
 import usePageCopy from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
 import "./AnnPortfolioPage.css";
+import CeramicFocus from "./CeramicFocus.jsx";
 import "./AnnCeramicsPage.css";
 
 // Hundreds of pieces: the grid grows a batch at a time instead of loading every image at once.
@@ -34,19 +33,13 @@ function AnnCeramicsPage() {
     () => (activeType === "all" ? ceramics : ceramics.filter((piece) => piece.type === activeType)),
     [ceramics, activeType],
   );
-  const lightboxImages = useMemo(
-    () =>
-      pieces.map((piece) => ({
-        original: piece.image.url,
-        thumbnail: piece.image.sizes?.medium?.url || piece.image.url,
-        originalAlt: ceramicAlt(piece),
-        filename: `keramik-${piece.id}`,
-        width: piece.image.width,
-        height: piece.image.height,
-      })),
+  // The hook preloads `original` for the neighbours; the focus view mostly shows the medium size.
+  const focusImages = useMemo(
+    () => pieces.map((piece) => ({ original: piece.image.sizes?.medium?.url || piece.image.url })),
     [pieces],
   );
-  const lightbox = useGalleryLightbox(lightboxImages, "ann-keramik");
+  const lightbox = useGalleryLightbox(focusImages, "ann-keramik");
+  const tiles = useRef([]);
   const remaining = pieces.length - shown;
 
   const chooseType = (type) => {
@@ -89,39 +82,25 @@ function AnnCeramicsPage() {
 
       {pieces.length > 0 && (
         <ul className="ann-ceramics__grid">
-          {pieces.slice(0, shown).map((piece, index) => {
-            const name = ceramicName(piece);
-            const details = ceramicDetails(piece);
-            const subject = encodeURIComponent(`${ask} "${name}"`);
-            return (
-              <li key={piece.id}>
-                <figure className="ann-ceramics__piece">
-                  <button
-                    type="button"
-                    className="ann-ceramics__photo"
-                    onClick={() => lightbox.openLightbox(index)}
-                    aria-label={`${copy("work.show-larger")}: ${name}`}
-                  >
-                    <img
-                      {...ceramicImageProps(piece, "(min-width: 1100px) 22vw, (min-width: 700px) 30vw, 46vw")}
-                      loading={index < 8 ? "eager" : "lazy"}
-                      decoding="async"
-                    />
-                  </button>
-                  <figcaption className="ann-ceramics__caption">
-                    <span className="ann-ceramics__name">{name}</span>
-                    {details && <span className="ann-ceramics__details">{details}</span>}
-                    {email && (
-                      <a className="ann-ceramics__ask" href={`mailto:${email}?subject=${subject}`}>
-                        <Mail size={14} aria-hidden="true" />
-                        {ask}
-                      </a>
-                    )}
-                  </figcaption>
-                </figure>
-              </li>
-            );
-          })}
+          {pieces.slice(0, shown).map((piece, index) => (
+            <li key={piece.id}>
+              <button
+                ref={(node) => {
+                  tiles.current[index] = node;
+                }}
+                type="button"
+                className={`ann-ceramics__photo${lightbox.isOpen && lightbox.currentIndex === index ? " is-lifted" : ""}`}
+                onClick={() => lightbox.openLightbox(index)}
+                aria-label={`${copy("work.show-larger")}: ${ceramicName(piece)}`}
+              >
+                <img
+                  {...ceramicImageProps(piece, "(min-width: 1100px) 25vw, (min-width: 700px) 33vw, 50vw")}
+                  loading={index < 8 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+              </button>
+            </li>
+          ))}
         </ul>
       )}
 
@@ -133,17 +112,12 @@ function AnnCeramicsPage() {
         </div>
       )}
 
-      <GalleryLightbox
-        isOpen={lightbox.isOpen}
-        images={lightboxImages}
-        currentIndex={lightbox.currentIndex}
-        currentImage={lightbox.currentImage}
-        onClose={lightbox.closeLightbox}
-        onNext={lightbox.goToNextImage}
-        onPrevious={lightbox.goToPreviousImage}
-        onSelectImage={lightbox.goToImage}
-        dialogRef={lightbox.dialogRef}
-        closeButtonRef={lightbox.closeButtonRef}
+      <CeramicFocus
+        lightbox={lightbox}
+        pieces={pieces}
+        tileFor={(index) => tiles.current[index]}
+        email={email}
+        ask={ask}
       />
     </main>
   );

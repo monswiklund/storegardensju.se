@@ -12,9 +12,6 @@ export const CERAMIC_TYPES = {
 /** The photo's name, or its type when the editor left the name empty (a photo often shows a group). */
 export const ceramicName = (piece) => piece.title || CERAMIC_TYPES[piece.type]?.name || "Keramik";
 
-/** Glaze and size on one line. */
-export const ceramicDetails = (piece) => [piece.glaze, piece.dimensions].filter(Boolean).join(" · ");
-
 /** The editor's description, else one built from what is known about the piece. */
 export const ceramicAlt = (piece) =>
   piece.image.alt || [`${ceramicName(piece)} av Ann Wiklund`, piece.glaze].filter(Boolean).join(", ");
