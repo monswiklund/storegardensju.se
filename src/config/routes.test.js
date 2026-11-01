@@ -64,9 +64,9 @@ describe("appRoutes", () => {
     const event = appRoutes.find((route) => route.path === "/event");
     const eventChildren = (event.children ?? []).map((child) => child.path);
 
-    expect(kurser.children.map((child) => child.path)).toEqual([
-      "/kurser/yoga",
+    expect(kurser.children.map((child) => child.path).sort()).toEqual([
       "/kurser/konst",
+      "/kurser/yoga",
     ]);
     expect(eventChildren).not.toContain("/kurser/konst");
     expect(eventChildren).not.toContain("/konst");

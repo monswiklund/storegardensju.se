@@ -17,6 +17,7 @@ function GalleryLightbox({
   dialogRef,
   closeButtonRef,
   tileFor,
+  action,
 }) {
   const siteCopy = useSiteCopy();
   const [immersive, setImmersive] = useState(false);
@@ -223,9 +224,14 @@ function GalleryLightbox({
         </div>
 
         {/* Caption (e.g. a painting's name and artist) and thumbnails */}
-        {!immersive && (images.length > 1 || currentImage.caption) && (
+        {!immersive && (images.length > 1 || currentImage.caption || action) && (
           <div className="lightbox-footer">
             {currentImage.caption && <p className="lightbox-caption">{currentImage.caption}</p>}
+            {action && (
+              <div className="lightbox-action" onClick={(e) => e.stopPropagation()}>
+                {action}
+              </div>
+            )}
             {images.length > 1 && (
             <div className="lightbox-thumbnails" ref={thumbnailsRef}>
               {images.map((image, idx) => {
@@ -274,6 +280,8 @@ GalleryLightbox.propTypes = {
   closeButtonRef: PropTypes.any,
   // The grid tile showing image `index`, for the photo to grow out of and return to.
   tileFor: PropTypes.func,
+  // A control for the photo shown, under its caption (e.g. a link to ask about the work).
+  action: PropTypes.node,
 };
 
 export default GalleryLightbox;

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import EventDetailPage from "./EventDetailPage.jsx";
@@ -83,5 +83,35 @@ describe("EventDetailPage", () => {
     state.schedule = { events: [konstafton], coursePasses: [], settled: true };
     renderAt("/evenemang/nytt-evenemang/");
     expect(screen.getByRole("heading", { level: 1, name: "event-page.not-found" })).toBeInTheDocument();
+  });
+
+  it("lets a visitor ask about a work shown at an art evening, naming the photo", () => {
+    state.schedule = { events: [konstafton], coursePasses: [], settled: true };
+    renderAt("/evenemang/konstafton-2026/");
+    const mail = (link) => decodeURIComponent(link.getAttribute("href"));
+
+    expect(mail(screen.getByRole("link", { name: "Mejla oss" }))).toBe(
+      "mailto:storegardensju@gmail.com?subject=work.ask – Konstafton 2026",
+    );
+
+    // A photo without a caption is named by its number in the viewer.
+    fireEvent.click(screen.getByRole("button", { name: "event-page.show-larger: Målning 2" }));
+    expect(mail(screen.getByRole("link", { name: "work.ask" }))).toBe(
+      `mailto:storegardensju@gmail.com?subject=work.ask – Konstafton 2026, bild 2&body=Bilden: ${konstafton.media[1].url}\n\n`,
+    );
+    // A captioned photo is named by its caption, which says the work and the artist.
+    fireEvent.click(screen.getByRole("button", { name: "Målning 3" }));
+    expect(mail(screen.getByRole("link", { name: "work.ask" }))).toMatch(
+      /subject=work\.ask "Havet – Ann Wiklund" – Konstafton 2026&body=/,
+    );
+  });
+
+  it("offers no question about works at an event without artists", () => {
+    state.schedule = { events: [{ ...konstafton, slug: "yoga", artists: "" }], coursePasses: [], settled: true };
+    renderAt("/evenemang/yoga/");
+
+    expect(screen.queryByRole("link", { name: "Mejla oss" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "event-page.show-larger: Målning 2" }));
+    expect(screen.queryByRole("link", { name: "work.ask" })).not.toBeInTheDocument();
   });
 });

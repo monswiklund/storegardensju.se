@@ -225,6 +225,31 @@
   line-height: 1.05;
 }
 
+/* Under the photos of an art evening: how to ask about a work. */
+.event-page__ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding-top: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid rgb(var(--shadow-color) / 0.14);
+}
+
+.event-page__ask p {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-body);
+  text-wrap: pretty;
+}
+
+.event-page__ask strong {
+  color: var(--text-strong);
+}
+
 .event-page__count {
   font-family: var(--font-body);
   font-size: 1rem;

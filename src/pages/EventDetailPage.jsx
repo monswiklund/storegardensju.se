@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowUpRight, ExternalLink, Loader2, MapPin } from "lucide-react";
+import { ArrowUpRight, ExternalLink, Loader2, Mail, MapPin } from "lucide-react";
+import { contactEmail } from "../features/contact/contact.js";
 import GalleryLightbox from "../features/gallery/ImageGallery/components/GalleryLightbox.jsx";
 import useGalleryLightbox from "../features/gallery/ImageGallery/hooks/useGalleryLightbox.js";
 import "../features/gallery/ImageGallery/Gallery.css";
@@ -10,7 +11,7 @@ import { canonicalPath } from "../config/routes.js";
 import { eventSeoMeta } from "../config/seoMeta.js";
 import { isUpcoming } from "../data/schedulePlacement.js";
 import useCmsSchedule from "../hooks/useCmsSchedule.js";
-import { useSiteCopy } from "../hooks/usePageCopy.js";
+import usePageCopy, { useSiteCopy } from "../hooks/usePageCopy.js";
 import { useSeo } from "../hooks/useSeo.js";
 import "./EventDetailPage.css";
 import { lightboxTile } from "../utils/tileFlight.js";
@@ -72,6 +73,15 @@ function EventLinks({ links, fallbackLabel }) {
   );
 }
 
+// The farm forwards to the right artist: the subject names the work by its caption, else by the
+// photo's number, and the body links the photo itself.
+function askHref(ask, title, photo, number) {
+  const work = photo?.caption ? ` "${photo.caption}"` : "";
+  const subject = photo && !work ? `${ask} – ${title}, bild ${number}` : `${ask}${work} – ${title}`;
+  const body = photo ? `Bilden: ${photo.full}\n\n` : "";
+  return `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}${body ? `&body=${encodeURIComponent(body)}` : ""}`;
+}
+
 EventLinks.propTypes = {
   links: PropTypes.arrayOf(PropTypes.shape({ href: PropTypes.string.isRequired, label: PropTypes.string })).isRequired,
   fallbackLabel: PropTypes.string,
@@ -80,6 +90,7 @@ EventLinks.propTypes = {
 function EventDetailPage() {
   const { slug } = useParams();
   const siteCopy = useSiteCopy();
+  const ask = usePageCopy("portfolio-ann")("work.ask");
   const schedule = useCmsSchedule();
   const doc = schedule.events.find((event) => event.slug === slug) || null;
   const event = useMemo(() => (doc ? toUiEvent(doc) : null), [doc]);
@@ -148,6 +159,8 @@ function EventDetailPage() {
   // A past event shows only its own links, not the course page an upcoming one points to for booking.
   const links = (past ? doc.links : event.links).filter((link) => link?.href);
   const hasSessions = event.sessions?.length > 1;
+  // An evening with artists shows art, and a visitor may want a work they saw.
+  const askAboutWorks = Boolean(event.artists) && photos.length > 0;
 
   return (
     <main role="main" id="main-content" className="event-page">
@@ -246,6 +259,17 @@ function EventDetailPage() {
                 </li>
               ))}
             </ul>
+            {askAboutWorks && (
+              <aside className="event-page__ask">
+                <p>
+                  <strong>Intresserad av ett verk?</strong> Öppna bilden och tryck på ”{ask}”, så vet vi vilket det gäller.
+                </p>
+                <a className="btn btn--secondary" href={askHref(ask, event.title)}>
+                  <Mail size={18} aria-hidden="true" />
+                  Mejla oss
+                </a>
+              </aside>
+            )}
           </section>
         )}
       </div>
@@ -265,6 +289,17 @@ function EventDetailPage() {
         dialogRef={lightbox.dialogRef}
         closeButtonRef={lightbox.closeButtonRef}
         tileFor={lightboxTile}
+        action={
+          askAboutWorks && (
+            <a
+              className="btn btn--primary"
+              href={askHref(ask, event.title, photos[lightbox.currentIndex], lightbox.currentIndex + 1)}
+            >
+              <Mail size={18} aria-hidden="true" />
+              {ask}
+            </a>
+          )
+        }
       />
     </main>
   );

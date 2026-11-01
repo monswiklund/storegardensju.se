@@ -599,6 +599,11 @@
   display: block;
 }
 
+.lightbox-action {
+  display: flex;
+  justify-content: center;
+}
+
 .lightbox-hint {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.6);

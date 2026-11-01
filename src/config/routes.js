@@ -30,31 +30,32 @@ export function canonicalPath(path) {
 
 // Bröllop and Kontakt are top level: they are the two main reasons people visit, and
 // desktop hides the navbar dropdowns, so a child route was only reachable via the subnav.
+// Menu order: Hem first, Kontakt (the button) last, everything between alphabetical.
 export const appRoutes = [
   { path: "/", label: "Hem" },
   { path: "/event/brollop", label: "Bröllop" },
+  // shopOnly: hidden in the menus while the shop has no published products.
+  { path: "/butik", label: "Butik", shopOnly: true },
+  { path: "/evenemang", label: "Evenemang" },
   {
     path: "/event",
     label: "Event",
     children: [{ path: "/gruppdagar", label: "Gruppdagar" }],
   },
-  {
-    path: "/kurser",
-    label: "Kurser",
-    children: [
-      { path: "/kurser/yoga", label: "Yoga" },
-      { path: "/kurser/konst", label: "Måleri" },
-    ],
-  },
-  { path: "/evenemang", label: "Evenemang" },
   { path: "/galleri", label: "Galleri" },
   {
     path: "/ann",
     label: "Konst",
     children: [{ path: "/ann/keramik", label: "Keramik" }],
   },
-  // shopOnly: hidden in the menus while the shop has no published products.
-  { path: "/butik", label: "Butik", shopOnly: true },
+  {
+    path: "/kurser",
+    label: "Kurser",
+    children: [
+      { path: "/kurser/konst", label: "Måleri" },
+      { path: "/kurser/yoga", label: "Yoga" },
+    ],
+  },
   { path: "/om-oss", label: "Om Oss" },
   { path: "/kontakt", label: "Kontakt", cta: true },
 ];
