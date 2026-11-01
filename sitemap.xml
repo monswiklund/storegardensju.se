@@ -97,4 +97,8 @@
     <loc>https://storegardensju.se/evenemang/konstafton-2026/</loc>
     <image:image><image:loc>https://media.storegardensju.se/media-351a6c773730d13a56dacc54afdd8cf75670acd0ef183a11fe8fee1112c5e202.webp</image:loc></image:image>
   </url>
+  <url>
+    <loc>https://storegardensju.se/ann/keramik/</loc>
+    <image:image><image:loc>https://media.storegardensju.se/keramik/keramik-a35e8aff2ef93bfe14c6c4bc866f6a7d27a82f99754be336baa4f2c8790c26eb-900x1200.webp</image:loc></image:image>
+  </url>
 </urlset>
