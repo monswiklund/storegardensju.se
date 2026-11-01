@@ -79,7 +79,7 @@ function AnnCeramicsPage() {
                 aria-pressed={activeType === type}
                 onClick={() => chooseType(type)}
               >
-                {type === "all" ? copy("ceramics.filter-all") : CERAMIC_TYPES[type].many}
+                {type === "all" ? copy("ceramics.filter-all") : CERAMIC_TYPES[type].filter}
                 <span className="ann-ceramics__count">{count}</span>
               </button>
             );

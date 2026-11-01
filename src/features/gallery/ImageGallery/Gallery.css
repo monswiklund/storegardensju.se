@@ -542,6 +542,17 @@
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+.lightbox-caption {
+  margin: 0;
+  max-width: 60ch;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #fff;
+  text-align: center;
+  text-wrap: balance;
+}
+
 .lightbox-thumbnails {
   display: flex;
   gap: 8px;

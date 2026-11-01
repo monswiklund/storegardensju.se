@@ -4,6 +4,7 @@ import {
   WEDDING_PATH,
   activeJsonLd,
   canonicalUrl,
+  eventSeoMeta,
   seoMeta,
 } from "./seoMeta.js";
 import {
@@ -310,5 +311,34 @@ describe("hub JSON-LD follows the schedule the page shows", () => {
     const [faqPage] = byType(activeJsonLd(seoMeta.kurserKonst, BEFORE_JULY_30), "FAQPage");
 
     expect(faqPage.mainEntity.map((entry) => entry.name)).toEqual(["Finns det material?"]);
+  });
+});
+
+describe("event pages", () => {
+  const base = { slug: "konstafton-2026", title: "Konstafton 2026", startAt: "2026-10-31T17:00:00.000Z", endAt: "2026-10-31T21:00:00.000Z" };
+
+  it("gives each event its own address, title and Event markup", () => {
+    const meta = eventSeoMeta({ ...base, description: "En kväll med konst.", image: "https://cms.example.test/a.webp" });
+    expect(meta.path).toBe("/evenemang/konstafton-2026");
+    expect(meta.title).toBe("Konstafton 2026 – Evenemang | Storegården 7");
+    expect(meta.staticContent.h1).toBe("Konstafton 2026");
+    expect(meta.jsonLd[0]).toMatchObject({
+      "@type": "Event",
+      startDate: base.startAt,
+      endDate: base.endAt,
+      image: ["https://cms.example.test/a.webp"],
+      url: canonicalUrl("/evenemang/konstafton-2026"),
+      eventStatus: "https://schema.org/EventScheduled",
+    });
+  });
+
+  it("writes a description when the event has none and shortens a long one to 160 characters", () => {
+    expect(eventSeoMeta(base).description).toMatch(/^Konstafton 2026 på Storegården 7/);
+    expect(eventSeoMeta({ ...base, description: "x".repeat(300) }).description).toHaveLength(158);
+  });
+
+  it("marks a cancelled event and leaves out the markup without a date", () => {
+    expect(eventSeoMeta({ ...base, status: "cancelled" }).jsonLd[0].eventStatus).toBe("https://schema.org/EventCancelled");
+    expect(eventSeoMeta({ ...base, startAt: null }).jsonLd).toEqual([]);
   });
 });

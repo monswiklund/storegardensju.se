@@ -24,7 +24,7 @@
       "ceramics.filter-all": "Alla",
       "ceramics.filter-label": "Visa typ",
       "ceramics.show-more": "Visa fler",
-      "ceramics.ask": "Fråga om föremålet"
+      "ceramics.ask": "Fråga om keramiken"
     },
     "lists": {},
     "images": {}
@@ -1317,6 +1317,14 @@
       "contact.chips.other": "Övrigt",
       "contact.direct-lead": "Hellre mejl eller Instagram?",
       "ui.all-sessions": "Alla tillfällen",
+      "ui.event-page": "Öppna evenemangets sida",
+      "event-page.back": "Alla evenemang",
+      "event-page.photos": "Bilder",
+      "event-page.show-larger": "Visa större",
+      "event-page.past": "Har varit",
+      "event-page.loading": "Hämtar evenemanget…",
+      "event-page.not-found": "Evenemanget hittades inte",
+      "event-page.not-found-desc": "Länken kan vara gammal, eller så har evenemanget tagits bort.",
       "ui.show-more": "Visa fler",
       "ui.show-less": "Visa färre"
     },

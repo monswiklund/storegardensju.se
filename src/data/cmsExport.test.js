@@ -62,6 +62,18 @@ describe("exportCmsContent", () => {
     expect(snapshot.ceramics[1]).toMatchObject({ type: "skal", glaze: "Stengods", image: { url: `${CMS_URL}/api/ceramics/file/1.webp`, focalX: 50, focalY: 35, sizes: { medium: { width: 900 } } } });
   });
 
+  it("exports an event's page address and each photo's caption", async () => {
+    const media = { id: 5, url: "/api/media/file/a.jpg", filename: "a.jpg", alt: "Målning", caption: "Dansaren – Lina Wiklund", width: 1500, height: 2000 };
+    const events = [{ ...RAW_EVENTS[0], slug: "yoga-pa-loftet", media: [media] }, RAW_EVENTS[1]];
+    const snapshot = await exportCmsContent(CMS_URL, {
+      fetchImpl: fakePayloadFetch({ pages: allPages(), events, "course-passes": [], "shop-products": [], artworks: [], ceramics: [] }),
+    });
+
+    expect(snapshot.events[0].slug).toBe("yoga-pa-loftet");
+    expect(snapshot.events[0].media[0].caption).toBe("Dansaren – Lina Wiklund");
+    expect(snapshot.events[1].slug).toBeNull();
+  });
+
   it("refuses a build when a page the site renders is not published", async () => {
     const fetchImpl = fakePayloadFetch({ pages: allPages().filter((doc) => doc.slug !== "site"), events: [], "course-passes": [], "shop-products": [], artworks: [], ceramics: [] });
 

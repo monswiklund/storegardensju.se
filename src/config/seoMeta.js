@@ -377,6 +377,36 @@ export function productSeoMeta({ slug, title, description, image = null }) {
   };
 }
 
+/** An event's own page; past events stay up as the record of what happened on the farm. */
+export function eventSeoMeta({ slug, title, description, image = null, startAt = null, endAt = null, status = null }) {
+  const summary = description?.trim() || `${title} på Storegården 7 i Rackeby utanför Lidköping.`;
+  const jsonLd = startAt
+    ? [{
+      "@context": "https://schema.org",
+      "@type": "Event",
+      name: title,
+      description: summary,
+      startDate: startAt,
+      ...(endAt ? { endDate: endAt } : {}),
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      eventStatus: EVENT_STATUS[status] || "https://schema.org/EventScheduled",
+      ...(image ? { image: [image] } : {}),
+      inLanguage: "sv-SE",
+      url: canonicalUrl(`/evenemang/${slug}`),
+      location: schemaPlace,
+      organizer: { "@type": "Organization", name: COURSE_LOCATION.name, url: SITE_URL },
+    }]
+    : [];
+  return {
+    path: `/evenemang/${slug}`,
+    title: `${title} – Evenemang | Storegården 7`,
+    description: summary.length > 160 ? `${summary.slice(0, 157).trimEnd()}…` : summary,
+    image,
+    staticContent: { h1: title, paragraphs: [summary] },
+    jsonLd,
+  };
+}
+
 // Outside seoMeta: the build adds /ann/keramik to the sitemap only once a piece is published.
 export const annCeramicsSeoMeta = {
   title: "Keramik av Ann Wiklund | Storegården 7",

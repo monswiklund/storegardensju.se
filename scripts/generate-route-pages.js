@@ -2,7 +2,7 @@
 // HTTP 200 with correct title/description/canonical instead of the
 // 404.html SPA redirect (404 status blocks Google indexing entirely).
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { seoMeta, canonicalUrl, activeJsonLd, productSeoMeta, annCeramicsSeoMeta } from "../src/config/seoMeta.js";
+import { seoMeta, canonicalUrl, activeJsonLd, productSeoMeta, annCeramicsSeoMeta, eventSeoMeta } from "../src/config/seoMeta.js";
 import { escapeAttr, escapeHtml, escapeXml, jsonForScript, socialImageUrl } from "../src/config/prerenderEscape.js";
 import CMS_CONTENT from "../src/data/cmsContent.generated.js";
 
@@ -153,6 +153,21 @@ const productPages = (CMS_CONTENT?.shopProducts || []).map((product) =>
   })
 );
 
+// Every published event (upcoming or past) gets its own page at /evenemang/<slug>/; one published
+// after this build opens through the 404.html redirect until the next build.
+const eventPages = (CMS_CONTENT?.events || []).filter((event) => event.slug).map((event) => {
+  const photo = event.media?.[0];
+  return eventSeoMeta({
+    slug: event.slug,
+    title: event.title,
+    description: event.description,
+    image: photo?.sizes?.medium?.url || photo?.url || event.images?.[0]?.url || null,
+    startAt: event.startAt,
+    endAt: event.endAt,
+    status: event.status,
+  });
+});
+
 // Ann's ceramics page joins the sitemap and the crawl links once a piece is published; before
 // that it would be an empty page, and it opens through the 404.html redirect only.
 const ceramics = CMS_CONTENT?.ceramics || [];
@@ -164,7 +179,7 @@ if (ceramicsPages.length > 0) {
   NAV_ROUTES.splice(NAV_ROUTES.findIndex((route) => route.path === "/ann") + 1, 0, { path: "/ann/keramik", label: "Keramik av Ann Wiklund" });
 }
 
-const publicPages = [...Object.values(seoMeta).map(withCmsImage), ...productPages, ...ceramicsPages];
+const publicPages = [...Object.values(seoMeta).map(withCmsImage), ...productPages, ...eventPages, ...ceramicsPages];
 
 for (const meta of publicPages) {
   if (meta.path === "/") continue;

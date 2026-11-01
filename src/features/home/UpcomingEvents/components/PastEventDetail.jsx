@@ -214,7 +214,7 @@ function PastEventDetail({
           </p>
         )}
 
-        {links.length > 0 && (
+        {(links.length > 0 || event.slug) && (
           <div className="past-event-modal-actions">
             {links.map((link, index) => {
               const isMapLink = link.href?.includes(MAPS_HOST);
@@ -250,6 +250,15 @@ function PastEventDetail({
                 </a>
               );
             })}
+            {event.slug && (
+              <Link
+                to={canonicalPath(`/evenemang/${event.slug}`)}
+                className={`btn btn--sm ${links.length === 0 ? "btn--primary" : "btn--secondary"}`}
+              >
+                <ArrowUpRight size={16} aria-hidden="true" />
+                {siteCopy("ui.event-page")}
+              </Link>
+            )}
           </div>
         )}
       </div>
@@ -269,6 +278,7 @@ const linkShape = PropTypes.shape({
 
 PastEventDetail.propTypes = {
   event: PropTypes.shape({
+    slug: PropTypes.string,
     title: PropTypes.string,
     spots: PropTypes.string,
     date: PropTypes.string,

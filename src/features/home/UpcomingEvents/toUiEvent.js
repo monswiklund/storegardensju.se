@@ -94,6 +94,7 @@ export const toUiEvent = (item, now = Date.now()) => {
 
   return {
     id: item?.id || "",
+    slug: item?.slug || "",
     title: item?.title || "",
     category,
     startAt,

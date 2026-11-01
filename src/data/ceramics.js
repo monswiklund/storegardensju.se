@@ -1,16 +1,16 @@
 // How Ann's ceramics read on the site. The types are the CMS's select values (Ceramics.ts).
 export const CERAMIC_TYPES = {
-  skal: { one: "Skål", many: "Skålar" },
-  kopp: { one: "Kopp", many: "Koppar och muggar" },
-  vas: { one: "Vas", many: "Vaser" },
-  fat: { one: "Fat", many: "Fat och tallrikar" },
-  kanna: { one: "Kanna", many: "Kannor" },
-  skulptur: { one: "Skulptur", many: "Skulpturer" },
-  ovrigt: { one: "Keramik", many: "Övrigt" },
+  skal: { name: "Skålar", filter: "Skålar" },
+  kopp: { name: "Koppar och muggar", filter: "Koppar och muggar" },
+  vas: { name: "Vaser", filter: "Vaser" },
+  fat: { name: "Fat och tallrikar", filter: "Fat och tallrikar" },
+  kanna: { name: "Kannor", filter: "Kannor" },
+  skulptur: { name: "Skulpturer", filter: "Skulpturer" },
+  ovrigt: { name: "Keramik", filter: "Övrigt" },
 };
 
-/** The piece's name, or its type when the editor left the name empty. */
-export const ceramicName = (piece) => piece.title || CERAMIC_TYPES[piece.type]?.one || "Keramik";
+/** The photo's name, or its type when the editor left the name empty (a photo often shows a group). */
+export const ceramicName = (piece) => piece.title || CERAMIC_TYPES[piece.type]?.name || "Keramik";
 
 /** Glaze and size on one line. */
 export const ceramicDetails = (piece) => [piece.glaze, piece.dimensions].filter(Boolean).join(" · ");

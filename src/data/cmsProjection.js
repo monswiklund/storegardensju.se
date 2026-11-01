@@ -69,6 +69,7 @@ export function projectMedia(media, cmsUrl) {
     id: media.id ?? null,
     url,
     alt: text(media.alt),
+    caption: optionalText(media.caption),
     filename: optionalText(media.filename),
     width: optionalNumber(media.width),
     height: optionalNumber(media.height),
@@ -112,6 +113,8 @@ export function projectEvent(doc, cmsUrl) {
   return {
     id: doc.id,
     legacyId: optionalText(doc.legacyId),
+    // The event's own page: /evenemang/<slug>/.
+    slug: optionalText(doc.slug),
     title: text(doc.title),
     category: optionalText(doc.category),
     startAt: optionalText(doc.startAt),

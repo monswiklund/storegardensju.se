@@ -187,9 +187,11 @@ function GalleryLightbox({
           )}
         </div>
 
-        {/* Bottom Thumbnails */}
-        {!immersive && images.length > 1 && (
+        {/* Caption (e.g. a painting's name and artist) and thumbnails */}
+        {!immersive && (images.length > 1 || currentImage.caption) && (
           <div className="lightbox-footer">
+            {currentImage.caption && <p className="lightbox-caption">{currentImage.caption}</p>}
+            {images.length > 1 && (
             <div className="lightbox-thumbnails" ref={thumbnailsRef}>
               {images.map((image, idx) => {
                 const isActive = idx === currentIndex;
@@ -212,6 +214,7 @@ function GalleryLightbox({
                 );
               })}
             </div>
+            )}
             <p className="lightbox-hint mobile-only">
               {siteCopy("ui.lightbox-hint")}
             </p>
