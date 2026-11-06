@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { flushSync } from "react-dom";
 import { Mail } from "lucide-react";
 import { contactMethods, contactEmail } from "./contact.js";
 import "./Contact.css";
@@ -119,7 +120,20 @@ function ContactSection({ initialSubject = "", cmsPage = "site", hideHeader = fa
   const [copyText, setCopyText] = useState("");
   const [copied, setCopied] = useState(false);
   const statusRef = useRef(null);
+  const nameRef = useRef(null);
   const messageRef = useRef(null);
+  const fieldsRef = useRef(null);
+
+  // The fields render only after a subject is chosen, so the chip tap renders them
+  // synchronously and focuses the name field inside the same click: that is what iOS Safari
+  // needs to open the keyboard. A visitor who already wrote their name keeps their place.
+  const chooseSubject = (id) => {
+    flushSync(() => setSubjectId(id));
+    const name = nameRef.current;
+    if (!name || name.value.trim()) return;
+    name.focus({ preventScroll: true });
+    fieldsRef.current?.scrollIntoView?.({ block: "start", behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (isSubject(initialSubject)) setSubjectId(initialSubject);
@@ -129,7 +143,8 @@ function ContactSection({ initialSubject = "", cmsPage = "site", hideHeader = fa
   useEffect(() => {
     const onExpand = (event) => {
       const { subject, message } = event?.detail ?? {};
-      if (isSubject(subject)) setSubjectId(subject);
+      // Synchronous so the textarea exists before the message is written into it.
+      if (isSubject(subject)) flushSync(() => setSubjectId(subject));
       // e.g. the group-day calculator's summary; never overwrite what the visitor already wrote.
       if (message && messageRef.current && !messageRef.current.value.trim()) {
         messageRef.current.value = message;
@@ -264,7 +279,7 @@ function ContactSection({ initialSubject = "", cmsPage = "site", hideHeader = fa
                           value={suggestion.id}
                           className="contact-chip-input"
                           checked={active}
-                          onChange={() => setSubjectId(suggestion.id)}
+                          onChange={() => chooseSubject(suggestion.id)}
                           required
                         />
                         <svg
@@ -288,124 +303,138 @@ function ContactSection({ initialSubject = "", cmsPage = "site", hideHeader = fa
                 </div>
               </fieldset>
 
-              <div className="contact-field-row">
-                <div className="contact-field">
-                  <label htmlFor="contact-name">{copy("contact.form.name-label")}</label>
-                  <input
-                    id="contact-name"
-                    name="name"
-                    type="text"
-                    placeholder={copy("contact.form.name-placeholder")}
-                    autoComplete="name"
-                    maxLength={120}
-                    required
-                  />
-                </div>
-                <div className="contact-field">
-                  <label htmlFor="contact-email">{copy("contact.form.email-label")}</label>
-                  <input
-                    id="contact-email"
-                    name="email"
-                    type="email"
-                    placeholder={copy("contact.form.email-placeholder")}
-                    autoComplete="email"
-                    maxLength={200}
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Only for gatherings; unmounted fields are left out of the request. */}
-              {chosen?.event && (
-                <div className="contact-field-row contact-field-row--three contact-event-fields">
-                  <div className="contact-field">
-                    <label htmlFor="contact-date">{copy("contact.form.date-label")}</label>
-                    <input id="contact-date" name="date" type="date" />
+              {/* One step at a time: the rest of the form appears once a subject is chosen. */}
+              {chosen && (
+                <div className="contact-fields" ref={fieldsRef}>
+                  <div className="contact-field-row">
+                    <div className="contact-field">
+                      <label htmlFor="contact-name">{copy("contact.form.name-label")}</label>
+                      <input
+                        id="contact-name"
+                        ref={nameRef}
+                        name="name"
+                        type="text"
+                        placeholder={copy("contact.form.name-placeholder")}
+                        autoComplete="name"
+                        maxLength={120}
+                        required
+                      />
+                    </div>
+                    <div className="contact-field">
+                      <label htmlFor="contact-email">{copy("contact.form.email-label")}</label>
+                      <input
+                        id="contact-email"
+                        name="email"
+                        type="email"
+                        placeholder={copy("contact.form.email-placeholder")}
+                        autoComplete="email"
+                        maxLength={200}
+                        required
+                      />
+                    </div>
                   </div>
+
+                  {/* Only for gatherings; unmounted fields are left out of the request. */}
+                  {chosen?.event && (
+                    <div className="contact-field-row contact-field-row--three contact-event-fields">
+                      <div className="contact-field">
+                        <label htmlFor="contact-date">{copy("contact.form.date-label")}</label>
+                        <input id="contact-date" name="date" type="date" />
+                      </div>
+                      <div className="contact-field">
+                        <label htmlFor="contact-guests">{copy("contact.form.guests-label")}</label>
+                        <input
+                          id="contact-guests"
+                          name="guests"
+                          type="text"
+                          inputMode="numeric"
+                          placeholder={copy("contact.form.guests-placeholder")}
+                          maxLength={40}
+                        />
+                      </div>
+                      <div className="contact-field">
+                        <label htmlFor="contact-phone">{copy("contact.form.phone-label")}</label>
+                        <input
+                          id="contact-phone"
+                          name="phone"
+                          type="tel"
+                          autoComplete="tel"
+                          maxLength={40}
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <div className="contact-field">
-                    <label htmlFor="contact-guests">{copy("contact.form.guests-label")}</label>
+                    <label htmlFor="contact-message">{copy("contact.form.message-label")}</label>
+                    <textarea
+                      id="contact-message"
+                      ref={messageRef}
+                      name="message"
+                      rows={5}
+                      placeholder={copy("contact.form.message-placeholder")}
+                      maxLength={4000}
+                      required
+                    />
+                  </div>
+
+                  {/* Honeypot: hidden from people and screen readers, bots fill it in. */}
+                  <div className="visually-hidden" aria-hidden="true">
+                    <label htmlFor="contact-website">Webbplats</label>
                     <input
-                      id="contact-guests"
-                      name="guests"
+                      id="contact-website"
+                      name="website"
                       type="text"
-                      inputMode="numeric"
-                      placeholder={copy("contact.form.guests-placeholder")}
-                      maxLength={40}
+                      tabIndex={-1}
+                      autoComplete="off"
                     />
                   </div>
-                  <div className="contact-field">
-                    <label htmlFor="contact-phone">{copy("contact.form.phone-label")}</label>
-                    <input
-                      id="contact-phone"
-                      name="phone"
-                      type="tel"
-                      autoComplete="tel"
-                      maxLength={40}
-                    />
+
+                  {status === "error" && (
+                    <div className="contact-fallback" role="alert" tabIndex={-1} ref={statusRef}>
+                      <p>
+                        <strong>{copy("contact.form.error-title")}</strong>
+                        <br />
+                        {errorMessage || copy("contact.form.error-lead")}{" "}
+                        <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+                      </p>
+                      <button type="button" className="contact-fallback-copy" onClick={handleCopy}>
+                        {copied
+                          ? copy("contact.fallback.copied")
+                          : copy("contact.fallback.copy-btn")}
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="contact-submit-row">
+                    <button
+                      type="submit"
+                      className="btn btn--primary"
+                      disabled={status === "sending"}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <rect x="2" y="4" width="20" height="16" rx="2" />
+                        <path d="m2 7 10 7 10-7" />
+                      </svg>
+                      {status === "sending"
+                        ? copy("contact.form.sending-label")
+                        : copy("contact.form.submit-label")}
+                    </button>
+                    <p className="contact-privacy">{copy("contact.response-time")}</p>
                   </div>
                 </div>
               )}
-
-              <div className="contact-field">
-                <label htmlFor="contact-message">{copy("contact.form.message-label")}</label>
-                <textarea
-                  id="contact-message"
-                  ref={messageRef}
-                  name="message"
-                  rows={5}
-                  placeholder={copy("contact.form.message-placeholder")}
-                  maxLength={4000}
-                  required
-                />
-              </div>
-
-              {/* Honeypot: hidden from people and screen readers, bots fill it in. */}
-              <div className="visually-hidden" aria-hidden="true">
-                <label htmlFor="contact-website">Webbplats</label>
-                <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
-              </div>
-
-              {status === "error" && (
-                <div className="contact-fallback" role="alert" tabIndex={-1} ref={statusRef}>
-                  <p>
-                    <strong>{copy("contact.form.error-title")}</strong>
-                    <br />
-                    {errorMessage || copy("contact.form.error-lead")}{" "}
-                    <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
-                  </p>
-                  <button type="button" className="contact-fallback-copy" onClick={handleCopy}>
-                    {copied ? copy("contact.fallback.copied") : copy("contact.fallback.copy-btn")}
-                  </button>
-                </div>
-              )}
-
-              <div className="contact-submit-row">
-                <button
-                  type="submit"
-                  className="btn btn--primary"
-                  disabled={status === "sending"}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <rect x="2" y="4" width="20" height="16" rx="2" />
-                    <path d="m2 7 10 7 10-7" />
-                  </svg>
-                  {status === "sending"
-                    ? copy("contact.form.sending-label")
-                    : copy("contact.form.submit-label")}
-                </button>
-                <p className="contact-privacy">{copy("contact.response-time")}</p>
-              </div>
             </form>
           )}
 

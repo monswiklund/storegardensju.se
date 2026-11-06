@@ -21,10 +21,11 @@ const follows = (a, b) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_P
 
 describe("ContactPage", () => {
   // Renders the real form: a mocked one hid that /kontakt once opened with the form closed.
+  // The form opens on its subject chips; the other fields follow once a subject is chosen.
   it("shows the form right under the hero, then the address, then where to go next", () => {
     const { container } = renderPage();
 
-    const name = screen.getByLabelText(/Namn/);
+    const name = screen.getByRole("radio", { name: /Bröllop/ });
     const hero = container.querySelector(".contact-page__hero");
     const arrival = screen.getByRole("heading", { level: 2, name: "Hitta hit" });
     const explore = container.querySelector(".explore-more");

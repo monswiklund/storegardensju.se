@@ -180,13 +180,29 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+/* A tapped chip presses down, so the choice reads as something happening. */
+.contact-chip:active {
+  scale: 0.97;
+}
+
+/* The fields (and, within them, the event row) fade in when they appear. */
+.contact-fields,
 .contact-event-fields {
   transition:
     opacity 0.35s ease,
     translate 0.35s ease;
 }
 
+.contact-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  /* Room for the fixed header when the chip tap scrolls the name field into view. */
+  scroll-margin-top: 96px;
+}
+
 @starting-style {
+  .contact-fields,
   .contact-event-fields {
     opacity: 0;
     translate: 0 -6px;
@@ -194,6 +210,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .contact-chip:active {
+    scale: none;
+  }
+
+  .contact-fields,
   .contact-event-fields {
     transition: none;
   }
